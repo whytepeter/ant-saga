@@ -1,7 +1,7 @@
 extends Node3D
 ## Level 1 runtime: places Amodu at the spawn with Opigo and Opumie, puts out
 ## the props he can heave, keeps the last checkpoint, respawns him after the Rut
-## or a fall out of the world, triggers companion banter, and drives the HUD.
+## or a fall out of the world, and drives the HUD.
 ##
 ## Playtest keys: 1–5 viewpoints V1–V5 · 0 start · R respawn · T restart the
 ## route timer · L toggle signs and labels.
@@ -12,7 +12,6 @@ signal respawned(reason: String)
 const CHECKPOINT_RADIUS := 25.0
 const FALL_LIMIT := -40.0
 const DROWN_DEPTH := 0.6
-const IDLE_BANTER_AFTER := 25.0
 
 var layout: LawnLayout
 var checkpoint := {}
@@ -21,16 +20,12 @@ var route_time := 0.0
 var _toast_left := 0.0
 var _hud_refresh := 0.0
 var _gate_announced := false
-var _area_id := ""
-var _idle_time := 0.0
-var _banter_poll := 0.0
 var companions: Array[Companion] = []
 
 @onready var player: Player = $Player
 @onready var builder: Node3D = $Graybox
 @onready var info: Label = $HUD/Info
 @onready var toast: Label = $HUD/Toast
-@onready var banter: Banter = $Banter
 
 
 func _ready() -> void:
@@ -40,9 +35,6 @@ func _ready() -> void:
 	_place(checkpoint)
 	_spawn_props()
 	_spawn_companions()
-	player.heaved.connect(func(action: String, _prop: Heavable) -> void: banter.fire("heave", action, true))
-	respawned.connect(func(reason: String) -> void: banter.fire("respawn", reason, true))
-	get_tree().create_timer(1.5).timeout.connect(func() -> void: banter.fire("start"))
 
 
 func _spawn_props() -> void:
@@ -87,8 +79,6 @@ func _physics_process(delta: float) -> void:
 		show_toast("Colony Gate · the colony interior is a later level")
 	_gate_announced = near_gate
 
-	_poll_banter(delta, p)
-
 	if p.y < FALL_LIMIT:
 		respawn("Fell out of the world")
 	elif layout.surface_at(p.x, p.z) == LawnLayout.Surface.WATER and p.y < layout.water_level - DROWN_DEPTH:
@@ -128,30 +118,6 @@ func _unhandled_input(event: InputEvent) -> void:
 			for child in builder.get_node("Generated/" + group).get_children():
 				if child is Label3D:
 					(child as Label3D).visible = not (child as Label3D).visible
-
-
-## Area entries, landmark proximity and standing around all prompt the ants.
-func _poll_banter(delta: float, p: Vector3) -> void:
-	var still := Vector2(player.velocity.x, player.velocity.z).length() < 0.1
-	_idle_time = _idle_time + delta if still else 0.0
-	if _idle_time > IDLE_BANTER_AFTER:
-		_idle_time = 0.0
-		banter.fire("idle")
-	_banter_poll -= delta
-	if _banter_poll > 0.0:
-		return
-	_banter_poll = 0.25
-	var area := layout.area_at(p.x, p.z)
-	var id := String(area.get("id", ""))
-	_area_id = id
-	if id != "":
-		banter.fire("area", id)
-	for near: Array in banter.pending_near_targets():
-		var lm := layout.item("landmarks", String(near[0]))
-		if lm.is_empty():
-			continue
-		if Vector2(p.x, p.z).distance_to(LawnLayout.xz(lm["pos"])) < float(near[1]) + maxf(float(lm["size"][0]), float(lm["size"][2])) * 0.5:
-			banter.fire("near", String(near[0]))
 
 
 func respawn(reason: String) -> void:
