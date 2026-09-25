@@ -4,6 +4,15 @@
 
 Each phase ends with a **gate**, a check that must pass before the next phase starts.
 
+## Direction (decided 2026-09-25)
+
+- **Design source:** the PDF game sheet (`docs/ant_kingdom_saga_backyard_edition.pdf`): heroes, colony building, stages, exploration. The long story draft (`docs/STORY.md`) is parked as reference. The setting is the Nigerian compound (`docs/WORLD.md`).
+- **Genre:** "Pikmin meets Grounded". Short expeditions from the colony into a 3D compound; bring loot home; build up the colony; unlock heroes and places.
+- **Combat:** real-time squad (Amodu + two heroes), not auto-battle. Scale-aware: weak spots, environmental kills, calling the swarm.
+- **Heroes:** earned through story or by defeating them, not gacha pulls. Each one changes how you play or where you can go (Ladybug glides, Grasshopper jumps, Earthworm digs, Firefly lights, Pill Bug rolls, Honeybee heals, Scout Ant maps).
+- **Platform:** PC first; mobile later if the loop suits it. Monetization is not designed until the game is fun.
+- **Tooling:** gamedev agent skills installed (router, Godot, disciplines, workflows). Use `prototype-fast` for slices, `level-design` and `game-feel` for polish.
+
 ## Phase 0: Setup ✅
 - Git with Git LFS for binary assets (`.gitattributes`).
 - Godot 4.7 project, Forward+ renderer, Jolt physics.
@@ -42,6 +51,42 @@ Each phase ends with a **gate**, a check that must pass before the next phase st
 - **Companions** (`characters/companion.gd`): Opigo and Opumie follow the trail Amodu actually walked, catch up if left behind, wait while he climbs. The ant scout shares his Mixamo rig, so it runs on his animation library.
 - **Banter**: built, then removed for now at your request (recoverable from git history, commit e1ec4c4).
 - Tests: lift, throw (17 m) and push (4.5 m) in the playground; companions within 8 m after route A.
+
+## Phase 3c: Expedition slice (find the fun) ← next
+
+**Prototype brief** (per the `prototype-fast` skill):
+
+| | |
+|---|---|
+| **Question** | Is one expedition (go out, fight, haul loot home, spend it) fun enough to want a second one? |
+| **Core verb** | Heave: carry and throw, alone or with ants |
+| **Throwaway?** | Keep-rough: it grows into the real loop, but no polish and no new art |
+| **Timebox** | About two weeks of building; playtest at the end of each step |
+| **Keep if** | You finish the run and immediately want to go again or try another route; hauling with the ants feels like teamwork; the pill bug fight is readable |
+| **Kill / rethink if** | Hauling feels like a chore; the ants feel like escorts to babysit; the fight is button-mashing |
+
+**The run:**
+1. **Colony Gate (rest):** accept the job ("the workers saw a whole puff-puff by the school bag"). Opigo joins.
+2. **Out (teach):** cross the grass; small crumbs you can carry alone teach lift and throw.
+3. **The prize (test):** half a puff-puff, too big for Amodu alone. Call nearby worker ants (pheromone call); together they lift it, and they're slow.
+4. **The ambush (tension):** pill bugs attack the haul. Real-time fight:
+   - Throw stones to make them curl up.
+   - Flip them while curled.
+   - Opigo guards the carriers.
+5. **Home (release):** bring it through the Colony Gate before the day timer (the sun) runs out.
+6. **Spend (reward):** one colony upgrade (Storage: carry capacity, or Barracks: a second hero slot) that visibly changes the next run.
+
+**What to build:**
+- Group carry for props above 2.6 m, where the speed depends on the number of carriers.
+- A worker-ant call.
+- Pill bug AI: roam, charge, curl when hit, flip.
+- Combat basics for Amodu:
+  - Light and heavy attacks with the thorn spear, dodge and block (the Punch/Sword/Kick clips exist).
+  - Health, and knockout that returns you to the colony.
+- Objective and day timer UI, and a colony screen with two upgrades.
+- Metrics on screen: haul time, fights, damage taken.
+
+**Gate:** you play two runs and say whether you want a third.
 
 ## Phase 4: Look test on one 50 m corner (go/no-go)
 - Blade Forest + Dewdrop Garden at final quality: instanced grass with wind and light glowing through the blades, simpler versions at distance, a dew-lens shader, volumetric fog, pollen, god rays, an HDRI sky, tilt-shift focus on far objects.
