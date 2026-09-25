@@ -11,3 +11,7 @@
 .DS_Store
 .vscode/
 *.tmp
+
+# Secrets (API keys for Meshy etc.)
+.env
+.env.*

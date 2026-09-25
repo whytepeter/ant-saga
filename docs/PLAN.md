@@ -12,18 +12,19 @@ Each phase ends with a **gate**, a check that must pass before the next phase st
 
 **Gate:** passed. The editor scene tree was read, the game was run, and a screenshot was captured through the bridge.
 
-## Phase 1: World bible and map (awaiting approval)
+## Phase 1: World bible and map ✅
 - `docs/WORLD.md`: scale table, landmarks, the nine areas, the civilization layer, lighting and sound direction.
 - `world/lawn/layout.json`: every coordinate, the single source of truth; the graybox is built from it.
 - `tools/lawn_layout.py`: `check` proves the gating and routes; `render` draws `docs/lawn_map.svg`.
 
 **Gate:** map approved.
 
-## Phase 2: Player foundation
-- Import the Little Explorer and set up its animations: idle, walk, run, crawl, climb, hit, death.
-- Third-person camera that pulls in close in tight grass and out in clearings.
-- Movement: walk, run, jump, crawl, climb marked surfaces (e.g. the backpack zipper).
-- Gap: there is no jump animation; source one from Meshy or Mixamo.
+## Phase 2: Player foundation (awaiting your playtest)
+- Animation library built from the Meshy clips (`tools/build_explorer_anims.gd`): 16 clips, cleaned, with measured foot speeds so playback matches movement.
+- `player/player.tscn`: walk 1.6 / jog 4.5 / sprint 6 m/s, 1.2 m jump with coyote time and jump buffer, belly crawl (0.6 m tall) that can't stand up under cover, climbing on the `climbable` layer with an automatic pull-up over the top.
+- Camera: orbit, collision, arm length 2.6–5.8 m depending on how open the surroundings are.
+- `world/playground/`: test course. `tests/player_movement_test.gd`: 13 automated checks (all pass).
+- Gaps: no real jump clip (a held run frame stands in); a sprint clip would look better than the run at 1.45×; the crawl clip plays at its 2.2× cap, so feet slide slightly; the stand-up clip needs a visual fix before the wake-up scene.
 
 **Gate:** movement feel approved by playing it.
 

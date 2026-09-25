@@ -1,0 +1,47 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://world/playground/playground.gd" id="1_pg"]
+[ext_resource type="PackedScene" path="res://player/player.tscn" id="2_player"]
+
+[sub_resource type="ProceduralSkyMaterial" id="sky_mat"]
+sky_top_color = Color(0.32, 0.52, 0.8, 1)
+sky_horizon_color = Color(0.8, 0.82, 0.78, 1)
+ground_bottom_color = Color(0.2, 0.17, 0.12, 1)
+ground_horizon_color = Color(0.8, 0.82, 0.78, 1)
+sun_angle_max = 20.0
+
+[sub_resource type="Sky" id="sky"]
+sky_material = SubResource("sky_mat")
+
+[sub_resource type="Environment" id="env"]
+background_mode = 2
+sky = SubResource("sky")
+ambient_light_source = 3
+ambient_light_energy = 0.8
+tonemap_mode = 4
+ssao_enabled = true
+glow_enabled = true
+glow_intensity = 0.4
+glow_bloom = 0.05
+fog_enabled = true
+fog_light_color = Color(0.86, 0.84, 0.72, 1)
+fog_density = 0.0025
+fog_sky_affect = 0.3
+
+[node name="Playground" type="Node3D"]
+script = ExtResource("1_pg")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("env")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.2588, -0.2500, 0.9330, 0.0000, 0.9659, 0.2588, -0.9659, 0.0670, -0.2500, 0, 60, 0)
+light_color = Color(1, 0.93, 0.8, 1)
+light_energy = 1.6
+shadow_enabled = true
+shadow_bias = 0.3
+shadow_normal_bias = 3.0
+shadow_blur = 1.5
+directional_shadow_max_distance = 220.0
+
+[node name="Player" parent="." instance=ExtResource("2_player")]

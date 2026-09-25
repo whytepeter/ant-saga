@@ -53,7 +53,7 @@ The world is his real backyard. Nothing is invented fantasy terrain. Every cliff
 | Adult human | 1.8 m | 648 m | Earthquake |
 | House | 9 m to ridge | 3.2 km | Mountain range with windows |
 
-Speed follows scale: Amodu runs at about 6 m/s, so crossing the 720 m level takes about 2 minutes. Creature speeds should be scaled from the real animal where possible. A real wolf spider sprints about 0.5 m/s, which is **180 m/s** in game, so the boss must be staged, not simulated.
+Speed follows scale: Amodu walks at 1.6 m/s, jogs at 4.5 m/s and sprints at 6 m/s, so jogging across the 720 m level takes about 2.7 minutes. These speeds are matched to the measured foot speed of his animations (`player/player.gd`). Creature speeds should be scaled from the real animal where possible. A real wolf spider sprints about 0.5 m/s, which is **180 m/s** in game, so the boss must be staged, not simulated.
 
 ## 4. Where the level sits
 
@@ -100,7 +100,7 @@ The south is sealed by a continuous barrier: the **Great Root** (west), a **tuss
 | 8 | Oak Rootlands | −170, 245 | Stealth; spider ambush | Acorn boulders; oak leaves that crunch and give you away |
 | 9 | Spider's Edge | −295, 300 | Wolf Spider boss | Damp corner where the root dives under the edging. Silk-lined burrow, trip lines. |
 
-**Route A** (wake → Colony Gate) is 677 m. **Route B** (Patrol Gate → Spider's Edge) is 886 m. Both are straight-line lengths; real play time is set by encounters and story.
+**Route A** (wake → Colony Gate) is 677 m, about 2.5 min jogging. **Route B** (Patrol Gate → Spider's Edge) is 886 m, about 3.3 min. Both are straight-line lengths; real play time is set by encounters and story.
 
 ### Key landmarks
 - **Amodu's backpack** (115, −290): 151 × 54 m base, 150 m tall. Zipper climb on the south face; its summit (V2) overlooks the whole level.

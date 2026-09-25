@@ -225,12 +225,12 @@ def check(layout):
         ok("main routes, shortcut and ant roads are clear")
 
     print("Route length")
-    speed = 6.0  # m/s, Amodu run
+    speed = 4.5  # m/s, Amodu jog (player.gd jog_speed)
     for p in layout["paths"]:
         if p["kind"] == "main_route":
             L = sum(math.hypot(p["points"][k + 1][0] - p["points"][k][0], p["points"][k + 1][1] - p["points"][k][1])
                     for k in range(len(p["points"]) - 1))
-            print(f"  info  {p['id']}: {L:.0f} m, {L / speed / 60:.1f} min at a {speed:.0f} m/s run")
+            print(f"  info  {p['id']}: {L:.0f} m, {L / speed / 60:.1f} min at a {speed} m/s jog")
 
     print()
     print("PASS" if not failures else f"{len(failures)} failure(s)")
@@ -500,7 +500,7 @@ def render(layout):
     a(text(sbx, sby + 22, "0", 10, 400, "middle", halo=False))
     a(text(sbx + 100 * S, sby + 22, "100 m (28 cm real)", 10, 400, "middle", halo=False))
     a(text(sbx + 200 * S, sby + 22, "200 m", 10, 400, "middle", halo=False))
-    a(text(sbx, sby + 42, "Amodu = 1.8 m · a run across the box ≈ 2 min", 10.5, 400, "start", fill=COL["muted"], halo=False))
+    a(text(sbx, sby + 42, "Amodu = 1.8 m · jog 4.5 m/s, sprint 6 m/s · crossing the box ≈ 2.7 min jogging", 10.5, 400, "start", fill=COL["muted"], halo=False))
 
     # Legend
     ly = pz(360) + 118

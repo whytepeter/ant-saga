@@ -1,0 +1,75 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://player/player.gd" id="1_player"]
+[ext_resource type="Script" path="res://player/camera_rig.gd" id="2_rig"]
+[ext_resource type="PackedScene" path="res://player/explorer/Meshy_AI_Little_Explorer_biped_Animation_Idle_11_withSkin.glb" id="3_model"]
+
+[sub_resource type="CapsuleShape3D" id="stand"]
+radius = 0.35
+height = 1.8
+
+[sub_resource type="CapsuleShape3D" id="crawl"]
+radius = 0.3
+height = 0.6
+
+[sub_resource type="CapsuleShape3D" id="headroom"]
+radius = 0.32
+height = 1.1
+
+[sub_resource type="SphereShape3D" id="arm"]
+radius = 0.2
+
+[node name="Player" type="CharacterBody3D"]
+collision_layer = 2
+collision_mask = 13
+floor_snap_length = 0.3
+script = ExtResource("1_player")
+
+[node name="StandShape" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+shape = SubResource("stand")
+
+[node name="CrawlShape" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0)
+shape = SubResource("crawl")
+disabled = true
+
+[node name="Headroom" type="ShapeCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.22, 0)
+enabled = false
+shape = SubResource("headroom")
+target_position = Vector3(0, 0, 0)
+collision_mask = 5
+
+[node name="Model" type="Node3D" parent="."]
+
+[node name="Explorer" parent="Model" instance=ExtResource("3_model")]
+
+[node name="WallRay" type="RayCast3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, 0)
+target_position = Vector3(0, 0, 0.75)
+collision_mask = 5
+
+[node name="LedgeRay" type="RayCast3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.95, 0)
+target_position = Vector3(0, 0, 0.9)
+collision_mask = 5
+
+[node name="AnimationTree" type="AnimationTree" parent="."]
+
+[node name="CameraRig" type="Node3D" parent="."]
+script = ExtResource("2_rig")
+
+[node name="Pitch" type="Node3D" parent="CameraRig"]
+
+[node name="SpringArm3D" type="SpringArm3D" parent="CameraRig/Pitch"]
+collision_mask = 5
+shape = SubResource("arm")
+spring_length = 5.0
+margin = 0.25
+
+[node name="Camera3D" type="Camera3D" parent="CameraRig/Pitch/SpringArm3D"]
+current = true
+fov = 72.0
+near = 0.05
+far = 8000.0
