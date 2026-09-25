@@ -1,0 +1,154 @@
+{
+  "meta": {
+    "level": "Level 1: The Lawn",
+    "units": "meters (in-game)",
+    "world_scale": 360,
+    "amodu_height": 1.8,
+    "coordinates": "[x, z] on the ground plane. +X = east, +Z = south, north = -Z (Godot convention). Heights are meters above local ground.",
+    "playable_bounds": [-360, -360, 360, 360],
+    "default_time": "07:30",
+    "season": "early summer",
+    "sun": { "azimuth_deg_from_north": 75, "elevation_deg": 15 }
+  },
+
+  "spawn": { "pos": [40, -205], "look_at": [-110, -170] },
+
+  "areas": [
+    { "id": "backpack_hollow", "order": 1, "name": "Backpack Hollow", "center": [60, -245], "radii": [75, 55],
+      "role": "Wake-up pocket. Movement and camera tutorial.",
+      "story": "The flattened grass where Amodu was sitting when the potion hit. His body-print is the clearing." },
+    { "id": "blade_forest", "order": 2, "name": "Blade Forest", "center": [-110, -170], "radii": [100, 80],
+      "role": "Densest walkable grass. First scale reveal.",
+      "story": "Narrow carved paths, dandelion towers, the first ant trail." },
+    { "id": "dewdrop_garden", "order": 3, "name": "Dewdrop Garden", "center": [-240, -40], "radii": [85, 75],
+      "role": "Wonder beat. Beauty shot of the level.",
+      "story": "Deep shade in front of the Big Oak keeps the dew all morning. Clover canopy, a lost marble, a dew-strung orb web." },
+    { "id": "capstone_shelter", "order": 4, "name": "Capstone Shelter", "center": [-140, 55], "radii": [45, 40],
+      "role": "Meet Opigo and Opumie. First sign of civilization.",
+      "story": "An ant watch post under a bottle cap propped on three pebbles, overlooking the Bare Patch." },
+    { "id": "bare_patch", "order": 5, "name": "Bare Patch", "center": [20, 85], "radii": [70, 65],
+      "role": "Pill bug tutorial fight. Colony Gate.",
+      "story": "Dead grass where a flower pot stood all last summer; its ring is still pressed into the soil. The dry soil cracked, and the ants built their front door in the biggest crack." },
+    { "id": "hose_run", "order": 6, "name": "Hose Run", "center": [215, -40], "radii": [70, 95],
+      "role": "Garden Patrol start. Water spectacle.",
+      "story": "The hose coupling leaks a fine jet; the mist makes a permanent morning rainbow. The ants run a water station here." },
+    { "id": "popsicle_bridge", "order": 7, "name": "Popsicle Bridge", "center": [140, 190], "radii": [120, 55],
+      "role": "The only dry crossing into the south. Chapter 2 termite fight.",
+      "story": "Runoff filled the wheel rut the mower left last week. A dropped popsicle stick spans its narrowest point." },
+    { "id": "oak_rootlands", "order": 8, "name": "Oak Rootlands", "center": [-170, 245], "radii": [110, 55],
+      "role": "Stealth. Spider ambush (Stage 9).",
+      "story": "Beyond the Great Root: acorns like boulders, fallen oak leaves that crunch and give you away." },
+    { "id": "spiders_edge", "order": 9, "name": "Spider's Edge", "center": [-295, 300], "radii": [50, 35],
+      "role": "BOSS: Garden Wolf Spider (Stage 10).",
+      "story": "The damp corner where the root dives under the garden edging. A silk-lined burrow, trip lines across the only entrance." }
+  ],
+
+  "boundaries": [
+    { "side": "north", "kind": "patio_step", "line": [[-360, -345], [360, -345]], "height": 29,
+      "note": "8 cm concrete step up to the patio. Sheer, hot at noon. The house rises beyond it." },
+    { "side": "east", "kind": "stepping_stones", "line": [[345, -360], [345, 360]], "height": 18,
+      "note": "40 cm garden stepping stones (144 m slabs), gaps choked with tussock." },
+    { "side": "south", "kind": "brick_edging", "line": [[-360, 345], [360, 345]], "height": 22,
+      "note": "Garden bed edging. Sunflowers tower behind it." },
+    { "side": "west", "kind": "oak_trunk_and_leaf_litter", "line": [[-350, -360], [-350, 360]], "height": 40,
+      "note": "The Big Oak's trunk is the wall between z -100 and +100; leaf-litter drifts to either side." }
+  ],
+
+  "barriers": [
+    { "id": "tussock_band", "kind": "dense_grass_wall", "polygon": [[-60, 175], [0, 172], [62, 168], [62, 216], [0, 214], [-60, 212]],
+      "note": "Uncut tussock between the Great Root and the puddle. Impassable." },
+    { "id": "tussock_east", "kind": "dense_grass_wall", "polygon": [[300, 140], [345, 140], [345, 240], [300, 240]],
+      "note": "Closes the gap between the puddle and the stepping stones." }
+  ],
+
+  "water": [
+    { "id": "rut_puddle", "name": "The Rut", "depth": [1.5, 4],
+      "note": "Mower wheel rut flooded by hose runoff. Falling in is defeat (surface tension). Neck at x=140 is 36 m wide.",
+      "polygon": [[45, 188], [58, 165], [95, 155], [125, 160], [140, 172], [160, 158], [210, 152], [260, 155], [295, 165], [305, 188],
+                  [295, 212], [255, 222], [200, 224], [160, 220], [140, 208], [115, 226], [75, 225], [52, 210]] }
+  ],
+
+  "paths": [
+    { "id": "route_a", "kind": "main_route", "label": "Chapter 1 route: wake to Colony Gate",
+      "points": [[40, -205], [-30, -200], [-110, -170], [-180, -110], [-240, -40], [-200, 15], [-140, 55], [-60, 72], [20, 85], [40, 112]] },
+    { "id": "route_b", "kind": "main_route", "label": "Garden Patrol: Patrol Gate to Spider's Edge",
+      "points": [[150, 10], [190, -30], [225, -55], [222, 20], [205, 100], [150, 150], [140, 172], [140, 208], [130, 240], [120, 272],
+                 [20, 262], [-80, 255], [-170, 245], [-250, 250], [-290, 290]] },
+    { "id": "root_tunnel", "kind": "shortcut", "label": "Root tunnel (opened from the south side)",
+      "points": [[-200, 180], [-200, 125], [-170, 85], [-140, 55]] },
+    { "id": "ant_road_west", "kind": "ant_road", "points": [[40, 112], [-40, 80], [-100, 62], [-140, 55], [-200, 25], [-290, 5], [-344, 0]] },
+    { "id": "ant_road_north", "kind": "ant_road", "points": [[40, 112], [30, 20], [40, -100], [50, -195]] },
+    { "id": "ant_road_east", "kind": "ant_road", "points": [[40, 112], [100, 60], [150, 10]] },
+    { "id": "termite_trail", "kind": "termite_trail", "points": [[330, 345], [290, 312], [230, 295], [160, 282], [120, 272], [95, 245]] },
+    { "id": "hose", "kind": "hose", "diameter": 6.5, "points": [[185, -360], [215, -150], [225, -60], [290, 20], [360, 60]] },
+    { "id": "runoff", "kind": "stream", "points": [[228, -45], [220, 40], [205, 110], [195, 152]] },
+    { "id": "great_root", "kind": "root", "width": 24, "height": 12,
+      "points": [[-352, 100], [-280, 120], [-200, 150], [-120, 172], [-60, 185]] },
+    { "id": "root_branch_n", "kind": "root", "width": 12, "height": 7, "points": [[-280, 122], [-262, 215]] },
+    { "id": "root_branch_s", "kind": "root", "width": 12, "height": 7, "points": [[-245, 275], [-235, 345]] },
+    { "id": "north_buttress", "kind": "root", "width": 14, "height": 6, "points": [[-352, -100], [-300, -140], [-250, -152]] },
+    { "id": "pencil", "kind": "log", "width": 2.5, "height": 2.5, "points": [[95, -268], [40, -224]] }
+  ],
+
+  "landmarks": [
+    { "id": "backpack", "name": "Amodu's backpack", "pos": [115, -290], "size": [108, 150, 54], "real": "42 x 30 x 15 cm, upright and slumped",
+      "note": "Tallest thing in the level. Zipper on the south face is a climb route. Player compass." },
+    { "id": "pencil_log", "name": "Pencil log", "pos": [68, -246], "size": [68, 2.5, 2.5], "real": "19 cm pencil" },
+    { "id": "dandelion_bloom", "name": "Dandelion tower", "pos": [-60, -125], "size": [12.6, 90, 12.6], "real": "25 cm dandelion" },
+    { "id": "dandelion_seed", "name": "Seed-head dandelion", "pos": [-170, -235], "size": [12.6, 75, 12.6], "real": "21 cm, gone to seed; parachutes drift over the forest" },
+    { "id": "lego_waystation", "name": "Lego waystation", "pos": [255, -240], "size": [11.5, 4, 5.8], "real": "2x4 Lego brick", "note": "Optional; abandoned ant rest stop." },
+    { "id": "marble", "name": "Lost marble", "pos": [-255, -85], "size": [5.8, 5.8, 5.8], "real": "16 mm glass marble", "note": "Refracts the clover canopy. Lore item." },
+    { "id": "orb_web", "name": "Dew-strung web", "pos": [-205, -15], "size": [20, 20, 0.1], "real": "5 cm orb web, abandoned" },
+    { "id": "oak_root_hall", "name": "Oak Root Hall (quest hub)", "pos": [-346, 0], "size": [20, 14, 10],
+      "note": "Entrance between two root buttresses at the trunk base. Sealed until after the colony." },
+    { "id": "bottle_cap", "name": "Capstone (bottle cap roof)", "pos": [-140, 55], "size": [10.8, 5.7, 10.8], "real": "30 mm cap on three 1 cm pebbles" },
+    { "id": "lookout_blade", "name": "Lookout blade", "pos": [-122, 40], "size": [1.6, 25, 1.6], "note": "Thread ladder to a lookout at 25 m." },
+    { "id": "earring_shrine", "name": "Earring shrine", "pos": [-152, 68], "size": [3, 4, 3], "real": "lost stud earring" },
+    { "id": "pot_ring", "name": "Flower-pot ring", "pos": [20, 85], "size": [90, 0.5, 90], "note": "Circular imprint in the soil." },
+    { "id": "colony_gate", "name": "Colony Gate", "pos": [40, 112], "size": [14, 7, 4], "real": "4 cm hair tie as arch over the crack" },
+    { "id": "coin_plaza", "name": "Coin plaza", "pos": [15, 104], "size": [8.6, 0.6, 8.6], "real": "US quarter" },
+    { "id": "worm_casts", "name": "Worm castings", "pos": [-10, 60], "size": [6, 4, 6], "note": "Also at [45,55] and [0,122]." },
+    { "id": "patrol_gate", "name": "Patrol Gate", "pos": [150, 10], "size": [12, 5, 12], "note": "Colony side exit under a pebble." },
+    { "id": "hose_coupling", "name": "Leaking coupling / Water Station", "pos": [225, -60], "size": [11, 11, 14], "real": "brass coupling",
+      "note": "Jet sprays up and west; mist radius ~45 m with rainbow." },
+    { "id": "popsicle_stick", "name": "Popsicle stick", "pos": [140, 190], "size": [3.6, 0.7, 41], "real": "11.4 cm stick, faded printed joke on top" },
+    { "id": "abandoned_post", "name": "Silent ant outpost", "pos": [95, 245], "size": [18, 18, 18], "real": "matchstick palisade" },
+    { "id": "termite_camp", "name": "Termite forward camp", "pos": [120, 280], "size": [60, 15, 40], "note": "Mud tubes. Only evidence in Ch 1, occupied in Ch 2." },
+    { "id": "termite_tower", "name": "Mud-tube tower", "pos": [262, 305], "size": [6, 15, 6] },
+    { "id": "acorn_1", "name": "Acorn", "pos": [-150, 225], "size": [5.4, 9, 5.4], "real": "25 mm acorn" },
+    { "id": "acorn_2", "name": "Acorn", "pos": [-95, 262], "size": [5.4, 9, 5.4] },
+    { "id": "acorn_3", "name": "Acorn", "pos": [-225, 290], "size": [5.4, 9, 5.4] },
+    { "id": "oak_leaf_1", "name": "Fallen oak leaf", "pos": [-180, 270], "size": [40, 0.3, 22], "real": "11 cm leaf" },
+    { "id": "oak_leaf_2", "name": "Fallen oak leaf", "pos": [-60, 245], "size": [36, 0.3, 20] },
+    { "id": "spider_burrow", "name": "Wolf spider burrow", "pos": [-310, 318], "size": [8, 3, 8], "note": "Silk turret rim." },
+    { "id": "trip_lines", "name": "Trip lines", "pos": [-255, 245], "size": [60, 2, 1], "note": "Silk across the arena entrance." }
+  ],
+
+  "skyline": [
+    { "id": "oak_trunk", "name": "Big Oak", "pos": [-470, 0], "size": [216, 1080, 216], "real": "60 cm trunk, first branches at 3 m",
+      "note": "Canopy ceiling from ~1.1 km up to 5.4 km, radius ~1.4 km. Covers the whole level; open sky only toward the east." },
+    { "id": "house", "name": "House", "pos": [0, -2200], "size": [5000, 3240, 300], "real": "two storeys", "note": "Windows are 430 m tall. Lights come on at dusk." },
+    { "id": "grill", "name": "Grill", "pos": [-400, -1000], "size": [220, 360, 180], "note": "On the patio." },
+    { "id": "deck", "name": "Deck", "pos": [-2200, -1500], "size": [1800, 216, 1400], "note": "Zone 3 lives under it." },
+    { "id": "mower", "name": "Lawn mower (parked)", "pos": [900, -900], "size": [360, 360, 540], "note": "Foreshadowing." },
+    { "id": "birdbath", "name": "Birdbath", "pos": [1500, 80], "size": [180, 252, 180] },
+    { "id": "sunflowers", "name": "Sunflower row", "pos": [100, 520], "size": [500, 720, 80], "note": "Heads are 108 m dishes. Zone 2 teaser." },
+    { "id": "tomato", "name": "Tomato plants", "pos": [700, 700], "size": [300, 400, 300] },
+    { "id": "compost", "name": "Compost pile", "pos": [2700, 1900], "size": [700, 360, 700], "note": "Steam column ~1.5 km, visible over the garden." },
+    { "id": "shed", "name": "Shed", "pos": [-2700, 1900], "size": [900, 800, 700] },
+    { "id": "fence", "name": "Fence", "rect": [-3900, -2300, 3300, 2400], "height": 648 }
+  ],
+
+  "viewpoints": [
+    { "id": "V1", "name": "Spawn", "pos": [40, -205], "height": 1.6, "look_at": [-110, -170],
+      "must_see": ["dandelion_bloom", "oak_trunk", "sunflowers"] },
+    { "id": "V2", "name": "Backpack summit", "pos": [115, -290], "height": 150, "look_at": [0, 100],
+      "must_see": ["rut_puddle", "hose_coupling", "sunflowers", "compost", "oak_trunk"] },
+    { "id": "V3", "name": "Capstone lookout", "pos": [-122, 40], "height": 25, "look_at": [30, 90],
+      "must_see": ["colony_gate", "pot_ring", "hose_coupling", "backpack"] },
+    { "id": "V4", "name": "Mid-bridge", "pos": [140, 190], "height": 2.5, "look_at": [120, 280],
+      "must_see": ["termite_camp", "sunflowers", "backpack"] },
+    { "id": "V5", "name": "Great Root crest", "pos": [-200, 150], "height": 13, "look_at": [-290, 300],
+      "must_see": ["spider_burrow", "oak_trunk", "acorn_3"] }
+  ]
+}

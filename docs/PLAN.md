@@ -12,9 +12,10 @@ Each phase ends with a **gate**, a check that must pass before the next phase st
 
 **Gate:** passed. The editor scene tree was read, the game was run, and a screenshot was captured through the bridge.
 
-## Phase 1: World bible and map
+## Phase 1: World bible and map (awaiting approval)
 - `docs/WORLD.md`: scale table, landmarks, the nine areas, the civilization layer, lighting and sound direction.
-- A top-down Lawn map with coordinates for every area and landmark; the graybox is built from these numbers.
+- `world/lawn/layout.json`: every coordinate, the single source of truth; the graybox is built from it.
+- `tools/lawn_layout.py`: `check` proves the gating and routes; `render` draws `docs/lawn_map.svg`.
 
 **Gate:** map approved.
 
