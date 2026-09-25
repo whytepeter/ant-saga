@@ -271,6 +271,18 @@ func _update_locomotion_animation(speed: float) -> void:
 	anim_tree.set("parameters/sm/ground/stride/scale", clampf(speed / natural, 0.5, 2.0))
 
 
+## Moves Amodu instantly (spawn, checkpoints, debug viewpoints). `facing_yaw`
+## uses the camera convention: 0 looks north (-Z).
+func teleport(to: Vector3, facing_yaw: float) -> void:
+	global_position = to
+	velocity = Vector3.ZERO
+	_mantling = false
+	model.rotation.y = facing_yaw + PI  # the model faces +Z
+	camera_rig.yaw = facing_yaw
+	camera_rig.snap()
+	_set_state(State.GROUND)
+
+
 ## Plays a one-shot clip (hit, attacks, emotes) over the current state.
 func play_action(clip: String) -> void:
 	var node := (anim_tree.tree_root as AnimationNodeBlendTree).get_node("action_clip") as AnimationNodeAnimation

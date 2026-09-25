@@ -1,0 +1,19 @@
+{
+  "size": 361,
+  "cell": 2,
+  "origin": -360,
+  "height_min": -4.0,
+  "height_max": 1.03,
+  "estimated_blades": 41707,
+  "surface_cells": {
+    "lawn": 100149,
+    "bare_soil": 2820,
+    "mud": 1094,
+    "leaf_litter": 11375,
+    "water": 3677,
+    "flattened": 3230,
+    "tussock": 2437,
+    "clover": 4887,
+    "ant_road": 652
+  }
+}

@@ -147,32 +147,6 @@ func _build_scale_props(root: Node3D) -> void:
 	_box(root, Vector3(4, 0.35, 34), Vector3(41, 0.7, 3.6), Color(0.89, 0.78, 0.55), WORLD_LAYER, 0.3)
 
 
-func _blade_mesh(height: float, width: float, bend: float) -> ArrayMesh:
-	var st := SurfaceTool.new()
-	st.begin(Mesh.PRIMITIVE_TRIANGLES)
-	var rows := 8
-	var ring: Array = []
-	for i in rows + 1:
-		var t := float(i) / rows
-		var w := width * 0.5 * (1.0 - pow(t, 1.6))
-		var z := bend * t * t * height
-		var y := t * height
-		# V-section: the midrib sits slightly behind the edges
-		ring.append([Vector3(-w, y, z), Vector3(0, y, z - w * 0.18), Vector3(w, y, z)])
-	for i in rows:
-		var a: Array = ring[i]
-		var b: Array = ring[i + 1]
-		for side in 2:
-			var a0: Vector3 = a[side]
-			var a1: Vector3 = a[side + 1]
-			var b0: Vector3 = b[side]
-			var b1: Vector3 = b[side + 1]
-			st.add_vertex(a0); st.add_vertex(b0); st.add_vertex(a1)
-			st.add_vertex(a1); st.add_vertex(b0); st.add_vertex(b1)
-	st.generate_normals()
-	return st.commit()
-
-
 func _build_grass(root: Node3D) -> void:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = seed_value
@@ -185,7 +159,7 @@ func _build_grass(root: Node3D) -> void:
 		mats.append(m)
 	var meshes: Array[ArrayMesh] = []
 	for i in 6:
-		meshes.append(_blade_mesh(rng.randf_range(18, 29), rng.randf_range(1.1, 1.7), rng.randf_range(0.05, 0.22)))
+		meshes.append(GrassMeshes.blade(rng.randf_range(18, 29), rng.randf_range(1.1, 1.7), rng.randf_range(0.05, 0.22), 8))
 
 	var placed := 0
 	var attempts := 0

@@ -6,7 +6,9 @@ Third-person 3D game in Godot 4.7. Amodu, shrunk to 5 mm, explores his own backy
 - Production plan: `docs/PLAN.md`
 
 ## Running
-Open this folder in Godot 4.7 and press Play. The main scene is the movement playground, `world/playground/playground.tscn`.
+Open this folder in Godot 4.7 and press Play. The main scene is the Level 1 graybox, `world/lawn/lawn.tscn`; the movement test course is `world/playground/playground.tscn`.
+
+Graybox keys: 1–5 jump to viewpoints V1–V5, 0 back to the start, R respawn at the last checkpoint, T restart the route timer, L toggle signs and labels.
 
 | Action | Keyboard / mouse | Gamepad |
 |---|---|---|
@@ -17,12 +19,19 @@ Open this folder in Godot 4.7 and press Play. The main scene is the movement pla
 | Crawl (toggle) / let go of a wall | C | B / Circle |
 | Climb | Move into a climbable surface | |
 
+## Level data
+`world/lawn/layout.json` is the single source of truth for Level 1. After editing it:
+```bash
+python3 tools/lawn_layout.py check && python3 tools/lawn_layout.py bake && python3 tools/lawn_layout.py render
+```
+`check` proves gating and routes, `bake` regenerates the terrain/grass grids the Godot builder reads, `render` redraws `docs/lawn_map.svg`. In the editor, the Graybox node's **Rebuild graybox** button regenerates the level.
+
 ## Tests
 ```bash
-python3 tools/lawn_layout.py check
+/Applications/Godot.app/Contents/MacOS/Godot --headless --path . --fixed-fps 60 -s tests/lawn_graybox_test.gd
 /Applications/Godot.app/Contents/MacOS/Godot --headless --path . --fixed-fps 60 -s tests/player_movement_test.gd
 ```
-`tests/visual_tour.gd` (run without `--headless`, pass `-- --out=<dir>`) saves screenshots of each movement mechanic.
+`tests/lawn_tour.gd` and `tests/visual_tour.gd` (run without `--headless`, pass `-- --out=<dir>`) save screenshots of the level and of each movement mechanic.
 
 The player's animations are built from the Meshy clips by `tools/build_explorer_anims.gd` into `player/explorer/amodu_animations.res`; re-run it after changing clips.
 

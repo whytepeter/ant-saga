@@ -17,6 +17,9 @@ extends Node3D
 @export var open_arm := 5.8
 @export var probe_radius := 10.0
 @export var follow_sharpness := 16.0
+## What the openness probe counts as "closed in". Includes grass, which the
+## spring arm itself ignores (blades near the camera dissolve instead).
+@export_flags_3d_physics var probe_mask := 1 | 4 | 16
 
 var yaw := 0.0
 var pitch := deg_to_rad(-12.0)
@@ -46,6 +49,14 @@ func _ready() -> void:
 ## Basis with only the camera's yaw, for camera-relative movement input.
 func flat_basis() -> Basis:
 	return Basis(Vector3.UP, yaw)
+
+
+## Jumps to the target with no smoothing (after a teleport).
+func snap() -> void:
+	_current_height = _height_target
+	global_position = _target.global_position + Vector3.UP * _current_height
+	_apply_rotation()
+	_probe_timer = 0.0
 
 
 func set_crouched(crouched: bool) -> void:
@@ -98,6 +109,6 @@ func _openness() -> float:
 	for i in 8:
 		var a := TAU * i / 8.0
 		var to := origin + Vector3(cos(a), 0.0, sin(a)) * probe_radius
-		var hit := space.intersect_ray(PhysicsRayQueryParameters3D.create(origin, to, _arm.collision_mask, exclude))
+		var hit := space.intersect_ray(PhysicsRayQueryParameters3D.create(origin, to, probe_mask, exclude))
 		total += (origin.distance_to(hit.position) if not hit.is_empty() else probe_radius) / probe_radius
 	return total / 8.0

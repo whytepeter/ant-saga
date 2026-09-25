@@ -100,7 +100,7 @@ The south is sealed by a continuous barrier: the **Great Root** (west), a **tuss
 | 8 | Oak Rootlands | −170, 245 | Stealth; spider ambush | Acorn boulders; oak leaves that crunch and give you away |
 | 9 | Spider's Edge | −295, 300 | Wolf Spider boss | Damp corner where the root dives under the edging. Silk-lined burrow, trip lines. |
 
-**Route A** (wake → Colony Gate) is 677 m, about 2.5 min jogging. **Route B** (Patrol Gate → Spider's Edge) is 886 m, about 3.3 min. Both are straight-line lengths; real play time is set by encounters and story.
+**Route A** (wake → Colony Gate) is 684 m and **Route B** (Patrol Gate → Spider's Edge) is 857 m. The graybox autopilot jogs them in 2:30 and 3:07. Both are straight-line lengths; real play time is set by encounters and story.
 
 ### Key landmarks
 - **Amodu's backpack** (115, −290): 151 × 54 m base, 150 m tall. Zipper climb on the south face; its summit (V2) overlooks the whole level.
@@ -108,7 +108,7 @@ The south is sealed by a continuous barrier: the **Great Root** (west), a **tuss
 - **Colony Gate** (40, 112): a hair tie arched over the crack, with a quarter as its plaza.
 - **Patrol Gate** (150, 10): the colony's side exit under a pebble.
 - **Leaking coupling** (225, −60): brass, 11 m, jet spraying up and west.
-- **Popsicle stick** (140, 190): 41 m, with a faded printed joke readable underfoot.
+- **Popsicle stick** (140, 190): 41 m across the Rut's 32 m neck, ends bedded in the mud banks, with a faded printed joke readable underfoot.
 
 ## 6. Story mapping (PDF Chapter 1)
 
@@ -187,7 +187,7 @@ From each viewpoint the listed landmarks must be visible in the graybox:
 | Viewpoint | Position | Must see |
 |---|---|---|
 | V1 Spawn | (40, −205), eye 1.6 m | Dandelion tower, Big Oak, sunflowers |
-| V2 Backpack summit | (115, −290), 150 m up | The Rut, coupling mist, sunflowers, compost steam, Big Oak |
+| V2 Backpack summit | (115, −266), 150 m up, south edge of the top | The Rut, coupling mist, sunflowers, compost steam, Big Oak |
 | V3 Capstone lookout | (−122, 40), 25 m up | Colony Gate, pot ring, coupling, backpack |
 | V4 Mid-bridge | (140, 190), 2.5 m | Termite camp, sunflowers, backpack |
 | V5 Great Root crest | (−200, 150), 13 m up | Spider burrow, Big Oak, acorn |
