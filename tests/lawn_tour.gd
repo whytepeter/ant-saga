@@ -24,6 +24,12 @@ func _run() -> void:
 	root.add_child(level)
 	player = level.get_node("Player")
 	layout = level.get("layout")
+	await _frames(200)
+	player.camera_rig.yaw += 2.6  # look back at Amodu and the two ants
+	player.camera_rig._apply_rotation()
+	await _frames(30)
+	await _shot("story_start_with_ants")
+	await _carry_shot()
 	(level.get_node("HUD") as CanvasLayer).visible = false
 	await _frames(60)
 
@@ -58,6 +64,22 @@ func _run() -> void:
 			await _shot("v2b_backpack_summit_east")
 	print("tour saved to %s" % ProjectSettings.globalize_path(out_dir))
 	quit()
+
+
+## Lifts the first puff-puff crumb by the spawn and frames it overhead.
+func _carry_shot() -> void:
+	var crumb: Array = layout.items("heavables")[0]["pos"]
+	var at := layout.ground_point(crumb)
+	player.teleport(at + Vector3(0, 0.4, -2.2), PI)
+	await _frames(20)
+	Input.action_press("interact")
+	await _frames(2)
+	Input.action_release("interact")
+	player.camera_rig.yaw = PI + 2.2
+	player.camera_rig.pitch = deg_to_rad(-5.0)
+	player.camera_rig._apply_rotation()
+	await _frames(40)
+	await _shot("heave_carry_crumb")
 
 
 func _frames(n: int) -> void:

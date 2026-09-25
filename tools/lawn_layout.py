@@ -668,6 +668,8 @@ def bake_features(layout):
         feats.append(Feature([lm["pos"]], max(w, d) / 2 + 3.0, 3.0))
     for sd in layout.get("standins", []):
         feats.append(Feature([sd["pos"]], 4.0, 2.0))
+    for hv in layout.get("heavables", []):
+        feats.append(Feature([hv["pos"]], hv["size"] / 2 + 2.5, 2.0))
     return feats
 
 

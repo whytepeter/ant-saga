@@ -20,6 +20,8 @@ Graybox keys: 1–5 jump to viewpoints V1–V5, 0 back to the start, R respawn a
 | Jump / push off a wall | Space | A / Cross |
 | Crawl (toggle) / let go of a wall | C | B / Circle |
 | Climb | Move into a climbable surface | |
+| Lift / put down (hold to push a boulder) | E | X / Square |
+| Throw what you carry | F or right mouse | Right trigger |
 
 ## Level data
 `world/lawn/layout.json` is the single source of truth for Level 1. After editing it:

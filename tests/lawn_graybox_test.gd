@@ -34,6 +34,7 @@ func _run() -> void:
 	await _test_viewpoints()
 	await _test_rut_respawns()
 	await _test_route("route_a", 0.0)
+	_test_companions_and_banter()
 	await _test_route("route_b", 9.0)
 
 	print("\n%s" % ("PASS" if failures == 0 else "%d failure(s)" % failures))
@@ -192,3 +193,16 @@ func _test_route(route_id: String, start_offset: float) -> void:
 	else:
 		_check("autopilot %s" % route_id, false, outcome)
 	await _frames(10)
+
+
+func _test_companions_and_banter() -> void:
+	var p := player.global_position
+	var gaps: Array[String] = []
+	var worst := 0.0
+	for ant: Companion in level.get("companions"):
+		var d := Vector2(ant.global_position.x - p.x, ant.global_position.z - p.z).length()
+		worst = maxf(worst, d)
+		gaps.append("%s %.1f m" % [ant.display_name, d])
+	_check("companions kept up on route A", worst < 15.0, ", ".join(gaps))
+	var banter: Banter = level.get_node("Banter")
+	_check("ants talked on the way", banter.lines_shown >= 8, "%d lines shown" % banter.lines_shown)

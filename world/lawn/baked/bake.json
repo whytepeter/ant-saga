@@ -4,7 +4,7 @@
   "origin": -360,
   "height_min": -4.0,
   "height_max": 1.03,
-  "estimated_blades": 41102,
+  "estimated_blades": 41091,
   "surface_cells": {
     "lawn": 100149,
     "bare_soil": 2820,

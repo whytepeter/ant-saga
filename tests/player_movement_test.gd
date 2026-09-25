@@ -30,6 +30,8 @@ func _run() -> void:
 	await _test_step(2.0, false)
 	await _test_crawl()
 	await _test_climb()
+	await _test_lift_and_throw()
+	await _test_push()
 
 	print("\n%s" % ("PASS" if failures == 0 else "%d failure(s)" % failures))
 	quit(failures)
@@ -47,7 +49,7 @@ func _seconds(s: float) -> int:
 
 
 func _release_all() -> void:
-	for a in ["move_forward", "move_back", "move_left", "move_right", "sprint", "jump", "crawl"]:
+	for a in ["move_forward", "move_back", "move_left", "move_right", "sprint", "jump", "crawl", "interact", "throw"]:
 		Input.action_release(a)
 
 
@@ -193,3 +195,35 @@ func _test_climb() -> void:
 	var p := player.global_position
 	_check("climb and mantle onto top", topped and absf(p.y - top) < 0.15 and p.x < face,
 		"pos (%.2f, %.2f), state=%s" % [p.x, p.y, Player.State.keys()[player.state]])
+
+
+func _test_lift_and_throw() -> void:
+	var pebble: Heavable = root.get_node("Playground/Generated/LiftPebble")
+	var at: Vector3 = PlaygroundScript.LIFT_PEBBLE
+	player.teleport(Vector3(at.x, 0.1, at.z - 2.6), PI)  # facing +Z, toward the pebble
+	await _frames(20)
+	await _tap("interact")
+	await _frames(10)
+	_check("lift a 2 m pebble", player.carried == pebble, "carried=%s" % (player.carried.display_name if player.carried else "nothing"))
+	var from := player.global_position
+	await _tap("throw")
+	for i in _seconds(4.0):
+		await physics_frame
+		if i > 30 and pebble.linear_velocity.length() < 0.3:
+			break
+	var flew := Vector2(pebble.global_position.x - from.x, pebble.global_position.z - from.z).length()
+	_check("throw it", player.carried == null and flew > 8.0, "landed %.1f m away" % flew)
+
+
+func _test_push() -> void:
+	var boulder: Heavable = root.get_node("Playground/Generated/PushBoulder")
+	var start := boulder.global_position
+	player.teleport(Vector3(start.x, 0.1, start.z - 4.0), PI)
+	await _frames(20)
+	Input.action_press("interact")
+	Input.action_press("move_forward")
+	await _frames(_seconds(3.0))
+	_release_all()
+	Input.action_release("interact")
+	var moved := boulder.global_position.z - start.z
+	_check("push a 4.6 m boulder", moved > 2.5 and player.carried == null, "moved %.1f m" % moved)

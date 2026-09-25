@@ -1,7 +1,7 @@
 extends Node3D
-## Level 1 runtime: places Amodu at the spawn, keeps the last checkpoint,
-## respawns him after the Rut or a fall out of the world, and drives the
-## graybox HUD.
+## Level 1 runtime: places Amodu at the spawn with Opigo and Opumie, puts out
+## the props he can heave, keeps the last checkpoint, respawns him after the Rut
+## or a fall out of the world, triggers companion banter, and drives the HUD.
 ##
 ## Playtest keys: 1–5 viewpoints V1–V5 · 0 start · R respawn · T restart the
 ## route timer · L toggle signs and labels.
@@ -12,6 +12,7 @@ signal respawned(reason: String)
 const CHECKPOINT_RADIUS := 25.0
 const FALL_LIMIT := -40.0
 const DROWN_DEPTH := 0.6
+const IDLE_BANTER_AFTER := 25.0
 
 var layout: LawnLayout
 var checkpoint := {}
@@ -20,11 +21,16 @@ var route_time := 0.0
 var _toast_left := 0.0
 var _hud_refresh := 0.0
 var _gate_announced := false
+var _area_id := ""
+var _idle_time := 0.0
+var _banter_poll := 0.0
+var companions: Array[Companion] = []
 
 @onready var player: Player = $Player
 @onready var builder: Node3D = $Graybox
 @onready var info: Label = $HUD/Info
 @onready var toast: Label = $HUD/Toast
+@onready var banter: Banter = $Banter
 
 
 func _ready() -> void:
@@ -32,6 +38,35 @@ func _ready() -> void:
 	var spawn: Dictionary = layout.data["spawn"]
 	checkpoint = _checkpoint("Start", spawn["pos"], _yaw_toward(spawn["pos"], spawn["look_at"]))
 	_place(checkpoint)
+	_spawn_props()
+	_spawn_companions()
+	player.heaved.connect(func(action: String, _prop: Heavable) -> void: banter.fire("heave", action, true))
+	respawned.connect(func(reason: String) -> void: banter.fire("respawn", reason, true))
+	get_tree().create_timer(1.5).timeout.connect(func() -> void: banter.fire("start"))
+
+
+func _spawn_props() -> void:
+	var holder := Node3D.new()
+	holder.name = "Props"
+	add_child(holder)
+	for hv: Dictionary in layout.items("heavables"):
+		var prop := Heavable.make(String(hv["kind"]), float(hv["size"]), String(hv["name"]))
+		holder.add_child(prop)
+		prop.global_position = layout.ground_point(hv["pos"], float(hv["size"]) * 0.5 + 0.2)
+
+
+func _spawn_companions() -> void:
+	var cast := [["Opigo", 3.5, 0.8, Color(1.0, 0.55, 0.45)], ["Opumie", 6.0, -0.8, Color(1.0, 0.82, 0.4)]]
+	for c: Array in cast:
+		var ant := Companion.new()
+		ant.name = String(c[0])
+		ant.display_name = String(c[0])
+		ant.trail_gap = float(c[1])
+		ant.side = float(c[2])
+		ant.label_color = c[3]
+		add_child(ant)
+		ant.follow(player)
+		companions.append(ant)
 
 
 func _physics_process(delta: float) -> void:
@@ -51,6 +86,8 @@ func _physics_process(delta: float) -> void:
 	if near_gate and not _gate_announced:
 		show_toast("Colony Gate · the colony interior is a later level")
 	_gate_announced = near_gate
+
+	_poll_banter(delta, p)
 
 	if p.y < FALL_LIMIT:
 		respawn("Fell out of the world")
@@ -91,6 +128,30 @@ func _unhandled_input(event: InputEvent) -> void:
 			for child in builder.get_node("Generated/" + group).get_children():
 				if child is Label3D:
 					(child as Label3D).visible = not (child as Label3D).visible
+
+
+## Area entries, landmark proximity and standing around all prompt the ants.
+func _poll_banter(delta: float, p: Vector3) -> void:
+	var still := Vector2(player.velocity.x, player.velocity.z).length() < 0.1
+	_idle_time = _idle_time + delta if still else 0.0
+	if _idle_time > IDLE_BANTER_AFTER:
+		_idle_time = 0.0
+		banter.fire("idle")
+	_banter_poll -= delta
+	if _banter_poll > 0.0:
+		return
+	_banter_poll = 0.25
+	var area := layout.area_at(p.x, p.z)
+	var id := String(area.get("id", ""))
+	_area_id = id
+	if id != "":
+		banter.fire("area", id)
+	for near: Array in banter.pending_near_targets():
+		var lm := layout.item("landmarks", String(near[0]))
+		if lm.is_empty():
+			continue
+		if Vector2(p.x, p.z).distance_to(LawnLayout.xz(lm["pos"])) < float(near[1]) + maxf(float(lm["size"][0]), float(lm["size"][2])) * 0.5:
+			banter.fire("near", String(near[0]))
 
 
 func respawn(reason: String) -> void:

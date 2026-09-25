@@ -1,0 +1,114 @@
+{
+  "speakers": {"Amodu": "#ffb36b", "Opigo": "#ff8a73", "Opumie": "#ffd166"},
+  "conversations": [
+    {"id": "start", "trigger": "start", "lines": [
+      ["Opigo", "So. This is the chosen one."],
+      ["Opumie", "The prophecy said a saviour from the two-legged world. It never said which two legs."],
+      ["Amodu", "I shrank. I actually shrank. Mummy is going to kill me."],
+      ["Opigo", "Your mother is the least of your problems, small human. Follow us, and stay off open ground."]]},
+
+    {"id": "bag", "trigger": "near", "target": "backpack", "radius": 70, "lines": [
+      ["Opumie", "What mountain is that? Blue, with a silver road up the front."],
+      ["Amodu", "That's my school bag."],
+      ["Opigo", "You carry a mountain to school? Every day?"],
+      ["Amodu", "...Honestly, it does feel like it."]]},
+
+    {"id": "forest", "trigger": "area", "target": "blade_forest", "lines": [
+      ["Opigo", "Keep close in the tall grass. Things live in here that have never seen daylight."],
+      ["Opumie", "He means earwigs. He is scared of earwigs."],
+      ["Opigo", "I am cautious of earwigs."]]},
+
+    {"id": "tridax", "trigger": "near", "target": "tridax_bloom", "radius": 25, "lines": [
+      ["Amodu", "Mummy calls these coat buttons. I used to pull them for fun."],
+      ["Opumie", "And now one is taller than your whole house was yesterday. Life is funny."]]},
+
+    {"id": "dewdrop", "trigger": "area", "target": "dewdrop_garden", "lines": [
+      ["Opumie", "Careful here. The shy plants fold up when you touch them, and whatever is standing on them comes down."],
+      ["Opigo", "Like certain strategists when you ask them to fight."],
+      ["Opumie", "I fold strategically."]]},
+
+    {"id": "marble", "trigger": "near", "target": "marble", "radius": 20, "lines": [
+      ["Amodu", "My marble! I lost this last term. I searched everywhere."],
+      ["Opigo", "Your people lose a great many things."],
+      ["Opumie", "Half the colony is furnished with them."]]},
+
+    {"id": "capstone", "trigger": "area", "target": "capstone_shelter", "lines": [
+      ["Opigo", "Behold, the Red Pavilion. Raised by our ancestors in the Year of the Great Drought."],
+      ["Amodu", "That's a mineral bottle cap."],
+      ["Opigo", "...Raised by our ancestors."]]},
+
+    {"id": "bead", "trigger": "near", "target": "coral_bead_shrine", "radius": 14, "lines": [
+      ["Opumie", "The Shrine of the Red Stone. Brides touch it for luck."],
+      ["Amodu", "Aunty Bisi lost that at my cousin's wedding. She looked for it for a whole week."],
+      ["Opumie", "Then Aunty Bisi has blessed a thousand marriages."]]},
+
+    {"id": "bare_patch", "trigger": "area", "target": "bare_patch", "lines": [
+      ["Opigo", "Pill bugs. Big ones. Stay behind me, chosen one."],
+      ["Amodu", "They're just woodlice. We used to roll them into balls."],
+      ["Opumie", "Today they will roll you into a ball. Pick up a stone."]]},
+
+    {"id": "coin", "trigger": "near", "target": "naira_coin_plaza", "radius": 12, "lines": [
+      ["Opumie", "The Brass Moon. Our queen was crowned on it."],
+      ["Amodu", "That's one naira."],
+      ["Opigo", "One naira. Is that a great fortune in your world?"],
+      ["Amodu", "...Not anymore."]]},
+
+    {"id": "gate", "trigger": "near", "target": "colony_gate", "radius": 10, "lines": [
+      ["Opumie", "Home. Try not to trip in front of the Queen."],
+      ["Opigo", "And let them get used to you slowly. Don't smile too suddenly."]]},
+
+    {"id": "first_lift", "trigger": "heave", "target": "lift", "lines": [
+      ["Opigo", "Did he... did he just lift that? Over his head?"],
+      ["Opumie", "Stand tall where others crawl. I told you. I have always told you."],
+      ["Opigo", "You said, and I quote, 'we are doomed'."]]},
+
+    {"id": "first_throw", "trigger": "heave", "target": "throw", "lines": [
+      ["Opumie", "Remind me never to annoy him."],
+      ["Amodu", "Sorry! I didn't know it would go that far."]]},
+
+    {"id": "first_push", "trigger": "heave", "target": "push", "lines": [
+      ["Opigo", "A boulder. He is moving a boulder. With his hands."],
+      ["Amodu", "It's just a small stone."],
+      ["Opumie", "Everything is small to you, chosen one. That is rather the point."]]},
+
+    {"id": "hose", "trigger": "area", "target": "hose_run", "lines": [
+      ["Amodu", "Daddy has been looking for this leak for two weeks."],
+      ["Opumie", "Your father's leak is our water station. Please don't tell him."]]},
+
+    {"id": "sachet", "trigger": "near", "target": "water_sachet", "radius": 40, "lines": [
+      ["Opigo", "The Crystal Tent. Pilgrims rest there on the long road."],
+      ["Amodu", "It's a pure-water sachet. Somebody threw it away."],
+      ["Opumie", "Pure? There is a snail living in it."]]},
+
+    {"id": "bridge", "trigger": "area", "target": "lolly_bridge", "lines": [
+      ["Opigo", "The Wooden Road. Don't look down, and don't fall in."],
+      ["Amodu", "I dropped that stick yesterday."],
+      ["Opumie", "Then you built us a bridge. The prophecy never mentioned engineering."]]},
+
+    {"id": "rootlands", "trigger": "area", "target": "mango_rootlands", "lines": [
+      ["Opumie", "Quiet now. The leaves here crack like bones, and something always listens."],
+      ["Opigo", "Walk where I walk."]]},
+
+    {"id": "mango", "trigger": "near", "target": "fallen_mango", "radius": 45, "lines": [
+      ["Amodu", "It's a mango. A whole mango. I could eat for a year."],
+      ["Opigo", "The flies got there first. They always do."]]},
+
+    {"id": "spider", "trigger": "area", "target": "spiders_edge", "lines": [
+      ["Opigo", "This is where the scouts stop coming back."],
+      ["Opumie", "Those silk lines across the path. Touch one, and it knows."],
+      ["Amodu", "Knows what?"],
+      ["Opumie", "Where dinner is."]]},
+
+    {"id": "rut", "trigger": "respawn", "target": "Swept into the Rut", "cooldown": 20, "pool": [
+      [["Opigo", "The chosen one cannot swim. Marvellous."]],
+      [["Opumie", "Water at our size holds on like glue. Stay on the stick next time."]]]},
+
+    {"id": "fell", "trigger": "respawn", "target": "Fell out of the world", "cooldown": 20, "pool": [
+      [["Opumie", "Let us all pretend that didn't happen."]]]},
+
+    {"id": "idle", "trigger": "idle", "cooldown": 60, "pool": [
+      [["Opumie", "Are we waiting for rain, or...?"]],
+      [["Opigo", "A chosen one who stands still is just a one."]],
+      [["Amodu", "I wonder if Mummy has noticed I'm gone."], ["Opumie", "She will. Mothers always do."]]]}
+  ]
+}

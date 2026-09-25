@@ -37,6 +37,12 @@ Each phase ends with a **gate**, a check that must pass before the next phase st
 
 **Gate:** route timing ✅ (2.5 min and 3.1 min at a jog). Sight lines from V1–V5 ✅ in the screenshots. Route feel: your walkthrough.
 
+## Phase 3b: Heave and companions (prototype) ✅
+- **Heave** (`world/props/heavable.gd`, `player/player.gd`): Amodu keeps human strength at 5 mm (square-cube law). Props up to 2.6 m he lifts overhead and throws along the camera aim; up to 5.5 m he pushes; bigger ones don't budge. 13 props in the level (puff-puff crumbs, maize grains, stones, boulders), tutorial set by the spawn and throwing stones in the Bare Patch.
+- **Companions** (`characters/companion.gd`): Opigo and Opumie follow the trail Amodu actually walked, catch up if left behind, wait while he climbs. The ant scout shares his Mixamo rig, so it runs on his animation library.
+- **Banter** (`world/banter.gd`, `world/lawn/banter.json`): data-driven conversations on level start, area entry, landmark proximity, first lift/throw/push, respawns and idling; subtitles with speaker colours; conversations wait for a pause instead of piling up.
+- Tests: lift, throw (17 m) and push (4.5 m) in the playground; companions within 8 m after route A; banter fires along the route.
+
 ## Phase 4: Look test on one 50 m corner (go/no-go)
 - Blade Forest + Dewdrop Garden at final quality: instanced grass with wind and light glowing through the blades, simpler versions at distance, a dew-lens shader, volumetric fog, pollen, god rays, an HDRI sky, tilt-shift focus on far objects.
 - Performance: 60 fps at 1080p on the M2 Pro.
@@ -68,6 +74,8 @@ Time-of-day cycle, falling droplets and acorns, hose mist, ant traffic, ambient 
 
 ## Deferred (come back to)
 - Crawl and climb animation polish; a real jump clip; a sprint clip; the stand-up clip for the wake-up scene.
+- Lift, carry, throw and push clips (Mixamo has all four for this rig); companion idle chatter animations.
+- Voiced banter (Cartesia voices are available; needs your go-ahead, it uses your credits).
 - Root-tunnel shortcut mechanic: opening it from the south side (mouths are marked, the tunnel is sealed).
 - Grass render cost: 53 fps at ground level in the graybox (3.5 M triangles, mostly grass shadows in every cascade). Phase 4's grass work addresses it.
 - The Oak's canopy casts no shade yet (it sits beyond the shadow distance); needed for noon lighting in Phase 7.

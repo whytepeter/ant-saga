@@ -8,6 +8,7 @@ extends Node3D
 ##   East  (+X)  crawl ledge: slab with 0.9 m clearance, x 16..24
 ##   West  (-X)  climb wall (climbable layer), face at x = -23, 8 m tall
 ##   South (+Z)  scale props: bottle cap, pebbles, popsicle stick
+##   Clearing    heave props: a liftable pebble at (6, 9), a pushable boulder at (-7, 10)
 
 const WORLD_LAYER := 1
 const CLIMBABLE_LAYER := 1 << 2
@@ -19,6 +20,8 @@ const LEDGE_X := Vector2(16.0, 24.0)
 const LEDGE_CLEARANCE := 0.9
 const WALL_FACE_X := -23.0
 const WALL_HEIGHT := 8.0
+const LIFT_PEBBLE := Vector3(6.0, 0.0, 9.0)
+const PUSH_BOULDER := Vector3(-7.0, 0.0, 10.0)
 
 @export var blade_count := 700
 @export var seed_value := 7
@@ -35,6 +38,7 @@ func _ready() -> void:
 	_build_ledge(root)
 	_build_wall(root)
 	_build_scale_props(root)
+	_build_heave_props(root)
 	_build_grass(root)
 	_build_skyline(root)
 
@@ -145,6 +149,17 @@ func _build_scale_props(root: Node3D) -> void:
 		root.add_child(body)
 	# popsicle stick, 114 mm -> 41 m, lying on the soil
 	_box(root, Vector3(4, 0.35, 34), Vector3(41, 0.7, 3.6), Color(0.89, 0.78, 0.55), WORLD_LAYER, 0.3)
+
+
+func _build_heave_props(root: Node3D) -> void:
+	var pebble := Heavable.make("pebble", 2.0, "Pebble")
+	pebble.name = "LiftPebble"
+	pebble.position = LIFT_PEBBLE + Vector3.UP * 1.2
+	root.add_child(pebble)
+	var boulder := Heavable.make("pebble", 4.6, "Boulder")
+	boulder.name = "PushBoulder"
+	boulder.position = PUSH_BOULDER + Vector3.UP * 2.5
+	root.add_child(boulder)
 
 
 func _build_grass(root: Node3D) -> void:

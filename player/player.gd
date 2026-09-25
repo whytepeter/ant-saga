@@ -6,8 +6,14 @@ extends CharacterBody3D
 ## overhangs) and CLIMB (any surface on the "climbable" physics layer). Animation
 ## playback follows ground speed using the foot speeds that
 ## tools/build_explorer_anims.gd measured, so feet do not slide.
+##
+## Heave: Amodu keeps human strength at 5 mm (see Heavable). Interact lifts a
+## small prop overhead or, held, pushes a boulder; throw hurls a carried prop
+## along the camera's aim.
 
 signal state_changed(new_state: State)
+signal hint_changed(text: String)
+signal heaved(action: String, prop: Heavable)
 
 enum State { GROUND, AIR, CRAWL, CLIMB }
 
@@ -36,6 +42,14 @@ const CRAWL_HEIGHT := 0.6
 @export var jump_buffer_time := 0.12
 @export var crawl_anim_max_rate := 2.2
 
+@export_group("Heave")
+@export var reach := 1.4
+@export var throw_speed := 16.0
+@export var throw_lift := 6.0
+@export var carry_speed_factor := 0.75
+@export var carry_jump_factor := 0.7
+@export var push_speed := 1.4
+
 var state := State.GROUND
 ## Set false to drive the body from scripts (cutscenes, tests of other systems).
 var input_enabled := true
@@ -47,6 +61,11 @@ var _climb_normal := Vector3.ZERO
 var _climb_cooldown := 0.0
 var _mantling := false
 var _playback: AnimationNodeStateMachinePlayback
+## The prop held overhead, if any.
+var carried: Heavable
+var _pushing: Heavable
+var _push_active := false
+var _hint := ""
 
 @onready var model: Node3D = $Model
 @onready var anim_tree: AnimationTree = $AnimationTree
@@ -56,6 +75,7 @@ var _playback: AnimationNodeStateMachinePlayback
 @onready var wall_ray: RayCast3D = $Model/WallRay
 @onready var ledge_ray: RayCast3D = $Model/LedgeRay
 @onready var camera_rig: CameraRig = $CameraRig
+@onready var hint_label: Label = $Hud/Hint
 
 
 func _ready() -> void:
@@ -78,11 +98,13 @@ func _physics_process(delta: float) -> void:
 	if input_enabled and Input.is_action_just_pressed("jump"):
 		_jump_buffer_left = jump_buffer_time
 
+	_process_heave_input()
 	match state:
 		State.GROUND, State.AIR, State.CRAWL:
 			_process_walking(delta)
 		State.CLIMB:
 			_process_climbing(delta)
+	_update_carried()
 
 
 # ── walking, jumping, crawling ────────────────────────────────────────────────
@@ -102,6 +124,10 @@ func _process_walking(delta: float) -> void:
 	if input.length() > 0.05:
 		if state == State.CRAWL:
 			target_speed = crawl_speed
+		elif _pushing != null:
+			target_speed = push_speed
+		elif carried != null:
+			target_speed = jog_speed * carry_speed_factor if input.length() >= 0.6 else walk_speed
 		elif input_enabled and Input.is_action_pressed("sprint"):
 			target_speed = sprint_speed
 		elif input.length() < 0.6:
@@ -125,12 +151,13 @@ func _process_walking(delta: float) -> void:
 		_coyote_left = maxf(_coyote_left - delta, 0.0)
 		velocity.y = maxf(velocity.y - gravity * delta, -max_fall_speed)
 
-	if state != State.CRAWL and _jump_buffer_left > 0.0 and _coyote_left > 0.0:
-		velocity.y = sqrt(2.0 * gravity * jump_height)
+	if state != State.CRAWL and _pushing == null and _jump_buffer_left > 0.0 and _coyote_left > 0.0:
+		var height := jump_height * (carry_jump_factor if carried != null else 1.0)
+		velocity.y = sqrt(2.0 * gravity * height)
 		_jump_buffer_left = 0.0
 		_coyote_left = 0.0
 
-	if input_enabled and Input.is_action_just_pressed("crawl") and is_on_floor():
+	if input_enabled and carried == null and Input.is_action_just_pressed("crawl") and is_on_floor():
 		if state == State.CRAWL:
 			if _has_headroom():
 				_set_state(State.GROUND)
@@ -141,6 +168,7 @@ func _process_walking(delta: float) -> void:
 		_face(horizontal, delta)
 
 	move_and_slide()
+	_apply_push()
 
 	if state != State.CRAWL:
 		_set_state(State.GROUND if is_on_floor() else State.AIR)
@@ -161,7 +189,7 @@ func _face(direction: Vector3, delta: float) -> void:
 # ── climbing ──────────────────────────────────────────────────────────────────
 
 func _try_start_climb(move_dir: Vector3) -> void:
-	if state == State.CRAWL or _climb_cooldown > 0.0 or move_dir.length() < 0.3:
+	if state == State.CRAWL or carried != null or _climb_cooldown > 0.0 or move_dir.length() < 0.3:
 		return
 	wall_ray.force_raycast_update()
 	if not _is_climbable_hit(wall_ray):
@@ -240,6 +268,132 @@ func _mantle(up: Vector3) -> void:
 		velocity = Vector3.ZERO
 		_climb_cooldown = 0.35
 		_set_state(State.GROUND))
+
+
+# ── heave: lift, carry, throw, push ──────────────────────────────────────────
+
+func _process_heave_input() -> void:
+	if not input_enabled:
+		return
+	if carried != null:
+		if Input.is_action_just_pressed("throw"):
+			throw_carried()
+		elif Input.is_action_just_pressed("interact"):
+			put_down()
+		_set_hint("E · Put down    F · Throw")
+		return
+	var prop := prop_in_reach()
+	_pushing = null
+	if prop == null or state != State.GROUND:
+		_set_hint("")
+		return
+	match prop.weight:
+		Heavable.Weight.CARRY:
+			_set_hint("E · Lift %s" % prop.display_name.to_lower())
+			if Input.is_action_just_pressed("interact"):
+				lift(prop)
+		Heavable.Weight.PUSH:
+			_set_hint("Hold E · Push %s" % prop.display_name.to_lower())
+			if Input.is_action_pressed("interact"):
+				_pushing = prop
+		_:
+			_set_hint("")
+
+
+## The nearest movable prop in front of Amodu, within arm's reach.
+func prop_in_reach() -> Heavable:
+	var facing := Vector3(sin(model.rotation.y), 0.0, cos(model.rotation.y))
+	var query := PhysicsShapeQueryParameters3D.new()
+	var sphere := SphereShape3D.new()
+	sphere.radius = reach
+	query.shape = sphere
+	query.transform = Transform3D(Basis(), global_position + facing * (reach * 0.8) + Vector3.UP * 0.9)
+	query.collision_mask = Heavable.PROPS_LAYER
+	var best: Heavable = null
+	var best_d := INF
+	for hit in get_world_3d().direct_space_state.intersect_shape(query, 8):
+		var prop := hit["collider"] as Heavable
+		if prop == null or prop == carried:
+			continue
+		var d := prop.global_position.distance_to(global_position)
+		if d < best_d:
+			best_d = d
+			best = prop
+	return best
+
+
+func lift(prop: Heavable) -> void:
+	carried = prop
+	prop.freeze_mode = RigidBody3D.FREEZE_MODE_KINEMATIC
+	prop.freeze = true
+	add_collision_exception_with(prop)
+	prop.add_collision_exception_with(self)
+	heaved.emit("lift", prop)
+
+
+func put_down() -> void:
+	var prop := carried
+	var facing := Vector3(sin(model.rotation.y), 0.0, cos(model.rotation.y))
+	_release(prop, global_position + facing * (1.2 + prop.half_extent()) + Vector3.UP * (prop.half_extent() + 0.3))
+	prop.linear_velocity = Vector3(velocity.x, 0.0, velocity.z)
+	heaved.emit("put_down", prop)
+
+
+## Throws the carried prop along the camera's flat aim.
+func throw_carried() -> void:
+	var prop := carried
+	var aim := camera_rig.flat_basis() * Vector3.FORWARD
+	model.rotation.y = atan2(aim.x, aim.z)
+	_release(prop, prop.global_position + aim * 0.6)
+	prop.linear_velocity = aim * throw_speed + Vector3.UP * throw_lift + Vector3(velocity.x, 0.0, velocity.z)
+	prop.angular_velocity = Vector3(randf_range(-4, 4), randf_range(-4, 4), randf_range(-4, 4))
+	heaved.emit("throw", prop)
+
+
+func _release(prop: Heavable, at: Vector3) -> void:
+	carried = null
+	prop.global_position = at
+	prop.freeze = false
+	# let it clear Amodu before the two collide again
+	get_tree().create_timer(0.4).timeout.connect(func() -> void:
+		if is_instance_valid(prop):
+			remove_collision_exception_with(prop)
+			prop.remove_collision_exception_with(self))
+
+
+## Holds the carried prop overhead, turning with Amodu.
+func _update_carried() -> void:
+	if carried == null:
+		return
+	carried.global_transform = Transform3D(Basis(Vector3.UP, model.rotation.y),
+		global_position + Vector3.UP * (STAND_HEIGHT + 0.25 + carried.half_extent()))
+
+
+## Drives the boulder at the same pace Amodu walks into it.
+func _apply_push() -> void:
+	if _pushing == null:
+		_push_active = false
+		return
+	var move := Vector3(velocity.x, 0.0, velocity.z)
+	var to_prop := _pushing.global_position - global_position
+	to_prop.y = 0.0
+	if move.length() < 0.2 or move.normalized().dot(to_prop.normalized()) < 0.4:
+		return
+	var v := move.normalized() * push_speed * 1.1
+	_pushing.sleeping = false
+	_pushing.linear_velocity = Vector3(v.x, _pushing.linear_velocity.y, v.z)
+	if not _push_active:
+		_push_active = true
+		heaved.emit("push", _pushing)
+
+
+func _set_hint(text: String) -> void:
+	if text == _hint:
+		return
+	_hint = text
+	hint_label.text = text
+	hint_label.visible = text != ""
+	hint_changed.emit(text)
 
 
 # ── state and animation ───────────────────────────────────────────────────────

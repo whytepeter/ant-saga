@@ -651,5 +651,86 @@
       "name": "Garden Wolf Spider",
       "pos": [-290, 298]
     }
-  ]
+  ],
+  "heavables": [
+    {
+      "kind": "crumb",
+      "size": 1.0,
+      "name": "Puff-puff crumb",
+      "pos": [55, -215]
+    },
+    {
+      "kind": "crumb",
+      "size": 1.3,
+      "name": "Puff-puff crumb",
+      "pos": [62, -199]
+    },
+    {
+      "kind": "grain",
+      "size": 2.2,
+      "name": "Maize grain",
+      "pos": [47, -226]
+    },
+    {
+      "kind": "pebble",
+      "size": 2.0,
+      "name": "Pebble",
+      "pos": [71, -212]
+    },
+    {
+      "kind": "pebble",
+      "size": 4.6,
+      "name": "Boulder",
+      "pos": [82, -230]
+    },
+    {
+      "kind": "pebble",
+      "size": 1.8,
+      "name": "Stone",
+      "pos": [-190, -95]
+    },
+    {
+      "kind": "pebble",
+      "size": 1.6,
+      "name": "Stone",
+      "pos": [-12, 92]
+    },
+    {
+      "kind": "pebble",
+      "size": 2.2,
+      "name": "Stone",
+      "pos": [28, 66]
+    },
+    {
+      "kind": "pebble",
+      "size": 1.9,
+      "name": "Stone",
+      "pos": [12, 58]
+    },
+    {
+      "kind": "pebble",
+      "size": 4.2,
+      "name": "Boulder",
+      "pos": [-35, 120]
+    },
+    {
+      "kind": "grain",
+      "size": 2.0,
+      "name": "Maize grain",
+      "pos": [196, -12]
+    },
+    {
+      "kind": "pebble",
+      "size": 2.1,
+      "name": "Stone",
+      "pos": [128, 258]
+    },
+    {
+      "kind": "pebble",
+      "size": 1.7,
+      "name": "Stone",
+      "pos": [-60, 262]
+    }
+  ],
+  "heavables_note": "Loose props Amodu can lift (<= 2.6 m) or push (<= 5.5 m); see world/props/heavable.gd."
 }
