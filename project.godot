@@ -1,0 +1,39 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="Ant Kingdom Saga: Backyard Edition"
+config/description="Level 1: The Lawn. Amodu, shrunk to 5 mm, in a backyard scaled x360."
+run/main_scene="res://world/lawn/lawn.tscn"
+config/features=PackedStringArray("4.7", "Forward Plus")
+
+[autoload]
+
+McpBridgeGame="*res://addons/mcp_bridge/mcp_bridge_game.gd"
+
+[display]
+
+window/size/viewport_width=1920
+window/size/viewport_height=1080
+window/size/window_width_override=1280
+window/size/window_height_override=720
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/mcp_bridge/plugin.cfg")
+
+[physics]
+
+3d/physics_engine="Jolt Physics"
+
+[rendering]
+
+anti_aliasing/quality/msaa_3d=2

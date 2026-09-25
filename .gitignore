@@ -1,0 +1,13 @@
+# Godot
+.godot/
+/android/
+*.translation
+
+# Raw downloads and archives (kept locally, not in git)
+/source/
+*.zip
+
+# OS / editor
+.DS_Store
+.vscode/
+*.tmp

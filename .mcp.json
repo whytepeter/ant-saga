@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "godot": {
+      "type": "stdio",
+      "command": "uv",
+      "args": [
+        "run",
+        "--directory",
+        "/Users/apple/Documents/code/godot-mcp/mcp",
+        "python",
+        "godot_mcp_server.py"
+      ],
+      "env": {}
+    }
+  }
+}
