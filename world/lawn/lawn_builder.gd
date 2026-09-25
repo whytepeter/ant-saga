@@ -15,31 +15,36 @@ const BLADE_HEIGHT := 24.0  # nominal blade mesh; instances scale 0.6–1.7
 const BLADE_WIDTH := 1.4
 
 const COLORS := {
-	"lawn_soil": Color(0.33, 0.29, 0.18), "bare_soil": Color(0.47, 0.38, 0.27), "mud": Color(0.24, 0.19, 0.14),
-	"leaf_litter": Color(0.46, 0.33, 0.19), "water_bed": Color(0.2, 0.18, 0.14), "flattened": Color(0.52, 0.55, 0.3),
-	"tussock_soil": Color(0.25, 0.28, 0.15), "clover_soil": Color(0.26, 0.33, 0.18), "ant_road": Color(0.44, 0.35, 0.25),
+	"lawn_soil": Color(0.4, 0.25, 0.16), "bare_soil": Color(0.6, 0.31, 0.18), "mud": Color(0.29, 0.16, 0.11),
+	"leaf_litter": Color(0.46, 0.33, 0.19), "water_bed": Color(0.22, 0.14, 0.1), "flattened": Color(0.5, 0.52, 0.27),
+	"tussock_soil": Color(0.3, 0.24, 0.14), "mimosa_soil": Color(0.32, 0.27, 0.15), "ant_road": Color(0.55, 0.3, 0.18),
 	"concrete": Color(0.72, 0.7, 0.66), "stone": Color(0.62, 0.59, 0.54), "brick": Color(0.64, 0.35, 0.24),
 	"bark": Color(0.31, 0.23, 0.16), "root": Color(0.42, 0.29, 0.18), "hose": Color(0.18, 0.42, 0.29),
 	"brass": Color(0.79, 0.63, 0.23), "backpack": Color(0.2, 0.31, 0.48), "pocket": Color(0.17, 0.27, 0.41),
 	"zipper": Color(0.8, 0.8, 0.78), "pencil": Color(0.91, 0.72, 0.23), "wood": Color(0.89, 0.78, 0.55),
 	"graphite": Color(0.2, 0.2, 0.22), "cap": Color(0.78, 0.2, 0.17), "pebble": Color(0.6, 0.58, 0.55),
-	"silver": Color(0.78, 0.78, 0.8), "lego": Color(0.85, 0.19, 0.16), "yellow": Color(0.98, 0.8, 0.12),
+	"silver": Color(0.78, 0.78, 0.8), "yellow": Color(0.98, 0.8, 0.12),
 	"seed": Color(0.95, 0.95, 0.92), "stem": Color(0.35, 0.52, 0.22), "hair_tie": Color(0.62, 0.25, 0.55),
 	"hole": Color(0.04, 0.03, 0.03), "mud_tube": Color(0.45, 0.31, 0.2), "match_head": Color(0.7, 0.12, 0.08),
-	"acorn": Color(0.55, 0.36, 0.17), "acorn_cap": Color(0.4, 0.3, 0.18), "leaf": Color(0.7, 0.48, 0.2),
+	"mango": Color(0.95, 0.66, 0.16), "mango_green": Color(0.55, 0.64, 0.2), "mango_stone": Color(0.83, 0.73, 0.52),
+	"leaf": Color(0.55, 0.4, 0.22), "coral": Color(0.86, 0.25, 0.17), "naira": Color(0.77, 0.61, 0.26),
+	"tridax": Color(0.96, 0.95, 0.88), "laterite": Color(0.62, 0.33, 0.2), "roof_sheet": Color(0.5, 0.2, 0.16),
+	"burglar_bar": Color(0.1, 0.1, 0.11), "car": Color(0.74, 0.75, 0.78), "drum": Color(0.1, 0.33, 0.72),
+	"tank": Color(0.08, 0.08, 0.09), "steel": Color(0.36, 0.36, 0.38), "maize": Color(0.42, 0.58, 0.22),
+	"tassel": Color(0.82, 0.72, 0.42), "wall": Color(0.8, 0.75, 0.66), "bottle_glass": Color(0.2, 0.5, 0.25),
+	"gate": Color(0.1, 0.1, 0.1),
 	"silk": Color(0.92, 0.92, 0.9), "friendly": Color(0.2, 0.2, 0.22), "enemy": Color(0.45, 0.5, 0.58),
-	"boss": Color(0.35, 0.28, 0.24), "house": Color(0.84, 0.82, 0.76), "window": Color(0.18, 0.22, 0.28),
+	"boss": Color(0.35, 0.28, 0.24), "house": Color(0.93, 0.8, 0.64), "window": Color(0.18, 0.22, 0.28),
 	"roof": Color(0.3, 0.28, 0.3), "grill": Color(0.12, 0.12, 0.13), "deck": Color(0.52, 0.38, 0.26),
-	"mower": Color(0.78, 0.16, 0.12), "tyre": Color(0.1, 0.1, 0.1), "birdbath": Color(0.7, 0.68, 0.64),
-	"sunflower": Color(0.97, 0.76, 0.1), "sunflower_disc": Color(0.3, 0.2, 0.1), "tomato_leaf": Color(0.22, 0.42, 0.17),
-	"tomato": Color(0.85, 0.15, 0.1), "compost": Color(0.23, 0.17, 0.11), "shed": Color(0.55, 0.6, 0.52),
+	"tyre": Color(0.1, 0.1, 0.1), "tomato_leaf": Color(0.22, 0.42, 0.17),
+	"tomato": Color(0.85, 0.15, 0.1), "refuse": Color(0.2, 0.17, 0.14), "shed": Color(0.55, 0.6, 0.52),
 	"fence": Color(0.66, 0.58, 0.46), "garden_soil": Color(0.28, 0.2, 0.13), "far_lawn": Color(0.34, 0.5, 0.21),
 	"canopy": Color(0.16, 0.28, 0.12),
 }
 
 ## Terrain vertex colour per LawnLayout.Surface value.
 const SURFACE_COLORS := ["lawn_soil", "bare_soil", "mud", "leaf_litter", "water_bed", "flattened",
-	"tussock_soil", "clover_soil", "ant_road"]
+	"tussock_soil", "mimosa_soil", "ant_road"]
 
 @export_tool_button("Rebuild graybox") var rebuild_action := rebuild
 @export var grass_enabled := true
@@ -94,7 +99,7 @@ func _mat(key: String) -> StandardMaterial3D:
 	if not _materials.has(key):
 		var m := StandardMaterial3D.new()
 		m.albedo_color = COLORS[key]
-		m.roughness = 0.35 if key in ["brass", "silver", "cap", "lego", "hose", "zipper"] else 0.9
+		m.roughness = 0.35 if key in ["brass", "silver", "cap", "naira", "hose", "zipper", "car", "drum"] else 0.9
 		_materials[key] = m
 	return _materials[key]
 
@@ -464,18 +469,18 @@ func _build_landmarks(parent: Node3D) -> void:
 		var pos: Array = lm["pos"]
 		var size: Array = lm["size"]
 		var g := _gp(pos)
-		if id.begins_with("acorn"):
-			_acorn(parent, g, hash(id))
-			continue
-		if id.begins_with("oak_leaf"):
-			_oak_leaf(parent, g, float(size[0]), float(size[2]), hash(id))
+		if id.begins_with("mango_leaf"):
+			_mango_leaf(parent, g, float(size[0]), float(size[2]), hash(id))
 			continue
 		match id:
 			"backpack": _backpack(parent, lm)
 			"pencil_log", "pot_ring": pass  # built with the paths / carved into the terrain
-			"dandelion_bloom": _dandelion(parent, g, float(size[1]), false)
-			"dandelion_seed": _dandelion(parent, g, float(size[1]), true)
-			"lego_waystation": _lego(parent, g)
+			"tridax_bloom": _tridax(parent, g, float(size[1]), false)
+			"tridax_seed": _tridax(parent, g, float(size[1]), true)
+			"water_sachet": _water_sachet(parent, g, size)
+			"fallen_mango": _fruit(parent, g, size, "mango", hash(id))
+			"baby_mango": _fruit(parent, g, size, "mango_green", hash(id))
+			"mango_stone": _fruit(parent, g, size, "mango_stone", hash(id))
 			"marble":
 				var glass := StandardMaterial3D.new()
 				glass.albedo_color = Color(0.7, 0.9, 1.0, 0.35)
@@ -488,14 +493,14 @@ func _build_landmarks(parent: Node3D) -> void:
 				shape.radius = 2.9
 				_add(parent, mesh, glass, Transform3D(Basis(), g + Vector3.UP * 2.9), shape)
 			"orb_web": _orb_web(parent, g + Vector3.UP * 12.0)
-			"oak_root_hall": pass  # built with the west boundary
-			"bottle_cap": _capstone(parent, g)
+			"mango_root_hall": pass  # built with the west boundary
+			"crown_cap": _capstone(parent, g, float(size[0]) / 2.0)
 			"lookout_blade": _lookout(parent, g)
-			"earring_shrine":
+			"coral_bead_shrine":
 				_sphere(parent, g + Vector3.UP * 1.2, 1.5, "pebble")
-				_sphere(parent, g + Vector3.UP * 3.2, 0.9, "silver")
+				_sphere(parent, g + Vector3.UP * 3.9, 1.45, "coral")
 			"colony_gate": _colony_gate(parent, g)
-			"coin_plaza": _cylinder(parent, g - Vector3.UP * 0.2, 4.3, 0.8, "silver", true, -1.0, 48)
+			"naira_coin_plaza": _cylinder(parent, g - Vector3.UP * 0.2, float(size[0]) / 2.0, 0.8, "naira", true, -1.0, 48)
 			"worm_casts":
 				_sphere(parent, g, 3.2, "mud", true, 8.0)
 				for extra: Array in lm.get("also", []):
@@ -507,7 +512,7 @@ func _build_landmarks(parent: Node3D) -> void:
 				var yaw := atan2(exit.x, exit.y)
 				_box(parent, g + Vector3(exit.normalized().x * 5.6, 1.5, exit.normalized().y * 5.6), Vector3(3.5, 3.0, 1.0), "hole", false, yaw)
 			"hose_coupling": _coupling(parent, g)
-			"popsicle_stick": _popsicle_stick(parent, lm)
+			"lolly_stick": _lolly_stick(parent, lm)
 			"abandoned_post": _palisade(parent, g)
 			"termite_camp": _termite_camp(parent, g)
 			"termite_tower": _cylinder(parent, g - Vector3.UP, 3.0, 16.0, "mud_tube", true, 1.8, 10)
@@ -545,32 +550,71 @@ func _backpack(parent: Node3D, lm: Dictionary) -> void:
 		"zipper", true, 0.0, WORLD_LAYER | CLIMBABLE_LAYER)
 
 
-func _dandelion(parent: Node3D, g: Vector3, height: float, seeded: bool) -> void:
-	_cylinder(parent, g, 0.7, height, "stem", true, 0.55, 10)
+## Tridax ("coat buttons"): a thin stalk with a yellow disc and a ring of short
+## white ray petals, or a fluffy seed head once it has gone to seed.
+func _tridax(parent: Node3D, g: Vector3, height: float, seeded: bool) -> void:
+	_cylinder(parent, g, 0.55, height, "stem", true, 0.4, 10)
+	var top := g + Vector3.UP * height
 	if seeded:
 		var puff := StandardMaterial3D.new()
-		puff.albedo_color = Color(0.96, 0.96, 0.94, 0.55)
+		puff.albedo_color = Color(0.93, 0.9, 0.82, 0.55)
 		puff.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 		var mesh := SphereMesh.new()
-		mesh.radius = 6.3
-		mesh.height = 12.6
-		_add(parent, mesh, puff, Transform3D(Basis(), g + Vector3.UP * (height + 5.5)))
+		mesh.radius = 3.0
+		mesh.height = 6.0
+		_add(parent, mesh, puff, Transform3D(Basis(), top + Vector3.UP * 2.6))
 	else:
-		_cylinder(parent, g + Vector3.UP * height, 6.3, 2.2, "yellow", false, 5.2, 32)
-	# rosette of leaves at the base
-	for k in 7:
-		var yaw := TAU * k / 7.0
+		_cylinder(parent, top, 1.6, 1.2, "yellow", false, 1.3, 20)
+		for k in 5:
+			var dir := Vector3.FORWARD.rotated(Vector3.UP, TAU * k / 5.0)
+			_box(parent, top + dir * 2.4 + Vector3.UP * 0.5, Vector3(1.6, 0.2, 1.8), "tridax", false, TAU * k / 5.0)
+	# toothed leaves in opposite pairs near the base
+	for k in 4:
+		var yaw := PI / 2.0 * k + 0.4
 		var dir := Vector3.FORWARD.rotated(Vector3.UP, yaw)
-		var leaf := _box(parent, g + dir * 14.0 + Vector3.UP * 2.0, Vector3(5.5, 0.4, 30), "stem", true, yaw)
-		leaf.rotate_object_local(Vector3.RIGHT, 0.2)
+		var leaf := _box(parent, g + dir * 7.0 + Vector3.UP * (4.0 + 5.0 * (k / 2)), Vector3(4.5, 0.3, 13), "stem", false, yaw)
+		leaf.rotate_object_local(Vector3.RIGHT, 0.35)
 
 
-func _lego(parent: Node3D, g: Vector3) -> void:
-	var top := g.y + 4.0
-	_box(parent, g + Vector3.UP * 2.0, Vector3(11.5, 4.0, 5.8), "lego")
-	for i in 4:
-		for j in 2:
-			_cylinder(parent, Vector3(g.x - 4.3 + i * 2.88, top, g.z - 1.44 + j * 2.88), 0.87, 0.6, "lego", true, -1.0, 16)
+## Empty "pure water" sachet: a flattened translucent nylon pillow with a puddle left inside.
+func _water_sachet(parent: Node3D, g: Vector3, size: Array) -> void:
+	var w: float = size[0]
+	var h: float = size[1]
+	var d: float = size[2]
+	var nylon := StandardMaterial3D.new()
+	nylon.albedo_color = Color(0.92, 0.95, 1.0, 0.35)
+	nylon.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	nylon.roughness = 0.15
+	nylon.cull_mode = BaseMaterial3D.CULL_DISABLED
+	var bag := SphereMesh.new()
+	bag.radius = 0.5
+	bag.height = 1.0
+	var holder := Node3D.new()
+	holder.transform = Transform3D(Basis(Vector3.UP, 0.4), g + Vector3.UP * h * 0.45)
+	parent.add_child(holder)
+	var mi := MeshInstance3D.new()
+	mi.mesh = bag
+	mi.material_override = nylon
+	mi.scale = Vector3(w, h, d)
+	holder.add_child(mi)
+	var water := CylinderMesh.new()
+	water.top_radius = 0.5
+	water.bottom_radius = 0.5
+	water.height = 0.05
+	var wmi := MeshInstance3D.new()
+	wmi.mesh = water
+	wmi.material_override = _mat("drum")
+	wmi.scale = Vector3(w * 0.45, 1.0, d * 0.4)
+	wmi.position = Vector3(w * 0.12, -h * 0.35, 0)
+	holder.add_child(wmi)
+	var body := StaticBody3D.new()
+	body.collision_layer = WORLD_LAYER
+	var cs := CollisionShape3D.new()
+	var box := BoxShape3D.new()
+	box.size = Vector3(w * 0.8, h * 0.7, d * 0.8)
+	cs.shape = box
+	body.add_child(cs)
+	holder.add_child(body)
 
 
 func _orb_web(parent: Node3D, c: Vector3) -> void:
@@ -597,11 +641,17 @@ func _orb_web(parent: Node3D, c: Vector3) -> void:
 			_add(parent, mesh, silk, Transform3D(Basis(x, y, x.cross(y)), (p0 + p1) / 2.0))
 
 
-func _capstone(parent: Node3D, g: Vector3) -> void:
+func _capstone(parent: Node3D, g: Vector3, radius: float) -> void:
 	for k in 3:
 		var dir := Vector3.FORWARD.rotated(Vector3.UP, TAU * k / 3.0 + 0.4)
-		_sphere(parent, g + dir * 3.6 + Vector3.UP * 1.6, 1.9, "pebble")
-	_cylinder(parent, g + Vector3.UP * 3.4, 5.4, 2.2, "cap", true, -1.0, 40)
+		_sphere(parent, g + dir * 3.3 + Vector3.UP * 1.6, 1.9, "pebble")
+	var base := g + Vector3.UP * 3.4
+	_cylinder(parent, base, radius, 2.2, "cap", true, radius * 0.92, 40)
+	# the 21 crimps of a crown cap's skirt
+	for k in 21:
+		var a := TAU * k / 21.0
+		var dir := Vector3(cos(a), 0.0, sin(a))
+		_box(parent, base + dir * (radius + 0.15) + Vector3.UP * 0.8, Vector3(0.5, 1.6, 0.9), "cap", false, -a)
 
 
 func _lookout(parent: Node3D, g: Vector3) -> void:
@@ -654,7 +704,7 @@ func _coupling(parent: Node3D, g: Vector3) -> void:
 
 ## The stick rests on both banks, bedded into the mud so its ends sit just
 ## proud of the ground and Amodu can walk straight onto it.
-func _popsicle_stick(parent: Node3D, lm: Dictionary) -> void:
+func _lolly_stick(parent: Node3D, lm: Dictionary) -> void:
 	var size: Array = lm["size"]
 	var w: float = size[0]
 	var t: float = size[1]
@@ -697,24 +747,37 @@ func _termite_camp(parent: Node3D, g: Vector3) -> void:
 		_cylinder(parent, _gp([g.x + off.x, g.z + off.z]) - Vector3.UP, r, rng.randf_range(6, 15), "mud_tube", true, r * 0.6, 10)
 
 
-func _acorn(parent: Node3D, g: Vector3, seed_value: int) -> void:
+## A fallen mango, baby mango or mango stone: an ellipsoid lying on its side.
+func _fruit(parent: Node3D, g: Vector3, size: Array, key: String, seed_value: int) -> void:
+	var w: float = size[0]
+	var h: float = size[1]
+	var l: float = size[2]
 	var yaw := float(seed_value % 628) / 100.0
-	var basis := Basis(Vector3.UP, yaw) * Basis(Vector3.FORWARD, PI / 2.0)
-	var mesh := CapsuleMesh.new()
-	mesh.radius = 2.7
-	mesh.height = 9.0
-	var shape := CapsuleShape3D.new()
-	shape.radius = 2.7
-	shape.height = 9.0
-	_add(parent, mesh, _mat("acorn"), Transform3D(basis, g + Vector3.UP * 2.6), shape)
-	var cap := CylinderMesh.new()
-	cap.top_radius = 2.2
-	cap.bottom_radius = 3.0
-	cap.height = 2.0
-	_add(parent, cap, _mat("acorn_cap"), Transform3D(basis, g + Vector3.UP * 2.6 + basis.y * 3.8))
+	var mesh := SphereMesh.new()
+	mesh.radius = 0.5
+	mesh.height = 1.0
+	var holder := Node3D.new()
+	holder.transform = Transform3D(Basis(Vector3.UP, yaw), g + Vector3.UP * h * 0.45)
+	parent.add_child(holder)
+	var mi := MeshInstance3D.new()
+	mi.mesh = mesh
+	mi.material_override = _mat(key)
+	mi.scale = Vector3(w, h, l)
+	holder.add_child(mi)
+	var body := StaticBody3D.new()
+	body.collision_layer = WORLD_LAYER
+	var cs := CollisionShape3D.new()
+	var capsule := CapsuleShape3D.new()
+	capsule.radius = minf(w, h) * 0.45
+	capsule.height = l * 0.95
+	cs.shape = capsule
+	cs.rotation = Vector3(PI / 2.0, 0.0, 0.0)
+	body.add_child(cs)
+	holder.add_child(body)
 
 
-func _oak_leaf(parent: Node3D, g: Vector3, length: float, width: float, seed_value: int) -> void:
+## A fallen mango leaf: long, leathery, walkable, lying almost flat.
+func _mango_leaf(parent: Node3D, g: Vector3, width: float, length: float, seed_value: int) -> void:
 	var yaw := float(seed_value % 628) / 100.0
 	var mesh := CylinderMesh.new()
 	mesh.top_radius = 0.5
@@ -729,6 +792,7 @@ func _oak_leaf(parent: Node3D, g: Vector3, length: float, width: float, seed_val
 	mi.material_override = _mat("leaf")
 	mi.scale = Vector3(width, 1.0, length)
 	holder.add_child(mi)
+	_box(holder, Vector3.UP * 0.2, Vector3(0.8, 0.5, length * 0.95), "mango_stone", false)  # midrib
 	var body := StaticBody3D.new()
 	body.collision_layer = WORLD_LAYER
 	var cs := CollisionShape3D.new()
@@ -792,8 +856,8 @@ func _build_signs(parent: Node3D) -> void:
 func _build_skyline(parent: Node3D) -> void:
 	for sk: Dictionary in layout.items("skyline"):
 		var id := String(sk["id"])
-		if id == "fence":
-			_fence(parent, sk)
+		if id == "compound_wall":
+			_compound_wall(parent, sk)
 			continue
 		var p := LawnLayout.xz(sk["pos"])
 		var size: Array = sk["size"]
@@ -801,110 +865,148 @@ func _build_skyline(parent: Node3D) -> void:
 		var h: float = size[1]
 		var d: float = size[2]
 		match id:
-			"oak_trunk":
-				_cylinder(parent, Vector3(p.x, -5, p.y), w / 2.0, h + 5.0, "bark", true, w * 0.44, 32)
-				var canopy := SphereMesh.new()
-				canopy.radius = 1440.0
-				canopy.height = 1900.0
-				var mi := _add(parent, canopy, _mat("canopy"), Transform3D(Basis(), Vector3(p.x, h + 950.0, p.y)))
-				(mi.get_child(0) as MeshInstance3D).cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+			"mango_trunk":
+				_cylinder(parent, Vector3(p.x, -5, p.y), w / 2.0, h + 400.0, "bark", true, w * 0.38, 32)
+				# a low, dense evergreen canopy: several overlapping crowns
+				var rng := RandomNumberGenerator.new()
+				rng.seed = 8
+				for k in 7:
+					var off := Vector3(rng.randf_range(-900, 900), rng.randf_range(0, 900), rng.randf_range(-900, 900))
+					var crown := SphereMesh.new()
+					crown.radius = rng.randf_range(800, 1100)
+					crown.height = crown.radius * 1.2
+					var mi := _add(parent, crown, _mat("canopy"), Transform3D(Basis(), Vector3(p.x, h + 1100.0, p.y) + off))
+					(mi.get_child(0) as MeshInstance3D).cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 			"house":
 				var face := p.y
-				_box(parent, Vector3(p.x, 1260, face - d / 2.0), Vector3(w, 2520, d), "house", false)
+				_box(parent, Vector3(p.x, h * 0.4, face - d / 2.0), Vector3(w, h * 0.8, d), "house", false)
 				var roof := PrismMesh.new()
-				roof.size = Vector3(d + 200.0, h - 2520.0, w)
-				_add(parent, roof, _mat("roof"), Transform3D(Basis(Vector3.UP, PI / 2.0), Vector3(p.x, 2520 + (h - 2520.0) / 2.0, face - d / 2.0)))
-				for fl in 2:
-					for k in 5:
-						var x := p.x - 1800.0 + k * 900.0
-						if fl == 0 and k == 2:
-							_box(parent, Vector3(x, 430, face + 2), Vector3(420, 860, 6), "window", false)  # back door
-						else:
-							_box(parent, Vector3(x, 700 + fl * 1150, face + 2), Vector3(420, 430 * 1.2, 6), "window", false)
-			"grill":
-				_box(parent, Vector3(p.x, 29 + h / 2.0, p.y), Vector3(w, h, d), "grill", false)
-			"deck":
-				_box(parent, Vector3(p.x, h / 2.0, p.y), Vector3(w, h, d), "deck", false)
-			"mower":
-				_box(parent, Vector3(p.x, 120, p.y), Vector3(w, 200, d), "mower", false)
-				for sx in [-1.0, 1.0]:
-					for sz in [-1.0, 1.0]:
-						var tyre := CylinderMesh.new()
-						tyre.top_radius = 70.0
-						tyre.bottom_radius = 70.0
-						tyre.height = 40.0
-						_add(parent, tyre, _mat("tyre"), Transform3D(Basis(Vector3.FORWARD, PI / 2.0), Vector3(p.x + sx * (w / 2.0 + 20.0), 70, p.y + sz * d * 0.35)))
-				var handle := _box(parent, Vector3(p.x, 330, p.y - d / 2.0 - 120), Vector3(w * 0.8, 12, 12), "grill", false)
-				handle.rotate_object_local(Vector3.RIGHT, 0.0)
-				for sx in [-1.0, 1.0]:
-					var bar := _box(parent, Vector3(p.x + sx * w * 0.4, 260, p.y - d / 2.0 - 60), Vector3(12, 12, 200), "grill", false)
-					bar.rotate_object_local(Vector3.RIGHT, -0.6)
-			"birdbath":
-				_cylinder(parent, Vector3(p.x, 0, p.y), 32.0, 200.0, "birdbath", false, 22.0)
-				_cylinder(parent, Vector3(p.x, 200, p.y), w / 2.0, h - 200.0, "birdbath", false, w / 2.0 + 10.0, 32)
-			"sunflowers":
-				var bed_top := float(layout.data["garden_bed"]["box"][4])
+				roof.size = Vector3(d + 400.0, h * 0.2 + 200.0, w + 200.0)
+				_add(parent, roof, _mat("roof_sheet"), Transform3D(Basis(Vector3.UP, PI / 2.0), Vector3(p.x, h * 0.8 + roof.size.y / 2.0, face - d / 2.0)))
 				for k in 5:
-					var x := p.x - 200.0 + k * 100.0
-					var z := p.y + float([0.0, 40.0, -30.0, 35.0, -10.0][k])
-					var stalk_h := h - float([0.0, 60.0, 20.0, 90.0, 40.0][k])
-					_cylinder(parent, Vector3(x, bed_top, z), 5.5, stalk_h, "stem", false, 4.0, 12)
-					var head := Transform3D(Basis(Vector3.BACK, deg_to_rad(-70.0)), Vector3(x + 8, bed_top + stalk_h, z))
-					var petals := CylinderMesh.new()
-					petals.top_radius = 54.0
-					petals.bottom_radius = 54.0
-					petals.height = 4.0
-					_add(parent, petals, _mat("sunflower"), head)
-					var disc := CylinderMesh.new()
-					disc.top_radius = 30.0
-					disc.bottom_radius = 30.0
-					disc.height = 8.0
-					_add(parent, disc, _mat("sunflower_disc"), head)
-					for s in [-1.0, 1.0]:
-						var leaf := _box(parent, Vector3(x + s * 40.0, bed_top + stalk_h * 0.45, z), Vector3(80, 3, 45), "stem", false)
-						leaf.rotate_object_local(Vector3.FORWARD, -0.35 * s)
-			"tomato":
+					var x := p.x - 1800.0 + k * 900.0
+					if k == 2:
+						_box(parent, Vector3(x, 380, face + 2), Vector3(380, 760, 6), "window", false)  # front door
+						continue
+					_box(parent, Vector3(x, 700, face + 2), Vector3(460, 560, 6), "window", false)
+					for bar in 6:  # burglar-proof bars
+						_box(parent, Vector3(x - 200 + bar * 80, 700, face + 10), Vector3(14, 560, 14), "burglar_bar", false)
+				_cylinder(parent, Vector3(p.x + 1400, h * 0.8 + 200, face - 150), 160.0, 30.0, "steel", false)  # satellite dish
+			"coal_pot":
+				_cylinder(parent, Vector3(p.x, 29, p.y), w / 2.0, h, "grill", false, w * 0.62, 16)
+			"boys_quarters", "store":
+				_box(parent, Vector3(p.x, h * 0.4, p.y), Vector3(w, h * 0.8, d), "wall", false)
+				var roof := PrismMesh.new()
+				roof.size = Vector3(w + 80.0, h * 0.2, d + 80.0)
+				_add(parent, roof, _mat("roof_sheet"), Transform3D(Basis(), Vector3(p.x, h * 0.9, p.y)))
+			"overhead_tank":
+				var stand_h := h * 0.66
+				for sx: float in [-1.0, 1.0]:
+					for sz: float in [-1.0, 1.0]:
+						_box(parent, Vector3(p.x + sx * w * 0.4, stand_h / 2.0, p.y + sz * w * 0.4), Vector3(30, stand_h, 30), "steel", false)
+				_box(parent, Vector3(p.x, stand_h, p.y), Vector3(w, 30, w), "steel", false)
+				_cylinder(parent, Vector3(p.x, stand_h + 15.0, p.y), w / 2.0, h - stand_h, "tank", false, w * 0.45, 32)
+			"clothesline":
+				var a := Vector3(p.x - w / 2.0, 0, p.y)
+				var b := Vector3(p.x + w / 2.0, 0, p.y)
+				for post: Vector3 in [a, b]:
+					_box(parent, post + Vector3.UP * h / 2.0, Vector3(20, h, 20), "steel", false)
+				_box(parent, Vector3(p.x, h - 10, p.y), Vector3(w, 6, 6), "steel", false)
+				var wrappers := [Color(0.9, 0.45, 0.1), Color(0.1, 0.45, 0.6), Color(0.75, 0.15, 0.4), Color(0.95, 0.8, 0.2),
+					Color(0.2, 0.55, 0.3), Color(0.55, 0.3, 0.7)]
+				for k in 6:
+					var cloth := BoxMesh.new()
+					cloth.size = Vector3(220, 480, 4)
+					var m := StandardMaterial3D.new()
+					m.albedo_color = wrappers[k]
+					m.roughness = 0.9
+					_add(parent, cloth, m, Transform3D(Basis(Vector3.UP, 0.08 * k), Vector3(a.x + 150 + k * 270, h - 250, p.y)))
+			"family_car":
+				_box(parent, Vector3(p.x, 150 + h * 0.3, p.y), Vector3(w, h * 0.55, d), "car", false)
+				_box(parent, Vector3(p.x, 150 + h * 0.75, p.y + 60), Vector3(w * 0.9, h * 0.4, d * 0.55), "window", false)
+				for sx: float in [-1.0, 1.0]:
+					for sz: float in [-1.0, 1.0]:
+						var tyre := CylinderMesh.new()
+						tyre.top_radius = 115.0
+						tyre.bottom_radius = 115.0
+						tyre.height = 70.0
+						_add(parent, tyre, _mat("tyre"), Transform3D(Basis(Vector3.FORWARD, PI / 2.0), Vector3(p.x + sx * w * 0.47, 115, p.y + sz * d * 0.32)))
+			"water_drum":
+				_cylinder(parent, Vector3(p.x, 0, p.y), w / 2.0, h, "drum", false, w / 2.0, 32)
+			"maize":
+				var bed_top := float(layout.data["garden_bed"]["box"][4])
+				for k in 7:
+					var x := p.x - 240.0 + k * 80.0
+					var z := p.y + float([0.0, 40.0, -30.0, 35.0, -10.0, 25.0, -20.0][k])
+					var stalk_h := h - float([0.0, 60.0, 20.0, 90.0, 40.0, 70.0, 10.0][k])
+					_cylinder(parent, Vector3(x, bed_top, z), 9.0, stalk_h, "maize", false, 5.0, 12)
+					_cylinder(parent, Vector3(x, bed_top + stalk_h, z), 4.0, 70.0, "tassel", false, 0.5, 8)
+					# long arching leaves up the stalk and one cob
+					for leaf_i in 4:
+						var yaw := 1.3 * leaf_i + k
+						var leaf := _box(parent, Vector3(x, bed_top + stalk_h * (0.25 + 0.17 * leaf_i), z), Vector3(260, 3, 30), "maize", false, yaw)
+						leaf.rotate_object_local(Vector3.FORWARD, -0.35)
+					_sphere(parent, Vector3(x + 14, bed_top + stalk_h * 0.5, z), 16.0, "tassel", false, 70.0)
+			"pepper":
 				var rng := RandomNumberGenerator.new()
 				rng.seed = 5
 				for k in 9:
-					_sphere(parent, Vector3(p.x + rng.randf_range(-130, 130), rng.randf_range(80, h), p.y + rng.randf_range(-130, 130)), rng.randf_range(50, 90), "tomato_leaf", false)
-				for k in 5:
-					_sphere(parent, Vector3(p.x + rng.randf_range(-100, 100), rng.randf_range(60, 250), p.y + rng.randf_range(-100, 100)), 12.6, "tomato", false)
-			"compost":
-				_sphere(parent, Vector3(p.x, 0, p.y), w / 2.0, "compost", false, h * 2.0)
-				var steam := StandardMaterial3D.new()
-				steam.albedo_color = Color(0.95, 0.95, 0.93, 0.22)
-				steam.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-				steam.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-				steam.cull_mode = BaseMaterial3D.CULL_DISABLED
+					_sphere(parent, Vector3(p.x + rng.randf_range(-130, 130), rng.randf_range(60, h), p.y + rng.randf_range(-130, 130)), rng.randf_range(40, 70), "tomato_leaf", false)
+				for k in 6:
+					_sphere(parent, Vector3(p.x + rng.randf_range(-100, 100), rng.randf_range(40, h * 0.8), p.y + rng.randf_range(-100, 100)), 16.0, "tomato", false, 26.0)
+			"termite_mound":
+				_cylinder(parent, Vector3(p.x, 0, p.y), w / 2.0, h * 0.7, "laterite", false, w * 0.28, 20)
+				_cylinder(parent, Vector3(p.x, h * 0.7, p.y), w * 0.28, h * 0.3, "laterite", false, 12.0, 14)
+				_cylinder(parent, Vector3(p.x + 90, h * 0.35, p.y - 40), 50.0, h * 0.5, "laterite", false, 8.0, 12)  # a side chimney
+				# the refuse heap beside it smoulders
+				_sphere(parent, Vector3(p.x - 450, 0, p.y + 150), 260.0, "refuse", false, 300.0)
+				var smoke := StandardMaterial3D.new()
+				smoke.albedo_color = Color(0.85, 0.85, 0.83, 0.22)
+				smoke.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+				smoke.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+				smoke.cull_mode = BaseMaterial3D.CULL_DISABLED
 				var cone := CylinderMesh.new()
-				cone.bottom_radius = 180.0
-				cone.top_radius = 480.0
+				cone.bottom_radius = 120.0
+				cone.top_radius = 460.0
 				cone.height = 1500.0
-				_add(parent, cone, steam, Transform3D(Basis(), Vector3(p.x, h + 750.0, p.y)))
-			"shed":
-				_box(parent, Vector3(p.x, h * 0.4, p.y), Vector3(w, h * 0.8, d), "shed", false)
-				var roof := PrismMesh.new()
-				roof.size = Vector3(w + 60.0, h * 0.2, d + 60.0)
-				_add(parent, roof, _mat("roof"), Transform3D(Basis(), Vector3(p.x, h * 0.9, p.y)))
-	# the rest of the lawn, seen from high up: its grass tops
+				_add(parent, cone, smoke, Transform3D(Basis(Vector3.FORWARD, -0.12), Vector3(p.x - 380, 900.0, p.y + 150)))
+	# the rest of the compound grass, seen from high up: its blade tops
 	var far: Dictionary = layout.data["far_lawn"]
 	var top: float = far["height"]
 	for r: Array in far["rects"]:
 		_slab(parent, [r[0], r[1], r[2], r[3], top], "far_lawn", false, top - 2.0)
 
 
-func _fence(parent: Node3D, sk: Dictionary) -> void:
+## Block wall around the compound with broken bottles set in the top and a
+## black gate in the east side.
+func _compound_wall(parent: Node3D, sk: Dictionary) -> void:
 	var r: Array = sk["rect"]
 	var x0: float = r[0]
 	var z0: float = r[1]
 	var x1: float = r[2]
 	var z1: float = r[3]
 	var h: float = sk["height"]
-	var t := 8.0
-	_box(parent, Vector3(x0, h / 2.0, (z0 + z1) / 2.0), Vector3(t, h, z1 - z0), "fence", false)
-	_box(parent, Vector3(x1, h / 2.0, (z0 + z1) / 2.0), Vector3(t, h, z1 - z0), "fence", false)
-	_box(parent, Vector3((x0 + x1) / 2.0, h / 2.0, z1), Vector3(x1 - x0, h, t), "fence", false)
+	var t := 70.0
+	_box(parent, Vector3(x0, h / 2.0, (z0 + z1) / 2.0), Vector3(t, h, z1 - z0), "wall", false)
+	# east wall, with the gate opening onto the driveway where the car is parked
+	var car := LawnLayout.xz(layout.item("skyline", "family_car")["pos"])
+	var gate_half := 450.0
+	var south_start := car.y + gate_half
+	_box(parent, Vector3(x1, h / 2.0, (z0 + car.y - gate_half) / 2.0), Vector3(t, h, car.y - gate_half - z0), "wall", false)
+	_box(parent, Vector3(x1, h / 2.0, (south_start + z1) / 2.0), Vector3(t, h, z1 - south_start), "wall", false)
+	_box(parent, Vector3(x1 + 10.0, h * 0.42, car.y), Vector3(20, h * 0.84, gate_half * 2.0), "gate", false)
+	_box(parent, Vector3((x0 + x1) / 2.0, h / 2.0, z1), Vector3(x1 - x0, h, t), "wall", false)
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 21
+	for k in 60:
+		var along := rng.randf()
+		var shard_at: Vector3
+		match k % 3:
+			0: shard_at = Vector3(x0, h, lerpf(z0, z1, along))
+			1: shard_at = Vector3(x1, h, lerpf(z0, z1, along))
+			_: shard_at = Vector3(lerpf(x0, x1, along), h, z1)
+		var shard := _box(parent, shard_at + Vector3.UP * 25.0, Vector3(12, 60, 30), "bottle_glass", false, rng.randf() * TAU)
+		shard.rotate_object_local(Vector3.FORWARD, rng.randf_range(-0.5, 0.5))
 
 
 # ── grass ─────────────────────────────────────────────────────────────────────
@@ -934,12 +1036,12 @@ func _build_grass(parent: Node3D) -> void:
 		GrassMeshes.blade(BLADE_HEIGHT, BLADE_WIDTH, 0.08, 6),
 		GrassMeshes.blade(BLADE_HEIGHT, BLADE_WIDTH, 0.2, 6),
 	]
-	var clover_mesh := GrassMeshes.clover(16.0, 5.4)
+	var mimosa_mesh := GrassMeshes.mimosa(12.0, 7.0)
 	var greens := [Color(0.34, 0.56, 0.21), Color(0.41, 0.62, 0.25), Color(0.29, 0.5, 0.19), Color(0.47, 0.64, 0.29)]
 	var hollow: Dictionary = layout.item("areas", "backpack_hollow")
 	var hollow_c := LawnLayout.xz(hollow["center"])
 
-	# chunk key -> {"standing": [[xforms], [xforms]], "colors": [...], "flat": xforms, "clover": xforms}
+	# chunk key -> {"standing": [[xforms], [xforms]], "colors": [...], "flat": xforms, "mimosa": xforms}
 	var chunks := {}
 	var n := layout.size
 	for j in n:
@@ -979,20 +1081,20 @@ func _build_grass(parent: Node3D) -> void:
 				var basis := Basis(Vector3.UP, yaw) * Basis(Vector3.RIGHT, deg_to_rad(rng.randf_range(87, 90)))
 				basis = basis.scaled_local(Vector3(rng.randf_range(0.7, 1.0), rng.randf_range(0.45, 0.8), 0.3))
 				(_chunk(chunks, x, z)["flat"] as Array).append(Transform3D(basis, Vector3(x, layout.height_at(x, z) + 0.15, z)))
-			# clover follows the same density map, so it stays out of lanes and clearings
-			if surf == LawnLayout.Surface.CLOVER and rng.randf() < 0.025 * layout.density[k]:
+			# touch-me-not follows the same density map, so it stays out of lanes and clearings
+			if surf == LawnLayout.Surface.MIMOSA and rng.randf() < 0.025 * layout.density[k]:
 				var x := cx + rng.randf_range(-1.0, 1.0)
 				var z := cz + rng.randf_range(-1.0, 1.0)
 				var basis := Basis(Vector3.UP, rng.randf() * TAU).scaled(Vector3.ONE * rng.randf_range(0.8, 1.25))
-				(_chunk(chunks, x, z)["clover"] as Array).append(Transform3D(basis, Vector3(x, layout.height_at(x, z) - 0.2, z)))
+				(_chunk(chunks, x, z)["mimosa"] as Array).append(Transform3D(basis, Vector3(x, layout.height_at(x, z) - 0.2, z)))
 
 	var mat := _grass_material()
 	var flat_mat := mat.duplicate() as StandardMaterial3D
 	flat_mat.vertex_color_use_as_albedo = false
 	flat_mat.albedo_color = Color(0.46, 0.5, 0.24)
-	var clover_mat := mat.duplicate() as StandardMaterial3D
-	clover_mat.vertex_color_use_as_albedo = false
-	clover_mat.albedo_color = Color(0.3, 0.52, 0.24)
+	var mimosa_mat := mat.duplicate() as StandardMaterial3D
+	mimosa_mat.vertex_color_use_as_albedo = false
+	mimosa_mat.albedo_color = Color(0.28, 0.5, 0.2)
 	var physics := not Engine.is_editor_hint() and is_inside_tree()
 	if physics:
 		var blade_box := PhysicsServer3D.box_shape_create()
@@ -1010,8 +1112,8 @@ func _build_grass(parent: Node3D) -> void:
 			_multimesh(parent, blade_meshes[variant], mat, xforms, bucket["colors"][variant])
 		if not (bucket["flat"] as Array).is_empty():
 			_multimesh(parent, blade_meshes[0], flat_mat, bucket["flat"], [], false)
-		if not (bucket["clover"] as Array).is_empty():
-			_multimesh(parent, clover_mesh, clover_mat, bucket["clover"], [])
+		if not (bucket["mimosa"] as Array).is_empty():
+			_multimesh(parent, mimosa_mesh, mimosa_mat, bucket["mimosa"], [])
 		if physics:
 			_grass_body(bucket)
 
@@ -1019,7 +1121,7 @@ func _build_grass(parent: Node3D) -> void:
 func _chunk(chunks: Dictionary, x: float, z: float) -> Dictionary:
 	var key := Vector2i(floori(x / CHUNK), floori(z / CHUNK))
 	if not chunks.has(key):
-		chunks[key] = {"standing": [[], []], "colors": [[], []], "flat": [], "clover": []}
+		chunks[key] = {"standing": [[], []], "colors": [[], []], "flat": [], "mimosa": []}
 	return chunks[key]
 
 
@@ -1051,7 +1153,7 @@ func _grass_body(bucket: Dictionary) -> void:
 			var xa := xf.basis.x  # scaled and tilted, but still points along the blade's width
 			var yaw_only := Basis(Vector3.UP, atan2(-xa.z, xa.x))
 			PhysicsServer3D.body_add_shape(body, _grass_shapes[0], Transform3D(yaw_only, xf.origin + Vector3.UP * 6.0))
-	for xf: Transform3D in bucket["clover"]:
+	for xf: Transform3D in bucket["mimosa"]:
 		PhysicsServer3D.body_add_shape(body, _grass_shapes[1], Transform3D(Basis(), xf.origin + Vector3.UP * 5.0))
 	PhysicsServer3D.body_set_space(body, get_world_3d().space)
 	_grass_bodies.append(body)

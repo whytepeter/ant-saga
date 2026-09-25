@@ -115,10 +115,10 @@ func _test_viewpoints() -> void:
 		var ok := player.is_on_floor() and _respawn_reason == ""
 		var detail := ""
 		if vp["id"] == "V4":
-			var stick: Dictionary = layout.item("landmarks", "popsicle_stick")
+			var stick: Dictionary = layout.item("landmarks", "lolly_stick")
 			var on_stick := Vector2(p.x, p.z).distance_to(LawnLayout.xz(stick["pos"])) < 3.0 and p.y > layout.water_level
 			ok = ok and on_stick
-			detail = "on the popsicle stick at y=%.2f (water %.2f)" % [p.y, layout.water_level]
+			detail = "on the lolly stick at y=%.2f (water %.2f)" % [p.y, layout.water_level]
 		else:
 			var above := p.y - layout.height_at(p.x, p.z)
 			var want: float = expected[vp["id"]]

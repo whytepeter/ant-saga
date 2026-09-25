@@ -1,13 +1,13 @@
 {
   "meta": {
-    "level": "Level 1: The Lawn",
+    "level": "Level 1: The Compound Grass",
     "units": "meters (in-game)",
     "world_scale": 360,
     "amodu_height": 1.8,
     "coordinates": "[x, z] on the ground plane. +X = east, +Z = south, north = -Z (Godot convention). Heights are meters above local ground.",
     "playable_bounds": [-360, -360, 360, 360],
     "default_time": "07:30",
-    "season": "early summer",
+    "season": "rainy season, a clear morning after night rain",
     "sun": {
       "azimuth_deg_from_north": 75,
       "elevation_deg": 15
@@ -18,7 +18,8 @@
       "cell": 2,
       "size": 361,
       "dir": "world/lawn/baked"
-    }
+    },
+    "setting": "A family compound in southern Nigeria: bungalow with a veranda, a mango tree, red laterite earth, a patch of carpet grass, a backyard farm, a block wall topped with broken bottles."
   },
   "spawn": {
     "pos": [40, -205],
@@ -32,7 +33,7 @@
       "center": [60, -245],
       "radii": [75, 55],
       "role": "Wake-up pocket. Movement and camera tutorial.",
-      "story": "The flattened grass where Amodu was sitting when the potion hit. His body-print is the clearing."
+      "story": "The flattened grass where Amodu was hiding when the soda-and-potion mist hit. His school bag lies beside it, 150 m tall."
     },
     {
       "id": "blade_forest",
@@ -41,7 +42,7 @@
       "center": [-110, -170],
       "radii": [100, 80],
       "role": "Densest walkable grass. First scale reveal.",
-      "story": "Narrow carved paths, dandelion towers, the first ant trail."
+      "story": "Densest walkable carpet grass. Tridax 'coat buttons' weeds tower over it; the first ant trail."
     },
     {
       "id": "dewdrop_garden",
@@ -50,7 +51,7 @@
       "center": [-240, -40],
       "radii": [85, 75],
       "role": "Wonder beat. Beauty shot of the level.",
-      "story": "Deep shade in front of the Big Oak keeps the dew all morning. Clover canopy, a lost marble, a dew-strung orb web."
+      "story": "The mango tree's shade keeps the night's rain on every leaf. Touch-me-not (Mimosa) fronds fold shut when anything brushes them; a lost marble; a dew-strung web."
     },
     {
       "id": "capstone_shelter",
@@ -59,7 +60,7 @@
       "center": [-140, 55],
       "radii": [45, 40],
       "role": "Meet Opigo and Opumie. First sign of civilization.",
-      "story": "An ant watch post under a bottle cap propped on three pebbles, overlooking the Bare Patch."
+      "story": "An ant watch post under a soft-drink crown cap propped on three pebbles, overlooking the Bare Patch."
     },
     {
       "id": "bare_patch",
@@ -68,7 +69,7 @@
       "center": [20, 85],
       "radii": [70, 65],
       "role": "Pill bug tutorial fight. Colony Gate.",
-      "story": "Dead grass where a flower pot stood all last summer; its ring is still pressed into the soil. The dry soil cracked, and the ants built their front door in the biggest crack."
+      "story": "Red earth where a paint-bucket planter stood all dry season; its ring is still pressed into the laterite. The earth cracked, and the ants' front door is the biggest crack."
     },
     {
       "id": "hose_run",
@@ -77,27 +78,27 @@
       "center": [215, -40],
       "radii": [70, 95],
       "role": "Garden Patrol start. Water spectacle.",
-      "story": "The hose coupling leaks a fine jet; the mist makes a permanent morning rainbow. The ants run a water station here.",
+      "story": "The hose from the overhead tank leaks at its coupling; the mist makes a permanent morning rainbow. The ants run a water station here.",
       "checkpoint": [200, -20]
     },
     {
-      "id": "popsicle_bridge",
+      "id": "lolly_bridge",
       "order": 7,
-      "name": "Popsicle Bridge",
+      "name": "Lolly-Stick Bridge",
       "center": [140, 190],
       "radii": [120, 55],
-      "role": "The only dry crossing into the south. Chapter 2 termite fight.",
-      "story": "Runoff filled the wheel rut the mower left last week. A dropped popsicle stick spans its narrowest point.",
+      "role": "The only dry crossing into the south. Chapter 4 termite fight.",
+      "story": "Night rain filled the tyre rut the family car left on the grass. An ice-lolly stick Amodu dropped spans its narrowest point.",
       "checkpoint": [140, 150]
     },
     {
-      "id": "oak_rootlands",
+      "id": "mango_rootlands",
       "order": 8,
-      "name": "Oak Rootlands",
+      "name": "Mango Rootlands",
       "center": [-170, 245],
       "radii": [110, 55],
       "role": "Stealth. Spider ambush (Stage 9).",
-      "story": "Beyond the Great Root: acorns like boulders, fallen oak leaves that crunch and give you away."
+      "story": "Beyond the Great Root: fallen mangoes like boulders, mango leaves as long as streets that crunch and give you away."
     },
     {
       "id": "spiders_edge",
@@ -106,40 +107,40 @@
       "center": [-295, 300],
       "radii": [50, 35],
       "role": "BOSS: Garden Wolf Spider (Stage 10).",
-      "story": "The damp corner where the root dives under the garden edging. A silk-lined burrow, trip lines across the only entrance."
+      "story": "The damp corner where the mango root dives under the garden kerb. A silk-lined burrow, trip lines across the only entrance."
     }
   ],
   "boundaries": [
     {
       "side": "north",
-      "kind": "patio_step",
+      "kind": "veranda_step",
       "line": [[-360, -345], [360, -345]],
       "height": 29,
-      "note": "8 cm concrete step up to the patio. Sheer, hot at noon. The house rises beyond it.",
+      "note": "8 cm concrete step up to the veranda. The bungalow rises beyond it.",
       "boxes": [[-1100, -2050, 1100, -345, 29]]
     },
     {
       "side": "east",
-      "kind": "stepping_stones",
+      "kind": "driveway_kerb",
       "line": [[345, -360], [345, 360]],
       "height": 18,
-      "note": "40 cm garden stepping stones (144 m slabs), gaps choked with tussock.",
+      "note": "Concrete kerb of the interlocking-paver driveway; the family car is parked on it.",
       "boxes": [[345, -380, 489, -236, 18], [345, -200, 489, -56, 18], [345, -20, 489, 124, 18], [345, 160, 489, 304, 18], [345, 340, 489, 484, 18]]
     },
     {
       "side": "south",
-      "kind": "brick_edging",
+      "kind": "garden_kerb",
       "line": [[-360, 345], [360, 345]],
       "height": 22,
-      "note": "Garden bed edging. Sunflowers tower behind it.",
+      "note": "Cement blocks laid on edge around the backyard farm. Maize towers behind them.",
       "boxes": [[-1500, 345, 1500, 381, 22]]
     },
     {
       "side": "west",
-      "kind": "oak_trunk_and_leaf_litter",
+      "kind": "mango_trunk_and_leaf_litter",
       "line": [[-350, -360], [-350, 360]],
       "height": 40,
-      "note": "The Big Oak's trunk is the wall between z -100 and +100; leaf-litter drifts to either side."
+      "note": "The mango tree's trunk base and drifts of fallen mango leaves."
     }
   ],
   "barriers": [
@@ -270,26 +271,26 @@
       "real": "19 cm pencil"
     },
     {
-      "id": "dandelion_bloom",
-      "name": "Dandelion tower",
+      "id": "tridax_bloom",
+      "name": "Tridax tower",
       "pos": [-60, -125],
-      "size": [12.6, 90, 12.6],
-      "real": "25 cm dandelion"
+      "size": [5.4, 80, 5.4],
+      "real": "22 cm 'coat buttons' weed in flower"
     },
     {
-      "id": "dandelion_seed",
-      "name": "Seed-head dandelion",
+      "id": "tridax_seed",
+      "name": "Tridax seed head",
       "pos": [-170, -235],
-      "size": [12.6, 75, 12.6],
-      "real": "21 cm, gone to seed; parachutes drift over the forest"
+      "size": [6, 70, 6],
+      "real": "20 cm, gone to seed; fluffy parachutes drift over the forest"
     },
     {
-      "id": "lego_waystation",
-      "name": "Lego waystation",
+      "id": "water_sachet",
+      "name": "Pure-water sachet",
       "pos": [255, -240],
-      "size": [11.5, 4, 5.8],
-      "real": "2x4 Lego brick",
-      "note": "Optional; abandoned ant rest stop."
+      "size": [54, 5, 36],
+      "real": "empty 50 cl 'pure water' sachet",
+      "note": "Translucent nylon tent with a puddle still inside; abandoned ant rest stop."
     },
     {
       "id": "marble",
@@ -307,18 +308,18 @@
       "real": "5 cm orb web, abandoned"
     },
     {
-      "id": "oak_root_hall",
-      "name": "Oak Root Hall (quest hub)",
+      "id": "mango_root_hall",
+      "name": "Mango Root Hall (quest hub)",
       "pos": [-346, 0],
       "size": [20, 14, 10],
       "note": "Entrance between two root buttresses at the trunk base. Sealed until after the colony."
     },
     {
-      "id": "bottle_cap",
-      "name": "Capstone (bottle cap roof)",
+      "id": "crown_cap",
+      "name": "Capstone (crown cap roof)",
       "pos": [-140, 55],
-      "size": [10.8, 5.7, 10.8],
-      "real": "30 mm cap on three 1 cm pebbles"
+      "size": [9.4, 5.7, 9.4],
+      "real": "26 mm soft-drink crown cap on three 1 cm pebbles"
     },
     {
       "id": "lookout_blade",
@@ -328,32 +329,32 @@
       "note": "Thread ladder to a lookout at 25 m."
     },
     {
-      "id": "earring_shrine",
-      "name": "Earring shrine",
+      "id": "coral_bead_shrine",
+      "name": "Coral bead shrine",
       "pos": [-128, 48],
       "size": [3, 4, 3],
-      "real": "lost stud earring"
+      "real": "one red coral bead from a broken necklace"
     },
     {
       "id": "pot_ring",
-      "name": "Flower-pot ring",
+      "name": "Planter ring",
       "pos": [20, 85],
       "size": [90, 0.5, 90],
-      "note": "Circular imprint in the soil."
+      "note": "Circular imprint of a paint-bucket planter in the red earth."
     },
     {
       "id": "colony_gate",
       "name": "Colony Gate",
       "pos": [40, 112],
       "size": [14, 7, 4],
-      "real": "4 cm hair tie as arch over the crack"
+      "real": "4 cm hair band as arch over the crack"
     },
     {
-      "id": "coin_plaza",
-      "name": "Coin plaza",
+      "id": "naira_coin_plaza",
+      "name": "\u20a61 coin plaza",
       "pos": [15, 104],
-      "size": [8.6, 0.6, 8.6],
-      "real": "US quarter"
+      "size": [7.7, 0.6, 7.7],
+      "real": "one-naira coin"
     },
     {
       "id": "worm_casts",
@@ -379,11 +380,11 @@
       "note": "Jet sprays up and west; mist radius ~45 m with rainbow."
     },
     {
-      "id": "popsicle_stick",
-      "name": "Popsicle stick",
+      "id": "lolly_stick",
+      "name": "Ice-lolly stick",
       "pos": [140, 190],
       "size": [3.6, 0.7, 41],
-      "real": "11.4 cm stick, faded printed joke on top"
+      "real": "11.4 cm ice-lolly stick Amodu dropped; faded printed joke on top"
     },
     {
       "id": "abandoned_post",
@@ -406,36 +407,38 @@
       "size": [6, 15, 6]
     },
     {
-      "id": "acorn_1",
-      "name": "Acorn",
-      "pos": [-150, 225],
-      "size": [5.4, 9, 5.4],
-      "real": "25 mm acorn"
+      "id": "fallen_mango",
+      "name": "Fallen mango",
+      "pos": [-235, 200],
+      "size": [25, 22, 36],
+      "real": "10 cm ripe mango, split and buzzing with fruit flies"
     },
     {
-      "id": "acorn_2",
-      "name": "Acorn",
-      "pos": [-95, 262],
-      "size": [5.4, 9, 5.4]
+      "id": "mango_stone",
+      "name": "Mango stone",
+      "pos": [-110, 290],
+      "size": [14, 7, 29],
+      "real": "8 cm fibrous mango seed, sucked clean"
     },
     {
-      "id": "acorn_3",
-      "name": "Acorn",
+      "id": "baby_mango",
+      "name": "Baby mango",
       "pos": [-225, 290],
-      "size": [5.4, 9, 5.4]
+      "size": [8, 8, 11],
+      "real": "3 cm unripe mango from fruit drop"
     },
     {
-      "id": "oak_leaf_1",
-      "name": "Fallen oak leaf",
+      "id": "mango_leaf_1",
+      "name": "Fallen mango leaf",
       "pos": [-180, 270],
-      "size": [40, 0.3, 22],
-      "real": "11 cm leaf"
+      "size": [18, 0.3, 65],
+      "real": "18 cm leathery mango leaf"
     },
     {
-      "id": "oak_leaf_2",
-      "name": "Fallen oak leaf",
+      "id": "mango_leaf_2",
+      "name": "Fallen mango leaf",
       "pos": [-60, 245],
-      "size": [36, 0.3, 20]
+      "size": [16, 0.3, 58]
     },
     {
       "id": "spider_burrow",
@@ -454,79 +457,96 @@
   ],
   "skyline": [
     {
-      "id": "oak_trunk",
-      "name": "Big Oak",
+      "id": "mango_trunk",
+      "name": "Mango tree",
       "pos": [-470, 0],
-      "size": [216, 1080, 216],
-      "real": "60 cm trunk, first branches at 3 m",
-      "note": "Canopy ceiling from ~1.1 km up to 5.4 km, radius ~1.4 km. Covers the whole level; open sky only toward the east."
+      "size": [180, 650, 180],
+      "real": "50 cm trunk, first branches at 1.8 m",
+      "note": "Dense evergreen canopy from 650 m up to ~3.2 km, radius ~1.8 km: the whole level sits in its shade except the east. Weaver ants nest in its leaves; mangoes drop."
     },
     {
       "id": "house",
-      "name": "House",
+      "name": "Bungalow",
       "pos": [0, -2200],
-      "size": [5000, 3240, 300],
-      "real": "two storeys",
-      "note": "Windows are 430 m tall. Lights come on at dusk."
+      "size": [5000, 2520, 300],
+      "note": "Painted walls, burglar-proof bars on every window, a veranda, a satellite dish. Lights go off when NEPA takes light."
     },
     {
-      "id": "grill",
-      "name": "Grill",
+      "id": "coal_pot",
+      "name": "Coal pot",
       "pos": [-400, -1000],
-      "size": [220, 360, 180],
-      "note": "On the patio."
+      "size": [110, 110, 110],
+      "note": "Charcoal stove on the veranda; smoke in the evening."
     },
     {
-      "id": "deck",
-      "name": "Deck",
+      "id": "boys_quarters",
+      "name": "Boys' quarters",
       "pos": [-2200, -1500],
-      "size": [1800, 216, 1400],
-      "note": "Zone 3 lives under it."
+      "size": [1800, 1100, 1400],
+      "note": "Small back building; the gutter runs behind it (Zone 3)."
     },
     {
-      "id": "mower",
-      "name": "Lawn mower (parked)",
-      "pos": [900, -900],
-      "size": [360, 360, 540],
-      "note": "Foreshadowing."
+      "id": "overhead_tank",
+      "name": "Overhead water tank",
+      "pos": [-1200, -2700],
+      "size": [612, 1620, 612],
+      "note": "Plastic tank on a steel stand; the hose comes from its tap."
     },
     {
-      "id": "birdbath",
-      "name": "Birdbath",
+      "id": "clothesline",
+      "name": "Clothesline",
+      "pos": [-550, -1300],
+      "size": [1700, 648, 20],
+      "note": "Ankara wrappers and school uniforms drying high overhead."
+    },
+    {
+      "id": "family_car",
+      "name": "Family car",
+      "pos": [1100, -500],
+      "size": [650, 520, 1730],
+      "note": "Saloon parked on the interlock driveway; its tyres made the Rut."
+    },
+    {
+      "id": "water_drum",
+      "name": "Water drum",
       "pos": [1500, 80],
-      "size": [180, 252, 180]
+      "size": [210, 317, 210],
+      "note": "Blue 200-litre drum, overflowing after the rain."
     },
     {
-      "id": "sunflowers",
-      "name": "Sunflower row",
+      "id": "maize",
+      "name": "Maize stalks",
       "pos": [100, 520],
       "size": [500, 720, 80],
-      "note": "Heads are 108 m dishes. Zone 2 teaser."
+      "note": "Tassels 720 m up. Zone 2 teaser."
     },
     {
-      "id": "tomato",
-      "name": "Tomato plants",
+      "id": "pepper",
+      "name": "Pepper plants",
       "pos": [700, 700],
-      "size": [300, 400, 300]
+      "size": [300, 250, 300],
+      "note": "Red tatashe peppers the size of houses."
     },
     {
-      "id": "compost",
-      "name": "Compost pile",
+      "id": "termite_mound",
+      "name": "Termite mound",
       "pos": [2700, 1900],
-      "size": [700, 360, 700],
-      "note": "Steam column ~1.5 km, visible over the garden."
+      "size": [360, 540, 360],
+      "note": "A real mound in the compound corner: the Termite Citadel. The refuse heap beside it smoulders; smoke column ~1.5 km."
     },
     {
-      "id": "shed",
-      "name": "Shed",
+      "id": "store",
+      "name": "Store",
       "pos": [-2700, 1900],
-      "size": [900, 800, 700]
+      "size": [900, 800, 700],
+      "note": "Tools, kerosene and the insecticide sprayer (the finale)."
     },
     {
-      "id": "fence",
-      "name": "Fence",
+      "id": "compound_wall",
+      "name": "Compound wall",
       "rect": [-3900, -2300, 3300, 2400],
-      "height": 648
+      "height": 864,
+      "note": "2.4 m block wall, broken bottles set in the top; black gate on the east side."
     }
   ],
   "viewpoints": [
@@ -536,7 +556,7 @@
       "pos": [40, -205],
       "height": 1.6,
       "look_at": [-110, -170],
-      "must_see": ["dandelion_bloom", "oak_trunk", "sunflowers"]
+      "must_see": ["tridax_bloom", "mango_trunk", "maize"]
     },
     {
       "id": "V2",
@@ -544,7 +564,7 @@
       "pos": [115, -266],
       "height": 150,
       "look_at": [0, 100],
-      "must_see": ["rut_puddle", "hose_coupling", "sunflowers", "compost", "oak_trunk"]
+      "must_see": ["rut_puddle", "hose_coupling", "maize", "termite_mound", "mango_trunk"]
     },
     {
       "id": "V3",
@@ -560,7 +580,7 @@
       "pos": [140, 190],
       "height": 2.5,
       "look_at": [120, 280],
-      "must_see": ["termite_camp", "sunflowers", "backpack"]
+      "must_see": ["termite_camp", "maize", "backpack"]
     },
     {
       "id": "V5",
@@ -568,12 +588,12 @@
       "pos": [-200, 150],
       "height": 13,
       "look_at": [-290, 300],
-      "must_see": ["spider_burrow", "oak_trunk", "acorn_3"]
+      "must_see": ["spider_burrow", "mango_trunk", "baby_mango"]
     }
   ],
   "garden_bed": {
     "box": [-1500, 381, 1500, 1400, 16],
-    "note": "Raised soil behind the brick edging; the sunflowers grow in it."
+    "note": "Raised red-earth beds of the backyard farm: maize, cassava, pepper, ugu vines."
   },
   "far_lawn": {
     "height": 21,

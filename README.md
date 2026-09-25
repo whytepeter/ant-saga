@@ -1,6 +1,8 @@
 # Ant Kingdom Saga: Backyard Edition
 
-Third-person 3D game in Godot 4.7. Amodu, shrunk to 5 mm, explores his own backyard, where everything is 360 times bigger.
+Third-person 3D game in Godot 4.7. Amodu, shrunk to 5 mm, explores his family's compound in Nigeria, where everything is 360 times bigger.
+
+- World bible: `docs/WORLD.md` · Story: `docs/STORY.md`
 
 - Design source: `docs/ant_kingdom_saga_backyard_edition.pdf`
 - Production plan: `docs/PLAN.md`

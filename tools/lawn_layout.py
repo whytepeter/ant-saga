@@ -140,8 +140,8 @@ def build_grid(layout, bridge=True, tunnel=True):
                 c = x if axis == "x" else z
                 if (c - v) * sign >= 0:
                     g.mark(i, j, True, f"boundary:{side}")
-    trunk = by_id(layout["skyline"], "oak_trunk")
-    g.block_circle(trunk["pos"][0], trunk["pos"][1], trunk["size"][0] / 2, "oak_trunk")
+    trunk = by_id(layout["skyline"], "mango_trunk")
+    g.block_circle(trunk["pos"][0], trunk["pos"][1], trunk["size"][0] / 2, "mango_trunk")
     for b in layout["barriers"]:
         g.block_polygon(b["polygon"], b["id"])
     for w in layout["water"]:
@@ -150,7 +150,7 @@ def build_grid(layout, bridge=True, tunnel=True):
         if p["kind"] == "root":
             g.block_polyline(p["points"], p["width"] / 2, p["id"])
     if bridge:
-        stick = by_id(layout["landmarks"], "popsicle_stick")
+        stick = by_id(layout["landmarks"], "lolly_stick")
         (cx, cz), (sw, _, sl) = stick["pos"], stick["size"]
         g.block_polygon([[cx - sw / 2, cz - sl / 2], [cx + sw / 2, cz - sl / 2],
                          [cx + sw / 2, cz + sl / 2], [cx - sw / 2, cz + sl / 2]], None, value=False)
@@ -162,8 +162,8 @@ def build_grid(layout, bridge=True, tunnel=True):
 # ── check ─────────────────────────────────────────────────────────────────────
 
 # Landmarks you can walk over, through or under (or that the builder keeps a lane through).
-WALKABLE = {"pot_ring", "trip_lines", "orb_web", "colony_gate", "popsicle_stick", "spider_burrow",
-            "coin_plaza", "termite_camp", "abandoned_post", "pencil_log", "oak_root_hall"}
+WALKABLE = {"pot_ring", "trip_lines", "orb_web", "colony_gate", "lolly_stick", "spider_burrow",
+            "naira_coin_plaza", "termite_camp", "abandoned_post", "pencil_log", "mango_root_hall", "water_sachet"}
 STANDIN_RADIUS = {"ant": 1.4, "pill_bug": 2.8, "wolf_spider": 5.5}  # spider: solid body only, the legs are visual
 
 
@@ -171,7 +171,7 @@ def solid_obstacles(layout, margin=0.6):
     """(name, test(x, z)) pairs for footprints a walking player collides with."""
     obs = []
     for lm in layout["landmarks"]:
-        if lm["id"] in WALKABLE or lm["id"].startswith("oak_leaf"):
+        if lm["id"] in WALKABLE or lm["id"].startswith("mango_leaf"):
             continue
         (cx, cz), (w, _, d) = lm["pos"], lm["size"]
         hw, hd = w / 2 + margin, d / 2 + margin
@@ -193,7 +193,7 @@ def check(layout):
         print(f"  FAIL  {msg}")
 
     spawn = layout["spawn"]["pos"]
-    south_areas = {"oak_rootlands", "spiders_edge"}
+    south_areas = {"mango_rootlands", "spiders_edge"}
 
     print("Bounds")
     x0, z0, x1, z1 = layout["meta"]["playable_bounds"]
@@ -212,7 +212,7 @@ def check(layout):
         reach = seen[j][i]
         if a["id"] in south_areas and reach:
             fail(f"{a['id']} reachable without the bridge: the south is not sealed")
-        elif a["id"] not in south_areas and not reach and a["id"] != "popsicle_bridge":
+        elif a["id"] not in south_areas and not reach and a["id"] != "lolly_bridge":
             fail(f"{a['id']} unreachable from spawn")
     if not any("sealed" in f or "unreachable" in f for f in failures):
         ok("south sealed; every northern area reachable from spawn")
@@ -311,7 +311,7 @@ COL = {
 AREA_TINT = {
     "backpack_hollow": "#f3e7b0", "blade_forest": "#6f9d52", "dewdrop_garden": "#bfe3ea",
     "capstone_shelter": "#f0d6a8", "bare_patch": "#c9ad83", "hose_run": "#cfe8f3",
-    "popsicle_bridge": "#e9d9b4", "oak_rootlands": "#b89a74", "spiders_edge": "#8c7a86",
+    "lolly_bridge": "#e9d9b4", "mango_rootlands": "#b89a74", "spiders_edge": "#8c7a86",
 }
 
 
@@ -341,11 +341,11 @@ def text(x, y, s, size=11, weight=400, anchor="start", fill=None, halo=True, ita
 # Label placement for landmarks: (dx, dy, anchor) in px; omitted ids are drawn unlabeled.
 LABELS = {
     "backpack": (0, -52, "middle"), "pencil_log": (10, 22, "start"),
-    "dandelion_bloom": (9, 4, "start"), "dandelion_seed": (-9, 4, "end"),
-    "lego_waystation": (9, 4, "start"), "marble": (-8, 4, "end"), "orb_web": (10, 4, "start"),
-    "oak_root_hall": (12, -8, "start"), "lookout_blade": (8, -6, "start"),
+    "tridax_bloom": (9, 4, "start"), "tridax_seed": (-9, 4, "end"),
+    "water_sachet": (0, -26, "middle"), "marble": (-8, 4, "end"), "orb_web": (10, 4, "start"),
+    "mango_root_hall": (12, -8, "start"), "lookout_blade": (8, -6, "start"),
     "colony_gate": (10, 14, "start"), "patrol_gate": (10, 4, "start"),
-    "hose_coupling": (12, -6, "start"), "popsicle_stick": (8, -22, "start"),
+    "hose_coupling": (12, -6, "start"), "lolly_stick": (8, -22, "start"),
     "abandoned_post": (-10, 4, "end"), "termite_camp": (0, 30, "middle"), "termite_tower": (8, -6, "start"),
     "spider_burrow": (0, 18, "middle"), "trip_lines": (40, -4, "start"),
 }
@@ -373,8 +373,8 @@ def render(layout):
     a(f'<rect width="{W}" height="{H}" fill="{COL["paper"]}"/>')
 
     # Title
-    a(text(M, 44, "Level 1 — The Lawn", 26, 700, halo=False))
-    a(text(M, 68, "Top-down layout · 720 m × 720 m in game (2 m × 2 m of real lawn, scale ×360) · 07:30, early summer",
+    a(text(M, 44, "Level 1 — The Compound Grass", 26, 700, halo=False))
+    a(text(M, 68, "Top-down layout · 720 m × 720 m in game (2 m × 2 m of real ground, scale ×360) · 07:30, rainy-season morning",
            12.5, 400, fill=COL["muted"], halo=False))
     a(f'<g transform="translate(0,{TOP})">')
 
@@ -391,7 +391,7 @@ def render(layout):
     a(f'<rect x="{px(-360)}" y="{pz(-360)}" width="{10 * S}" height="{MAPPX}" fill="url(#litter)"/>')
 
     # Big Oak trunk (mostly beyond the west edge)
-    trunk = by_id(layout["skyline"], "oak_trunk")
+    trunk = by_id(layout["skyline"], "mango_trunk")
     tx, tz = trunk["pos"]
     a(f'<circle cx="{px(tx)}" cy="{pz(tz)}" r="{trunk["size"][0] / 2 * S:.1f}" fill="#6b4a2b" stroke="#4a321c" stroke-width="2"/>')
 
@@ -444,13 +444,13 @@ def render(layout):
               f'stroke-dasharray="2 5" stroke-linecap="round"/>')
 
     # Popsicle stick
-    st = by_id(layout["landmarks"], "popsicle_stick")
+    st = by_id(layout["landmarks"], "lolly_stick")
     (sx, sz), (sw, _, sl) = st["pos"], st["size"]
     a(f'<rect x="{px(sx - sw / 2):.1f}" y="{pz(sz - sl / 2):.1f}" width="{max(sw * S, 4):.1f}" height="{sl * S:.1f}" '
       f'rx="2" fill="{COL["stick"]}" stroke="#9c7b43"/>')
 
     # Landmarks (footprint to scale, minimum marker size)
-    skip_shape = {"popsicle_stick", "hose_coupling", "pencil_log", "pot_ring", "trip_lines", "termite_camp"}
+    skip_shape = {"lolly_stick", "hose_coupling", "pencil_log", "pot_ring", "trip_lines", "termite_camp"}
     pr = by_id(layout["landmarks"], "pot_ring")
     a(f'<circle cx="{px(pr["pos"][0])}" cy="{pz(pr["pos"][1])}" r="{pr["size"][0] / 2 * S}" fill="none" '
       f'stroke="#8a6d49" stroke-width="3" stroke-opacity="0.7"/>')
@@ -466,12 +466,14 @@ def render(layout):
         x, z = lm["pos"]
         w, _, d = lm["size"]
         rw, rd = max(w * S, 5), max(d * S, 5)
-        fill = {"backpack": "#3d5a80", "marble": "#9ad0e6", "bottle_cap": "#d64541", "colony_gate": "#2b2a26",
-                "coin_plaza": "#b8b8b8", "lego_waystation": "#e53935", "spider_burrow": "#1d1b1f",
-                "abandoned_post": "#c7a36a", "termite_tower": "#9b6a43", "oak_root_hall": "#3a2716"}.get(lm["id"], "#5d4a36")
-        if lm["id"].startswith("acorn"):
-            fill = "#8b5a2b"
-        if lm["id"].startswith("oak_leaf"):
+        fill = {"backpack": "#3d5a80", "marble": "#9ad0e6", "crown_cap": "#d64541", "colony_gate": "#2b2a26",
+                "naira_coin_plaza": "#c9a13b", "water_sachet": "#cfe6f2", "spider_burrow": "#1d1b1f",
+                "abandoned_post": "#c7a36a", "termite_tower": "#9b6a43", "mango_root_hall": "#3a2716", "coral_bead_shrine": "#d8432c"}.get(lm["id"], "#5d4a36")
+        if lm["id"] in ("fallen_mango", "baby_mango"):
+            fill = "#e0a526"
+        if lm["id"] == "mango_stone":
+            fill = "#c9b07a"
+        if lm["id"].startswith("mango_leaf"):
             a(f'<ellipse cx="{px(x)}" cy="{pz(z)}" rx="{w * S / 2}" ry="{d * S / 2}" fill="#c08a3e" stroke="#7a5634" '
               f'transform="rotate(-25 {px(x)} {pz(z)})"/>')
             continue
@@ -485,8 +487,8 @@ def render(layout):
             a(text(px(lm["pos"][0]) + dx, pz(lm["pos"][1]) + dy, name, 10.5, 500, anc))
 
     # Area numbers and names
-    name_off = {"hose_run": (38, 60), "popsicle_bridge": (0, -46), "bare_patch": (0, -40), "capstone_shelter": (0, 44),
-                "spiders_edge": (26, -40), "oak_rootlands": (40, 8), "dewdrop_garden": (50, -30),
+    name_off = {"hose_run": (38, 60), "lolly_bridge": (0, -46), "bare_patch": (0, -40), "capstone_shelter": (0, 44),
+                "spiders_edge": (26, -40), "mango_rootlands": (40, 8), "dewdrop_garden": (50, -30),
                 "backpack_hollow": (-120, 10), "blade_forest": (0, 12)}
     for ar in layout["areas"]:
         cx, cz = ar["center"]
@@ -520,9 +522,9 @@ def render(layout):
             continue
         x, z = sk["pos"]
         dist = math.hypot(x, z)
-        if sk["id"] == "oak_trunk":  # drawn on the map itself; label it beside the trunk
-            a(text(M - 118, pz(-128), "Big Oak (trunk)", 11, 700, "start", halo=False))
-            a(text(M - 118, pz(-128) + 13, f"{dist:.0f} m · 216 m wide", 10, 400, "start", fill=COL["muted"], halo=False))
+        if sk["id"] == "mango_trunk":  # drawn on the map itself; label it beside the trunk
+            a(text(M - 118, pz(-128), "Mango tree (trunk)", 11, 700, "start", halo=False))
+            a(text(M - 118, pz(-128) + 13, f"{dist:.0f} m · {sk['size'][0]:.0f} m wide", 10, 400, "start", fill=COL["muted"], halo=False))
             continue
         ang = math.atan2(z, x)
         # project to a square ring just outside the map
@@ -560,7 +562,7 @@ def render(layout):
         ("line", COL["route"], "Main route", "3.2", None), ("line", COL["route"], "Shortcut (root tunnel)", "2.4", "2 5"),
         ("line", COL["antroad"], "Ant road", "2", "1 5"), ("line", COL["termite"], "Termite trail", "2.2", "6 4"),
         ("line", COL["root"], "Oak roots (walls)", "8", None), ("line", COL["hose"], "Garden hose", "7", None),
-        ("box", COL["water"], "The Rut (water = defeat)", None, None), ("box", "url(#tuss)", "Tussock (impassable)", None, None),
+        ("box", COL["water"], "The Rut (tyre rut, water = defeat)", None, None), ("box", "url(#tuss)", "Tussock (impassable)", None, None),
         ("tri", "#7b3fa0", "Viewpoint (sight-line check)", None, None),
     ]
     col_w = MAPPX / 3
@@ -591,7 +593,7 @@ def render(layout):
 # surface codes below.
 
 SURFACE = {"lawn": 0, "bare_soil": 1, "mud": 2, "leaf_litter": 3, "water": 4,
-           "flattened": 5, "tussock": 6, "clover": 7, "ant_road": 8}
+           "flattened": 5, "tussock": 6, "mimosa": 7, "ant_road": 8}
 
 FILL = 10.0  # standing blades per 100 m² in ordinary lawn (one per 10 m²)
 
@@ -693,17 +695,17 @@ def bake(layout):
             surf = "lawn"
             dens = FILL
 
-            # Areas: clearings, the flattened hollow, clover, shade under the oak
+            # Areas: clearings, the flattened hollow, touch-me-not, shade under the mango
             q = {k: ellipse_q(x, z, a) for k, a in areas.items()}
             for k, qv in q.items():
-                if qv < 1.0 and k not in ("blade_forest", "backpack_hollow", "bare_patch", "popsicle_bridge"):
+                if qv < 1.0 and k not in ("blade_forest", "backpack_hollow", "bare_patch", "lolly_bridge"):
                     dens = min(dens, FILL * (0.15 + 0.85 * smoothstep(0.55, 1.0, qv)))
             if q["blade_forest"] < 1.0:
                 dens = FILL * (1.0 + 0.6 * (1 - smoothstep(0.6, 1.0, q["blade_forest"])))
             if q["dewdrop_garden"] < 1.0:
-                surf = "clover"
+                surf = "mimosa"
                 dens = min(dens, 5.0)
-            if q["oak_rootlands"] < 1.0 or q["spiders_edge"] < 1.0 or x < -330:
+            if q["mango_rootlands"] < 1.0 or q["spiders_edge"] < 1.0 or x < -330:
                 surf = "leaf_litter"
                 dens = min(dens, 3.0)
             if q["backpack_hollow"] < 1.0:
@@ -748,7 +750,7 @@ def bake(layout):
                     d = f.distance(x, z)
                     if d < f.clear + f.ramp:
                         dens = min(dens, FILL * smoothstep(f.clear, f.clear + f.ramp, d))
-                    if f.surface and d < f.surface_width and surf in ("lawn", "clover", "leaf_litter"):
+                    if f.surface and d < f.surface_width and surf in ("lawn", "mimosa", "leaf_litter"):
                         surf = f.surface
 
             # Tussock walls last: they override everything
@@ -781,7 +783,7 @@ def bake(layout):
 def _write_preview(path, n, heights, surface, density):
     """Top-down PNG of the bake: grass density as green, surfaces tinted, hillshade from relief."""
     import zlib
-    tint = {0: (86, 70, 48), 1: (170, 140, 100), 2: (70, 55, 40), 3: (140, 100, 55), 4: (60, 130, 190),
+    tint = {0: (110, 66, 42), 1: (176, 92, 52), 2: (80, 44, 30), 3: (140, 100, 55), 4: (60, 130, 190),
             5: (190, 175, 110), 6: (30, 70, 25), 7: (90, 110, 60), 8: (120, 90, 60)}
     rows = []
     for j in range(n):

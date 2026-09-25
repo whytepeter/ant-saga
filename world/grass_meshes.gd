@@ -27,28 +27,34 @@ static func blade(height: float, width: float, bend: float, rows := 6) -> ArrayM
 	return st.commit()
 
 
-## White clover: a stem with three round leaflets spread flat at the top.
-static func clover(height: float, leaflet: float) -> ArrayMesh:
+
+
+## Touch-me-not (Mimosa pudica): a stem topped by four feathery pinnae fanned
+## out and tilted slightly up. The pinnae are what fold shut when touched.
+static func mimosa(height: float, pinna_length: float) -> ArrayMesh:
 	var st := SurfaceTool.new()
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
-	# stem: two crossed quads
-	var sw := 0.45
+	var sw := 0.35
 	for axis: Vector3 in [Vector3.RIGHT, Vector3.BACK]:
 		var a := -axis * sw
 		var b := axis * sw
 		var top := Vector3.UP * height
 		st.add_vertex(a); st.add_vertex(a + top); st.add_vertex(b)
 		st.add_vertex(b); st.add_vertex(a + top); st.add_vertex(b + top)
-	# leaflets: slightly cupped discs radiating from the stem top
-	var segments := 12
-	for k in 3:
-		var dir := Vector3.FORWARD.rotated(Vector3.UP, TAU * k / 3.0)
-		var center := Vector3.UP * height + dir * leaflet * 0.55
+	var base := Vector3.UP * height
+	for k in 4:
+		var dir := Vector3.FORWARD.rotated(Vector3.UP, TAU * k / 4.0 + 0.3)
+		var side := dir.cross(Vector3.UP).normalized()
+		var rise := Vector3.UP * 0.25
+		# a pinna: a row of leaflet pairs, drawn as a saw-edged strip
+		var segments := 8
 		for s in segments:
-			var a0 := TAU * s / segments
-			var a1 := TAU * (s + 1) / segments
-			var p0 := center + Vector3(cos(a0), 0.0, sin(a0)) * leaflet * 0.5 + Vector3.UP * leaflet * 0.08
-			var p1 := center + Vector3(cos(a1), 0.0, sin(a1)) * leaflet * 0.5 + Vector3.UP * leaflet * 0.08
-			st.add_vertex(center); st.add_vertex(p1); st.add_vertex(p0)
+			var t0 := float(s) / segments
+			var t1 := float(s + 1) / segments
+			var c0 := base + (dir + rise) * pinna_length * t0
+			var c1 := base + (dir + rise) * pinna_length * t1
+			var w := pinna_length * 0.16 * (1.0 - 0.5 * t0)
+			st.add_vertex(c0); st.add_vertex(c1 + side * w); st.add_vertex(c1)
+			st.add_vertex(c0); st.add_vertex(c1); st.add_vertex(c1 - side * w)
 	st.generate_normals()
 	return st.commit()

@@ -1,6 +1,6 @@
-# Plan: Level 1, The Lawn
+# Plan: Level 1, The Compound Grass
 
-**Target:** a 720 m × 720 m walkable Lawn that looks and feels like Grounded, with Amodu at 1.8 m in-game (5 mm real, world scale ×360), built in Godot 4.7 (Forward+) on an M2 Pro / 16 GB Mac.
+**Target:** a 720 m × 720 m walkable patch of compound grass (a Nigerian family compound, see docs/WORLD.md) that looks and feels like Grounded, with Amodu at 1.8 m in-game (5 mm real, world scale ×360), built in Godot 4.7 (Forward+) on an M2 Pro / 16 GB Mac.
 
 Each phase ends with a **gate**, a check that must pass before the next phase starts.
 

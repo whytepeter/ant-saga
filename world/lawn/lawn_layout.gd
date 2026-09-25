@@ -8,7 +8,7 @@ extends RefCounted
 const LAYOUT_PATH := "res://world/lawn/layout.json"
 
 ## Mirrors SURFACE in tools/lawn_layout.py.
-enum Surface { LAWN, BARE_SOIL, MUD, LEAF_LITTER, WATER, FLATTENED, TUSSOCK, CLOVER, ANT_ROAD }
+enum Surface { LAWN, BARE_SOIL, MUD, LEAF_LITTER, WATER, FLATTENED, TUSSOCK, MIMOSA, ANT_ROAD }
 
 var data: Dictionary
 var size: int

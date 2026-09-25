@@ -17,8 +17,9 @@ extends Node3D
 @export var open_arm := 5.8
 @export var probe_radius := 10.0
 @export var follow_sharpness := 16.0
-## What the openness probe counts as "closed in". Includes grass, which the
-## spring arm itself ignores (blades near the camera dissolve instead).
+## What the openness probe counts as "closed in" (world, climbable, grass).
+## The spring arm collides with grass too, so a blade never hides Amodu; blades
+## brushing the lens dissolve instead.
 @export_flags_3d_physics var probe_mask := 1 | 4 | 16
 
 var yaw := 0.0

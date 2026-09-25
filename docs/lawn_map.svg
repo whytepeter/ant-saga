@@ -14,8 +14,8 @@
     <stop offset="1" stop-color="#1f3b1a" stop-opacity="0"/></linearGradient>
 </defs>
 <rect width="1124" height="1270" fill="#efe9dc"/>
-<text x="130.0" y="44.0" text-anchor="start" fill="#2b2a26" style="font-size:26px;font-weight:700;">Level 1 — The Lawn</text>
-<text x="130.0" y="68.0" text-anchor="start" fill="#6b675d" style="font-size:12.5px;font-weight:400;">Top-down layout · 720 m × 720 m in game (2 m × 2 m of real lawn, scale ×360) · 07:30, early summer</text>
+<text x="130.0" y="44.0" text-anchor="start" fill="#2b2a26" style="font-size:26px;font-weight:700;">Level 1 — The Compound Grass</text>
+<text x="130.0" y="68.0" text-anchor="start" fill="#6b675d" style="font-size:12.5px;font-weight:400;">Top-down layout · 720 m × 720 m in game (2 m × 2 m of real ground, scale ×360) · 07:30, rainy-season morning</text>
 <g transform="translate(0,36)">
 <rect x="130.0" y="130.0" width="864.0" height="864.0" fill="#9cc47a"/>
 <rect x="130.0" y="130.0" width="475.2" height="864.0" fill="url(#canopy)"/>
@@ -28,7 +28,7 @@
 <line x1="976.0" y1="821.1999999999999" x2="994.0" y2="821.1999999999999" stroke="#8f887a" stroke-width="1.5"/>
 <rect x="130.0" y="976.0" width="864.0" height="18.0" fill="#b0674a"/>
 <rect x="130.0" y="130.0" width="12.0" height="864.0" fill="url(#litter)"/>
-<circle cx="-2.0" cy="562.0" r="129.6" fill="#6b4a2b" stroke="#4a321c" stroke-width="2"/>
+<circle cx="-2.0" cy="562.0" r="108.0" fill="#6b4a2b" stroke="#4a321c" stroke-width="2"/>
 <ellipse cx="634.0" cy="268.0" rx="90.0" ry="66.0" fill="#f3e7b0" fill-opacity="0.55" stroke="#2b2a26" stroke-opacity="0.35" stroke-dasharray="4 4"/>
 <ellipse cx="430.0" cy="358.0" rx="120.0" ry="96.0" fill="#6f9d52" fill-opacity="0.55" stroke="#2b2a26" stroke-opacity="0.35" stroke-dasharray="4 4"/>
 <ellipse cx="274.0" cy="514.0" rx="102.0" ry="90.0" fill="#bfe3ea" fill-opacity="0.55" stroke="#2b2a26" stroke-opacity="0.35" stroke-dasharray="4 4"/>
@@ -69,40 +69,40 @@
 <circle cx="732.4" cy="910.0" r="6.0" fill="#9b6a43" stroke="#c0392b" stroke-width="1.2"/>
 <circle cx="706.0" cy="881.1999999999999" r="4.8" fill="#9b6a43" stroke="#c0392b" stroke-width="1.2"/>
 <rect x="635.2" y="181.6" width="129.6" height="64.8" rx="21.6" fill="#3d5a80" stroke="#1d1b1f" stroke-width="0.8"/>
-<rect x="482.4" y="404.4" width="15.1" height="15.1" rx="5.0" fill="#5d4a36" stroke="#1d1b1f" stroke-width="0.8"/>
-<rect x="350.4" y="272.4" width="15.1" height="15.1" rx="5.0" fill="#5d4a36" stroke="#1d1b1f" stroke-width="0.8"/>
-<rect x="861.1" y="270.5" width="13.8" height="7.0" rx="2.3" fill="#e53935" stroke="#1d1b1f" stroke-width="0.8"/>
+<rect x="486.8" y="408.8" width="6.5" height="6.5" rx="2.2" fill="#5d4a36" stroke="#1d1b1f" stroke-width="0.8"/>
+<rect x="354.4" y="276.4" width="7.2" height="7.2" rx="2.4" fill="#5d4a36" stroke="#1d1b1f" stroke-width="0.8"/>
+<rect x="835.6" y="252.4" width="64.8" height="43.2" rx="14.4" fill="#cfe6f2" stroke="#1d1b1f" stroke-width="0.8"/>
 <rect x="252.5" y="456.5" width="7.0" height="7.0" rx="2.3" fill="#9ad0e6" stroke="#1d1b1f" stroke-width="0.8"/>
 <rect x="304.0" y="541.5" width="24.0" height="5.0" rx="1.7" fill="#5d4a36" stroke="#1d1b1f" stroke-width="0.8"/>
 <rect x="134.8" y="556.0" width="24.0" height="12.0" rx="4.0" fill="#3a2716" stroke="#1d1b1f" stroke-width="0.8"/>
-<rect x="387.5" y="621.5" width="13.0" height="13.0" rx="4.3" fill="#d64541" stroke="#1d1b1f" stroke-width="0.8"/>
+<rect x="388.4" y="622.4" width="11.3" height="11.3" rx="3.8" fill="#d64541" stroke="#1d1b1f" stroke-width="0.8"/>
 <rect x="413.1" y="607.5" width="5.0" height="5.0" rx="1.7" fill="#5d4a36" stroke="#1d1b1f" stroke-width="0.8"/>
-<rect x="405.9" y="617.1" width="5.0" height="5.0" rx="1.7" fill="#5d4a36" stroke="#1d1b1f" stroke-width="0.8"/>
+<rect x="405.9" y="617.1" width="5.0" height="5.0" rx="1.7" fill="#d8432c" stroke="#1d1b1f" stroke-width="0.8"/>
 <rect x="601.6" y="693.9" width="16.8" height="5.0" rx="1.7" fill="#2b2a26" stroke="#1d1b1f" stroke-width="0.8"/>
-<rect x="574.8" y="681.6" width="10.3" height="10.3" rx="3.4" fill="#b8b8b8" stroke="#1d1b1f" stroke-width="0.8"/>
+<rect x="575.4" y="682.2" width="9.2" height="9.2" rx="3.1" fill="#c9a13b" stroke="#1d1b1f" stroke-width="0.8"/>
 <rect x="546.4" y="630.4" width="7.2" height="7.2" rx="2.4" fill="#5d4a36" stroke="#1d1b1f" stroke-width="0.8"/>
 <rect x="734.8" y="566.8" width="14.4" height="14.4" rx="4.8" fill="#5d4a36" stroke="#1d1b1f" stroke-width="0.8"/>
 <rect x="665.2" y="845.2" width="21.6" height="21.6" rx="7.2" fill="#c7a36a" stroke="#1d1b1f" stroke-width="0.8"/>
 <rect x="872.8" y="924.4" width="7.2" height="7.2" rx="2.4" fill="#9b6a43" stroke="#1d1b1f" stroke-width="0.8"/>
-<rect x="378.8" y="828.8" width="6.5" height="6.5" rx="2.2" fill="#8b5a2b" stroke="#1d1b1f" stroke-width="0.8"/>
-<rect x="444.8" y="873.2" width="6.5" height="6.5" rx="2.2" fill="#8b5a2b" stroke="#1d1b1f" stroke-width="0.8"/>
-<rect x="288.8" y="906.8" width="6.5" height="6.5" rx="2.2" fill="#8b5a2b" stroke="#1d1b1f" stroke-width="0.8"/>
-<ellipse cx="346.0" cy="886.0" rx="24.0" ry="13.2" fill="#c08a3e" stroke="#7a5634" transform="rotate(-25 346.0 886.0)"/>
-<ellipse cx="490.0" cy="856.0" rx="21.599999999999998" ry="12.0" fill="#c08a3e" stroke="#7a5634" transform="rotate(-25 490.0 856.0)"/>
+<rect x="265.0" y="780.4" width="30.0" height="43.2" rx="10.0" fill="#e0a526" stroke="#1d1b1f" stroke-width="0.8"/>
+<rect x="421.6" y="892.6" width="16.8" height="34.8" rx="5.6" fill="#c9b07a" stroke="#1d1b1f" stroke-width="0.8"/>
+<rect x="287.2" y="903.4" width="9.6" height="13.2" rx="3.2" fill="#e0a526" stroke="#1d1b1f" stroke-width="0.8"/>
+<ellipse cx="346.0" cy="886.0" rx="10.799999999999999" ry="39.0" fill="#c08a3e" stroke="#7a5634" transform="rotate(-25 346.0 886.0)"/>
+<ellipse cx="490.0" cy="856.0" rx="9.6" ry="34.8" fill="#c08a3e" stroke="#7a5634" transform="rotate(-25 490.0 856.0)"/>
 <rect x="185.2" y="938.8" width="9.6" height="9.6" rx="3.2" fill="#1d1b1f" stroke="#1d1b1f" stroke-width="0.8"/>
 <text x="700.0" y="162.0" text-anchor="middle" fill="#2b2a26" style="font-size:10.5px;font-weight:500;" stroke="#efe9dc" stroke-width="3" paint-order="stroke" stroke-linejoin="round">Amodu's backpack</text>
 <text x="653.6" y="288.8" text-anchor="start" fill="#2b2a26" style="font-size:10.5px;font-weight:500;" stroke="#efe9dc" stroke-width="3" paint-order="stroke" stroke-linejoin="round">Pencil log</text>
-<text x="499.0" y="416.0" text-anchor="start" fill="#2b2a26" style="font-size:10.5px;font-weight:500;" stroke="#efe9dc" stroke-width="3" paint-order="stroke" stroke-linejoin="round">Dandelion tower</text>
-<text x="349.0" y="284.0" text-anchor="end" fill="#2b2a26" style="font-size:10.5px;font-weight:500;" stroke="#efe9dc" stroke-width="3" paint-order="stroke" stroke-linejoin="round">Seed-head dandelion</text>
-<text x="877.0" y="278.0" text-anchor="start" fill="#2b2a26" style="font-size:10.5px;font-weight:500;" stroke="#efe9dc" stroke-width="3" paint-order="stroke" stroke-linejoin="round">Lego waystation</text>
+<text x="499.0" y="416.0" text-anchor="start" fill="#2b2a26" style="font-size:10.5px;font-weight:500;" stroke="#efe9dc" stroke-width="3" paint-order="stroke" stroke-linejoin="round">Tridax tower</text>
+<text x="349.0" y="284.0" text-anchor="end" fill="#2b2a26" style="font-size:10.5px;font-weight:500;" stroke="#efe9dc" stroke-width="3" paint-order="stroke" stroke-linejoin="round">Tridax seed head</text>
+<text x="868.0" y="248.0" text-anchor="middle" fill="#2b2a26" style="font-size:10.5px;font-weight:500;" stroke="#efe9dc" stroke-width="3" paint-order="stroke" stroke-linejoin="round">Pure-water sachet</text>
 <text x="248.0" y="464.0" text-anchor="end" fill="#2b2a26" style="font-size:10.5px;font-weight:500;" stroke="#efe9dc" stroke-width="3" paint-order="stroke" stroke-linejoin="round">Lost marble</text>
 <text x="326.0" y="548.0" text-anchor="start" fill="#2b2a26" style="font-size:10.5px;font-weight:500;" stroke="#efe9dc" stroke-width="3" paint-order="stroke" stroke-linejoin="round">Dew-strung web</text>
-<text x="158.8" y="554.0" text-anchor="start" fill="#2b2a26" style="font-size:10.5px;font-weight:500;" stroke="#efe9dc" stroke-width="3" paint-order="stroke" stroke-linejoin="round">Oak Root Hall</text>
+<text x="158.8" y="554.0" text-anchor="start" fill="#2b2a26" style="font-size:10.5px;font-weight:500;" stroke="#efe9dc" stroke-width="3" paint-order="stroke" stroke-linejoin="round">Mango Root Hall</text>
 <text x="423.6" y="604.0" text-anchor="start" fill="#2b2a26" style="font-size:10.5px;font-weight:500;" stroke="#efe9dc" stroke-width="3" paint-order="stroke" stroke-linejoin="round">Lookout blade</text>
 <text x="620.0" y="710.4" text-anchor="start" fill="#2b2a26" style="font-size:10.5px;font-weight:500;" stroke="#efe9dc" stroke-width="3" paint-order="stroke" stroke-linejoin="round">Colony Gate</text>
 <text x="752.0" y="578.0" text-anchor="start" fill="#2b2a26" style="font-size:10.5px;font-weight:500;" stroke="#efe9dc" stroke-width="3" paint-order="stroke" stroke-linejoin="round">Patrol Gate</text>
 <text x="844.0" y="484.0" text-anchor="start" fill="#2b2a26" style="font-size:10.5px;font-weight:500;" stroke="#efe9dc" stroke-width="3" paint-order="stroke" stroke-linejoin="round">Leaking coupling</text>
-<text x="738.0" y="768.0" text-anchor="start" fill="#2b2a26" style="font-size:10.5px;font-weight:500;" stroke="#efe9dc" stroke-width="3" paint-order="stroke" stroke-linejoin="round">Popsicle stick</text>
+<text x="738.0" y="768.0" text-anchor="start" fill="#2b2a26" style="font-size:10.5px;font-weight:500;" stroke="#efe9dc" stroke-width="3" paint-order="stroke" stroke-linejoin="round">Ice-lolly stick</text>
 <text x="666.0" y="860.0" text-anchor="end" fill="#2b2a26" style="font-size:10.5px;font-weight:500;" stroke="#efe9dc" stroke-width="3" paint-order="stroke" stroke-linejoin="round">Silent ant outpost</text>
 <text x="706.0" y="928.0" text-anchor="middle" fill="#2b2a26" style="font-size:10.5px;font-weight:500;" stroke="#efe9dc" stroke-width="3" paint-order="stroke" stroke-linejoin="round">Termite forward camp</text>
 <text x="884.4" y="922.0" text-anchor="start" fill="#2b2a26" style="font-size:10.5px;font-weight:500;" stroke="#efe9dc" stroke-width="3" paint-order="stroke" stroke-linejoin="round">Mud-tube tower</text>
@@ -128,17 +128,17 @@
 <text x="858.0" y="576.0" text-anchor="middle" fill="#2b2a26" style="font-size:14px;font-weight:700;" stroke="#efe9dc" stroke-width="3" paint-order="stroke" stroke-linejoin="round">Hose Run</text>
 <circle cx="730.0" cy="722.0" r="11" fill="#2b2a26"/>
 <text x="730.0" y="726.0" text-anchor="middle" fill="#fff" style="font-size:12px;font-weight:700;">7</text>
-<text x="730.0" y="746.0" text-anchor="middle" fill="#2b2a26" style="font-size:14px;font-weight:700;" stroke="#efe9dc" stroke-width="3" paint-order="stroke" stroke-linejoin="round">Popsicle Bridge</text>
+<text x="730.0" y="746.0" text-anchor="middle" fill="#2b2a26" style="font-size:14px;font-weight:700;" stroke="#efe9dc" stroke-width="3" paint-order="stroke" stroke-linejoin="round">Lolly-Stick Bridge</text>
 <circle cx="398.0" cy="842.0" r="11" fill="#2b2a26"/>
 <text x="398.0" y="846.0" text-anchor="middle" fill="#fff" style="font-size:12px;font-weight:700;">8</text>
-<text x="398.0" y="866.0" text-anchor="middle" fill="#2b2a26" style="font-size:14px;font-weight:700;" stroke="#efe9dc" stroke-width="3" paint-order="stroke" stroke-linejoin="round">Oak Rootlands</text>
+<text x="398.0" y="866.0" text-anchor="middle" fill="#2b2a26" style="font-size:14px;font-weight:700;" stroke="#efe9dc" stroke-width="3" paint-order="stroke" stroke-linejoin="round">Mango Rootlands</text>
 <circle cx="234.0" cy="860.0" r="11" fill="#2b2a26"/>
 <text x="234.0" y="864.0" text-anchor="middle" fill="#fff" style="font-size:12px;font-weight:700;">9</text>
 <text x="234.0" y="884.0" text-anchor="middle" fill="#2b2a26" style="font-size:14px;font-weight:700;" stroke="#efe9dc" stroke-width="3" paint-order="stroke" stroke-linejoin="round">Spider's Edge</text>
 <polygon points="594.4,319.6 612.7,309.6 615.3,320.6" fill="#7b3fa0" stroke="#fff" stroke-width="1"/>
 <text x="604.0" y="309.0" text-anchor="end" fill="#7b3fa0" style="font-size:10px;font-weight:700;" stroke="#efe9dc" stroke-width="3" paint-order="stroke" stroke-linejoin="round">V1</text>
-<polygon points="695.5,229.3 695.7,208.4 706.6,211.6" fill="#7b3fa0" stroke="#fff" stroke-width="1"/>
-<text x="694.0" y="207.0" text-anchor="end" fill="#7b3fa0" style="font-size:10px;font-weight:700;" stroke="#efe9dc" stroke-width="3" paint-order="stroke" stroke-linejoin="round">V2</text>
+<polygon points="695.2,258.1 695.8,237.2 706.6,240.6" fill="#7b3fa0" stroke="#fff" stroke-width="1"/>
+<text x="694.0" y="235.8" text-anchor="end" fill="#7b3fa0" style="font-size:10px;font-weight:700;" stroke="#efe9dc" stroke-width="3" paint-order="stroke" stroke-linejoin="round">V2</text>
 <polygon points="430.8,615.0 409.9,614.1 413.5,603.3" fill="#7b3fa0" stroke="#fff" stroke-width="1"/>
 <text x="409.6" y="603.0" text-anchor="end" fill="#7b3fa0" style="font-size:10px;font-weight:700;" stroke="#efe9dc" stroke-width="3" paint-order="stroke" stroke-linejoin="round">V3</text>
 <polygon points="726.5,805.6 725.4,784.8 736.4,787.2" fill="#7b3fa0" stroke="#fff" stroke-width="1"/>
@@ -147,34 +147,40 @@
 <text x="316.0" y="735.0" text-anchor="end" fill="#7b3fa0" style="font-size:10px;font-weight:700;" stroke="#efe9dc" stroke-width="3" paint-order="stroke" stroke-linejoin="round">V5</text>
 <circle cx="610.0" cy="316.0" r="6" fill="#fff" stroke="#e8641b" stroke-width="3"/>
 <text x="620.0" y="332.0" text-anchor="start" fill="#e8641b" style="font-size:11px;font-weight:700;" stroke="#efe9dc" stroke-width="3" paint-order="stroke" stroke-linejoin="round">Start</text>
-<text x="12.0" y="408.4" text-anchor="start" fill="#2b2a26" style="font-size:11px;font-weight:700;">Big Oak (trunk)</text>
-<text x="12.0" y="421.4" text-anchor="start" fill="#6b675d" style="font-size:10px;font-weight:400;">470 m · 216 m wide</text>
+<text x="12.0" y="408.4" text-anchor="start" fill="#2b2a26" style="font-size:11px;font-weight:700;">Mango tree (trunk)</text>
+<text x="12.0" y="421.4" text-anchor="start" fill="#6b675d" style="font-size:10px;font-weight:400;">470 m · 180 m wide</text>
 <line x1="562.0" y1="126.0" x2="562.0" y2="102.0" stroke="#6b675d" stroke-width="1.4" marker-end="url(#sky)"/>
-<text x="562.0" y="78.0" text-anchor="middle" fill="#2b2a26" style="font-size:11px;font-weight:700;">House</text>
-<text x="562.0" y="91.0" text-anchor="middle" fill="#6b675d" style="font-size:10px;font-weight:400;">2.2 km · 3.2 km tall</text>
+<text x="562.0" y="78.0" text-anchor="middle" fill="#2b2a26" style="font-size:11px;font-weight:700;">Bungalow</text>
+<text x="562.0" y="91.0" text-anchor="middle" fill="#6b675d" style="font-size:10px;font-weight:400;">2.2 km · 2.5 km tall</text>
 <line x1="387.6" y1="126.0" x2="378.0" y2="102.0" stroke="#6b675d" stroke-width="1.4" marker-end="url(#sky)"/>
-<text x="375.8" y="78.0" text-anchor="middle" fill="#2b2a26" style="font-size:11px;font-weight:700;">Grill</text>
-<text x="375.8" y="91.0" text-anchor="middle" fill="#6b675d" style="font-size:10px;font-weight:400;">1.1 km · 360 m tall</text>
+<text x="375.8" y="78.0" text-anchor="middle" fill="#2b2a26" style="font-size:11px;font-weight:700;">Coal pot</text>
+<text x="375.8" y="91.0" text-anchor="middle" fill="#6b675d" style="font-size:10px;font-weight:400;">1.1 km · 110 m tall</text>
 <line x1="126.0" y1="264.7" x2="102.0" y2="248.4" stroke="#6b675d" stroke-width="1.4" marker-end="url(#sky)"/>
-<text x="97.0" y="224.4" text-anchor="end" fill="#2b2a26" style="font-size:11px;font-weight:700;">Deck</text>
-<text x="97.0" y="237.4" text-anchor="end" fill="#6b675d" style="font-size:10px;font-weight:400;">2.7 km · 216 m tall</text>
-<line x1="998.0" y1="126.0" x2="1022.0" y2="102.0" stroke="#6b675d" stroke-width="1.4" marker-end="url(#sky)"/>
-<text x="1026.2" y="78.0" text-anchor="start" fill="#2b2a26" style="font-size:11px;font-weight:700;">Lawn mower</text>
-<text x="1026.2" y="91.0" text-anchor="start" fill="#6b675d" style="font-size:10px;font-weight:400;">1.3 km · 360 m tall</text>
+<text x="97.0" y="224.4" text-anchor="end" fill="#2b2a26" style="font-size:11px;font-weight:700;">Boys' quarters</text>
+<text x="97.0" y="237.4" text-anchor="end" fill="#6b675d" style="font-size:10px;font-weight:400;">2.7 km · 1.1 km tall</text>
+<line x1="368.2" y1="126.0" x2="357.6" y2="102.0" stroke="#6b675d" stroke-width="1.4" marker-end="url(#sky)"/>
+<text x="355.1" y="78.0" text-anchor="middle" fill="#2b2a26" style="font-size:11px;font-weight:700;">Overhead water tank</text>
+<text x="355.1" y="91.0" text-anchor="middle" fill="#6b675d" style="font-size:10px;font-weight:400;">3.0 km · 1.6 km tall</text>
+<line x1="377.5" y1="126.0" x2="367.4" y2="102.0" stroke="#6b675d" stroke-width="1.4" marker-end="url(#sky)"/>
+<text x="365.0" y="78.0" text-anchor="middle" fill="#2b2a26" style="font-size:11px;font-weight:700;">Clothesline</text>
+<text x="365.0" y="91.0" text-anchor="middle" fill="#6b675d" style="font-size:10px;font-weight:400;">1.4 km · 648 m tall</text>
+<line x1="998.0" y1="363.8" x2="1022.0" y2="352.9" stroke="#6b675d" stroke-width="1.4" marker-end="url(#sky)"/>
+<text x="1027.5" y="356.9" text-anchor="start" fill="#2b2a26" style="font-size:11px;font-weight:700;">Family car</text>
+<text x="1027.5" y="369.9" text-anchor="start" fill="#6b675d" style="font-size:10px;font-weight:400;">1.2 km · 520 m tall</text>
 <line x1="998.0" y1="585.3" x2="1022.0" y2="586.5" stroke="#6b675d" stroke-width="1.4" marker-end="url(#sky)"/>
-<text x="1028.0" y="590.5" text-anchor="start" fill="#2b2a26" style="font-size:11px;font-weight:700;">Birdbath</text>
-<text x="1028.0" y="603.5" text-anchor="start" fill="#6b675d" style="font-size:10px;font-weight:400;">1.5 km · 252 m tall</text>
+<text x="1028.0" y="590.5" text-anchor="start" fill="#2b2a26" style="font-size:11px;font-weight:700;">Water drum</text>
+<text x="1028.0" y="603.5" text-anchor="start" fill="#6b675d" style="font-size:10px;font-weight:400;">1.5 km · 317 m tall</text>
 <line x1="645.8" y1="998.0" x2="650.5" y2="1022.0" stroke="#6b675d" stroke-width="1.4" marker-end="url(#sky)"/>
-<text x="651.6" y="1038.0" text-anchor="middle" fill="#2b2a26" style="font-size:11px;font-weight:700;">Sunflower row</text>
+<text x="651.6" y="1038.0" text-anchor="middle" fill="#2b2a26" style="font-size:11px;font-weight:700;">Maize stalks</text>
 <text x="651.6" y="1051.0" text-anchor="middle" fill="#6b675d" style="font-size:10px;font-weight:400;">530 m · 720 m tall</text>
 <line x1="998.0" y1="998.0" x2="1022.0" y2="1022.0" stroke="#6b675d" stroke-width="1.4" marker-end="url(#sky)"/>
-<text x="1026.2" y="1038.0" text-anchor="start" fill="#2b2a26" style="font-size:11px;font-weight:700;">Tomato plants</text>
-<text x="1026.2" y="1051.0" text-anchor="start" fill="#6b675d" style="font-size:10px;font-weight:400;">990 m · 400 m tall</text>
+<text x="1026.2" y="1038.0" text-anchor="start" fill="#2b2a26" style="font-size:11px;font-weight:700;">Pepper plants</text>
+<text x="1026.2" y="1051.0" text-anchor="start" fill="#6b675d" style="font-size:10px;font-weight:400;">990 m · 250 m tall</text>
 <line x1="998.0" y1="868.8" x2="1022.0" y2="885.7" stroke="#6b675d" stroke-width="1.4" marker-end="url(#sky)"/>
-<text x="1026.9" y="901.7" text-anchor="start" fill="#2b2a26" style="font-size:11px;font-weight:700;">Compost pile</text>
-<text x="1026.9" y="914.7" text-anchor="start" fill="#6b675d" style="font-size:10px;font-weight:400;">3.3 km · 360 m tall</text>
+<text x="1026.9" y="901.7" text-anchor="start" fill="#2b2a26" style="font-size:11px;font-weight:700;">Termite mound</text>
+<text x="1026.9" y="914.7" text-anchor="start" fill="#6b675d" style="font-size:10px;font-weight:400;">3.3 km · 540 m tall</text>
 <line x1="126.0" y1="868.8" x2="102.0" y2="885.7" stroke="#6b675d" stroke-width="1.4" marker-end="url(#sky)"/>
-<text x="97.1" y="901.7" text-anchor="end" fill="#2b2a26" style="font-size:11px;font-weight:700;">Shed</text>
+<text x="97.1" y="901.7" text-anchor="end" fill="#2b2a26" style="font-size:11px;font-weight:700;">Store</text>
 <text x="97.1" y="914.7" text-anchor="end" fill="#6b675d" style="font-size:10px;font-weight:400;">3.3 km · 800 m tall</text>
 <rect x="130.0" y="130.0" width="864.0" height="864.0" fill="none" stroke="#2b2a26" stroke-width="1.2"/>
 <polygon points="964.0,34 956.0,58 964.0,52 972.0,58" fill="#2b2a26"/>
@@ -198,7 +204,7 @@
 <line x1="706.0" y1="1136.0" x2="736.0" y2="1136.0" stroke="#2f6b4a" stroke-width="7" stroke-linecap="round"/>
 <text x="746.0" y="1140.0" text-anchor="start" fill="#2b2a26" style="font-size:11.5px;font-weight:400;">Garden hose</text>
 <rect x="130.0" y="1153.0" width="30" height="14" fill="#6fb3d9" stroke="#2b2a26" stroke-width="0.6"/>
-<text x="170.0" y="1164.0" text-anchor="start" fill="#2b2a26" style="font-size:11.5px;font-weight:400;">The Rut (water = defeat)</text>
+<text x="170.0" y="1164.0" text-anchor="start" fill="#2b2a26" style="font-size:11.5px;font-weight:400;">The Rut (tyre rut, water = defeat)</text>
 <rect x="418.0" y="1153.0" width="30" height="14" fill="url(#tuss)" stroke="#2b2a26" stroke-width="0.6"/>
 <text x="458.0" y="1164.0" text-anchor="start" fill="#2b2a26" style="font-size:11.5px;font-weight:400;">Tussock (impassable)</text>
 <polygon points="728.0,1160.0 714.0,1153.0 714.0,1167.0" fill="#7b3fa0"/>
