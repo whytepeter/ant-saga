@@ -1,7 +1,8 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://world/playground/playground.gd" id="1_pg"]
 [ext_resource type="PackedScene" path="res://player/player.tscn" id="2_player"]
+[ext_resource type="Script" path="res://world/sun_light.gd" id="3_sun"]
 
 [sub_resource type="ProceduralSkyMaterial" id="sky_mat"]
 sky_top_color = Color(0.32, 0.52, 0.8, 1)
@@ -35,7 +36,7 @@ script = ExtResource("1_pg")
 environment = SubResource("env")
 
 [node name="Sun" type="DirectionalLight3D" parent="."]
-transform = Transform3D(-0.2588, -0.2500, 0.9330, 0.0000, 0.9659, 0.2588, -0.9659, 0.0670, -0.2500, 0, 60, 0)
+transform = Transform3D(-0.25881904, -0.25, 0.9330127, 0, 0.96592593, 0.25881904, -0.9659259, 0.0669873, -0.25, 0, 60, 0)
 light_color = Color(1, 0.93, 0.8, 1)
 light_energy = 1.6
 shadow_enabled = true
@@ -43,5 +44,6 @@ shadow_bias = 0.3
 shadow_normal_bias = 3.0
 shadow_blur = 1.5
 directional_shadow_max_distance = 220.0
+script = ExtResource("3_sun")
 
 [node name="Player" parent="." instance=ExtResource("2_player")]
