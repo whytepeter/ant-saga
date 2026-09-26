@@ -12,6 +12,11 @@ const HEROES := {
 	"Opumie": "res://assets/characters/opumie/opumie.glb",
 }
 
+## How tall each stands (m, to the top of the head): a little bigger than
+## Amodu (1.8 m), the burly Opigo most of all.
+const HEIGHTS := {"Opigo": 2.15, "Opumie": 2.05}
+const WORKER_HEIGHT := 2.0
+
 ## Set before adding to the tree: a hero's name picks their own model.
 var hero := ""
 const ANIMATIONS: AnimationLibrary = preload("res://player/explorer/amodu_animations.res")
@@ -32,6 +37,7 @@ func _ready() -> void:
 		scene = load(HEROES[hero]) as PackedScene
 	var model := scene.instantiate() as Node3D
 	add_child(model)
+	var size := _fit_height(model, float(HEIGHTS.get(hero, WORKER_HEIGHT)))
 	_anim = model.find_children("*", "AnimationPlayer", true, false)[0]
 	for lib_name in _anim.get_animation_library_list():
 		_anim.remove_animation_library(lib_name)
@@ -42,9 +48,34 @@ func _ready() -> void:
 		else _library_for(model.find_children("*", "Skeleton3D", true, false)[0])
 	_anim.add_animation_library("", lib)
 	var speeds: Dictionary = lib.get_meta("natural_speed", ANIMATIONS.get_meta("natural_speed"))
-	_walk_natural = speeds["walk"]
-	_run_natural = speeds["run"]
+	_walk_natural = float(speeds["walk"]) * size
+	_run_natural = float(speeds["run"]) * size
 	play("idle", 1.0)
+
+
+## Scales `model` so the top of its head stands `height` metres up; returns
+## the scale (the rig's own head height, measured from its rest pose).
+static func _fit_height(model: Node3D, height: float) -> float:
+	var sk := model.find_children("*", "Skeleton3D", true, false)[0] as Skeleton3D
+	var top := -1
+	var head_bone := -1
+	for i in sk.get_bone_count():
+		var n := sk.get_bone_name(i)
+		if n.ends_with("HeadTop_End") or n.ends_with("head_end"):
+			top = i
+		elif n.ends_with("Head"):
+			head_bone = i
+	var in_model := model.global_transform.affine_inverse() * sk.global_transform
+	var head := 0.0
+	if top >= 0:
+		head = (in_model * sk.get_bone_global_rest(top)).origin.y
+	elif head_bone >= 0:  # no head-top bone: the head joint, plus the head itself
+		head = (in_model * sk.get_bone_global_rest(head_bone)).origin.y * 1.14
+	if head < 0.01:
+		return 1.0
+	var s := height / head
+	model.scale = Vector3.ONE * s
+	return s
 
 
 func _process(delta: float) -> void:

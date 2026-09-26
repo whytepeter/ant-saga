@@ -18,6 +18,7 @@ func _run() -> void:
 	seed(20260926)  # the bugs' starting headings and wanderings: the same every run
 	level = load("res://world/lawn/lawn.tscn").instantiate()
 	level.set("expedition_mode", false)
+	level.set("opening", false)
 	root.add_child(level)
 	await _frames(3)
 	player = level.get_node("Player")

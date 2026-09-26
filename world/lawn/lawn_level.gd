@@ -19,10 +19,14 @@ const FALL_LIMIT := -40.0
 
 ## Run the parked Phase 3c colony expedition instead of the adventure.
 @export var expedition_mode := false
+## The opening: waking, the house far off across the garden, then the camera
+## turns to the first stage (off in tests).
+@export var opening := true
 ## Live pill bugs at the Bare Patch (off for the route autopilot in tests).
 @export var live_creatures := true
-## Real minutes from the morning to sunset in the adventure.
-@export var day_minutes := 20.0
+## Real minutes from the morning (07:30) to sunset (18:30) in the adventure: a
+## first play of Level 1 takes about 60-90 minutes.
+@export var day_minutes := 75.0
 
 var layout: LawnLayout
 var checkpoint := {}
@@ -48,6 +52,7 @@ var day_over := false
 
 
 func _ready() -> void:
+	PillBug.night_boost = 1.0  # (a restart after dark)
 	layout = builder.get("layout")
 	var spawn: Dictionary = layout.data["spawn"]
 	checkpoint = _checkpoint("Start", spawn["pos"], _yaw_toward(spawn["pos"], spawn["look_at"]))
@@ -92,7 +97,7 @@ func _setup_adventure() -> void:
 	clock = DayClock.new()
 	clock.name = "DayClock"
 	add_child(clock)
-	clock.setup($Sun as SunLight, 630.0, 1110.0, day_minutes)  # 10:30 to 18:30
+	clock.setup($Sun as SunLight, 450.0, 1110.0, day_minutes)  # 07:30 to 18:30, then dusk to 20:00
 	clock.sunset_reached.connect(_on_sunset)
 	var weather := Weather.new()
 	weather.name = "Weather"
@@ -123,20 +128,86 @@ func _setup_adventure() -> void:
 	info.visible = false
 	$HUD/Help.visible = false
 	player.wake_up()
+	if opening:
+		_opening.call_deferred()
 
 
+## He gets up while a camera high above the grass looks south across the
+## garden to the house, the goal comes up, then the view drops to him and turns
+## to the first stage on the way (the bag); then he's free to go. A move key
+## skips it.
+func _opening() -> void:
+	var rig := player.camera_rig
+	var game_cam := get_viewport().get_camera_3d()
+	var to_home := home - player.global_position
+	to_home.y = 0.0
+	var dir := to_home.normalized()
+	var home_yaw := atan2(-dir.x, -dir.z)
+	rig.yaw = home_yaw
+	rig.pitch = deg_to_rad(-8.0)
+	rig._apply_rotation()
+	rig.snap()
+	player.input_enabled = false
+	var spawn: Array = layout.data["spawn"]["pos"]
+	hud.mark_seen(String(layout.area_at(float(spawn[0]), float(spawn[1])).get("id", "")))
+	var skip := func() -> bool:
+		return Input.is_action_pressed("move_forward") or Input.is_action_pressed("move_back") \
+			or Input.is_action_pressed("move_left") or Input.is_action_pressed("move_right") or Input.is_action_pressed("jump")
+	# high over the grass, looking across the whole garden to the house
+	var high := Camera3D.new()
+	high.fov = game_cam.fov if game_cam != null else 70.0
+	add_child(high)
+	high.global_position = player.global_position - dir * 25.0 + Vector3.UP * 48.0
+	high.look_at(home + Vector3.UP * 60.0)
+	high.make_current()
+	var t := 0.0
+	while t < 4.0 and not skip.call():
+		if t > 0.8 and t - get_process_delta_time() <= 0.8:
+			hud.show_banner("Get home before dark")
+		high.global_position += dir * get_process_delta_time() * 2.0  # a slow drift toward it
+		await get_tree().process_frame
+		t += get_process_delta_time()
+	# down to him
+	if game_cam != null and not skip.call():
+		var from := high.global_transform
+		var drop := create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+		drop.tween_method(func(k: float) -> void:
+			high.global_transform = from.interpolate_with(game_cam.global_transform, k), 0.0, 1.0, 1.6)
+		await drop.finished
+	if game_cam != null:
+		game_cam.make_current()
+	high.queue_free()
+	var goal := route_guide.goal() if route_guide != null else Vector3.INF
+	if goal != Vector3.INF and not skip.call():
+		var d := goal - player.global_position
+		var goal_yaw := home_yaw + wrapf(atan2(-d.x, -d.z) - home_yaw, -PI, PI)
+		var turn := create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+		turn.tween_method(func(y: float) -> void:
+			rig.yaw = y
+			rig.pitch = lerpf(deg_to_rad(-8.0), deg_to_rad(-12.0), inverse_lerp(home_yaw, goal_yaw, y) if goal_yaw != home_yaw else 1.0)
+			rig._apply_rotation(), home_yaw, goal_yaw, 2.0)
+		await turn.finished
+	player.input_enabled = true
+
+
+## The sun is down: the garden goes blue and the creatures get bolder, but
+## the way home stays open (it just gets harder).
 func _on_sunset() -> void:
 	if day_over:
 		return
-	day_over = true
-	hud.show_card("Night falls", "The night hunters are out. Press R to try again tomorrow.")
+	PillBug.night_boost = 1.7
+	hud.show_banner("Dusk")
+	show_toast("The sun is down. Get home before it's dark.", 5.0)
 
 
 func _reach_home() -> void:
 	day_over = true
 	clock.running = false
 	player.play_action("victory", 1.0)
-	hud.show_card("Home", "Back through the door by %s. Press R for another day." % clock.clock_text())
+	var late := clock.night() > 0.0
+	hud.show_card("Home" if not late else "Home, late",
+		("Back under the door at %s, before the sun went down." if not late else "Back under the door at %s, in the dark.") % clock.clock_text()
+		+ "\nPress R to play again.")
 
 
 func _spawn_props() -> void:
@@ -187,10 +258,10 @@ func _spawn_ants() -> void:
 		body.collision_layer = 1 << 3  # creatures
 		var shape := CollisionShape3D.new()
 		var capsule := CapsuleShape3D.new()
-		capsule.radius = 0.45
-		capsule.height = 1.7
+		capsule.radius = 0.5
+		capsule.height = 2.1
 		shape.shape = capsule
-		shape.position.y = 0.85
+		shape.position.y = 1.05
 		body.add_child(shape)
 		var ant := AntModel.new()
 		ant.hero = String(sd["name"])

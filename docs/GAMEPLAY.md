@@ -170,23 +170,37 @@ The DayClock runs. **Recommendation: sunset doesn't end the game.** It makes the
 ### The ending hook
 Under the door he's home, and still 5 mm tall. Through a crack in the floor tiles, ant light glows below: the colony runs right under his house. The only people who might know how to make him big again are the ants. → Act II, the Ant Kingdom.
 
-## Build list for Level 1
+## Level 1: what's done and what's left (updated 2026-09-26)
 
-In order, with what each needs:
+**Done**
+- Moving the world: lift, carry, throw, push (with its animation); real pebbles and crumbs.
+- Weapons and loadout: axe (main), one secondary (hammer or spear), knife as a permanent tool; inventory; X to switch; weapons carried on his body.
+- Chopping: a fallen twig by the hollow (axe), the spider's trip lines (knife, E).
+- First fight: pill bugs at the Bare Patch (the user's model): bounce off the shell, curl, flip, strike the belly; knocked out means back to the last checkpoint.
+- The way home: nine gold-mote stages, compass, minimap and map with fog of war; checkpoints.
+- Traversal: climb (up, down, sideways), leap, glide on seed puffs, swim, crawl.
+- The world: terrain relief, grass, Root Hall caves, rain, time of day, recorded sound.
+- Opigo and Opumie at the Capstone (the user's models, on Amodu's animations, a little bigger than him); insects that walk.
 
-1. **Axe:** a Meshy model (ant-made from leaves, sticks and stone; rickety, not polished), held on his hand bone. **Axe attack clips** from Meshy's animation library (~3 credits each, 5–6 clips: light combo, heavy overhead, charged, throw) in place of the current fists and kick in `player/player_combat.gd`.
-2. **Chopping:** a `Choppable` for straw, root tendrils, silk and thread. Chopped pieces fall and become heavable.
-3. **Inventory and weapon switching:** fists ↔ axe (built). The full crafting system waits for Act II.
-4. **Creatures that walk:** procedural legs so insects walk and sit on surfaces (this also fixes the floating ladybirds in the Flower Bed). Then the ground beetle (walker, hides-and-passes) and the spider.
-5. **Noise:** footsteps on leaf litter (we already know the surface underfoot) alert hunters; standing still under cover hides you.
-6. **Pill bug fight:** exists; retune it for the axe.
-7. **Wolf spider boss:** burrow, lunge, trip lines, boulder plug, flip.
-8. **Beats:** hook each route stage to its beat (the craft, the ants, the root boulder, the scout).
-9. **Sunset and ending:** the DayClock dusk and the door ending.
+**Left to build (code)**
+1. ~~**The day's length and sunset.**~~ Done: 07:30 to 18:30 in 75 real minutes, then dusk to 20:00; sunset makes the pill bugs bolder but doesn't end the game; home before dark gets the warmer ending.
+2. ~~**The opening.**~~ Done: a high shot across the garden to the house, "Get home before dark", down to Amodu and a turn to the bag (the axe's marker in view). A move key skips it.
+3. **Beats on the route:** the boulder to push into a step at the Great Root; the stone slab in Root Hall he can't move yet; Opigo and Opumie reacting when he arrives; the lost scout (a small story: a worker at the Capstone, the scout found wrapped in silk by the burrow).
+4. **Noise and hiding:** footsteps on dry leaves carry; hunters hear them; standing still under cover hides him.
+5. **The ground beetle:** walks through the Blade Forest; if it notices him it charges, so he hides until it passes.
+6. **The Garden Wolf Spider boss:** burrow, lunge, feels the trip lines, boulder plug, flip; she retreats hurt and the way to the trowel opens.
+7. **The ending:** under the door, home but still 5 mm tall; light and ant voices below the floor tiles; "to be continued".
+8. **A pause menu** (resume, controls, restart, quit) for playtesting.
 
-**Gate:** you play Level 1 start to finish and want to know what's under the house.
+**Left to make (models: the user makes these in Meshy)**
+- **Ground beetle**, big (about 12 m long at this scale), glossy black or bronze, six legs.
+- **Garden wolf spider**, the boss (a body of 9 m, legs spanning 18 m), brown and grey, hairy, eight eyes.
+- **Stone slab** for Root Hall (a flat broken piece of paving or slate), and a **scout ant wrapped in silk** (or the ant scout model plus a silk cocoon).
+
+**Gate:** the user plays Level 1 start to finish and wants to know what's under the house.
+
+**Later, not Level 1:** choosing who to play (Amodu or Edi); companions following; crafting; the Ant Kingdom.
 
 ## Open questions
-- Axe model plus clips: about 30 + 15–20 Meshy credits (balance about 1560). Approve when we get there.
-- Opigo and Opumie in Level 1: they stay at the Capstone (recommended; companions are on hold), or follow him from beat 6.
+- Opigo and Opumie in Level 1: they stay at the Capstone (current), or follow him from beat 6.
 - Hunger: none in Level 1 (recommended); food heals.

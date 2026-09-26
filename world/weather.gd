@@ -132,7 +132,9 @@ func _overcast() -> void:
 	if env != null:
 		env.fog_density = _fog_base * (1.0 + 2.5 * intensity)
 		env.volumetric_fog_density = _vol_base * (1.0 + 1.5 * intensity)
-		env.ambient_light_energy = _ambient * (1.0 + 0.35 * intensity)
+		var dark := clock.night() if clock != null else 0.0
+		env.ambient_light_energy = _ambient * (1.0 + 0.35 * intensity) * lerpf(1.0, 0.3, dark)
+		env.background_energy_multiplier = lerpf(1.0, 0.12, dark)
 		env.adjustment_saturation = _saturation * lerpf(1.0, 0.82, intensity)
 
 

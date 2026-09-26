@@ -64,7 +64,9 @@ budget_tokens: 1500
 - Opigo and Opumie: the user's Meshy models (assets/characters/opigo|opumie, Mixamo rig in metres), standing at the Capstone (lawn_level._spawn_ants); other ants use the ant scout.
 - Insects: ladybirds and mites walk with leg motion (creature.gdshader mode 3), bees beat their wings.
 - Pickup marker: thin cream diamond with a glow and hairline (compass style).
-- Edi (a Meshy character in ~/Downloads/Edi.zip) not imported: ask the user who Edi is.
+
+- Level 1 tracker: docs/GAMEPLAY.md "what's done and what's left". Day: 07:30-18:30 in 75 real min, dusk to 20:00 (DayClock.night()), no game over at sunset. Opening sequence (lawn_level._opening; tests set opening=false). Ants a bit bigger than Amodu (AntModel.HEIGHTS).
+- Future: character select (Amodu or Edi, the user's Meshy model in ~/Downloads/Edi.zip).
 
 ## 📝 Open from the user (2026-09-26)
 - Chopping (roots, straw, silk) not built yet: `chop` values exist on moves.

@@ -58,6 +58,8 @@ var _scan_left := 0.0
 var _last_attacker: Node3D
 var _eating: Haul
 var _hit_this_charge := {}
+## After dark they notice him from farther off (the level sets it at sunset).
+static var night_boost := 1.0
 ## Amodu has been told the shell turns light blows (once per game).
 static var _taught := false
 var _wander_to := Vector3.ZERO
@@ -454,7 +456,7 @@ func _pick_target() -> Node3D:
 			best = haul
 	if best != null:
 		return best
-	if _target_valid(player) and player.global_position.distance_to(global_position) < notice_radius \
+	if _target_valid(player) and player.global_position.distance_to(global_position) < notice_radius * night_boost \
 			and global_position.distance_to(home) < leash:
 		return player
 	if target == player and _target_valid(player) and global_position.distance_to(home) < leash:

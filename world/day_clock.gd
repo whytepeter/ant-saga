@@ -22,6 +22,9 @@ var sun: SunLight
 var _energy := 1.6
 var _color := Color.WHITE
 var _sunset_sent := false
+## After sunset the clock runs on into the night (it doesn't stop the game):
+## the light fades to a dim blue dusk by this time.
+var night_minutes := 1200.0  # 20:00
 
 
 func setup(sun_light: SunLight, start: float, sunset: float, real: float) -> void:
@@ -39,7 +42,7 @@ func setup(sun_light: SunLight, start: float, sunset: float, real: float) -> voi
 func _process(delta: float) -> void:
 	if not running:
 		return
-	minutes += (sunset_minutes - start_minutes) / (real_minutes * 60.0) * delta
+	minutes = minf(minutes + (sunset_minutes - start_minutes) / (real_minutes * 60.0) * delta, night_minutes)
 	if minutes >= sunset_minutes and not _sunset_sent:
 		_sunset_sent = true
 		sunset_reached.emit()
@@ -49,6 +52,11 @@ func _process(delta: float) -> void:
 ## 1 at the start of the day, 0 at sunset.
 func daylight() -> float:
 	return clampf((sunset_minutes - minutes) / (sunset_minutes - start_minutes), 0.0, 1.0)
+
+
+## 0 until sunset, 1 once it's night.
+func night() -> float:
+	return clampf((minutes - sunset_minutes) / (night_minutes - sunset_minutes), 0.0, 1.0)
 
 
 ## Compass bearing of the sun in degrees (0 = north, 90 = east).
@@ -68,6 +76,8 @@ func _apply() -> void:
 	sun.azimuth_deg = fposmod(75.0 - 150.0 * t, 360.0)
 	sun.elevation_deg = elevation
 	var low := clampf(1.0 - elevation / 18.0, 0.0, 1.0)
-	base_energy = _energy * lerpf(1.0, 0.45, low)
+	var n := night()
+	base_energy = _energy * lerpf(1.0, 0.45, low) * lerpf(1.0, 0.1, n)
 	sun.light_energy = base_energy
-	sun.light_color = _color.lerp(Color(1.0, 0.6, 0.32), low * 0.85)
+	# the low gold sun, then the cool blue of dusk
+	sun.light_color = _color.lerp(Color(1.0, 0.6, 0.32), low * 0.85).lerp(Color(0.55, 0.64, 0.95), n)

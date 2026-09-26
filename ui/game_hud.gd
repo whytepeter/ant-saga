@@ -124,6 +124,12 @@ func _unhandled_input(event: InputEvent) -> void:
 
 # ── public ────────────────────────────────────────────────────────────────────
 
+## Counts an area as already announced (no place-name banner for it).
+func mark_seen(area_id: String) -> void:
+	if area_id != "":
+		_seen_areas[area_id] = true
+
+
 ## A place name that fades in and out, the first time Amodu walks into an area.
 func show_banner(title: String) -> void:
 	_banner_title.text = title.to_upper()

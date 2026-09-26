@@ -23,6 +23,7 @@ func _run() -> void:
 	level = load("res://world/lawn/lawn.tscn").instantiate()
 	level.set("expedition_mode", false)  # the Phase 3 free-roam graybox
 	level.set("live_creatures", false)  # no pill bugs charging the autopilot
+	level.set("opening", false)
 	root.add_child(level)
 	await _frames(3)
 	player = level.get_node("Player")
