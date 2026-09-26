@@ -37,6 +37,7 @@ const ALL := {
 		"name": "Stone axe",
 		"glyph": "axe",
 		"model": "stone_axe",
+		"holster": "back",
 		# made by the ants from garden scraps: a knapped stone head lashed to a
 		# split stick with green vine, a third of his height
 		"length": 0.62,
@@ -58,6 +59,8 @@ const ALL := {
 		"name": "Stone knife",
 		"glyph": "knife",
 		"model": "stone_knife",
+		"holster": "hip",
+		"rest_euler": Vector3(-45.0, 0.0, 0.0),  # held low, point forward and down
 		# a knapped dark stone blade on a vine-wrapped stick; he holds it by the
 		# middle of the handle. Quick and light: cuts silk and vines, not roots.
 		"length": 0.36,

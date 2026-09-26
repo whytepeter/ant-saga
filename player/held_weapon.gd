@@ -1,39 +1,45 @@
 class_name HeldWeapon
 extends Node3D
-## The weapon Amodu has out, drawn in his right hand, or slung on his back when
-## he fights bare-fisted, climbs, swims, crawls, carries or glides (a child of
-## the Player, placed from his bones every frame, after the animation).
-## Models come from GardenProps (Meshy, assets/garden/): longest side 1 with
-## the pivot at the handle's butt, the handle along +Y.
+## Every weapon Amodu owns, where it belongs: the one he fights with in his
+## right hand, the rest stowed (the axe slung flat across his back, the knife
+## blade-down at his right hip; Weapons "holster"). Whatever he's holding goes
+## back to its place while he climbs, swims, carries or glides. A child of the
+## Player, placed from his bones every frame once the pose is final.
+## Models come from GardenProps (assets/garden/): longest side 1 with the pivot
+## at the handle's butt, the handle along +Y.
 
 ## The handle in the right hand, in the hand bone's frame (bone +Y runs from
 ## the wrist to the fingertips): Euler degrees, and where the grip sits from the
-## hand bone (m). The fist closes about 20% up from the butt. At rest the axe
-## points forward along his side, head first and blade down (clear of his leg
-## however his arm hangs); for a swing it turns out across the palm so the head
-## leads the blow. HAND_SPIN turns it about the handle.
+## hand bone (m). At rest the axe points forward along his side, head first and
+## blade down (clear of his leg however his arm hangs); a weapon can set its own
+## ("rest_euler": the knife points forward and down). For a swing it turns out
+## across the palm so the head leads the blow. HAND_SPIN turns it about the handle.
 const HAND_EULER := Vector3(-90.0, 0.0, 0.0)
 const SWING_EULER := Vector3(-90.0, -70.0, 0.0)
 const HAND_OFFSET := Vector3(0.0, 0.09, 0.03)
 const HAND_SPIN := 90.0
+const GRIP := 0.2
+## How fast he turns the grip between rest and swing (per second).
+const GRIP_TURN := 10.0
+## Stowed, in the body's own axes (+X his left, +Y up, +Z forward) at a bone,
+## turning as that bone turns: [bone, Euler degrees, spin about the handle,
+## where the butt sits (m)]. The axe lies flat on his back, head over his right
+## shoulder; the knife hangs blade-down, flat against his right hip.
+const HOLSTERS := {
+	"back": ["Spine", Vector3(0.0, 0.0, 25.0), 180.0, Vector3(0.12, -0.28, -0.16)],
+	"hip": ["Hips", Vector3(15.0, 0.0, 180.0), 90.0, Vector3(-0.17, 0.06, -0.03)],
+}
+
 ## Seen through his eyes his arms are up in a guard (HideHead), so the weapon
 ## is held up and forward, head in view, instead of hanging at his side.
 var first_person_euler := Vector3(0.0, -90.0, 0.0)
-## How fast he turns the grip between rest and swing (per second).
-const GRIP_TURN := 10.0
-const GRIP := 0.2
-## Slung across his back, in the chest bone's frame.
-const BACK_EULER := Vector3(0.0, 0.0, -160.0)
-const BACK_OFFSET := Vector3(0.12, 0.05, -0.16)
-
 var player: Player
+## The weapon in his hand (&"" when none) and whether it's there right now.
 var id: StringName = &""
 var in_hand := false
-var _mesh: MeshInstance3D
-var _length := 0.6
 var _skeleton: Skeleton3D
 var _hand := -1
-var _chest := -1
+var _meshes := {}  # weapon id -> MeshInstance3D
 ## 0 = resting grip, 1 = swinging grip.
 var _swing := 0.0
 
@@ -48,30 +54,9 @@ func setup(p: Player, skeleton: Skeleton3D) -> void:
 	_skeleton = skeleton
 	if _skeleton != null:
 		_hand = _skeleton.find_bone("RightHand")
-		_chest = _skeleton.find_bone("Spine")
 		# placed once the pose is final: after the animation AND the modifiers
 		# (the first-person arm guard, HideHead, lifts his hands into view)
 		_skeleton.skeleton_updated.connect(_place)
-
-
-## Shows `weapon_id` (&"" or fists: nothing).
-func show_weapon(weapon_id: StringName) -> void:
-	if weapon_id == id:
-		return
-	id = weapon_id
-	if _mesh != null:
-		_mesh.queue_free()
-		_mesh = null
-	var info := Weapons.info(weapon_id)
-	if weapon_id == Weapons.FISTS or not info.has("model"):
-		return
-	var prop := GardenProps.get_prop(String(info["model"]))
-	if prop == null:
-		return
-	_length = float(info.get("length", 0.6))
-	_mesh = GardenProps.instance(prop, Transform3D.IDENTITY)
-	_mesh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
-	add_child(_mesh)
 
 
 func _process(delta: float) -> void:
@@ -82,38 +67,75 @@ func _process(delta: float) -> void:
 	var swinging := act.begins_with("axe") or act.begins_with("knife") or (combat != null and combat.blocking)
 	_swing = move_toward(_swing, 1.0 if swinging else 0.0, delta * GRIP_TURN)
 	var inventory := player.get_node_or_null("Inventory") as Inventory
-	if inventory != null:
-		var out := inventory.equipped != Weapons.FISTS
-		show_weapon(inventory.equipped if out else inventory.last_weapon)
-		# in hand only when his hands are free to fight
-		in_hand = out and player.state in [Player.State.GROUND, Player.State.AIR] \
-			and player.carried == null and player.puff == null and player.hauling == null
+	if inventory == null:
+		return
+	for w: StringName in inventory.weapons:
+		if w != Weapons.FISTS and not _meshes.has(w):
+			_add(w)
+	id = inventory.equipped if inventory.equipped != Weapons.FISTS else &""
+	# in hand only when his hands are free to fight
+	in_hand = id != &"" and player.state in [Player.State.GROUND, Player.State.AIR] \
+		and player.carried == null and player.puff == null and player.hauling == null
+
+
+func _add(weapon: StringName) -> void:
+	var info := Weapons.info(weapon)
+	var prop := GardenProps.get_prop(String(info.get("model", "")))
+	if prop == null:
+		return
+	var holder := Node3D.new()
+	holder.top_level = true
+	var mesh := GardenProps.instance(prop, Transform3D.IDENTITY)
+	mesh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
+	holder.add_child(mesh)
+	add_child(holder)
+	_meshes[weapon] = holder
 
 
 func _place() -> void:
-	if _mesh == null or _skeleton == null or _hand < 0:
+	if _skeleton == null or _hand < 0:
 		return
-	var bone := _hand if in_hand else _chest
-	var pose := _skeleton.global_transform * _skeleton.get_bone_global_pose(bone)
-	pose.basis = pose.basis.orthonormalized()
-	var info := Weapons.info(id)
-	var grip := float(info.get("grip", GRIP))
-	var spin := float(info.get("hand_spin", HAND_SPIN))
-	var rest := first_person_euler if player != null and player.first_person else HAND_EULER
-	var local := local_transform(in_hand, _length, rest, grip, spin)
-	if in_hand and _swing > 0.0:
-		local = local.interpolate_with(local_transform(true, _length, SWING_EULER, grip, spin), _swing)
-	global_transform = pose * local
+	for w: StringName in _meshes:
+		var holder: Node3D = _meshes[w]
+		var info := Weapons.info(w)
+		var length := float(info.get("length", 0.6))
+		if w == id and in_hand:
+			var pose := _skeleton.global_transform * _skeleton.get_bone_global_pose(_hand)
+			pose.basis = pose.basis.orthonormalized()
+			var grip := float(info.get("grip", GRIP))
+			var spin := float(info.get("hand_spin", HAND_SPIN))
+			var rest: Vector3 = info.get("rest_euler", HAND_EULER)
+			if player != null and player.first_person:
+				rest = first_person_euler
+			var local := hand_transform(length, rest, grip, spin)
+			if _swing > 0.0:
+				local = local.interpolate_with(hand_transform(length, SWING_EULER, grip, spin), _swing)
+			holder.global_transform = pose * local
+		else:
+			var spec: Array = HOLSTERS[String(info.get("holster", "back"))]
+			holder.global_transform = _body_frame(String(spec[0])) * _stowed(spec, length)
 
 
-## Where the weapon's pivot sits in the bone's (unscaled) frame. `grip` is how
-## far up the handle (0 butt, 1 top) his fist closes; `spin` turns it about the
-## handle.
-static func local_transform(hand: bool, length: float, euler := HAND_EULER, grip := GRIP,
-		spin := HAND_SPIN) -> Transform3D:
-	var e := euler if hand else BACK_EULER
-	var turn := Basis(Vector3.UP, deg_to_rad(spin if hand else 0.0))
-	var basis := (Basis.from_euler(Vector3(deg_to_rad(e.x), deg_to_rad(e.y), deg_to_rad(e.z))) * turn).scaled(Vector3.ONE * length)
-	var at := HAND_OFFSET if hand else BACK_OFFSET
-	# slide down the handle so the fist closes round it at `grip`
-	return Transform3D(basis, at - basis * Vector3(0.0, grip if hand else GRIP, 0.0))
+## The weapon's pivot in the hand bone's (unscaled) frame. `grip` is how far up
+## the handle (0 butt, 1 top) his fist closes; `spin` turns it about the handle.
+static func hand_transform(length: float, euler := HAND_EULER, grip := GRIP, spin := HAND_SPIN) -> Transform3D:
+	var basis := (_euler(euler) * Basis(Vector3.UP, deg_to_rad(spin))).scaled(Vector3.ONE * length)
+	return Transform3D(basis, HAND_OFFSET - basis * Vector3(0.0, grip, 0.0))
+
+
+static func _stowed(spec: Array, length: float) -> Transform3D:
+	var basis := (_euler(spec[1]) * Basis(Vector3.UP, deg_to_rad(float(spec[2])))).scaled(Vector3.ONE * length)
+	return Transform3D(basis, spec[3])
+
+
+static func _euler(e: Vector3) -> Basis:
+	return Basis.from_euler(Vector3(deg_to_rad(e.x), deg_to_rad(e.y), deg_to_rad(e.z)))
+
+
+## A frame at `bone` with the body's axes at rest (+X his left, +Y up, +Z
+## forward), turning as the bone turns away from its rest.
+func _body_frame(bone_name: String) -> Transform3D:
+	var b := _skeleton.find_bone(bone_name)
+	var pose := _skeleton.get_bone_global_pose(b)
+	var turn := (pose.basis * _skeleton.get_bone_global_rest(b).basis.inverse()).orthonormalized()
+	return Transform3D(_skeleton.global_transform.basis.orthonormalized() * turn, _skeleton.global_transform * pose.origin)

@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-26T14:41:21.428Z
-> Files: 255 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-26T15:11:45.356Z
+> Files: 257 tracked | Anatomy hits: 0 | Misses: 0
 
 > Project structure index. Auto-maintained by OpenWolf hooks and daemon.
 > Run `openwolf scan` to generate, or wait for the first Claude Code session.
@@ -161,7 +161,7 @@
 - `camera_rig.gd` (~1122 tok)
 - `camera_rig.gd.uid` (~6 tok)
 - `finger_curl.gd` — Declares SIDES (~675 tok)
-- `held_weapon.gd` — Declares HAND_EULER (~732 tok)
+- `held_weapon.gd` — Declares HAND_EULER (~1661 tok)
 - `hide_head.gd` — Declares ARM_FORWARD (~548 tok)
 - `inventory.gd` (~567 tok)
 - `player_audio.gd` — Declares SETS (~1805 tok)
@@ -317,6 +317,7 @@
 - `haul.gd` — Declares AMODU_STRENGTH (~2366 tok)
 - `heavable.gd` — Declares Weight (~730 tok)
 - `heavable.gd.uid` (~6 tok)
+- `pickup_marker.gd` — Declares SHADER (~330 tok)
 - `seed_puff.gd` — Declares GROUP (~547 tok)
 - `weapon_pickup.gd` — Declares GROUP (~415 tok)
 
@@ -325,6 +326,7 @@
 - `creature.gdshader` — Declares spatial (~566 tok)
 - `grain.gdshader` — Declares spatial (~728 tok)
 - `ground.gdshader` — Declares spatial (~1636 tok)
+- `pickup_marker.gdshader` — Declares spatial (~568 tok)
 - `rain_splash.gdshader` — Declares spatial (~483 tok)
 - `thatch.gdshader` — Declares spatial (~488 tok)
 - `tree_base.gdshader` — Declares spatial (~1085 tok)

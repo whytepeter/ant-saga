@@ -57,11 +57,75 @@ static func make(kind: String, prop_size: float, prop_name: String) -> Heavable:
 	material.bounce = 0.15
 	h.physics_material_override = material
 
+	match kind:
+		"crumb":
+			h.food = 1
+		"grain":
+			h.food = 2
+	# the Meshy model for it (a crumb of cake or cheese, a maize kernel, a pebble),
+	# turned at random, with a hull that matches; the old plain shapes otherwise
+	var model := _model_id(kind, prop_name)
+	var prop := GardenProps.get_prop(model)
+	if prop != null:
+		var rng := RandomNumberGenerator.new()
+		rng.seed = hash(prop_name) ^ int(prop_size * 1000.0)
+		var turn := Basis(Vector3.UP, rng.randf() * TAU) * Basis(Vector3.RIGHT, rng.randf_range(-0.3, 0.3))
+		var unit := prop.fix * prop.mesh.get_aabb()
+		# centred on the body, the longest side `prop_size` across
+		var xf := Transform3D(turn.scaled(Vector3.ONE * prop_size), Vector3.ZERO)
+		xf.origin = -(xf.basis * unit.get_center())
+		var mi := GardenProps.instance(prop, xf)
+		h.add_child(mi)
+		var cs := CollisionShape3D.new()
+		cs.shape = _hull(model, prop, xf)
+		h.add_child(cs)
+	else:
+		_plain_shape(h, kind, prop_size)
+	if h.food > 0:
+		h.add_to_group("food")
+		var marker := PickupMarker.new()  # food is worth pointing out, close up
+		marker.height = prop_size * 0.5 + 1.4
+		marker.reach = 18.0
+		marker.screen_size = 0.032
+		h.add_child(marker)
+	return h
+
+
+static var _hulls := {}  # model id -> the convex hull's points at unit size
+
+
+static func _model_id(kind: String, prop_name: String) -> String:
+	match kind:
+		"crumb":
+			return "cheese_crumb" if "cheese" in prop_name.to_lower() else "cake_crumb"
+		"grain":
+			return "maize_kernel"  # none yet: Meshy keeps making a whole cob
+	return "pebble"
+
+
+## A convex hull of the model, placed as the mesh is (points `xf` * unit hull).
+static func _hull(model: String, prop: GardenProps.Prop, xf: Transform3D) -> ConvexPolygonShape3D:
+	if not _hulls.has(model):
+		var base := prop.mesh.create_convex_shape(true, true) as ConvexPolygonShape3D
+		var pts := PackedVector3Array()
+		for p in base.points:
+			pts.append(prop.fix * p)
+		_hulls[model] = pts
+	var shape := ConvexPolygonShape3D.new()
+	var placed := PackedVector3Array()
+	for p: Vector3 in _hulls[model]:
+		placed.append(xf * p)
+	shape.points = placed
+	return shape
+
+
+## The graybox look, for when a model is missing.
+static func _plain_shape(h: Heavable, kind: String, prop_size: float) -> void:
 	var mesh: Mesh
 	var shape: Shape3D
-	var color := Color(0.6, 0.58, 0.55)
+	var color := Color(0.62, 0.52, 0.46)
 	match kind:
-		"crumb":  # a puff-puff crumb: golden, lumpy
+		"crumb":
 			var m := BoxMesh.new()
 			m.size = Vector3(prop_size, prop_size * 0.7, prop_size * 0.85)
 			var s := BoxShape3D.new()
@@ -69,8 +133,7 @@ static func make(kind: String, prop_size: float, prop_name: String) -> Heavable:
 			mesh = m
 			shape = s
 			color = Color(0.82, 0.55, 0.22)
-			h.food = 1
-		"grain":  # a maize grain: flattened, pale yellow
+		"grain":
 			var m := SphereMesh.new()
 			m.radius = prop_size * 0.45
 			m.height = prop_size * 0.6
@@ -80,8 +143,7 @@ static func make(kind: String, prop_size: float, prop_name: String) -> Heavable:
 			mesh = m
 			shape = s
 			color = Color(0.95, 0.83, 0.42)
-			h.food = 2
-		_:  # pebble
+		_:
 			var m := SphereMesh.new()
 			m.radius = prop_size * 0.5
 			m.height = prop_size * 0.8
@@ -89,7 +151,6 @@ static func make(kind: String, prop_size: float, prop_name: String) -> Heavable:
 			s.radius = prop_size * 0.42
 			mesh = m
 			shape = s
-			color = Color(0.62, 0.52, 0.46)
 	var mi := MeshInstance3D.new()
 	mi.mesh = mesh
 	var mat := StandardMaterial3D.new()
@@ -100,9 +161,6 @@ static func make(kind: String, prop_size: float, prop_name: String) -> Heavable:
 	var cs := CollisionShape3D.new()
 	cs.shape = shape
 	h.add_child(cs)
-	if h.food > 0:
-		h.add_to_group("food")
-	return h
 
 
 func _ready() -> void:

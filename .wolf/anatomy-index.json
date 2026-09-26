@@ -1,13 +1,13 @@
 {
   "version": 1,
   "meta": {
-    "lastScanned": "2026-09-26T14:41:21.428Z",
-    "fileCount": 255,
+    "lastScanned": "2026-09-26T15:11:45.356Z",
+    "fileCount": 257,
     "hits": 0,
     "misses": 0,
-    "renderedHash": "5f92e2c9c79e2efa0da78e6695339caddb1eefd282175406bb8385b56fc38560",
-    "storeUpdatedAt": "2026-09-26T14:41:21.436Z",
-    "rootHash": "d5436bac7be40eda"
+    "renderedHash": "fd34e15bece1dada218089f22031cafdda4b06c18a82d47c6b9720bd9c90ea01",
+    "storeUpdatedAt": "2026-09-26T15:11:45.365Z",
+    "rootHash": "b2ec9cb2a96470d8"
   },
   "files": {
     ".gitattributes": {
@@ -2827,11 +2827,11 @@
     },
     "player/held_weapon.gd": {
       "description": "Declares HAND_EULER",
-      "tokens": 732,
-      "hash": "5b15dbbdacc63334",
-      "size": 2744,
-      "mtimeMs": 1790424880190.6409,
-      "updatedAt": "2026-09-26T12:14:40.301Z",
+      "tokens": 1661,
+      "hash": "2596b9e181fa0a1a",
+      "size": 6226,
+      "mtimeMs": 1790435134976.599,
+      "updatedAt": "2026-09-26T15:05:35.097Z",
       "source": "hook"
     },
     "ui/hud_glyphs.gd": {
@@ -2922,6 +2922,24 @@
       "size": 4897,
       "mtimeMs": 1790433354650.5212,
       "updatedAt": "2026-09-26T14:35:54.758Z",
+      "source": "hook"
+    },
+    "world/shaders/pickup_marker.gdshader": {
+      "description": "Declares spatial",
+      "tokens": 568,
+      "hash": "17dc1338a24819db",
+      "size": 2128,
+      "mtimeMs": 1790435505090.4978,
+      "updatedAt": "2026-09-26T15:11:45.198Z",
+      "source": "hook"
+    },
+    "world/props/pickup_marker.gd": {
+      "description": "Declares SHADER",
+      "tokens": 330,
+      "hash": "8ee9446cc0ea41f1",
+      "size": 1234,
+      "mtimeMs": 1790435505271.9448,
+      "updatedAt": "2026-09-26T15:11:45.356Z",
       "source": "hook"
     }
   },

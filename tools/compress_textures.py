@@ -32,14 +32,24 @@ def gltf_roles(glb):
     b = glb.read_bytes()
     n = struct.unpack("<I", b[12:16])[0]
     j = json.loads(b[20:20 + n])
+    # keyed by image index AND by image name: Godot names the textures it
+    # extracts after the image's name when it has one (Blender exports call them
+    # "Image_<n>", and not in index order), else after its index
     roles = {}
+    images = j.get("images", [])
+
+    def mark(tex_index, role):
+        src = j["textures"][tex_index]["source"]
+        roles[src] = role
+        if src < len(images) and images[src].get("name"):
+            roles[images[src]["name"]] = role
     for m in j.get("materials", []):
         pbr = m.get("pbrMetallicRoughness", {})
         for key, role in (("baseColorTexture", "color"), ("metallicRoughnessTexture", "orm")):
             if key in pbr:
-                roles[j["textures"][pbr[key]["index"]]["source"]] = role
+                mark(pbr[key]["index"], role)
         if "normalTexture" in m:
-            roles[j["textures"][m["normalTexture"]["index"]]["source"]] = "normal"
+            mark(m["normalTexture"]["index"], "normal")
     return roles
 
 
@@ -55,10 +65,12 @@ def main():
         for imp in glob.glob(str(glb.parent / f"{glb.stem}_*.*.import")):
             imp = Path(imp)
             idx = imp.name[len(glb.stem) + 1:].split(".")[0]
-            m = re.fullmatch(r"(?:Image_)?(\d+)", idx)  # Blender exports name them Image_<n>
-            if m is None:
+            if idx in roles:  # named image
+                role = roles[idx]
+            elif idx.isdigit():
+                role = roles.get(int(idx), "color")
+            else:
                 continue
-            role = roles.get(int(m.group(1)), "color")
             set_params(imp, {"compress/mode": 2, "compress/normal_map": 1 if role == "normal" else 2,
                              "process/size_limit": 1024 if small else 0})
             done += 1

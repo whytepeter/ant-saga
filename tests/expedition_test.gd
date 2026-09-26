@@ -281,7 +281,9 @@ func _test_stone_flip_and_beat() -> void:
 	bug.call("_enter", PillBug.State.ROAM)
 	var stone := Heavable.make("pebble", 1.6, "Stone")
 	level.add_child(stone)
-	var from := bug.global_position + Vector3(0, 0, 13.5)
+	# within a throw's flight (about 10 m): a real pebble lands and stops, it
+	# doesn't roll on into the bug the way the old sphere did
+	var from := bug.global_position + Vector3(0, 0, 10.5)
 	player.teleport(layout.ground_point([from.x, from.z], 0.3), 0.0)
 	stone.global_position = player.global_position + Vector3(0, 3.0, 0)
 	player.lift(stone)

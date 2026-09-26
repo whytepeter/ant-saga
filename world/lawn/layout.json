@@ -1607,7 +1607,7 @@
     {
       "kind": "crumb",
       "size": 1.0,
-      "name": "Biscuit crumb",
+      "name": "Cake crumb",
       "pos": [
         55,
         -215
@@ -1616,16 +1616,16 @@
     {
       "kind": "crumb",
       "size": 1.3,
-      "name": "Biscuit crumb",
+      "name": "Cheese crumb",
       "pos": [
         62,
         -199
       ]
     },
     {
-      "kind": "grain",
+      "kind": "crumb",
       "size": 2.2,
-      "name": "Maize grain",
+      "name": "Cake crumb",
       "pos": [
         47,
         -226
@@ -1695,9 +1695,9 @@
       ]
     },
     {
-      "kind": "grain",
+      "kind": "crumb",
       "size": 2.0,
-      "name": "Maize grain",
+      "name": "Cheese crumb",
       "pos": [
         196,
         -12

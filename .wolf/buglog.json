@@ -275,6 +275,39 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-09-26"
+    },
+    {
+      "id": "bug-020",
+      "timestamp": "2026-09-26",
+      "error_message": "Stone knife / axe look bright green / yellow in game",
+      "file": "tools/compress_textures.py",
+      "root_cause": "Blender-exported GLBs name images Image_<n> out of index order; the tool matched roles by the number in the name, so the colour texture was compressed as a normal map (RGTC).",
+      "fix": "gltf_roles keys roles by image name as well as index; extracted textures named after an image name use it.",
+      "tags": [
+        "textures",
+        "import",
+        "blender"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-26"
+    },
+    {
+      "id": "bug-021",
+      "timestamp": "2026-09-26",
+      "error_message": "Axe on his back sticks out sideways; knife not at the waist",
+      "file": "player/held_weapon.gd",
+      "root_cause": "Stowed poses were set in the Spine bone's own axes, which point oddly.",
+      "fix": "HOLSTERS in the body's axes (+X left, +Y up, +Z forward) at a bone, turned by the bone's change from rest; every owned weapon shown stowed (axe back, knife hip) unless in hand.",
+      "tags": [
+        "weapon",
+        "holster"
+      ],
+      "related_bugs": [
+        "bug-017"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-09-26"
     }
   ]
 }

@@ -19,6 +19,10 @@ func _ready() -> void:
 		# leaning back against its stone, head up
 		var lean := Basis(Vector3.RIGHT, deg_to_rad(-24.0)) * Basis(Vector3.UP, deg_to_rad(70.0))
 		add_child(GardenProps.instance(prop, Transform3D(lean.scaled(Vector3.ONE * length), Vector3.ZERO)))
+	var marker := PickupMarker.new()
+	marker.height = 1.6
+	marker.reach = 70.0
+	add_child(marker)
 	var rest := GardenProps.get_prop("pebbles")
 	if rest != null:
 		add_child(GardenProps.instance(rest, Transform3D(Basis().scaled(Vector3.ONE * 0.9), Vector3(0.0, -0.05, -0.45))))

@@ -251,6 +251,30 @@
    "size": 0.4,
    "bone": "RightHand",
    "note": "Made by the user with Meshy image-to-3D (a knapped dark stone blade on a vine-wrapped stick handle with a leaf). Raw 715k-triangle GLB in source/meshy/user_knife.glb; decimated to 12k triangles, 1024 px textures, stood upright (pommel at the origin)."
+  },
+  {
+   "id": "pebble",
+   "group": "heavables",
+   "polycount": 5000,
+   "size": 1.0,
+   "prompt": "A single smooth rounded garden pebble, a slightly flattened oval, grey-tan with dark speckles and a few tiny pits.",
+   "note": "A loose prop Amodu lifts, carries and throws (world/props/heavable.gd); scaled to each placement's size."
+  },
+  {
+   "id": "cake_crumb",
+   "group": "heavables",
+   "polycount": 5000,
+   "size": 1.0,
+   "prompt": "A single crumb of yellow sponge cake: a rough irregular chunk with an airy porous inside and a thin golden-brown baked crust on one side.",
+   "note": "A loose prop Amodu lifts, carries and throws (world/props/heavable.gd); scaled to each placement's size."
+  },
+  {
+   "id": "cheese_crumb",
+   "group": "heavables",
+   "polycount": 5000,
+   "size": 1.0,
+   "prompt": "A small crumbly broken chunk of yellow cheddar cheese with irregular edges, a few tiny holes and cracks.",
+   "note": "A loose prop Amodu lifts, carries and throws (world/props/heavable.gd); scaled to each placement's size."
   }
  ]
 }

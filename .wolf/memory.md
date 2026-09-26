@@ -175,3 +175,9 @@ description: chronological action log per session, consolidated weekly
 | 15:35 | Created ui/map_hud.gd | — | ~1306 |
 | 15:41 | Edited tests/lawn_graybox_test.gd | modified get_children() | ~45 |
 | 15:41 | Edited tests/lawn_graybox_test.gd | modified get_children() | ~45 |
+| 16:05 | Created player/held_weapon.gd | — | ~1661 |
+| 16:05 | Created player/held_weapon.gd | — | ~1661 |
+| 16:11 | Created world/shaders/pickup_marker.gdshader | — | ~568 |
+| 16:11 | Created world/shaders/pickup_marker.gdshader | — | ~568 |
+| 16:11 | Created world/props/pickup_marker.gd | — | ~330 |
+| 16:11 | Created world/props/pickup_marker.gd | — | ~330 |

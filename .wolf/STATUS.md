@@ -55,9 +55,11 @@ budget_tokens: 1500
 - Map: `ui/garden_map.gd` (painted from the bake + patio, fog of war), `ui/map.gdshader`, `ui/map_panel.gd`, `ui/map_hud.gd`: round minimap top right, M (or click it) for the full map with every area and place named.
 - Performance (paused by the user): GrassShadows (grass casts shadows within 100 m only) + 3-row shadow blades. Measured the Dressing multimeshes (424 batches of ~3 Meshy props each) as the main cost (~25 fps at the Flower Bed); SSAO + volumetric fog ~18%.
 
+- Loose props are Meshy models (pebble, cake_crumb, cheese_crumb) with convex hulls (world/props/heavable.gd); the maize grains became crumbs (Meshy kept making whole cobs; unused models in source/meshy). Floating amber pickup markers (world/props/pickup_marker.gd): weapons from 70 m, food within 18 m.
+- Opigo/Opumie: the user is generating their own models (my attempts are in source/meshy/ants_attempt). Characters need a rig: Meshy auto-rig (their bones match Amodu's, so his animation library fits).
+
 ## 📝 Open from the user (2026-09-26)
-- Opigo and Opumie must not be identical (they share the ant scout model). Needs two Meshy characters (~35 credits each: model + rig; they can reuse Amodu's library).
-- Pebbles, crumbs (cake/cheese/biscuit) and grains are primitive boxes/spheres (`world/props/heavable.gd`): need Meshy models.
+- Opigo and Opumie must not be identical: waiting for the user's own models.
 - Chopping (roots, straw, silk) not built yet: `chop` values exist on moves.
 
 ## 📝 User notes to act on (2026-09-26)
