@@ -1909,14 +1909,14 @@
     "trowel": {
       "from": [
         -265,
-        286
+        246
       ],
       "to": [
         -265,
-        345
+        349
       ],
       "width": 22,
-      "note": "A dropped trowel: its blade makes a ramp from the grass onto the patio."
+      "note": "A dropped trowel, face down: its handle end is bedded in the soil (from), and you walk up the handle and the back of the blade, whose tip rests on the slabs just past the edge (to)."
     },
     "step": {
       "rect": [

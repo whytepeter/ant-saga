@@ -1,7 +1,8 @@
 extends SceneTree
 ## Builds <dir>/amodu_animations.res from the Meshy animation files
 ## (tools/meshy_character.py): anim_<batch>.glb holds up to 10 library actions
-## in manifest order; motion_<name>.glb holds one custom clip.
+## in manifest order ("actions"), anim_more_<batch>.glb the same for the later
+## "more_actions"; motion_<name>.glb holds one custom clip.
 ##
 ##   Godot --headless --path . -s tools/build_amodu_anims.gd [-- --dir=res://assets/characters/amodu2/]
 ##
@@ -27,7 +28,8 @@ const HEIGHT := 1.8  # Amodu in game (docs/WORLD.md)
 const FPS := 30.0
 const LOOPS := ["idle", "idle_look", "alert", "walk", "run", "sprint", "crouch_walk", "fall", "climb_up",
 	"climb_down", "climb_rope", "swim_idle", "swim", "block", "carry_walk", "push", "torch_crouch_walk",
-	"lamp_walk", "belly_crawl", "ride_insect", "carry_overhead_walk", "carry_overhead_idle", "jump_run", "coil"]
+	"lamp_walk", "belly_crawl", "ride_insect", "carry_overhead_walk", "carry_overhead_idle", "jump_run", "coil",
+	"climb_left", "climb_right", "rope_hang", "bar_hang"]
 ## Clips whose baked travel is removed on these axes (x, y, z).
 const IN_PLACE := {
 	"walk": [true, false, true], "run": [true, false, true], "sprint": [true, false, true],
@@ -37,7 +39,8 @@ const IN_PLACE := {
 	"climb_rope": [true, true, true], "carry_overhead_walk": [true, false, true],
 	"carry_overhead_idle": [true, false, true], "lift_overhead": [true, false, true],
 	"throw_overhead": [true, false, true], "throw": [true, false, true], "get_up": [true, false, true],
-	"jump_run": [true, false, true],
+	"jump_run": [true, false, true], "climb_left": [true, true, true], "climb_right": [true, true, true],
+	"rope_hang": [true, true, true], "bar_hang": [true, true, true],
 }
 ## Airborne pieces: the new clip and the jumps to cut it from, best first.
 const AIR := {
@@ -80,18 +83,21 @@ func _run() -> void:
 
 	var lib := AnimationLibrary.new()
 	var raw_drift := {}
-	var batch := 0
-	while FileAccess.file_exists(dir + "anim_%d.glb" % batch):
-		var names := _gltf_animation_names(dir + "anim_%d.glb" % batch)
-		var anims := _animations(dir + "anim_%d.glb" % batch)
-		for i in names.size():
-			var key: String = keys[batch * 10 + i]
-			var anim: Animation = anims.get(_godot_name(names[i]))
-			if anim == null:
-				push_error("missing clip %s (%s)" % [names[i], key])
-				continue
-			lib.add_animation(key, anim.duplicate(true))
-		batch += 1
+	for set: Array in [["anim_%d.glb", keys], ["anim_more_%d.glb", (manifest.get("more_actions", {}) as Dictionary).keys()]]:
+		var batch := 0
+		var set_keys: Array = set[1]
+		while FileAccess.file_exists(dir + String(set[0]) % batch):
+			var path := dir + String(set[0]) % batch
+			var names := _gltf_animation_names(path)
+			var anims := _animations(path)
+			for i in names.size():
+				var key: String = set_keys[batch * 10 + i]
+				var anim: Animation = anims.get(_godot_name(names[i]))
+				if anim == null:
+					push_error("missing clip %s (%s)" % [names[i], key])
+					continue
+				lib.add_animation(key, anim.duplicate(true))
+			batch += 1
 	for motion: String in (manifest.get("motions", {}) as Dictionary):
 		if not FileAccess.file_exists(dir + "motion_%s.glb" % motion):
 			push_warning("no motion file for %s" % motion)
@@ -132,6 +138,9 @@ func _run() -> void:
 			/ lib.get_animation("swim").length
 	if lib.has_animation("climb_up"):
 		speeds["climb"] = absf(float(raw_drift["climb_up"].y)) * BONE_SCALE * model_scale / lib.get_animation("climb_up").length
+	if lib.has_animation("climb_left"):  # sideways along the wall
+		var side: Vector3 = raw_drift["climb_left"]
+		speeds["climb_side"] = Vector2(side.x, side.z).length() * BONE_SCALE * model_scale / lib.get_animation("climb_left").length
 	lib.set_meta("natural_speed", speeds)
 	lib.set_meta("model_scale", model_scale)
 	lib.set_meta("times", meta_times)

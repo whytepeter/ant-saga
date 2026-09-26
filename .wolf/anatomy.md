@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-26T08:09:05.390Z
-> Files: 234 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-26T10:18:04.863Z
+> Files: 237 tracked | Anatomy hits: 0 | Misses: 0
 
 > Project structure index. Auto-maintained by OpenWolf hooks and daemon.
 > Run `openwolf scan` to generate, or wait for the first Claude Code session.
@@ -220,6 +220,7 @@
 
 ## tests/
 
+- `_anim_shots.gd` (~635 tok)
 - `expedition_test.gd` (~3386 tok)
 - `lawn_graybox_test.gd` (~1910 tok)
 - `lawn_graybox_test.gd.uid` (~6 tok)
@@ -239,6 +240,7 @@
 - `build_explorer_anims.gd.uid` (~6 tok)
 - `clip_sheet.gd` — Declares COLS (~972 tok)
 - `lawn_layout.py` — Validate and render the Lawn layout (world/lawn/layout.json). (~11232 tok)
+- `prop_sheet.gd` — Declares VIEWS (~787 tok)
 
 ## ui/
 
@@ -309,3 +311,4 @@
 - `thatch.gdshader` — Declares spatial (~488 tok)
 - `tree_base.gdshader` — Declares spatial (~1085 tok)
 - `water.gdshader` — Declares spatial (~1543 tok)
+- `weathered.gdshader` — Declares spatial (~1115 tok)

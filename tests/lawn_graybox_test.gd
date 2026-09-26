@@ -363,14 +363,15 @@ func _test_way_home() -> void:
 	var south := PI  # camera yaw looking south (+Z)
 	var t: Array = patio["trowel"]["from"]
 	player.teleport(layout.ground_point([float(t[0]), float(t[1]) - 6.0], 0.3), south)
-	await _walk("move_forward", 22.0)
+	await _walk("move_forward", 35.0, true)
 	var p := player.global_position
 	_check("trowel ramp onto the patio", absf(p.y - top) < 0.8 and p.z > float(patio["edge_z"]) + 10.0,
 		"at (%.0f, %.0f) y=%.1f (patio top %.0f)" % [p.x, p.z, p.y, top])
+	# onto the brush's back (you get there with a leap or a climb up its head)
 	var b: Array = patio["brush"]["from"]
-	var r := float(patio["brush"]["width"]) / 2.0
-	player.teleport(Vector3(float(b[0]), top + 2.0 * r + 0.5, float(b[1]) + 1.0), south)
-	await _walk("move_forward", 35.0)
+	player.teleport(Vector3(float(b[0]), sill + 10.0, float(b[1]) + 15.0), south)
+	await _frames(60)
+	await _walk("move_forward", 35.0, true)
 	p = player.global_position
 	_check("brush handle up onto the back step", absf(p.y - sill) < 0.8, "y=%.1f (step top %.0f)" % [p.y, sill])
 	var door: Array = patio["door"]["x"]
@@ -392,10 +393,18 @@ func _seconds(s: float) -> int:
 	return int(round(s * Engine.physics_ticks_per_second))
 
 
-func _walk(action: String, seconds: float) -> void:
+## Holds `action` for `seconds`; with `hop`, taps jump whenever he stops
+## making progress on the ground (a lip in the way), as a player would.
+func _walk(action: String, seconds: float, hop := false) -> void:
 	await _frames(15)
 	Input.action_press(action)
-	await _frames(_seconds(seconds))
+	var last := player.global_position
+	for k in _seconds(seconds):
+		await physics_frame
+		if hop and k % 45 == 44:
+			if player.global_position.distance_to(last) < 0.5 and player.is_on_floor():
+				await _tap("jump")
+			last = player.global_position
 	Input.action_release(action)
 	await _frames(10)
 

@@ -190,6 +190,10 @@ var _action_started := 0
 var _idle_time := 0.0
 var _next_fidget := 6.0
 var _carry_blend := 0.0
+## Holding a seed puff: its stalk gripped in front of him (rope_hang).
+var _puff_blend := 0.0
+## Climbing sideways: -1 left, 0 up or down, +1 right (the climb blend).
+var _climb_side := 0.0
 var _coil := 0.0
 var _lift_from := Vector3.ZERO
 ## Seconds into a lift, -1 when not lifting.
@@ -679,8 +683,13 @@ func _process_climbing(delta: float) -> void:
 		_leave_climb()
 		return
 
-	var rate := climb_input.length() * speed / float(_natural_speed["climb"])
-	anim_tree.set("parameters/sm/climb/speed/scale", rate * (1.0 if climb_input.y >= 0.0 else -1.0))
+	# mostly sideways: shuffle along the wall; otherwise climb (backwards going down)
+	var sideways := absf(climb_input.x) > absf(climb_input.y)
+	_climb_side = move_toward(_climb_side, signf(climb_input.x) if sideways else 0.0, delta * 6.0)
+	anim_tree.set("parameters/sm/climb/side/blend_position", _climb_side)
+	var natural := float(_natural_speed.get("climb_side", _natural_speed["climb"])) if sideways else float(_natural_speed["climb"])
+	var rate := climb_input.length() * speed / natural * (0.7 if sideways else 1.0)
+	anim_tree.set("parameters/sm/climb/speed/scale", rate * (1.0 if sideways or climb_input.y >= 0.0 else -1.0))
 
 
 func _leave_climb() -> void:
@@ -815,7 +824,7 @@ func is_gliding() -> bool:
 	return puff != null and state == State.AIR and velocity.y < 0.0
 
 
-## The puff rides in his raised hands, its stalk through his grip, leaning into the glide.
+## The puff's stalk runs upright through his hands, held in front of him (rope_hang), leaning into the glide.
 func _update_puff() -> void:
 	if puff == null:
 		return
@@ -1211,12 +1220,15 @@ func _process(delta: float) -> void:
 	anim_tree.set("parameters/sm/air/seek/seek_request", phase * clip.length)
 	anim_tree.set("parameters/sm/air/flail/blend_amount", clampf((-velocity.y - _air_v0 - 2.0) / 8.0, 0.0, 1.0))
 	anim_tree.set("parameters/sm/air/carry/blend_amount", _carry_blend)
+	anim_tree.set("parameters/sm/air/hang/blend_amount", _puff_blend)
 
 
 func _update_locomotion_animation(speed: float) -> void:
 	_sync_animation_state()
 	var dt := get_physics_process_delta_time()
-	_carry_blend = move_toward(_carry_blend, 1.0 if carried != null or puff != null else 0.0, dt * 5.0)
+	_carry_blend = move_toward(_carry_blend, 1.0 if carried != null else 0.0, dt * 5.0)
+	_puff_blend = move_toward(_puff_blend, 1.0 if puff != null else 0.0, dt * 5.0)
+	anim_tree.set("parameters/sm/ground/puff/blend_amount", _puff_blend)
 	_fidget(speed, dt)
 	if state == State.CRAWL:
 		var rate := speed / float(_natural_speed["crawl"])
@@ -1367,7 +1379,12 @@ func _build_animation_tree() -> void:
 	ground.add_node("coil", AnimationNodeBlend2.new())
 	ground.connect_node("coil", 0, "carry")
 	ground.connect_node("coil", 1, "coil_pose")
-	ground.connect_node("output", 0, "coil")
+	# a seed puff's stalk held upright in front of him: arms only, legs walk on
+	ground.add_node("puff_pose", _clip(_pick("rope_hang", "carry_overhead_idle")))
+	ground.add_node("puff", _arms_blend())
+	ground.connect_node("puff", 0, "coil")
+	ground.connect_node("puff", 1, "puff_pose")
+	ground.connect_node("output", 0, "puff")
 
 	# in the air: a jump's pose picked by vertical speed (see _process)
 	var air := AnimationNodeBlendTree.new()
@@ -1383,7 +1400,12 @@ func _build_animation_tree() -> void:
 	air.add_node("carry", AnimationNodeBlend2.new())
 	air.connect_node("carry", 0, "flail")
 	air.connect_node("carry", 1, "carry_pose")
-	air.connect_node("output", 0, "carry")
+	# gliding: hanging from the puff's stalk, legs dangling
+	air.add_node("hang_pose", _clip(_pick("rope_hang", "carry_overhead_idle")))
+	air.add_node("hang", AnimationNodeBlend2.new())
+	air.connect_node("hang", 0, "carry")
+	air.connect_node("hang", 1, "hang_pose")
+	air.connect_node("output", 0, "hang")
 
 	# swimming: treading water, blending into the stroke as he gets going
 	var swim := AnimationNodeBlendTree.new()
@@ -1401,7 +1423,17 @@ func _build_animation_tree() -> void:
 	sm.add_node("air", air)
 	sm.add_node("swim", swim)
 	sm.add_node("crawl", _scaled_clip("belly_crawl"))
-	sm.add_node("climb", _scaled_clip("climb_up"))
+	# climbing: up (or down, played backwards) or sideways along the wall
+	var climb := AnimationNodeBlendTree.new()
+	var side := AnimationNodeBlendSpace1D.new()
+	side.add_blend_point(_clip(_pick("climb_left", "climb_up")), -1.0, -1, &"left")
+	side.add_blend_point(_clip("climb_up"), 0.0, -1, &"up")
+	side.add_blend_point(_clip(_pick("climb_right", "climb_up")), 1.0, -1, &"right")
+	climb.add_node("side", side)
+	climb.add_node("speed", AnimationNodeTimeScale.new())
+	climb.connect_node("speed", 0, "side")
+	climb.connect_node("output", 0, "speed")
+	sm.add_node("climb", climb)
 	sm.add_node("down", _clip("death"))
 	var names := ["ground", "air", "crawl", "climb", "down", "swim"]
 	for a: String in names:
@@ -1430,6 +1462,16 @@ func _build_animation_tree() -> void:
 	anim_tree.tree_root = root
 	anim_tree.active = true
 	_playback = anim_tree.get("parameters/sm/playback")
+
+
+## A Blend2 that only touches the shoulders, arms and hands.
+func _arms_blend() -> AnimationNodeBlend2:
+	var blend := AnimationNodeBlend2.new()
+	blend.filter_enabled = true
+	for side in ["Left", "Right"]:
+		for bone in ["Shoulder", "Arm", "ForeArm", "Hand"]:
+			blend.set_filter_path(NodePath("Armature/Skeleton3D:%s%s" % [side, bone]), true)
+	return blend
 
 
 func _pick(wanted: String, fallback: String) -> String:

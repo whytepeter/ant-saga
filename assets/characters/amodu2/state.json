@@ -31,5 +31,6 @@
   "motion_throw_overhead": "01a0db68-7247-7036-9038-bffdfe691832",
   "motion_anim_carry_overhead_walk": "01a0db68-84b5-72e2-a762-b5506c643597",
   "motion_anim_carry_overhead_idle": "01a0db68-be2d-7389-8bcc-a4080b0af46b",
-  "motion_anim_throw_overhead": "01a0db68-c2fe-7501-886c-473a4661e5cb"
+  "motion_anim_throw_overhead": "01a0db68-c2fe-7501-886c-473a4661e5cb",
+  "anim_more_0": "01a0dcff-bf15-74ed-8f7c-f19c9f66fe05"
 }

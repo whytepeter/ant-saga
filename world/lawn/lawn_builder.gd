@@ -290,6 +290,130 @@ func _label(parent: Node3D, pos: Vector3, text: String, height_m: float, color :
 	return l
 
 
+# ── Meshy stand-ins ───────────────────────────────────────────────────────────
+# Where a Meshy model has replaced a graybox shape, these place it and give it
+# collision baked from its own triangles (or hull).
+
+## Drops the look of a graybox shape, keeping its collision.
+func _hide_looks(holder: Node) -> void:
+	for c in holder.get_children():
+		if c is MeshInstance3D:
+			holder.remove_child(c)
+			c.free()
+
+
+## Mesh space to world for `prop` turned by `turn` (in its unit space), stretched
+## so its bounds fill `size` exactly, standing on `ground` (the middle of its
+## underside) and turned `yaw` about the vertical.
+func _fitted(prop: GardenProps.Prop, ground: Vector3, size: Vector3, yaw := 0.0, turn := Basis.IDENTITY) -> Transform3D:
+	var unit := Transform3D(turn, Vector3.ZERO) * prop.fix
+	var box := unit * prop.mesh.get_aabb()
+	var fit := Transform3D(Basis.from_scale(size / box.size), Vector3.ZERO) * unit
+	var fb := fit * prop.mesh.get_aabb()
+	var lift := Vector3(-fb.get_center().x, -fb.position.y, -fb.get_center().z)
+	return Transform3D(Basis(Vector3.UP, yaw), ground) * Transform3D(Basis.IDENTITY, lift) * fit
+
+
+## Mesh space to world for a long prop leaning from the ground up onto an edge,
+## the way a dropped trowel or a brush rests: its unit X axis (after `turn`,
+## then `scale` per unit axis) runs along `dir`; its lowest point touches
+## `foot`, and it's tilted until its underside rests on the edge `edge_u`
+## metres further along `dir`, at height `edge_y`.
+func _leaning(prop: GardenProps.Prop, turn: Basis, scale: Vector3, foot: Vector3, dir: Vector2,
+		edge_u: float, edge_y: float) -> Transform3D:
+	var f := Vector3(dir.x, 0.0, dir.y).normalized()
+	var lateral := f.cross(Vector3.UP)
+	var frame := Basis(f, Vector3.UP, lateral)
+	var verts := prop.mesh.get_faces()
+	var sample := PackedVector3Array()
+	for k in range(0, verts.size(), 3):
+		sample.append(verts[k])
+	var lo := 0.0
+	var hi := deg_to_rad(60.0)
+	var xf := Transform3D.IDENTITY
+	for i in 32:
+		var a := (lo + hi) / 2.0
+		var b := Basis(lateral, a) * frame * Basis.from_scale(scale) * turn
+		var shape := Transform3D(b, Vector3.ZERO) * prop.fix
+		# rest the lowest point of the low half on the foot
+		var low := Vector3(0.0, INF, 0.0)
+		for v in sample:
+			var w := shape * v
+			if w.dot(f) < 0.0 and w.y < low.y:
+				low = w
+		xf = Transform3D(Basis.IDENTITY, foot - low) * shape
+		# how high its underside is where it crosses the edge
+		var under := INF
+		for v in sample:
+			var w := xf * v
+			if absf((w - foot).dot(f) - edge_u) < 1.5:
+				under = minf(under, w.y)
+		if under < edge_y:
+			lo = a
+		else:
+			hi = a
+	return xf
+
+
+const WEATHERED_SHADER := preload("res://world/shaders/weathered.gdshader")
+
+
+## The model's own textures under dirt, chipped paint and rust (weathered.gdshader):
+## garden tools that have been left out, not new ones. `ground_y` is where it
+## meets the soil (grime is caked on up to `caked` m above that).
+func _weathered(prop: GardenProps.Prop, ground_y: float, dirt: float, rust: float, wear: float, caked := 4.0) -> ShaderMaterial:
+	var m := ShaderMaterial.new()
+	m.shader = WEATHERED_SHADER
+	var src := prop.material as StandardMaterial3D
+	if src != null:
+		m.set_shader_parameter("albedo_tex", src.albedo_texture)
+		if src.roughness_texture != null:
+			m.set_shader_parameter("orm_tex", src.roughness_texture)
+			m.set_shader_parameter("has_orm", true)
+		if src.normal_enabled and src.normal_texture != null:
+			m.set_shader_parameter("normal_tex", src.normal_texture)
+			m.set_shader_parameter("has_normal", true)
+	m.set_shader_parameter("dirt_tex", load("res://assets/textures/brown_mud_dry/brown_mud_dry_diff.jpg"))
+	for pair: Array in [["ground_y", ground_y], ["dirt", dirt], ["rust", rust], ["wear", wear], ["caked_height", caked]]:
+		m.set_shader_parameter(String(pair[0]), pair[1])
+	return m
+
+
+## A Meshy model at `xf` (mesh space to world) with static collision baked in
+## world space: "trimesh" follows its triangles, "convex" is its simplified hull.
+func _prop_solid(parent: Node3D, prop: GardenProps.Prop, xf: Transform3D, kind: String, layer := WORLD_LAYER,
+		look: Material = null) -> void:
+	var mi := MeshInstance3D.new()
+	mi.name = prop.id
+	mi.mesh = prop.mesh
+	mi.material_override = look if look != null else prop.material
+	mi.transform = xf
+	parent.add_child(mi)
+	var shape: Shape3D
+	if kind == "trimesh":
+		var faces := prop.mesh.get_faces()
+		for k in faces.size():
+			faces[k] = xf * faces[k]
+		var concave := ConcavePolygonShape3D.new()
+		concave.set_faces(faces)
+		shape = concave
+	else:
+		var pts := (prop.shape("convex") as ConvexPolygonShape3D).points.duplicate()
+		for k in pts.size():
+			pts[k] = xf * pts[k]
+		var convex := ConvexPolygonShape3D.new()
+		convex.points = pts
+		shape = convex
+	var body := StaticBody3D.new()
+	body.name = "Solid_" + prop.id
+	body.collision_layer = layer
+	body.collision_mask = 0
+	var cs := CollisionShape3D.new()
+	cs.shape = shape
+	body.add_child(cs)
+	parent.add_child(body)
+
+
 # ── terrain and water ─────────────────────────────────────────────────────────
 
 func _build_terrain(parent: Node3D) -> void:
@@ -546,7 +670,20 @@ func _build_paths(parent: Node3D) -> void:
 				var b := _gp(pts[1], r)
 				var tip_len := 4.0
 				var body_end := b + (a - b).normalized() * tip_len
-				_tube(parent, a, body_end, r, "pencil", true, 6, WORLD_LAYER | CLIMBABLE_LAYER)
+				var body := _tube(parent, a, body_end, r, "pencil", true, 6, WORLD_LAYER | CLIMBABLE_LAYER)
+				var pencil := GardenProps.get_prop("pencil")
+				if pencil != null:
+					# the Meshy pencil (eraser at a, point at b), stretched to a real
+					# pencil's slenderness around the climbable collision tube
+					_hide_looks(body)
+					var along := b - a
+					var turn := Basis(Vector3.UP, -atan2(along.z, along.x)) * Basis(Vector3.BACK, asin(along.y / along.length()))
+					var fit := _fitted(pencil, Vector3.ZERO, Vector3(along.length(), 2.0 * r, 2.0 * r))
+					var xf := Transform3D(turn, (a + b) / 2.0 - Vector3.UP * r) * fit
+					var mi := GardenProps.instance(pencil, xf * pencil.fix.affine_inverse())
+					mi.material_override = _weathered(pencil, minf(a.y, b.y) - r, 0.45, 0.35, 0.6, 1.2)
+					parent.add_child(mi)
+					continue
 				var cone := CylinderMesh.new()
 				cone.bottom_radius = r
 				cone.top_radius = 0.15
@@ -598,8 +735,10 @@ func _build_landmarks(parent: Node3D) -> void:
 			"dandelion": _dandelion(parent, g, float(size[1]), false)
 			"dandelion_clock": _dandelion(parent, g, float(size[1]), true)
 			"crisp_packet": _crisp_packet(parent, g, size)
-			"fallen_apple": _fruit(parent, g, size, "apple", hash(id))
-			"windfall_apple": _fruit(parent, g, size, "apple_green", hash(id))
+			# (the "apple_core" model came out as an apple with a wedge cut away: it
+			# suits the pecked-open windfall; the real core is still a graybox)
+			"fallen_apple": _fruit(parent, g, size, "apple", hash(id), "apple_core")
+			"windfall_apple": _fruit(parent, g, size, "apple_green", hash(id), "apple")
 			"apple_core": _fruit(parent, g, size, "apple_core", hash(id))
 			"marble":
 				var glass := StandardMaterial3D.new()
@@ -824,11 +963,25 @@ func _orb_web(parent: Node3D, c: Vector3) -> void:
 
 
 func _capstone(parent: Node3D, g: Vector3, radius: float) -> void:
+	var cap := GardenProps.get_prop("bottle_cap")
+	var stones := GardenProps.get_prop("pebbles")
 	for k in 3:
 		var dir := Vector3.FORWARD.rotated(Vector3.UP, TAU * k / 3.0 + 0.4)
-		_sphere(parent, g + dir * 3.3 + Vector3.UP * 1.6, 1.9, "pebble")
+		var support := _sphere(parent, g + dir * 3.3 + Vector3.UP * 1.6, 1.9, "pebble")
+		if cap != null and stones != null:  # the Meshy pebbles wear the collision spheres
+			_hide_looks(support)
+			var xf := _fitted(stones, g + dir * 3.3 - Vector3.UP * 0.3, Vector3(4.4, 3.8, 4.4), TAU * k / 3.0)
+			parent.add_child(GardenProps.instance(stones, xf * stones.fix.affine_inverse()))
 	var base := g + Vector3.UP * 3.4
-	_cylinder(parent, base, radius, 2.2, "cap", true, radius * 0.92, 40)
+	var roof := _cylinder(parent, base, radius, 2.2, "cap", true, radius * 0.92, 40)
+	if cap != null:
+		# the Meshy crown cap, flipped so its top is the roof and its skirt hangs down
+		_hide_looks(roof)
+		var xf := _fitted(cap, base, Vector3(radius * 2.1, 2.4, radius * 2.1), 0.7, Basis(Vector3.RIGHT, PI))
+		var mi := GardenProps.instance(cap, xf * cap.fix.affine_inverse())
+		mi.material_override = _weathered(cap, g.y, 0.4, 0.6, 0.6, 1.0)
+		parent.add_child(mi)
+		return
 	# the 21 crimps of a crown cap's skirt
 	for k in 21:
 		var a := TAU * k / 21.0
@@ -931,11 +1084,16 @@ func _termite_camp(parent: Node3D, g: Vector3) -> void:
 
 
 ## A windfall apple, a little unripe one or a gnawed core: an ellipsoid on its side.
-func _fruit(parent: Node3D, g: Vector3, size: Array, key: String, seed_value: int) -> void:
+func _fruit(parent: Node3D, g: Vector3, size: Array, key: String, seed_value: int, model := "") -> void:
 	var w: float = size[0]
 	var h: float = size[1]
 	var l: float = size[2]
 	var yaw := float(seed_value % 628) / 100.0
+	var prop := GardenProps.get_prop(model) if model != "" else null
+	if prop != null:
+		# the Meshy apple, settled a little into the soil; walk into its bitten side
+		_prop_solid(parent, prop, _fitted(prop, g - Vector3.UP * 0.6, Vector3(w, h, l), yaw), "trimesh")
+		return
 	var mesh := SphereMesh.new()
 	mesh.radius = 0.5
 	mesh.height = 1.0
@@ -1256,23 +1414,24 @@ func _build_patio(parent: Node3D) -> void:
 		var mx := rng.randf_range(-700.0, 700.0)
 		_box(parent, Vector3(mx, top - 1.0, edge_z - 0.4), Vector3(rng.randf_range(6, 18), rng.randf_range(4, 12), 1.5), "moss", false)
 
-	# the trowel: a steel blade from the grass up onto the slabs; its cranked neck
-	# turns the handle aside onto the patio, out of the way
+	# the trowel: a steel blade from the grass up onto the slabs
 	var t: Dictionary = patio["trowel"]
-	var foot := _gp(t["from"], -0.35)  # bedded into the soil so the blade's top is flush
-	var lip_xz := LawnLayout.xz(t["to"])
-	var lip := Vector3(lip_xz.x, top - 0.33, lip_xz.y)  # top face just proud of the slab edge
-	var along := (lip - foot).normalized()
-	var side := along.cross(Vector3.UP).normalized()
-	var up := side.cross(along).normalized()
-	var blade := BoxMesh.new()
-	blade.size = Vector3(float(t["width"]), 0.8, foot.distance_to(lip))
-	var blade_shape := BoxShape3D.new()
-	blade_shape.size = blade.size
-	_add(parent, blade, _mat("trowel"), Transform3D(Basis(side, up, along), (foot + lip) / 2.0), blade_shape)
-	var neck := lip + side * (float(t["width"]) * 0.5 + 4.0) + Vector3(0, 2.6, 6.0)
-	_tube(parent, lip + Vector3(0, 0.6, 0.5), neck, 1.0, "trowel", false, 8)
-	_tube(parent, neck, neck + side * 58.0 + Vector3(0, 0, 10.0), 2.6, "trowel_handle", true, 12)
+	var trowel := GardenProps.get_prop("trowel")
+	if trowel != null:
+		# the Meshy trowel dropped face down (a real one, 30 cm; thinner than the
+		# model): its handle end bedded in the soil at "from", so you walk up the
+		# handle and along the curved back of the blade, whose tip rests on the
+		# slabs at "to", just past the edge
+		var to := LawnLayout.xz(t["to"])
+		var from := LawnLayout.xz(t["from"])
+		var thickness := 75.0 * (trowel.fix * trowel.mesh.get_aabb()).size.y
+		var butt := _gp(t["from"], -2.6 - thickness)  # deep enough that its rounded end is under the soil
+		var flip := Basis(Vector3.UP, PI) * Basis(Vector3.RIGHT, PI)  # face down, handle toward -X
+		var xf := _leaning(trowel, flip, Vector3(108.0, 75.0, 108.0), butt, to - from, from.distance_to(to), top)
+		var rusty := _weathered(trowel, _gp(t["from"]).y, 0.65, 0.75, 0.65, 7.0)
+		_prop_solid(parent, trowel, xf, "trimesh", WORLD_LAYER | CLIMBABLE_LAYER, rusty)
+	else:
+		_graybox_trowel(parent, t, top)
 
 	# the back step, the doormat in front of it, the brush leaning on it
 	var st: Dictionary = patio["step"]
@@ -1309,24 +1468,17 @@ func _build_patio(parent: Node3D) -> void:
 					_tube(parent, Vector3(bp.x + cos(a) * 80.0, top, bp.y + sin(a) * 80.0), Vector3(bp.x, top + 200.0, bp.y), 6.0, "grill", false, 8)
 				_sphere(parent, Vector3(bp.x, top + 230.0, bp.y), float(bs[0]) / 2.0, "grill", false, float(bs[0]) * 0.9)
 	var b: Dictionary = patio["brush"]
-	var low_xz := LawnLayout.xz(b["from"])
-	var high_xz := LawnLayout.xz(b["to"])
-	var r := float(b["width"]) / 2.0
-	var low := Vector3(low_xz.x, top + r, low_xz.y)
-	var high := Vector3(high_xz.x, sill + r, high_xz.y)
-	_tube(parent, low, high, r, "brush_wood", true, 12)
-	# a flat strip along the top of the handle, so it's a walkable (if narrow) ramp
-	var ramp := high - low
-	var ramp_dir := ramp.normalized()
-	var ramp_side := ramp_dir.cross(Vector3.UP).normalized()
-	var ramp_up := ramp_side.cross(ramp_dir).normalized()
-	var walkway := BoxMesh.new()
-	walkway.size = Vector3(r * 1.3, 0.3, ramp.length())
-	var strip_shape := BoxShape3D.new()
-	strip_shape.size = walkway.size
-	_add(parent, walkway, _mat("brush_wood"), Transform3D(Basis(ramp_side, ramp_up, ramp_dir), (low + high) / 2.0 + ramp_up * (r - 0.1)), strip_shape)
-	_box(parent, Vector3(low.x, top + 5.0, low.z - 8.0), Vector3(24.0, 10.0, 14.0), "brush_wood", true)  # the head
-	_box(parent, Vector3(low.x, top + 2.0, low.z - 8.0), Vector3(22.0, 4.0, 12.0), "bristle", false)
+	var brush := GardenProps.get_prop("hand_brush")
+	if brush != null:
+		# the Meshy hand brush leaning on the step, bristles down on the slabs:
+		# climb its head, then walk up its back and handle onto the step
+		var from := Vector3(float(b["from"][0]), top, float(b["from"][1]))
+		var dir := LawnLayout.xz(b["to"]) - LawnLayout.xz(b["from"])
+		var xf := _leaning(brush, Basis(Vector3.RIGHT, PI), Vector3(110.0, 60.0, 88.0), from, dir,
+			float(sr[1]) - from.z, sill)
+		_prop_solid(parent, brush, xf, "trimesh", WORLD_LAYER | CLIMBABLE_LAYER, _weathered(brush, top, 0.6, 0.0, 0.75, 6.0))
+	else:
+		_graybox_brush(parent, b, top, sill)
 
 	# the back door with the kitchen's warm light showing through the gap under it
 	var dr: Dictionary = patio["door"]
@@ -1354,6 +1506,48 @@ func _build_patio(parent: Node3D) -> void:
 	parent.add_child(lamp)
 	# walls behind the kitchen floor so nobody wanders into the house
 	_box(parent, Vector3(door_c, sill + 360.0, wall_z + 265.0), Vector3(door_w, 720.0, 10.0), "kitchen", true)
+
+
+## The trowel without its model: a steel blade box from the grass up onto the
+## slabs; its cranked neck turns the handle aside onto the patio, out of the way.
+func _graybox_trowel(parent: Node3D, t: Dictionary, top: float) -> void:
+	var foot := _gp(t["from"], -0.35)  # bedded into the soil so the blade's top is flush
+	var lip_xz := LawnLayout.xz(t["to"])
+	var lip := Vector3(lip_xz.x, top - 0.33, lip_xz.y)  # top face just proud of the slab edge
+	var along := (lip - foot).normalized()
+	var side := along.cross(Vector3.UP).normalized()
+	var up := side.cross(along).normalized()
+	var blade := BoxMesh.new()
+	blade.size = Vector3(float(t["width"]), 0.8, foot.distance_to(lip))
+	var blade_shape := BoxShape3D.new()
+	blade_shape.size = blade.size
+	_add(parent, blade, _mat("trowel"), Transform3D(Basis(side, up, along), (foot + lip) / 2.0), blade_shape)
+	var neck := lip + side * (float(t["width"]) * 0.5 + 4.0) + Vector3(0, 2.6, 6.0)
+	_tube(parent, lip + Vector3(0, 0.6, 0.5), neck, 1.0, "trowel", false, 8)
+	_tube(parent, neck, neck + side * 58.0 + Vector3(0, 0, 10.0), 2.6, "trowel_handle", true, 12)
+
+
+## The brush without its model: a handle tube with a flat walkway strip on top
+## (a walkable, if narrow, ramp) and a head box on the slabs.
+func _graybox_brush(parent: Node3D, b: Dictionary, top: float, sill: float) -> void:
+	var low_xz := LawnLayout.xz(b["from"])
+	var high_xz := LawnLayout.xz(b["to"])
+	var r := float(b["width"]) / 2.0
+	var low := Vector3(low_xz.x, top + r, low_xz.y)
+	var high := Vector3(high_xz.x, sill + r, high_xz.y)
+	_tube(parent, low, high, r, "brush_wood", true, 12)
+	# a flat strip along the top of the handle, so it's a walkable (if narrow) ramp
+	var ramp := high - low
+	var ramp_dir := ramp.normalized()
+	var ramp_side := ramp_dir.cross(Vector3.UP).normalized()
+	var ramp_up := ramp_side.cross(ramp_dir).normalized()
+	var walkway := BoxMesh.new()
+	walkway.size = Vector3(r * 1.3, 0.3, ramp.length())
+	var strip_shape := BoxShape3D.new()
+	strip_shape.size = walkway.size
+	_add(parent, walkway, _mat("brush_wood"), Transform3D(Basis(ramp_side, ramp_up, ramp_dir), (low + high) / 2.0 + ramp_up * (r - 0.1)), strip_shape)
+	_box(parent, Vector3(low.x, top + 5.0, low.z - 8.0), Vector3(24.0, 10.0, 14.0), "brush_wood", true)  # the head
+	_box(parent, Vector3(low.x, top + 2.0, low.z - 8.0), Vector3(22.0, 4.0, 12.0), "bristle", false)
 
 
 # ── the Flower Bed ────────────────────────────────────────────────────────────

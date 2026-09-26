@@ -120,3 +120,10 @@ description: chronological action log per session, consolidated weekly
 | 09:09 | Created world/shaders/grain.gdshader | — | ~728 |
 | 09:38 | Ground reads miniature: grain-scale soil textures, terrain relief (90 walkable mounds + rolling ground, baked with collision), macro DoF; scatter tried and removed per user; V/dodge and F1 (H) key fixes; underwater look limited to the Rut | ground.gdshader, lawn_layout.py, lawn_builder.gd, garden_dressing.gd, game_hud.gd, project.godot, lawn.tscn | all 3 test suites pass | ~60k |
 | 09:53 | Committed world build-out (85b4fcb); grass tufts with soil heaps, sheathed/veined/dry blades; clover kept off trails so the ant road leads to Root Hall | grass_meshes.gd, grass.gdshader, lawn_builder.gd, garden_dressing.gd, STATUS.md | all 3 test suites pass | ~40k |
+| 10:07 | Created tools/prop_sheet.gd | — | ~787 |
+| 10:07 | Created tools/prop_sheet.gd | — | ~787 |
+| 10:48 | Created tests/_anim_shots.gd | — | ~635 |
+| 10:48 | Created tests/_anim_shots.gd | — | ~635 |
+| 11:18 | Created world/shaders/weathered.gdshader | — | ~1115 |
+| 11:18 | Created world/shaders/weathered.gdshader | — | ~1115 |
+| 11:22 | Six Meshy route props (cap, apples, pencil, trowel, brush) placed with baked collision + weathered shader; sideways climb and rope-hang glide clips (library 439/440/477/478); trowel flipped (handle bedded, tip on slabs); tests hop over lips | lawn_builder.gd, weathered.gdshader, player.gd, build_amodu_anims.gd, meshy_character.py, layout.json, lawn_graybox_test.gd | all 3 suites pass; 192 credits spent (1560 left) | ~90k |

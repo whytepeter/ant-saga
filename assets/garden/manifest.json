@@ -191,6 +191,48 @@
       "polycount": 15000,
       "size": 70,
       "prompt": "A dandelion seed head (clock): one tall straight pale green stalk topped by a perfect white fluffy sphere of many seed parachutes radiating from the centre, a few seeds missing, and a rosette of long jagged green leaves flat around the base."
+    },
+    {
+      "id": "bottle_cap",
+      "group": "route",
+      "polycount": 8000,
+      "size": 9.4,
+      "prompt": "A single red metal crown bottle cap, right way up: a flat round top with a slightly raised centre and a short crimped skirt of fluted teeth all round the rim, glossy red paint scuffed to silver at the edges, hollow underneath."
+    },
+    {
+      "id": "apple",
+      "group": "route",
+      "polycount": 12000,
+      "size": 29,
+      "prompt": "A ripe red apple fallen on the ground, lying on its side, a bruised patch and one side pecked open showing pale juicy flesh, short brown stem."
+    },
+    {
+      "id": "apple_core",
+      "group": "route",
+      "polycount": 10000,
+      "size": 25,
+      "prompt": "A gnawed apple core: a narrow bitten waist of pale browning flesh with brown pips showing, a cap of red apple skin at each end, a short stem at the top."
+    },
+    {
+      "id": "pencil",
+      "group": "route",
+      "polycount": 6000,
+      "size": 68,
+      "prompt": "A yellow hexagonal wooden pencil, sharpened to a point at one end with bare pale wood and a dark graphite tip, a silver metal ferrule and a pink rubber eraser at the other end."
+    },
+    {
+      "id": "trowel",
+      "group": "route",
+      "polycount": 10000,
+      "size": 108,
+      "prompt": "A garden hand trowel: a pointed, slightly dished steel scoop blade joined by a short bent metal neck to a green wooden handle with a hanging hole near its end."
+    },
+    {
+      "id": "hand_brush",
+      "group": "route",
+      "polycount": 10000,
+      "size": 108,
+      "prompt": "A wooden hand brush for sweeping, as used with a dustpan: a flat varnished wooden back that narrows into a long straight handle, a dense block of stiff black bristles under the wide head."
     }
   ]
 }

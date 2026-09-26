@@ -83,5 +83,11 @@
       "prompt": "A strong person holding a heavy boulder above their head with both hands steps forward and hurls it far forward with both arms, then recovers to a relaxed standing pose.",
       "duration": 2.5
     }
+  },
+  "more_actions": {
+    "climb_left": 439,
+    "climb_right": 440,
+    "rope_hang": 477,
+    "bar_hang": 478
   }
 }

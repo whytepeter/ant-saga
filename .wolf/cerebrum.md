@@ -17,6 +17,8 @@ budget_tokens: 2000
 - Creatures live in believable habitats spread over the level (not clustered at spawn, never following the player).
 - First person must show his hands; the world should guide without text (landmarks, a beacon, the compass).
 - Plan Level 1 with the user only once they say the world is okay.
+- [2026-09-26] Props and tools in the garden look used and weathered: dirt, scratches, rust, worn paint. Never clean, shiny, catalogue-new.
+- [2026-09-26] Creatures must be animated (legs, wings) and sit or walk on surfaces; hovering stand-ins read as broken.
 
 ## Key Learnings
 

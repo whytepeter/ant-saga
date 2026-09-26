@@ -67,7 +67,7 @@
 <line x1="389.2" y1="976.0" x2="389.2" y2="1086.0" stroke="#9e968a" stroke-width="1"/>
 <line x1="648.4" y1="976.0" x2="648.4" y2="1086.0" stroke="#9e968a" stroke-width="1"/>
 <line x1="907.6" y1="976.0" x2="907.6" y2="1086.0" stroke="#9e968a" stroke-width="1"/>
-<line x1="244.0" y1="905.1999999999999" x2="244.0" y2="976.0" stroke="#7d8a92" stroke-width="26.4" stroke-linecap="round"/>
+<line x1="244.0" y1="857.1999999999999" x2="244.0" y2="980.8" stroke="#7d8a92" stroke-width="26.4" stroke-linecap="round"/>
 <polyline points="677.2,312.4 646.0,334.0 619.6,346.0 610.0,442.0 598.0,586.0 610.0,696.4" fill="none" stroke="#f2c14e" stroke-width="2.4" stroke-dasharray="4 3" stroke-linecap="round" opacity="0.95"/>
 <circle cx="677.1999999999999" cy="312.4" r="4.0" fill="#c9782a" stroke="#fff" stroke-width="1.5"/>
 <polyline points="610.0,316.0 526.0,322.0 430.0,358.0 346.0,430.0 274.0,514.0 322.0,580.0 388.0,643.6 490.0,648.4 586.0,664.0 610.0,696.4" fill="none" stroke="#e8641b" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#arrow)" marker-mid="url(#arrow)"/>

@@ -4,10 +4,10 @@
   "origin": -360,
   "height_min": -4.0,
   "height_max": 4.85,
-  "estimated_blades": 38787,
+  "estimated_blades": 38756,
   "surface_cells": {
-    "lawn": 95632,
-    "bare_soil": 7337,
+    "lawn": 95665,
+    "bare_soil": 7304,
     "mud": 1094,
     "leaf_litter": 11375,
     "water": 3677,

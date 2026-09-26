@@ -41,6 +41,11 @@ budget_tokens: 1500
 - **Keys**: V only changes the camera (dodge is Alt); controls panel on H (F1 is brightness on a Mac).
 - **Tests added**: swim, Root Hall walk-through, glide, route guide, running jumps. The pill-bug throw test freezes the bug during the wind-up.
 
+## 📝 User notes to act on (2026-09-26)
+- **Garden tools look too new.** Trowel, brush (and pencil) must be rickety, worn and dirty, not polished. The brush model isn't realistic enough (it reads as a hairbrush); a better Meshy regen needs credit approval.
+- **Insects at the Flower Bed float without animation** (ladybird and others): they need walking/crawling legs, wing flutter, and to sit on surfaces instead of hovering.
+- **Sound**: the user asked for sound effects: rain, wildlife, ambience, "other sounds that fit". Scale matters (×360: raindrops land like thuds, bee wings like a helicopter).
+
 ## 🚀 Next quest: world sign-off, then plan Level 1 with the user
 The user said: "later on we will plan the first level of the game once the world is okay".
 1. The user playtests the new world: route guide, gliding, caves, swimming, insect habitats, first-person hands. Fix what they flag.

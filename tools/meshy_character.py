@@ -79,6 +79,8 @@ def wait(path, label):
 
 
 def fetch(url, dest):
+    if dest.exists():  # a rerun only fetches what's missing
+        return
     req = urllib.request.Request(url, headers={"User-Agent": "ant-game/1.0"})
     with urllib.request.urlopen(req, timeout=300) as r, open(dest, "wb") as f:
         f.write(r.read())
@@ -126,6 +128,16 @@ def stage_model(c):
     fetch(t["model_urls"]["glb"], c.dir / "model.glb")
 
 
+def action_batches(m):
+    """[(state key / file stem, [(name, action id), ...])], up to 10 per batch."""
+    batches = []
+    for key, prefix in (("actions", "anim_"), ("more_actions", "anim_more_")):
+        items = list(m.get(key, {}).items())
+        for i in range(0, len(items), 10):
+            batches.append((f"{prefix}{i // 10}", items[i:i + 10]))
+    return batches
+
+
 def stage_rig(c):
     m = c.manifest
     rid = c.state["refine"]
@@ -138,16 +150,19 @@ def stage_rig(c):
         name = "rigged.glb" if "rig" in path.lower() or "character" in path.lower() else f"rig_{path.split('.')[-1]}.glb"
         fetch(url, c.dir / name)
 
-    actions = list(m["actions"].items())
-    batches = [actions[i:i + 10] for i in range(0, len(actions), 10)]
+    # "actions" were fetched in batches of 10 keyed by position, so actions added
+    # later go in "more_actions" (their own batches, anim_more_<i>.glb) rather
+    # than shifting the old batches and being skipped as already done
+    batches = action_batches(m)
     motions = list(m.get("motions", {}).items())
 
     def do_batch(i):
-        ids = [a for _, a in batches[i]]
-        tid = c.task(f"anim_{i}", lambda: call("POST", "/v1/animations", {"rig_task_id": rig, "action_ids": ids})["result"])
-        t = wait(f"/v1/animations/{tid}", f"animations {i + 1}/{len(batches)}")
-        fetch(t["result"]["animation_glb_url"], c.dir / f"anim_{i}.glb")
-        return f"batch {i}: {', '.join(n for n, _ in batches[i])}"
+        name, batch = batches[i]
+        ids = [a for _, a in batch]
+        tid = c.task(name, lambda: call("POST", "/v1/animations", {"rig_task_id": rig, "action_ids": ids})["result"])
+        t = wait(f"/v1/animations/{tid}", f"animations {name}")
+        fetch(t["result"]["animation_glb_url"], c.dir / f"{name}.glb")
+        return f"{name}: {', '.join(n for n, _ in batch)}"
 
     def do_motion(item):
         name, spec = item
@@ -176,12 +191,13 @@ def main():
     if len(sys.argv) < 3:
         sys.exit(__doc__)
     cmd, c = sys.argv[1], Char(sys.argv[2])
-    n_actions = len(c.manifest["actions"])
+    n_actions = len(c.manifest["actions"]) + len(c.manifest.get("more_actions", {}))
     n_motions = len(c.manifest.get("motions", {}))
     if cmd == "plan":
         made = sum(1 for k in c.manifest.get("motions", {}) if f"motion_{k}" in c.state)
-        cost = (0 if "refine" in c.state else 30) + (0 if "rig" in c.state else 5) + 3 * n_actions \
-            + 13 * (n_motions - made) + 3 * made
+        new_actions = sum(len(batch) for name, batch in action_batches(c.manifest) if name not in c.state)
+        cost = (0 if "refine" in c.state else 30) + (0 if "rig" in c.state else 5) + 3 * new_actions \
+            + 13 * (n_motions - made) + 3 * (n_motions - sum(1 for k in c.manifest.get("motions", {}) if f"motion_anim_{k}" in c.state))
         print(f"model 30 · rig 5 · {n_actions} actions × 3 · {n_motions} motions × 13  → about {cost} credits left to spend")
         print(f"balance {call('GET', '/v1/balance')['balance']}")
     elif cmd == "model":

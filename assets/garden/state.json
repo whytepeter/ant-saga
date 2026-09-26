@@ -108,5 +108,35 @@
     "preview": "01a0dc8b-470a-71c1-9cc2-17cae9947e1e",
     "refine": "01a0dc8d-6933-74db-a979-70851424e416",
     "done": true
+  },
+  "bottle_cap": {
+    "preview": "01a0dcf6-dcee-760b-99b4-3194b87758e5",
+    "refine": "01a0dcf7-e456-747e-98e0-53a62ecb37d3",
+    "done": true
+  },
+  "apple": {
+    "preview": "01a0dcf6-dcf2-72a6-929b-99cf340aab76",
+    "refine": "01a0dcf7-e154-7686-ace0-35ea65c62f83",
+    "done": true
+  },
+  "apple_core": {
+    "preview": "01a0dcf6-dcef-7334-b2bb-29cc22957299",
+    "refine": "01a0dcf7-e2a4-727f-9763-886d175ed519",
+    "done": true
+  },
+  "pencil": {
+    "preview": "01a0dcf6-dcee-759b-876d-4dd3b8b767c6",
+    "refine": "01a0dcf7-9d08-7370-98fe-bf09861e43d0",
+    "done": true
+  },
+  "trowel": {
+    "preview": "01a0dcf6-dce4-7764-87ad-677badb761b1",
+    "refine": "01a0dcf7-9b16-75a5-a7af-38c49b2a6759",
+    "done": true
+  },
+  "hand_brush": {
+    "preview": "01a0dcf8-4679-70ac-9260-e578276916f1",
+    "refine": "01a0dcfa-44ab-7634-897b-51330c013fbd",
+    "done": true
   }
 }
