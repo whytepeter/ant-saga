@@ -3,17 +3,17 @@
   "cell": 2,
   "origin": -360,
   "height_min": -4.0,
-  "height_max": 1.03,
-  "estimated_blades": 41091,
+  "height_max": 4.85,
+  "estimated_blades": 38787,
   "surface_cells": {
-    "lawn": 100149,
-    "bare_soil": 2820,
+    "lawn": 95632,
+    "bare_soil": 7337,
     "mud": 1094,
     "leaf_litter": 11375,
     "water": 3677,
     "flattened": 3230,
     "tussock": 2437,
-    "mimosa": 4887,
+    "clover": 4887,
     "ant_road": 652
   }
 }

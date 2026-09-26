@@ -15,3 +15,13 @@
 # Secrets (API keys for Meshy etc.)
 .env
 .env.*
+
+# Tool caches
+__pycache__/
+.wolf/cache/
+.wolf/_scan-state.json
+.wolf/cron-state.json
+.wolf/token-ledger.json
+
+# The first Amodu model (superseded by assets/characters/amodu2; 174 MB, unused)
+/assets/characters/amodu/

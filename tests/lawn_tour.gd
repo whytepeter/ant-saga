@@ -1,5 +1,5 @@
 extends SceneTree
-## Visual gate for the Level 1 graybox. Saves a photo from each layout viewpoint
+## Visual gate for the Level 1 back garden. Saves a photo from each layout viewpoint
 ## (the sight-line check), gameplay shots from the player camera, and prints
 ## frame rate and render load. Needs a window (not --headless):
 ##
@@ -24,29 +24,68 @@ func _run() -> void:
 	root.add_child(level)
 	player = level.get_node("Player")
 	layout = level.get("layout")
+	(level.get_node("HUD") as CanvasLayer).visible = false  # debug text; the GameHud stays
 	await _frames(200)
-	player.camera_rig.yaw += 2.6  # look back at Amodu and the two ants
+
+	# the HUD as the player sees it: compass, place banner, a key-cap prompt
+	player.camera_rig.yaw = PI + 0.5
 	player.camera_rig._apply_rotation()
-	await _frames(30)
-	await _shot("story_start_with_ants")
-	await _carry_shot()
-	(level.get_node("HUD") as CanvasLayer).visible = false
+	await _frames(40)
+	await _shot("hud_wake_up")
+	var crumb: Array = layout.items("heavables")[0]["pos"]
+	player.teleport(layout.ground_point(crumb) + Vector3(0, 0.4, -2.2), PI)
 	await _frames(60)
+	await _shot("hud_prompt_by_a_crumb")
 
 	await _perf("spawn, player camera")
-	await _shot("play_spawn")
-	await _play_shot("play_blade_forest", [-60, -185], [-160, -150])
-	await _play_shot("play_dewdrop", [-195, -20], [-260, -60])
+	await _play_shot("play_blade_forest_dandelion", [-40, -150], [-60, -125])
+	await _play_shot("play_flower_bed", [-235, -45], [-282, -40])
+	var top_daisy: Dictionary = layout.items("flowers")[3]
+	player.teleport(layout.ground_point(top_daisy["pos"], float(top_daisy["height"]) + 1.0), 0.3)
+	player.camera_rig.pitch = deg_to_rad(-15.0)
+	player.camera_rig._apply_rotation()
+	await _frames(60)
+	await _shot("play_top_of_the_daisy_staircase")
 	await _play_shot("play_bare_patch", [-35, 60], [40, 112])
-	await _play_shot("play_hose_run", [185, 10], [225, -60])
-	await _play_shot("play_bridge_approach", [150, 140], [140, 205])
-	await _play_shot("play_rootlands", [-110, 262], [-290, 300])
+	await _play_shot("play_bridge_toward_the_house", [140, 150], [140, 400])
+	await _play_shot("play_windfall_roots", [-110, 262], [-235, 200])
+	await _play_shot("play_spiders_corner_trowel", [-230, 250], [-265, 330])
+	var patio: Dictionary = layout.data["patio"]
+	var top: float = patio["top"]
+	player.teleport(Vector3(-120, top + 0.3, 420), PI - 0.35)
+	player.camera_rig.pitch = deg_to_rad(4.0)
+	player.camera_rig._apply_rotation()
+	await _frames(60)
+	await _shot("play_patio_back_door")
+	var door: Array = patio["door"]["x"]
+	player.teleport(Vector3((float(door[0]) + float(door[1])) / 2.0 + 30.0, top + float(patio["step"]["height"]) + 0.3, 610), PI + 0.4)
+	player.camera_rig.pitch = deg_to_rad(-6.0)
+	player.camera_rig._apply_rotation()
+	await _frames(60)
+	await _shot("play_door_gap_light")
 
 	var photo := Camera3D.new()
 	photo.fov = 75.0
 	photo.far = 9000.0
 	photo.near = 0.1
 	level.add_child(photo)
+	# the house from across the lawn, and a bee up close
+	photo.global_position = layout.ground_point([60, 120], 30.0)
+	photo.look_at(Vector3(-150, 400, 700))
+	photo.current = true
+	await _frames(30)
+	await _shot("wide_lawn_to_the_house")
+	var life := level.get_node_or_null("AmbientLife")
+	if life != null:
+		for n in life.get_children():
+			if n is Node3D and n.get_child_count() >= 7:  # a bee: 5 body parts + 2 wings
+				var b := (n as Node3D).global_position
+				photo.global_position = b + Vector3(9, 3, 9)
+				photo.look_at(b)
+				await _frames(3)
+				await _shot("life_bee_at_the_flower_bed")
+				break
+	(level.get_node("GameHud") as CanvasLayer).visible = false
 	for vp: Dictionary in layout.items("viewpoints"):
 		var surface: Vector3 = level.call("top_surface", vp["pos"])
 		var eye := surface + Vector3.UP * 1.6
@@ -58,28 +97,12 @@ func _run() -> void:
 		if vp["id"] == "V2":
 			await _perf("V2 backpack summit (whole level in view)")
 		await _shot("%s_%s" % [String(vp["id"]).to_lower(), String(vp["name"]).to_lower().replace(" ", "_")])
-		if vp["id"] == "V2":  # the summit is a 360° viewpoint: also look east toward the coupling and compost
-			photo.look_at(layout.ground_point([900, 600], 60.0))
+		if vp["id"] == "V2":  # the summit is a 360° viewpoint: also look south to the house
+			photo.look_at(Vector3(0, 300, 900))
 			await _frames(20)
-			await _shot("v2b_backpack_summit_east")
+			await _shot("v2b_backpack_summit_south")
 	print("tour saved to %s" % ProjectSettings.globalize_path(out_dir))
 	quit()
-
-
-## Lifts the first puff-puff crumb by the spawn and frames it overhead.
-func _carry_shot() -> void:
-	var crumb: Array = layout.items("heavables")[0]["pos"]
-	var at := layout.ground_point(crumb)
-	player.teleport(at + Vector3(0, 0.4, -2.2), PI)
-	await _frames(20)
-	Input.action_press("interact")
-	await _frames(2)
-	Input.action_release("interact")
-	player.camera_rig.yaw = PI + 2.2
-	player.camera_rig.pitch = deg_to_rad(-5.0)
-	player.camera_rig._apply_rotation()
-	await _frames(40)
-	await _shot("heave_carry_crumb")
 
 
 func _frames(n: int) -> void:

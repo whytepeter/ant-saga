@@ -5,16 +5,31 @@ extends RigidBody3D
 ## drag are things he lifts overhead and throws, and boulders he can shove
 ## (docs/WORLD.md §3). Size decides which: up to LIFT_LIMIT metres across he
 ## carries it, up to PUSH_LIMIT he pushes it, beyond that it doesn't budge.
+##
+## Food (crumbs, grains) counts toward the colony's store when it goes through
+## the Colony Gate. A prop Amodu throws hits hard: a creature it strikes takes
+## the blow as an attack (a stone curls a pill bug up).
 
 enum Weight { CARRY, PUSH, IMMOVABLE }
 
 const PROPS_LAYER := 1 << 5
+const CREATURES_LAYER := 1 << 3
 const LIFT_LIMIT := 2.6
 const PUSH_LIMIT := 5.5
+## How long after a throw an impact still counts as an attack, and how fast it must land.
+const THROWN_WINDOW := 2.5
+const HIT_SPEED := 5.0
 
 @export var display_name := "Pebble"
 ## Largest dimension in metres; drives weight class and mass.
 @export var size := 1.5
+## Food value when delivered to the colony (0 = not food).
+@export var food := 0
+
+## Who threw it and how long the throw stays dangerous.
+var thrown_by: Node3D
+var thrown_left := 0.0
+var _last_velocity := Vector3.ZERO
 
 var weight: Weight:
 	get:
@@ -29,7 +44,9 @@ static func make(kind: String, prop_size: float, prop_name: String) -> Heavable:
 	h.display_name = prop_name
 	h.size = prop_size
 	h.collision_layer = PROPS_LAYER
-	h.collision_mask = 1 | 2 | 4 | 16 | PROPS_LAYER  # world, player, climbable, grass, props
+	h.collision_mask = 1 | 2 | 4 | CREATURES_LAYER | 16 | PROPS_LAYER  # world, player, climbable, creatures, grass, props
+	h.contact_monitor = true
+	h.max_contacts_reported = 4
 	h.mass = 12.0 * pow(prop_size, 3.0)
 	h.gravity_scale = 2.0  # matches the player's 20 m/s² fall
 	h.continuous_cd = true
@@ -52,6 +69,7 @@ static func make(kind: String, prop_size: float, prop_name: String) -> Heavable:
 			mesh = m
 			shape = s
 			color = Color(0.82, 0.55, 0.22)
+			h.food = 1
 		"grain":  # a maize grain: flattened, pale yellow
 			var m := SphereMesh.new()
 			m.radius = prop_size * 0.45
@@ -62,6 +80,7 @@ static func make(kind: String, prop_size: float, prop_name: String) -> Heavable:
 			mesh = m
 			shape = s
 			color = Color(0.95, 0.83, 0.42)
+			h.food = 2
 		_:  # pebble
 			var m := SphereMesh.new()
 			m.radius = prop_size * 0.5
@@ -81,7 +100,33 @@ static func make(kind: String, prop_size: float, prop_name: String) -> Heavable:
 	var cs := CollisionShape3D.new()
 	cs.shape = shape
 	h.add_child(cs)
+	if h.food > 0:
+		h.add_to_group("food")
 	return h
+
+
+func _ready() -> void:
+	body_entered.connect(_on_body_entered)
+
+
+func _physics_process(delta: float) -> void:
+	thrown_left = maxf(thrown_left - delta, 0.0)
+	_last_velocity = linear_velocity
+
+
+## Marks the prop as a thrown weapon for the next THROWN_WINDOW seconds.
+func thrown(by: Node3D) -> void:
+	thrown_by = by
+	thrown_left = THROWN_WINDOW
+
+
+func _on_body_entered(body: Node) -> void:
+	if thrown_left <= 0.0 or body == thrown_by or not body.has_method("take_hit"):
+		return
+	if _last_velocity.length() < HIT_SPEED:
+		return
+	thrown_left = 0.0  # one hit per throw
+	body.call("take_hit", 1.0, global_position, &"throw", thrown_by)
 
 
 ## Half-height to hold it above Amodu's head or rest it on the ground.

@@ -26,6 +26,9 @@ func _run() -> void:
 	await _test_jog()
 	await _test_sprint()
 	await _test_jump_height()
+	await _test_power_jump()
+	await _test_long_jump()
+	await _test_running_jumps()
 	await _test_step(1.0, true)
 	await _test_step(2.0, false)
 	await _test_crawl()
@@ -125,6 +128,76 @@ func _test_jump_height() -> void:
 		"peak %.2f m, landed=%s" % [peak - start_y, landed])
 
 
+## Hold jump a full second, straight up: the biggest leap, and a shockwave on landing.
+func _test_power_jump() -> void:
+	await _reset(Vector3(0, 0, -5))
+	var start_y := player.global_position.y
+	Input.action_press("jump")
+	await _frames(_seconds(1.0))
+	var crouched := player.is_charging_jump() and player.is_on_floor()
+	var slams: Array[float] = []
+	var on_slam := func(_at: Vector3, fall: float) -> void: slams.append(fall)
+	player.slammed.connect(on_slam)
+	Input.action_release("jump")
+	var peak := start_y
+	for i in _seconds(3.5):
+		await physics_frame
+		peak = maxf(peak, player.global_position.y)
+		if i > 10 and player.is_on_floor():
+			break
+	player.slammed.disconnect(on_slam)
+	var rise := peak - start_y
+	_check("power jump height", crouched and absf(rise - player.power_jump_max_height) < 0.6,
+		"peak %.1f m (crouched first: %s)" % [rise, crouched])
+	_check("big landing sends a shockwave", slams.size() == 1 and player.is_on_floor(),
+		"%d slam(s)%s" % [slams.size(), " after a %.1f m fall" % slams[0] if slams.size() > 0 else ""])
+
+
+## A full-charge leap east along the lane with forward held at take-off.
+func _test_long_jump() -> void:
+	await _reset(Vector3(-18, 0, 0), -PI / 2.0)
+	Input.action_press("jump")
+	await _frames(_seconds(1.0))
+	Input.action_press("move_forward")
+	await _frames(2)
+	var start := player.global_position
+	Input.action_release("jump")
+	for i in _seconds(3.5):
+		await physics_frame
+		if i > 10 and player.is_on_floor():
+			break
+	_release_all()
+	var dist := player.global_position.x - start.x
+	_check("power jump distance", dist > 18.0 and player.is_on_floor(), "%.1f m east" % dist)
+
+
+## Running, a tap jumps at once and stays a hop; held, it grows into the big leap.
+func _test_running_jumps() -> void:
+	for held in [false, true]:
+		await _reset(Vector3(-18, 0, 0), -PI / 2.0)
+		var start_y := player.global_position.y
+		Input.action_press("move_forward")
+		await _frames(_seconds(0.6))
+		Input.action_press("jump")
+		await _frames(2)
+		var left := not player.is_on_floor()
+		if held:
+			await _frames(_seconds(0.5))
+		Input.action_release("jump")
+		var peak := start_y
+		for i in _seconds(3.5):
+			await physics_frame
+			peak = maxf(peak, player.global_position.y)
+			if i > 10 and player.is_on_floor():
+				break
+		_release_all()
+		var rise := peak - start_y
+		if held:
+			_check("held running jump becomes the big leap", left and rise > 5.0, "peak %.1f m" % rise)
+		else:
+			_check("tapped running jump leaves at once", left and absf(rise - player.jump_height) < 0.2, "peak %.2f m" % rise)
+
+
 func _test_step(height: float, should_clear: bool) -> void:
 	var i := PlaygroundScript.STEP_HEIGHTS.find(height)
 	var x: float = PlaygroundScript.STEP_XS[i]
@@ -206,7 +279,11 @@ func _test_lift_and_throw() -> void:
 	await _frames(10)
 	_check("lift a 2 m pebble", player.carried == pebble, "carried=%s" % (player.carried.display_name if player.carried else "nothing"))
 	var from := player.global_position
-	await _tap("throw")
+	await _tap("throw")  # pressed mid-lift: thrown once it is overhead, after the wind-up
+	for i in _seconds(3.0):
+		await physics_frame
+		if player.carried == null:
+			break
 	for i in _seconds(4.0):
 		await physics_frame
 		if i > 30 and pebble.linear_velocity.length() < 0.3:

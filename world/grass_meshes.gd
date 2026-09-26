@@ -5,6 +5,8 @@ class_name GrassMeshes
 
 ## A tapered blade growing up +Y, V-sectioned (midrib slightly behind the edges)
 ## and curving toward +Z by `bend` × height at the tip.
+## UV.y runs 0 at the base to 1 at the tip and UV.x across the blade, for the
+## grass shader's colour ramp and wind.
 static func blade(height: float, width: float, bend: float, rows := 6) -> ArrayMesh:
 	var st := SurfaceTool.new()
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
@@ -15,14 +17,23 @@ static func blade(height: float, width: float, bend: float, rows := 6) -> ArrayM
 		var z := bend * t * t * height
 		var y := t * height
 		ring.append(PackedVector3Array([Vector3(-w, y, z), Vector3(0, y, z - w * 0.18), Vector3(w, y, z)]))
+	var across := [0.0, 0.5, 1.0]
 	for i in rows:
+		var t0 := float(i) / rows
+		var t1 := float(i + 1) / rows
 		for side in 2:
 			var a0 := ring[i][side]
 			var a1 := ring[i][side + 1]
 			var b0 := ring[i + 1][side]
 			var b1 := ring[i + 1][side + 1]
-			st.add_vertex(a0); st.add_vertex(b0); st.add_vertex(a1)
-			st.add_vertex(a1); st.add_vertex(b0); st.add_vertex(b1)
+			var u0: float = across[side]
+			var u1: float = across[side + 1]
+			st.set_uv(Vector2(u0, t0)); st.add_vertex(a0)
+			st.set_uv(Vector2(u0, t1)); st.add_vertex(b0)
+			st.set_uv(Vector2(u1, t0)); st.add_vertex(a1)
+			st.set_uv(Vector2(u1, t0)); st.add_vertex(a1)
+			st.set_uv(Vector2(u0, t1)); st.add_vertex(b0)
+			st.set_uv(Vector2(u1, t1)); st.add_vertex(b1)
 	st.generate_normals()
 	return st.commit()
 
@@ -56,5 +67,33 @@ static func mimosa(height: float, pinna_length: float) -> ArrayMesh:
 			var w := pinna_length * 0.16 * (1.0 - 0.5 * t0)
 			st.add_vertex(c0); st.add_vertex(c1 + side * w); st.add_vertex(c1)
 			st.add_vertex(c0); st.add_vertex(c1); st.add_vertex(c1 - side * w)
+	st.generate_normals()
+	return st.commit()
+
+
+## White clover: a thin stalk topped by three round leaflets held flat, each a
+## little fan of triangles (a disc) with a notch toward the centre.
+static func clover(height: float, leaf_radius: float) -> ArrayMesh:
+	var st := SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var sw := 0.18
+	for axis: Vector3 in [Vector3.RIGHT, Vector3.BACK]:
+		var a := -axis * sw
+		var b := axis * sw
+		var top := Vector3.UP * height
+		st.add_vertex(a); st.add_vertex(a + top); st.add_vertex(b)
+		st.add_vertex(b); st.add_vertex(a + top); st.add_vertex(b + top)
+	var hub := Vector3.UP * height
+	for k in 3:
+		var dir := Vector3.FORWARD.rotated(Vector3.UP, TAU * k / 3.0)
+		var center := hub + dir * leaf_radius * 0.95 + Vector3.UP * 0.15
+		var segments := 12
+		for s in segments:
+			var a0 := TAU * s / segments
+			var a1 := TAU * (s + 1) / segments
+			var r0 := leaf_radius * (0.75 if s == 0 or s == segments - 1 else 1.0)
+			var p0 := center + Vector3(sin(a0), 0.0, cos(a0)).rotated(Vector3.UP, TAU * k / 3.0 + PI) * r0
+			var p1 := center + Vector3(sin(a1), 0.0, cos(a1)).rotated(Vector3.UP, TAU * k / 3.0 + PI) * leaf_radius
+			st.add_vertex(center); st.add_vertex(p0); st.add_vertex(p1)
 	st.generate_normals()
 	return st.commit()

@@ -1,6 +1,13 @@
+# OpenWolf
+
+This project uses OpenWolf for context management. The always-on rules live in `.claude/rules/openwolf.md`; the hooks handle bookkeeping (anatomy index, memory log, read tracking) automatically.
+
+For the full operating protocol (session handoff, memory discipline, bug logging), load the `openwolf` skill, or read `.wolf/OPENWOLF.md`. Regenerate the session handoff with `/handoff`.
+
+
 # Ant Kingdom Saga — Claude Code handoff
 
-Third-person 3D game in Godot 4.7 (Forward+, Jolt). Amodu, a bullied boy shrunk to 5 mm with full human strength, explores his family's compound in southern Nigeria alongside talking ant companions. Everything is ×360: Amodu is 1.8 m in game.
+Third-person 3D game in Godot 4.7 (Forward+, Jolt). **SMALL GIANT** (direction since 2026-09-26): Amodu, shrunk to 5 mm with full human strength, wakes by his school bag at the far end of an ordinary back garden and must get home under the back door before sunset. Everything is ×360: Amodu is 1.8 m in game. `.wolf/STATUS.md` has the current state.
 
 ## Read first
 - `docs/PLAN.md`: direction, phases, the **current phase (3c, the expedition slice)** and the deferred list.
@@ -8,9 +15,9 @@ Third-person 3D game in Godot 4.7 (Forward+, Jolt). Amodu, a bullied boy shrunk 
 - `docs/ant_kingdom_saga_backyard_edition.pdf`: the design source (heroes, colony building, stages). `docs/STORY.md` is parked reference only.
 
 ## Decisions (don't relitigate)
-- "Pikmin meets Grounded": short expeditions from the ant colony, loot hauled home, colony upgrades unlock heroes and places.
-- Real-time squad combat (Amodu + two heroes), not auto-battle. Heroes are earned, not gacha. PC first; no monetization design yet.
-- The setting is a Nigerian family compound. Content is family-friendly: no sexual content.
+- The adventure (SMALL GIANT) is the default mode. The "Pikmin meets Grounded" expedition slice is parked (`expedition_mode`), and heroes following Amodu are on hold (`Companion.ENABLED = false`).
+- The setting is an ordinary back garden; the Nigerian compound was dropped. Content is family-friendly: no sexual content.
+- Art: no blocky primitives as final visuals; Meshy models and CC0 textures (targets: Grounded, Smalland).
 - Companion dialogue was removed for now (it's in git history at e1ec4c4); don't re-add it unless asked.
 
 ## How the project works
@@ -18,8 +25,11 @@ Third-person 3D game in Godot 4.7 (Forward+, Jolt). Amodu, a bullied boy shrunk 
   `python3 tools/lawn_layout.py check && python3 tools/lawn_layout.py bake && python3 tools/lawn_layout.py render`
 - The graybox is generated at load by `world/lawn/lawn_builder.gd`. Grass collision lives in PhysicsServer3D, not in nodes.
 - Player: `player/player.gd`. Movement states, climbing, crawling, and heave (lift ≤2.6 m, push ≤5.5 m; see `world/props/heavable.gd`).
-- Companions: `characters/companion.gd` (the ant scout model runs on Amodu's animation library).
-- Animations are built from the Meshy clips by `tools/build_explorer_anims.gd` into `player/explorer/amodu_animations.res`.
+- Amodu's model and clips: `assets/characters/amodu2/` (Meshy, `tools/meshy_character.py`). Rebuild his animation library with
+  `Godot --headless --path . -s tools/build_amodu_anims.gd -- --dir=res://assets/characters/amodu2/`; look at clips with `tools/clip_sheet.gd`.
+- The apple tree's base and Root Hall's caves are baked from layout "tree_base" with Blender:
+  `/Applications/Blender.app/Contents/MacOS/Blender -b --factory-startup --python tools/bake_tree_base.py`, then reimport. `world/lawn/tree_base.gd` places it.
+- Companions and ants: `characters/ant_model.gd` runs on the older library `player/explorer/amodu_animations.res` (`tools/build_explorer_anims.gd`).
 
 ## Verify every change
 ```bash

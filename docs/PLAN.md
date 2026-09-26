@@ -47,7 +47,7 @@ Each phase ends with a **gate**, a check that must pass before the next phase st
 **Gate:** route timing ✅ (2.5 min and 3.1 min at a jog). Sight lines from V1–V5 ✅ in the screenshots. Route feel: your walkthrough.
 
 ## Phase 3b: Heave and companions (prototype) ✅
-- **Heave** (`world/props/heavable.gd`, `player/player.gd`): Amodu keeps human strength at 5 mm (square-cube law). Props up to 2.6 m he lifts overhead and throws along the camera aim; up to 5.5 m he pushes; bigger ones don't budge. 13 props in the level (puff-puff crumbs, maize grains, stones, boulders), tutorial set by the spawn and throwing stones in the Bare Patch.
+- **Heave** (`world/props/heavable.gd`, `player/player.gd`): Amodu keeps human strength at 5 mm (square-cube law). Props up to 2.6 m he lifts overhead and throws along the camera aim; up to 5.5 m he pushes; bigger ones don't budge. 13 props in the level (food crumbs, maize grains, stones, boulders), tutorial set by the spawn and throwing stones in the Bare Patch.
 - **Companions** (`characters/companion.gd`): Opigo and Opumie follow the trail Amodu actually walked, catch up if left behind, wait while he climbs. The ant scout shares his Mixamo rig, so it runs on his animation library.
 - **Banter**: built, then removed for now at your request (recoverable from git history, commit e1ec4c4).
 - Tests: lift, throw (17 m) and push (4.5 m) in the playground; companions within 8 m after route A.
@@ -66,9 +66,9 @@ Each phase ends with a **gate**, a check that must pass before the next phase st
 | **Kill / rethink if** | Hauling feels like a chore; the ants feel like escorts to babysit; the fight is button-mashing |
 
 **The run:**
-1. **Colony Gate (rest):** accept the job ("the workers saw a whole puff-puff by the school bag"). Opigo joins.
+1. **Colony Gate (rest):** accept the job (the workers found a big piece of food by the school bag). Opigo joins.
 2. **Out (teach):** cross the grass; small crumbs you can carry alone teach lift and throw.
-3. **The prize (test):** half a puff-puff, too big for Amodu alone. Call nearby worker ants (pheromone call); together they lift it, and they're slow.
+3. **The prize (test):** a piece of food too big for Amodu alone. Call nearby worker ants (pheromone call); together they lift it, and they're slow.
 4. **The ambush (tension):** pill bugs attack the haul. Real-time fight:
    - Throw stones to make them curl up.
    - Flip them while curled.

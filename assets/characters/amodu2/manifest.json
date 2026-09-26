@@ -1,0 +1,87 @@
+{
+  "note": "Amodu v2, from the user's own design (reference image) improved: rebuilt with Meshy image-to-3D in A-pose, auto-rigged, the v1 action set with a calmer idle, a face-down get-up for waking, running-jump candidates, and overhead carry/throw motions. Customisable: bags and gear are separate props attached to bones (assets/garden manifest group 'gear'); outfit colours come from Meshy retexture variants.",
+  "reference_image": "reference.png",
+  "prompt": "Stylized 3D game hero character: Amodu, a 12-year-old African boy with warm brown skin, a short neat buzz-cut, big friendly brown eyes and small stud earrings. He wears an orange polo shirt, a cord necklace with a small round green pendant, a brown leather belt with a round green-brass buckle and a small olive canvas pouch on the belt, khaki shorts with rolled hems, and olive-green sport sandals. Full body, standing in A-pose, facing forward. Stylized adventure-game look: chunky readable shapes, slightly large head and hands, clean silhouette, hand-painted look PBR textures. No backpack.",
+  "texture_prompt": "Hand-painted stylized game textures: warm brown skin, orange polo shirt, khaki shorts, brown leather belt, olive sandals and pouch, green pendant. Vivid but natural colours.",
+  "polycount": 30000,
+  "height_meters": 1.7,
+  "actions": {
+    "idle": 243,
+    "idle_look": 336,
+    "alert": 2,
+    "walk": 30,
+    "run": 14,
+    "sprint": 16,
+    "crouch_walk": 524,
+    "jump": 466,
+    "jump_run": 13,
+    "run_leap": 402,
+    "hurdle_jump": 467,
+    "slam_landing": 382,
+    "jump_down": 470,
+    "fall": 502,
+    "climb_up": 444,
+    "climb_down": 497,
+    "jump_grab_wall": 448,
+    "climb_finish": 435,
+    "climb_rope": 449,
+    "swim_idle": 568,
+    "swim": 569,
+    "swim_to_edge": 570,
+    "jab_left": 191,
+    "jab_right": 192,
+    "punch_combo": 198,
+    "kick": 206,
+    "roundhouse": 207,
+    "block": 138,
+    "dodge": 156,
+    "roll": 158,
+    "hit": 178,
+    "hit_fly": 7,
+    "death": 189,
+    "knockdown": 187,
+    "get_up": 344,
+    "carry_walk": 551,
+    "throw": 421,
+    "crouch_throw": 398,
+    "pick_up": 276,
+    "push": 261,
+    "bow_shot": 224,
+    "thrust": 240,
+    "weapon_attack": 4,
+    "torch_crouch_walk": 520,
+    "torch_look": 337,
+    "call": 29,
+    "victory": 412
+  },
+  "motions": {
+    "ride_insect": {
+      "prompt": "A person sitting astride a large riding animal, leaning slightly forward, both hands holding reins in front, body swaying and bobbing gently with its steps.",
+      "duration": 4.0
+    },
+    "lamp_walk": {
+      "prompt": "A person walking forward slowly while holding a lantern up high in the right hand to light the way, looking around carefully.",
+      "duration": 4.0
+    },
+    "belly_crawl": {
+      "prompt": "A person crawling forward on their belly, pulling with elbows and pushing with knees, staying low to the ground, looping.",
+      "duration": 3.0
+    },
+    "lift_overhead": {
+      "prompt": "A strong person squats, lifts a very heavy boulder from the ground and presses it high over their head with both arms, holding it steady.",
+      "duration": 3.5
+    },
+    "carry_overhead_walk": {
+      "prompt": "A strong person walks forward steadily while holding a large heavy boulder high above their head with both arms extended straight up, hands gripping it, a looping walk cycle.",
+      "duration": 3.0
+    },
+    "carry_overhead_idle": {
+      "prompt": "A strong person stands still holding a large heavy boulder high above their head with both arms extended straight up, breathing and swaying slightly.",
+      "duration": 3.0
+    },
+    "throw_overhead": {
+      "prompt": "A strong person holding a heavy boulder above their head with both hands steps forward and hurls it far forward with both arms, then recovers to a relaxed standing pose.",
+      "duration": 2.5
+    }
+  }
+}

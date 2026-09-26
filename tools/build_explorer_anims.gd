@@ -19,6 +19,7 @@ const MODEL_SCALE := AMODU_HEIGHT / MODEL_HEIGHT
 
 # name -> [source clip, loop, fix]
 #   fix: "" none | "crawl" reverse + remove drift + ground | "climb" center + remove drift
+#        | "strike:a:b" cut seconds a..b and play in place (combat moves, whose clips step forward)
 const CLIPS := {
 	"idle": ["Idle_11", true, ""],
 	"walk": ["Walking", true, ""],
@@ -29,9 +30,10 @@ const CLIPS := {
 	"death": ["dying_backwards", false, ""],
 	"look_around": ["Checkout_Gesture", false, ""],
 	"punch_combo": ["Punch_Combo_5", false, ""],
+	"punch": ["Punch_Combo_5", false, "strike:0.85:1.95"],
 	"double_combo": ["Double_Combo_Attack", false, ""],
 	"sword_slash": ["Right_Hand_Sword_Slash", false, ""],
-	"kick": ["Simple_Kick", false, ""],
+	"kick": ["Simple_Kick", false, "strike:0.3:1.6"],
 	"weapon_combo": ["Weapon_Combo", false, ""],
 	"skill": ["Skill_03", false, ""],
 	"dance": ["FunnyDancing_03", true, ""],
@@ -68,7 +70,11 @@ func _run() -> void:
 	for anim_name: String in CLIPS:
 		var spec: Array = CLIPS[anim_name]
 		var anim := _source(spec[0]).duplicate(true) as Animation
-		match spec[2]:
+		var fix := String(spec[2])
+		if fix.begins_with("strike:"):
+			anim = _slice(anim, float(fix.get_slice(":", 1)), float(fix.get_slice(":", 2)))
+			_remove_hips_drift(anim, true, false, true)
+		match fix:
 			"crawl":
 				anim = _reversed(anim)
 				_remove_hips_drift(anim, true, false, true)
@@ -175,6 +181,29 @@ func _ground(anim: Animation, ground_ref: float) -> void:
 		var v: Vector3 = anim.track_get_key_value(t, k)
 		v.y += dy / BONE_SCALE
 		anim.track_set_key_value(t, k, v)
+
+
+## The part of `anim` between `t0` and `t1` seconds, starting at zero.
+func _slice(anim: Animation, t0: float, t1: float) -> Animation:
+	var out := Animation.new()
+	out.length = t1 - t0
+	for t in anim.get_track_count():
+		var type := anim.track_get_type(t)
+		var nt := out.add_track(type)
+		out.track_set_path(nt, anim.track_get_path(t))
+		out.track_set_interpolation_type(nt, anim.track_get_interpolation_type(t))
+		var times: Array[float] = [t0]
+		for k in anim.track_get_key_count(t):
+			var kt := anim.track_get_key_time(t, k)
+			if kt > t0 and kt < t1:
+				times.append(kt)
+		times.append(t1)
+		for time: float in times:
+			match type:
+				Animation.TYPE_POSITION_3D: out.position_track_insert_key(nt, time - t0, anim.position_track_interpolate(t, time))
+				Animation.TYPE_ROTATION_3D: out.rotation_track_insert_key(nt, time - t0, anim.rotation_track_interpolate(t, time))
+				Animation.TYPE_SCALE_3D: out.scale_track_insert_key(nt, time - t0, anim.scale_track_interpolate(t, time))
+	return out
 
 
 ## A one-key looping clip holding `anim` at `time` (stand-in until a real jump clip exists).

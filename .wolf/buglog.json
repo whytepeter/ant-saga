@@ -1,0 +1,181 @@
+{
+  "version": 1,
+  "bugs": [
+    {
+      "id": "bug-001",
+      "date": "2026-09-26",
+      "file": "player/player_combat.gd",
+      "error_message": "SCRIPT ERROR: Cannot call method 'add_child' on a null value.",
+      "root_cause": "Combat (child of Player) used player.model in its _ready; the parent's @onready vars aren't set until after children are ready.",
+      "fix": "Use player.get_node(\"Model\") in the child's _ready.",
+      "tags": [
+        "godot",
+        "onready",
+        "ready-order"
+      ]
+    },
+    {
+      "id": "bug-002",
+      "date": "2026-09-26",
+      "file": "player/player.gd",
+      "error_message": "Amodu renders as glowing brown copper",
+      "root_cause": "Meshy's rigged GLB wires the colour texture to emission (factor 1) and sets no metallicFactor, which glTF defaults to 1.0: fully metallic skin.",
+      "fix": "_dress_model: emission off, metallic from the model's metallic-roughness map (B), roughness (G), normal map; same UVs as model.glb.",
+      "tags": [
+        "meshy",
+        "gltf",
+        "material",
+        "metallic"
+      ]
+    },
+    {
+      "id": "bug-003",
+      "date": "2026-09-26",
+      "file": "tools/build_amodu_anims.gd",
+      "error_message": "AnimationMixer: 'ride_insect', couldn't resolve track: 'target_character/Skeleton3D:Hips'",
+      "root_cause": "Meshy text-to-motion GLBs name the skeleton target_character; library clips use Armature/Skeleton3D, so custom motions (crawl, lift, lamp, ride) never played.",
+      "fix": "_retarget() points every bone track at the rigged model's skeleton path.",
+      "tags": [
+        "meshy",
+        "animation",
+        "track-path"
+      ]
+    },
+    {
+      "id": "bug-004",
+      "date": "2026-09-26",
+      "file": "player/player.gd",
+      "error_message": "Big leap lands twice",
+      "root_cause": "The landing clip dive_land has the hips 5 m up at its start (baked travel), so after touch-down the model rose and fell again; the take-off clip run_jump was a dive roll with its own landing.",
+      "fix": "Jumps cut into airborne poses (lowest foot pinned to the ground, pose chosen by vertical speed) and one landing clip on touch-down (land_hop / land_heavy).",
+      "tags": [
+        "animation",
+        "jump",
+        "root-motion"
+      ]
+    },
+    {
+      "id": "bug-005",
+      "date": "2026-09-26",
+      "file": "world/lawn/lawn_level.gd",
+      "error_message": "On spawn Amodu sinks into the ground and pops back up",
+      "root_cause": "wake_up (Meshy 271) lies with the hips at ground level and never stands; it faded in from standing and out again.",
+      "fix": "Player.wake_up(): get_up (Stand Up 1) snapped in with no blend, from lying to standing.",
+      "tags": [
+        "animation",
+        "spawn"
+      ]
+    },
+    {
+      "id": "bug-006",
+      "date": "2026-09-26",
+      "file": "world/weather.gd",
+      "error_message": "Rain has no overcast look: hard sun shadows in a shower",
+      "root_cause": "DayClock sets sun.light_energy every frame, so Weather's relative dimming cancelled out.",
+      "fix": "DayClock.base_energy; Weather sets energy = base * dim and softens shadow_opacity.",
+      "tags": [
+        "weather",
+        "lighting"
+      ]
+    },
+    {
+      "id": "bug-007",
+      "date": "2026-09-26",
+      "file": "world/lawn/garden_dressing.gd",
+      "error_message": "Autopilot stuck halfway up the Heartwood Stair inside the trunk",
+      "root_cause": "The tree's 120-180 m Meshy roots were centred partway up the new bank and tilted with the wrong sign, so their inner ends ran through the trunk and blocked the stair tunnel.",
+      "fix": "Banked roots are 70-105 m, start at the trunk surface, tilt up the slope (+atan2); fungus shelves sit outward of the trunk.",
+      "tags": [
+        "props",
+        "caves",
+        "collision"
+      ]
+    },
+    {
+      "id": "bug-008",
+      "date": "2026-09-26",
+      "file": "tools/bake_tree_base.py",
+      "error_message": "Stuck where the stair leaves Root Hall",
+      "root_cause": "The stair tube's floor came out through the hall's curved wall ~2 m above the hall floor.",
+      "fix": "Solve the helix start height so its floor meets the hall floor exactly where it crosses the floor's edge.",
+      "tags": [
+        "caves",
+        "bake"
+      ]
+    },
+    {
+      "id": "bug-009",
+      "date": "2026-09-26",
+      "file": "player/player.gd",
+      "error_message": "Super jump looks like vibrating with a fading ripple",
+      "root_cause": "The camera smoothed every frame toward the body's 60 Hz physics position (30 cm steps at leap speed), and its spring arm collided with grass blades, snapping in and out.",
+      "fix": "Player.visual_position() interpolates between physics steps (the model is drawn there, the camera follows it); the arm ignores grass.",
+      "tags": [
+        "camera",
+        "interpolation"
+      ]
+    },
+    {
+      "id": "bug-010",
+      "date": "2026-09-26",
+      "file": "world/shaders/water.gdshader",
+      "error_message": "A swimmer's legs show as a white ghost under the water",
+      "root_cause": "The foam line paints anything within foam_width of the surface white.",
+      "fix": "Thin, broken foam (0.3 m, noise-gated).",
+      "tags": [
+        "water",
+        "shader"
+      ]
+    },
+    {
+      "id": "bug-011",
+      "timestamp": "2026-09-26T08:24:10.000Z",
+      "error_message": "V switches the camera view and also makes Amodu dodge-roll",
+      "file": "project.godot",
+      "root_cause": "The dodge action had V bound as well as Alt; V is also camera_view, so one press fired both.",
+      "fix": "Removed V from dodge (Alt and pad Y remain). Check the input map for keys shared between actions.",
+      "tags": [
+        "input",
+        "keybinding",
+        "camera",
+        "dodge"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-26T08:24:10.000Z"
+    },
+    {
+      "id": "bug-012",
+      "timestamp": "2026-09-26T08:24:10.000Z",
+      "error_message": "F1 doesn't open the controls panel",
+      "file": "ui/game_hud.gd",
+      "root_cause": "On a Mac keyboard F1 is the brightness key unless fn is held, so Godot never receives it; the HUD only listened for KEY_F1.",
+      "fix": "New input action 'controls' (H, F1, pad Back); the HUD uses it and the corner hint shows H.",
+      "tags": [
+        "input",
+        "macos",
+        "hud",
+        "controls"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-26T08:24:10.000Z"
+    },
+    {
+      "id": "bug-013",
+      "timestamp": "2026-09-26T08:24:10.000Z",
+      "error_message": "Dry lawn in dips looks wet and dark with water caustics, far from the Rut",
+      "file": "world/shaders/ground.gdshader",
+      "root_cause": "The ground shader applied its underwater look wherever the ground was below the global water_level; ~13.8k dry lattice points already sat below it (more with terrain relief).",
+      "fix": "Uniform water_box (the Rut's bounds + 6 m, set in lawn_builder._ground_material) and the mud weight gate the underwater look.",
+      "tags": [
+        "shader",
+        "water",
+        "terrain"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-26T08:24:10.000Z"
+    }
+  ]
+}

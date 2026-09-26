@@ -1,0 +1,12 @@
+[features]
+hooks = true
+
+[mcp_servers.godot]
+command = "uv"
+args = [
+    "run",
+    "--directory",
+    "/Users/apple/Documents/code/godot-mcp/mcp",
+    "python",
+    "godot_mcp_server.py",
+]

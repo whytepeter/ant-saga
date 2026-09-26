@@ -1,16 +1,19 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=10 format=3]
 
 [ext_resource type="Script" path="res://world/lawn/lawn_level.gd" id="1_level"]
 [ext_resource type="Script" path="res://world/lawn/lawn_builder.gd" id="2_builder"]
 [ext_resource type="PackedScene" path="res://player/player.tscn" id="3_player"]
 [ext_resource type="Script" path="res://world/sun_light.gd" id="4_sun"]
 
-[sub_resource type="ProceduralSkyMaterial" id="sky_mat"]
-sky_top_color = Color(0.3, 0.5, 0.78, 1)
-sky_horizon_color = Color(0.78, 0.8, 0.76, 1)
-ground_bottom_color = Color(0.2, 0.17, 0.12, 1)
-ground_horizon_color = Color(0.78, 0.8, 0.76, 1)
-sun_angle_max = 20.0
+[sub_resource type="PhysicalSkyMaterial" id="sky_mat"]
+rayleigh_coefficient = 2.4
+rayleigh_color = Color(0.28, 0.42, 0.66, 1)
+mie_coefficient = 0.008
+mie_eccentricity = 0.84
+mie_color = Color(0.86, 0.78, 0.66, 1)
+turbidity = 9.0
+sun_disk_scale = 1.6
+ground_color = Color(0.22, 0.19, 0.13, 1)
 
 [sub_resource type="Sky" id="sky"]
 sky_material = SubResource("sky_mat")
@@ -19,20 +22,42 @@ sky_material = SubResource("sky_mat")
 background_mode = 2
 sky = SubResource("sky")
 ambient_light_source = 3
-ambient_light_energy = 0.45
+ambient_light_color = Color(0.82, 0.78, 0.7, 1)
+ambient_light_sky_contribution = 0.45
+ambient_light_energy = 0.8
 tonemap_mode = 4
+tonemap_exposure = 1.05
 ssao_enabled = true
+ssao_intensity = 1.2
 glow_enabled = true
-glow_intensity = 0.35
-glow_bloom = 0.05
+glow_intensity = 0.45
+glow_bloom = 0.08
+glow_hdr_threshold = 0.9
 fog_enabled = true
-fog_light_color = Color(0.72, 0.78, 0.86, 1)
-fog_sun_scatter = 0.25
-fog_density = 0.0006
-fog_aerial_perspective = 0.65
+fog_light_color = Color(0.78, 0.82, 0.88, 1)
+fog_sun_scatter = 0.4
+fog_density = 0.0007
+fog_aerial_perspective = 0.7
 fog_sky_affect = 0.25
 fog_height = 30.0
 fog_height_density = 0.004
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.0016
+volumetric_fog_albedo = Color(0.96, 0.9, 0.78, 1)
+volumetric_fog_anisotropy = 0.72
+volumetric_fog_length = 260.0
+volumetric_fog_detail_spread = 2.2
+volumetric_fog_ambient_inject = 0.25
+volumetric_fog_sky_affect = 0.0
+adjustment_enabled = true
+adjustment_contrast = 1.04
+adjustment_saturation = 1.08
+
+[sub_resource type="CameraAttributesPractical" id="cam_attr"]
+dof_blur_far_enabled = true
+dof_blur_far_distance = 150.0
+dof_blur_far_transition = 260.0
+dof_blur_amount = 0.07
 
 [sub_resource type="LabelSettings" id="hud_text"]
 font_size = 17
@@ -44,6 +69,7 @@ script = ExtResource("1_level")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("env")
+camera_attributes = SubResource("cam_attr")
 
 [node name="Sun" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-0.25881904, -0.25, 0.9330127, 0, 0.96592593, 0.25881904, -0.9659259, 0.0669873, -0.25, 0, 60, 0)

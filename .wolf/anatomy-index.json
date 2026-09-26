@@ -1,0 +1,2453 @@
+{
+  "version": 1,
+  "meta": {
+    "lastScanned": "2026-09-26T08:09:05.390Z",
+    "fileCount": 234,
+    "hits": 0,
+    "misses": 0,
+    "renderedHash": "e87f616d9fed5f81101ba94541670b87e03de765ff9c37c462fec235aaa6a9d5",
+    "storeUpdatedAt": "2026-09-26T08:09:05.399Z",
+    "rootHash": "95a219ad9f3ad00d"
+  },
+  "files": {
+    ".gitattributes": {
+      "description": "Git attributes",
+      "tokens": 216,
+      "hash": "038f6bd66efe61bb",
+      "size": 808,
+      "mtimeMs": 1790368501057.0015,
+      "updatedAt": "2026-09-25T22:20:40.387Z",
+      "source": "scan"
+    },
+    ".gitignore": {
+      "description": "Git ignore rules",
+      "tokens": 54,
+      "hash": "f8208cf4bfd99a77",
+      "size": 201,
+      "mtimeMs": 1790366825028.9094,
+      "updatedAt": "2026-09-25T22:20:40.387Z",
+      "source": "scan"
+    },
+    ".godot/.gdignore": {
+      "description": "",
+      "tokens": 1,
+      "hash": "01ba4719c80b6fe9",
+      "size": 1,
+      "mtimeMs": 1790363606633.8342,
+      "updatedAt": "2026-09-25T22:20:40.388Z",
+      "source": "scan"
+    },
+    ".godot/editor/amodu_attack.glb-209f14bb30e6279b54a28e6661337c14.scn-folding-33a9270779f3b2086e716907fea36cb3.cfg": {
+      "description": "",
+      "tokens": 14,
+      "hash": "fa44dfbae9b3b649",
+      "size": 49,
+      "mtimeMs": 1790363624310.3635,
+      "updatedAt": "2026-09-25T22:20:40.388Z",
+      "source": "scan"
+    },
+    ".godot/editor/amodu_defeat.glb-379714726a057d4f43b5c7b6aa7e24d9.scn-folding-d7599f6b0123482b252ff9992c961437.cfg": {
+      "description": "",
+      "tokens": 14,
+      "hash": "fa44dfbae9b3b649",
+      "size": 49,
+      "mtimeMs": 1790363626801.6904,
+      "updatedAt": "2026-09-25T22:20:40.389Z",
+      "source": "scan"
+    },
+    ".godot/editor/amodu_hit.glb-203db0479aee5b25981ba2ae4b3e3fbc.scn-folding-4fd6f0f85a3b6998368d56664fa5b313.cfg": {
+      "description": "",
+      "tokens": 14,
+      "hash": "fa44dfbae9b3b649",
+      "size": 49,
+      "mtimeMs": 1790363629262.6335,
+      "updatedAt": "2026-09-25T22:20:40.389Z",
+      "source": "scan"
+    },
+    ".godot/editor/amodu_run.glb-1e3421318ed522d0725b31c27856cd26.scn-folding-a4a533a3c264181f536978d6815fcd7a.cfg": {
+      "description": "",
+      "tokens": 14,
+      "hash": "fa44dfbae9b3b649",
+      "size": 49,
+      "mtimeMs": 1790363631747.7107,
+      "updatedAt": "2026-09-25T22:20:40.389Z",
+      "source": "scan"
+    },
+    ".godot/editor/editor_layout.cfg": {
+      "description": "",
+      "tokens": 390,
+      "hash": "b394df954647a927",
+      "size": 1460,
+      "mtimeMs": 1790372933790.6423,
+      "updatedAt": "2026-09-25T22:20:40.389Z",
+      "source": "scan"
+    },
+    ".godot/editor/editor_script_doc_cache.res-folding-a7de57390d6e786984ca20c70a831128.cfg": {
+      "description": "",
+      "tokens": 14,
+      "hash": "fa44dfbae9b3b649",
+      "size": 49,
+      "mtimeMs": 1790368560134.9204,
+      "updatedAt": "2026-09-25T22:20:40.389Z",
+      "source": "scan"
+    },
+    ".godot/editor/filesystem_cache10": {
+      "description": "",
+      "tokens": 5901,
+      "hash": "12406c181c23842f",
+      "size": 22127,
+      "mtimeMs": 1790372696834.5198,
+      "updatedAt": "2026-09-25T22:20:40.389Z",
+      "source": "scan"
+    },
+    ".godot/editor/filesystem_update4": {
+      "description": "",
+      "tokens": 70,
+      "hash": "459dd915417a65bc",
+      "size": 262,
+      "mtimeMs": 1790372930206.9224,
+      "updatedAt": "2026-09-25T22:20:40.390Z",
+      "source": "scan"
+    },
+    ".godot/editor/lawn.tscn-editstate-7c3fda16824fbe24a0066057b3bb4db2.cfg": {
+      "description": "",
+      "tokens": 1160,
+      "hash": "b043607b9bb75df9",
+      "size": 4349,
+      "mtimeMs": 1790366896554.1755,
+      "updatedAt": "2026-09-25T22:20:40.390Z",
+      "source": "scan"
+    },
+    ".godot/editor/lawn.tscn-folding-7c3fda16824fbe24a0066057b3bb4db2.cfg": {
+      "description": "",
+      "tokens": 175,
+      "hash": "0c592af1c9ab35f2",
+      "size": 654,
+      "mtimeMs": 1790366896572.2158,
+      "updatedAt": "2026-09-25T22:20:40.390Z",
+      "source": "scan"
+    },
+    ".godot/editor/Meshy_AI_Amber_Ant_Scout_biped_Animation_Left_Slash_withSkin.glb-736347919538eb178e26d71015a23263.scn-folding-6c30b7ab6d224a738bef7e046325d162.cfg": {
+      "description": "",
+      "tokens": 14,
+      "hash": "fa44dfbae9b3b649",
+      "size": 49,
+      "mtimeMs": 1790363614593.9133,
+      "updatedAt": "2026-09-25T22:20:40.390Z",
+      "source": "scan"
+    },
+    ".godot/editor/Meshy_AI_Amber_Ant_Scout_biped_Animation_Right_Hand_Sword_Slash_withSkin.glb-92aa7151ce27d3ace898d57e09a80b15.scn-folding-f3df0d54c1d0152919f1ea51cc1fbc2a.cfg": {
+      "description": "",
+      "tokens": 14,
+      "hash": "fa44dfbae9b3b649",
+      "size": 49,
+      "mtimeMs": 1790363617062.5693,
+      "updatedAt": "2026-09-25T22:20:40.390Z",
+      "source": "scan"
+    },
+    ".godot/editor/Meshy_AI_Amber_Ant_Scout_biped_Animation_Running_withSkin.glb-74f262805582ab34ce2feb663d980653.scn-folding-a66c03c2a1ce67d1d79f919168d55da5.cfg": {
+      "description": "",
+      "tokens": 14,
+      "hash": "fa44dfbae9b3b649",
+      "size": 49,
+      "mtimeMs": 1790363619459.3555,
+      "updatedAt": "2026-09-25T22:20:40.390Z",
+      "source": "scan"
+    },
+    ".godot/editor/Meshy_AI_Amber_Ant_Scout_biped_Animation_Walking_withSkin.glb-7cf0fdd32dfa2b09abe6175543c5a985.scn-folding-e1c2e1a7b47166ac15f7c21d3b4390cc.cfg": {
+      "description": "",
+      "tokens": 14,
+      "hash": "fa44dfbae9b3b649",
+      "size": 49,
+      "mtimeMs": 1790363621866.0483,
+      "updatedAt": "2026-09-25T22:20:40.390Z",
+      "source": "scan"
+    },
+    ".godot/editor/Meshy_AI_Little_Explorer_biped_Animation_Checkout_Gesture_withSkin.glb-a323e621dd911355f39c2f74c571bf78.scn-folding-6a84fcab40857160cd2d35a17a7c6ac7.cfg": {
+      "description": "",
+      "tokens": 14,
+      "hash": "fa44dfbae9b3b649",
+      "size": 49,
+      "mtimeMs": 1790363632687.4773,
+      "updatedAt": "2026-09-25T22:20:40.390Z",
+      "source": "scan"
+    },
+    ".godot/editor/Meshy_AI_Little_Explorer_biped_Animation_Crawl_and_Look_Back_withSkin.glb-eb833c042a5f698b6e887ecf9641d1d2.scn-folding-c32ad9c1e1dec3b0b4ecfdb7fb06760f.cfg": {
+      "description": "",
+      "tokens": 14,
+      "hash": "fa44dfbae9b3b649",
+      "size": 49,
+      "mtimeMs": 1790363634148.906,
+      "updatedAt": "2026-09-25T22:20:40.390Z",
+      "source": "scan"
+    },
+    ".godot/editor/Meshy_AI_Little_Explorer_biped_Animation_Crawl_Backward_withSkin.glb-5d6ac5f79d0242ed4741a4f1b2d97d39.scn-folding-179276a1be28dc66151b29ff828f16ae.cfg": {
+      "description": "",
+      "tokens": 14,
+      "hash": "fa44dfbae9b3b649",
+      "size": 49,
+      "mtimeMs": 1790363635553.827,
+      "updatedAt": "2026-09-25T22:20:40.390Z",
+      "source": "scan"
+    },
+    ".godot/editor/Meshy_AI_Little_Explorer_biped_Animation_Double_Combo_Attack_withSkin.glb-617975ea58aaeedd83be4700aee4167c.scn-folding-4e246f995f20f49cd8031589216feee1.cfg": {
+      "description": "",
+      "tokens": 14,
+      "hash": "fa44dfbae9b3b649",
+      "size": 49,
+      "mtimeMs": 1790363636495.1707,
+      "updatedAt": "2026-09-25T22:20:40.390Z",
+      "source": "scan"
+    },
+    ".godot/editor/Meshy_AI_Little_Explorer_biped_Animation_dying_backwards_withSkin.glb-2b66d6ce18d85e53f9f7809131122c54.scn-folding-711cf3723a09ce3a69cd84001de2bbb8.cfg": {
+      "description": "",
+      "tokens": 14,
+      "hash": "fa44dfbae9b3b649",
+      "size": 49,
+      "mtimeMs": 1790363636013.998,
+      "updatedAt": "2026-09-25T22:20:40.391Z",
+      "source": "scan"
+    },
+    ".godot/editor/Meshy_AI_Little_Explorer_biped_Animation_Fast_Ladder_Climb_withSkin.glb-dd938ff62b5ecf3ef2b37cec945ca85a.scn-folding-eab05ab74d491ba4f5362aa953ee14a3.cfg": {
+      "description": "",
+      "tokens": 14,
+      "hash": "fa44dfbae9b3b649",
+      "size": 49,
+      "mtimeMs": 1790363635096.3777,
+      "updatedAt": "2026-09-25T22:20:40.391Z",
+      "source": "scan"
+    },
+    ".godot/editor/Meshy_AI_Little_Explorer_biped_Animation_FunnyDancing_03_withSkin.glb-a6f7a492f219a13587809243924a588c.scn-folding-15de1e4ecd5405bbe9d8214137e5f2a2.cfg": {
+      "description": "",
+      "tokens": 14,
+      "hash": "fa44dfbae9b3b649",
+      "size": 49,
+      "mtimeMs": 1790363634636.355,
+      "updatedAt": "2026-09-25T22:20:40.391Z",
+      "source": "scan"
+    },
+    ".godot/editor/Meshy_AI_Little_Explorer_biped_Animation_Hit_Reaction_1_withSkin.glb-bdcfe0cc0ce770340fe0a63a63eb715b.scn-folding-376eae216a09635d6caddf8623bc1450.cfg": {
+      "description": "",
+      "tokens": 14,
+      "hash": "fa44dfbae9b3b649",
+      "size": 49,
+      "mtimeMs": 1790363633646.3547,
+      "updatedAt": "2026-09-25T22:20:40.391Z",
+      "source": "scan"
+    },
+    ".godot/editor/Meshy_AI_Little_Explorer_biped_Animation_Idle_11_withSkin.glb-ac8a1013834a20caddbed67b8d73eb1f.scn-folding-64e4bbb12fbf8dd0af0c3d6628f7958b.cfg": {
+      "description": "",
+      "tokens": 14,
+      "hash": "fa44dfbae9b3b649",
+      "size": 49,
+      "mtimeMs": 1790363633164.0342,
+      "updatedAt": "2026-09-25T22:20:40.391Z",
+      "source": "scan"
+    },
+    ".godot/editor/Meshy_AI_Little_Explorer_biped_Animation_Punch_Combo_5_withSkin.glb-7fde10e5d07c719156caf43c0c0dd883.scn-folding-19d609b29b8061c3b5dbe6bb446c3079.cfg": {
+      "description": "",
+      "tokens": 14,
+      "hash": "fa44dfbae9b3b649",
+      "size": 49,
+      "mtimeMs": 1790363632219.2483,
+      "updatedAt": "2026-09-25T22:20:40.391Z",
+      "source": "scan"
+    },
+    ".godot/editor/Meshy_AI_Little_Explorer_biped_Animation_Right_Hand_Sword_Slash_withSkin.glb-90a869116b53d9cf462d476f3679b6be.scn-folding-90703310ee795013f133c43fa0abdf8a.cfg": {
+      "description": "",
+      "tokens": 14,
+      "hash": "fa44dfbae9b3b649",
+      "size": 49,
+      "mtimeMs": 1790363629719.9163,
+      "updatedAt": "2026-09-25T22:20:40.391Z",
+      "source": "scan"
+    },
+    ".godot/editor/Meshy_AI_Little_Explorer_biped_Animation_Running_withSkin.glb-716c70788367234f5ed09e639771a348.scn-folding-899dee1b7b52bc11207df9c8c399e82c.cfg": {
+      "description": "",
+      "tokens": 14,
+      "hash": "fa44dfbae9b3b649",
+      "size": 49,
+      "mtimeMs": 1790363627271.3677,
+      "updatedAt": "2026-09-25T22:20:40.391Z",
+      "source": "scan"
+    },
+    ".godot/editor/Meshy_AI_Little_Explorer_biped_Animation_Simple_Kick_withSkin.glb-e1f6d93f23998d06e6e9f95f1b2bf67d.scn-folding-2c7f1e5d32dfb7b02421c1ce1640cd69.cfg": {
+      "description": "",
+      "tokens": 14,
+      "hash": "fa44dfbae9b3b649",
+      "size": 49,
+      "mtimeMs": 1790363624789.8857,
+      "updatedAt": "2026-09-25T22:20:40.391Z",
+      "source": "scan"
+    },
+    ".godot/editor/Meshy_AI_Little_Explorer_biped_Animation_Skill_03_withSkin.glb-a46867082b8c5395bf3cb2f283db9bfd.scn-folding-35d41307456eceb98ba6f6c6f10f6004.cfg": {
+      "description": "",
+      "tokens": 14,
+      "hash": "fa44dfbae9b3b649",
+      "size": 49,
+      "mtimeMs": 1790363622335.3967,
+      "updatedAt": "2026-09-25T22:20:40.391Z",
+      "source": "scan"
+    },
+    ".godot/editor/Meshy_AI_Little_Explorer_biped_Animation_Stand_Up8_withSkin.glb-f03ffc9895ccc5e54442ef3c55101c18.scn-folding-92282b1962c9c8b7d8d6142c8666f543.cfg": {
+      "description": "",
+      "tokens": 14,
+      "hash": "fa44dfbae9b3b649",
+      "size": 49,
+      "mtimeMs": 1790363619924.4058,
+      "updatedAt": "2026-09-25T22:20:40.391Z",
+      "source": "scan"
+    },
+    ".godot/editor/Meshy_AI_Little_Explorer_biped_Animation_Walking_withSkin.glb-450fd967903b2fa5c83bf95aab6ac273.scn-folding-7fba7544b948d64232b746200d93c183.cfg": {
+      "description": "",
+      "tokens": 14,
+      "hash": "fa44dfbae9b3b649",
+      "size": 49,
+      "mtimeMs": 1790363617518.3674,
+      "updatedAt": "2026-09-25T22:20:40.391Z",
+      "source": "scan"
+    },
+    ".godot/editor/Meshy_AI_Little_Explorer_biped_Animation_Weapon_Combo_withSkin.glb-023574e6b8ad3d35bf7059b896cdd818.scn-folding-c077aff4f43534fd3255b526ebdb4dad.cfg": {
+      "description": "",
+      "tokens": 14,
+      "hash": "fa44dfbae9b3b649",
+      "size": 49,
+      "mtimeMs": 1790363615053.161,
+      "updatedAt": "2026-09-25T22:20:40.391Z",
+      "source": "scan"
+    },
+    ".godot/editor/project_metadata.cfg": {
+      "description": "",
+      "tokens": 44,
+      "hash": "b0d887ac76b06754",
+      "size": 165,
+      "mtimeMs": 1790372697410.8582,
+      "updatedAt": "2026-09-25T22:20:40.391Z",
+      "source": "scan"
+    },
+    ".godot/editor/script_editor_cache.cfg": {
+      "description": "",
+      "tokens": 0,
+      "hash": "e3b0c44298fc1c14",
+      "size": 0,
+      "mtimeMs": 1790372933790.2852,
+      "updatedAt": "2026-09-25T22:20:40.391Z",
+      "source": "scan"
+    },
+    ".godot/global_script_class_cache.cfg": {
+      "description": "",
+      "tokens": 355,
+      "hash": "a7d8c8aa7efb25dc",
+      "size": 1330,
+      "mtimeMs": 1790372930256.8027,
+      "updatedAt": "2026-09-25T22:20:40.391Z",
+      "source": "scan"
+    },
+    ".godot/imported/amodu_attack_texture_0.png-a592693430da1d7384f9532a5e85aec7.md5": {
+      "description": "",
+      "tokens": 25,
+      "hash": "4c02acb412da6349",
+      "size": 91,
+      "mtimeMs": 1790363623943.7207,
+      "updatedAt": "2026-09-25T22:20:40.392Z",
+      "source": "scan"
+    },
+    ".godot/imported/amodu_attack.glb-209f14bb30e6279b54a28e6661337c14.md5": {
+      "description": "",
+      "tokens": 25,
+      "hash": "a9c57377d459db43",
+      "size": 91,
+      "mtimeMs": 1790363624336.0127,
+      "updatedAt": "2026-09-25T22:20:40.392Z",
+      "source": "scan"
+    },
+    ".godot/imported/amodu_defeat_texture_0.png-ff4e46c99868356466d7d6d97821f3e3.md5": {
+      "description": "",
+      "tokens": 25,
+      "hash": "4c02acb412da6349",
+      "size": 91,
+      "mtimeMs": 1790363626437.653,
+      "updatedAt": "2026-09-25T22:20:40.392Z",
+      "source": "scan"
+    },
+    ".godot/imported/amodu_defeat.glb-379714726a057d4f43b5c7b6aa7e24d9.md5": {
+      "description": "",
+      "tokens": 25,
+      "hash": "27d265623f1dc4fc",
+      "size": 91,
+      "mtimeMs": 1790363626827.5227,
+      "updatedAt": "2026-09-25T22:20:40.392Z",
+      "source": "scan"
+    },
+    ".godot/imported/amodu_hit_texture_0.png-18e6fa1979a215298c27e7c76757b5b4.md5": {
+      "description": "",
+      "tokens": 25,
+      "hash": "4c02acb412da6349",
+      "size": 91,
+      "mtimeMs": 1790363628899.52,
+      "updatedAt": "2026-09-25T22:20:40.392Z",
+      "source": "scan"
+    },
+    ".godot/imported/amodu_hit.glb-203db0479aee5b25981ba2ae4b3e3fbc.md5": {
+      "description": "",
+      "tokens": 25,
+      "hash": "c5cc638350ddec32",
+      "size": 91,
+      "mtimeMs": 1790363629288.079,
+      "updatedAt": "2026-09-25T22:20:40.392Z",
+      "source": "scan"
+    },
+    ".godot/imported/amodu_run_texture_0.png-1671fb1790e3cdb0c795e72137b31505.md5": {
+      "description": "",
+      "tokens": 25,
+      "hash": "4c02acb412da6349",
+      "size": 91,
+      "mtimeMs": 1790363631383.7256,
+      "updatedAt": "2026-09-25T22:20:40.392Z",
+      "source": "scan"
+    },
+    ".godot/imported/amodu_run.glb-1e3421318ed522d0725b31c27856cd26.md5": {
+      "description": "",
+      "tokens": 25,
+      "hash": "6ba8959bb511612f",
+      "size": 91,
+      "mtimeMs": 1790363631773.8054,
+      "updatedAt": "2026-09-25T22:20:40.392Z",
+      "source": "scan"
+    },
+    ".godot/imported/lawn_map.svg-9e680ddb16d9c796c32866942748a593.ctex": {
+      "description": "",
+      "tokens": 21887,
+      "hash": "de4c616a24db5466",
+      "size": 86588,
+      "mtimeMs": 1790371369199.2166,
+      "updatedAt": "2026-09-25T22:20:40.394Z",
+      "source": "scan"
+    },
+    ".godot/imported/lawn_map.svg-9e680ddb16d9c796c32866942748a593.md5": {
+      "description": "",
+      "tokens": 25,
+      "hash": "12d00bf52d54b25a",
+      "size": 91,
+      "mtimeMs": 1790371369201.1968,
+      "updatedAt": "2026-09-25T22:20:40.394Z",
+      "source": "scan"
+    },
+    ".godot/imported/Meshy_AI_Amber_Ant_Scout_biped_Animation_Left_Slash_withSkin_texture_0.png-56df1d8b77b8aef1ebb8c7be25fa729d.md5": {
+      "description": "",
+      "tokens": 25,
+      "hash": "0738dab3a46b4401",
+      "size": 91,
+      "mtimeMs": 1790363614234.7805,
+      "updatedAt": "2026-09-25T22:20:40.394Z",
+      "source": "scan"
+    },
+    ".godot/imported/Meshy_AI_Amber_Ant_Scout_biped_Animation_Left_Slash_withSkin.glb-736347919538eb178e26d71015a23263.md5": {
+      "description": "",
+      "tokens": 25,
+      "hash": "b02e088f1fb5d5f3",
+      "size": 91,
+      "mtimeMs": 1790363614620.4414,
+      "updatedAt": "2026-09-25T22:20:40.394Z",
+      "source": "scan"
+    },
+    ".godot/imported/Meshy_AI_Amber_Ant_Scout_biped_Animation_Right_Hand_Sword_Slash_withSkin_texture_0.png-3c57a74041bc1a987ab478a247bf3824.md5": {
+      "description": "",
+      "tokens": 25,
+      "hash": "0738dab3a46b4401",
+      "size": 91,
+      "mtimeMs": 1790363616717.5942,
+      "updatedAt": "2026-09-25T22:20:40.394Z",
+      "source": "scan"
+    },
+    ".godot/imported/Meshy_AI_Amber_Ant_Scout_biped_Animation_Right_Hand_Sword_Slash_withSkin.glb-92aa7151ce27d3ace898d57e09a80b15.md5": {
+      "description": "",
+      "tokens": 25,
+      "hash": "0a38cba8b1f53dbe",
+      "size": 91,
+      "mtimeMs": 1790363617087.723,
+      "updatedAt": "2026-09-25T22:20:40.394Z",
+      "source": "scan"
+    },
+    ".godot/imported/Meshy_AI_Amber_Ant_Scout_biped_Animation_Running_withSkin_texture_0.png-e668785a119e436eae19c5899770a56a.md5": {
+      "description": "",
+      "tokens": 25,
+      "hash": "0738dab3a46b4401",
+      "size": 91,
+      "mtimeMs": 1790363619112.636,
+      "updatedAt": "2026-09-25T22:20:40.395Z",
+      "source": "scan"
+    },
+    ".godot/imported/Meshy_AI_Amber_Ant_Scout_biped_Animation_Running_withSkin.glb-74f262805582ab34ce2feb663d980653.md5": {
+      "description": "",
+      "tokens": 25,
+      "hash": "dbe41138f37397d7",
+      "size": 91,
+      "mtimeMs": 1790363619484.8257,
+      "updatedAt": "2026-09-25T22:20:40.395Z",
+      "source": "scan"
+    },
+    ".godot/imported/Meshy_AI_Amber_Ant_Scout_biped_Animation_Walking_withSkin_texture_0.png-1a4bb78033b73d4a4f0e17d66c5d742f.md5": {
+      "description": "",
+      "tokens": 25,
+      "hash": "5f70f4b58e3426fa",
+      "size": 91,
+      "mtimeMs": 1790372475398.8257,
+      "updatedAt": "2026-09-25T22:20:40.395Z",
+      "source": "scan"
+    },
+    ".godot/imported/Meshy_AI_Amber_Ant_Scout_biped_Animation_Walking_withSkin.glb-7cf0fdd32dfa2b09abe6175543c5a985.md5": {
+      "description": "",
+      "tokens": 25,
+      "hash": "7636174398d78e51",
+      "size": 91,
+      "mtimeMs": 1790363621891.3848,
+      "updatedAt": "2026-09-25T22:20:40.395Z",
+      "source": "scan"
+    },
+    ".godot/imported/Meshy_AI_Little_Explorer_biped_Animation_Checkout_Gesture_withSkin_texture_0.png-12904d7893d2ce7840023a17907dff80.md5": {
+      "description": "",
+      "tokens": 25,
+      "hash": "6b2e7d3a2a0842d4",
+      "size": 91,
+      "mtimeMs": 1790363612609.7075,
+      "updatedAt": "2026-09-25T22:20:40.395Z",
+      "source": "scan"
+    },
+    ".godot/imported/Meshy_AI_Little_Explorer_biped_Animation_Checkout_Gesture_withSkin.glb-a323e621dd911355f39c2f74c571bf78.md5": {
+      "description": "",
+      "tokens": 25,
+      "hash": "4922cf227a74d6c4",
+      "size": 91,
+      "mtimeMs": 1790363632713.3164,
+      "updatedAt": "2026-09-25T22:20:40.395Z",
+      "source": "scan"
+    },
+    ".godot/imported/Meshy_AI_Little_Explorer_biped_Animation_Crawl_and_Look_Back_withSkin_texture_0.png-2e4ee2257795ce7b4328ea2e932bd098.md5": {
+      "description": "",
+      "tokens": 25,
+      "hash": "6b2e7d3a2a0842d4",
+      "size": 91,
+      "mtimeMs": 1790363612590.5515,
+      "updatedAt": "2026-09-25T22:20:40.395Z",
+      "source": "scan"
+    },
+    ".godot/imported/Meshy_AI_Little_Explorer_biped_Animation_Crawl_and_Look_Back_withSkin.glb-eb833c042a5f698b6e887ecf9641d1d2.md5": {
+      "description": "",
+      "tokens": 25,
+      "hash": "ab401e42907eecde",
+      "size": 91,
+      "mtimeMs": 1790363634175.1704,
+      "updatedAt": "2026-09-25T22:20:40.395Z",
+      "source": "scan"
+    },
+    ".godot/imported/Meshy_AI_Little_Explorer_biped_Animation_Crawl_Backward_withSkin_texture_0.png-5ab5519e1ac434e642f2bbc1077d6202.md5": {
+      "description": "",
+      "tokens": 25,
+      "hash": "6b2e7d3a2a0842d4",
+      "size": 91,
+      "mtimeMs": 1790363612572.4585,
+      "updatedAt": "2026-09-25T22:20:40.395Z",
+      "source": "scan"
+    },
+    ".godot/imported/Meshy_AI_Little_Explorer_biped_Animation_Crawl_Backward_withSkin.glb-5d6ac5f79d0242ed4741a4f1b2d97d39.md5": {
+      "description": "",
+      "tokens": 25,
+      "hash": "8433a0e92ac2a16e",
+      "size": 91,
+      "mtimeMs": 1790363635579.3867,
+      "updatedAt": "2026-09-25T22:20:40.396Z",
+      "source": "scan"
+    },
+    ".godot/imported/Meshy_AI_Little_Explorer_biped_Animation_Double_Combo_Attack_withSkin_texture_0.png-120b6cb2532bf71721080cdb8d1714b9.md5": {
+      "description": "",
+      "tokens": 25,
+      "hash": "6b2e7d3a2a0842d4",
+      "size": 91,
+      "mtimeMs": 1790363611443.3535,
+      "updatedAt": "2026-09-25T22:20:40.396Z",
+      "source": "scan"
+    },
+    ".godot/imported/Meshy_AI_Little_Explorer_biped_Animation_Double_Combo_Attack_withSkin.glb-617975ea58aaeedd83be4700aee4167c.md5": {
+      "description": "",
+      "tokens": 25,
+      "hash": "56415a79df880877",
+      "size": 91,
+      "mtimeMs": 1790363636521.2498,
+      "updatedAt": "2026-09-25T22:20:40.396Z",
+      "source": "scan"
+    },
+    ".godot/imported/Meshy_AI_Little_Explorer_biped_Animation_dying_backwards_withSkin_texture_0.png-b18ac913277588a3278e127827465fae.md5": {
+      "description": "",
+      "tokens": 25,
+      "hash": "6b2e7d3a2a0842d4",
+      "size": 91,
+      "mtimeMs": 1790363611407.7026,
+      "updatedAt": "2026-09-25T22:20:40.396Z",
+      "source": "scan"
+    },
+    ".godot/imported/Meshy_AI_Little_Explorer_biped_Animation_dying_backwards_withSkin.glb-2b66d6ce18d85e53f9f7809131122c54.md5": {
+      "description": "",
+      "tokens": 25,
+      "hash": "8d09b10c3e878f0d",
+      "size": 91,
+      "mtimeMs": 1790363636046.5027,
+      "updatedAt": "2026-09-25T22:20:40.396Z",
+      "source": "scan"
+    },
+    ".godot/imported/Meshy_AI_Little_Explorer_biped_Animation_Fast_Ladder_Climb_withSkin_texture_0.png-b4789abd41091779e5b9614515178cd7.md5": {
+      "description": "",
+      "tokens": 25,
+      "hash": "6b2e7d3a2a0842d4",
+      "size": 91,
+      "mtimeMs": 1790363611434.092,
+      "updatedAt": "2026-09-25T22:20:40.396Z",
+      "source": "scan"
+    },
+    ".godot/imported/Meshy_AI_Little_Explorer_biped_Animation_Fast_Ladder_Climb_withSkin.glb-dd938ff62b5ecf3ef2b37cec945ca85a.md5": {
+      "description": "",
+      "tokens": 25,
+      "hash": "3a9e6239d65aafc3",
+      "size": 91,
+      "mtimeMs": 1790363635121.8174,
+      "updatedAt": "2026-09-25T22:20:40.396Z",
+      "source": "scan"
+    },
+    ".godot/imported/Meshy_AI_Little_Explorer_biped_Animation_FunnyDancing_03_withSkin_texture_0.png-e99c40de1fffc37af65a0e30198cd07a.md5": {
+      "description": "",
+      "tokens": 25,
+      "hash": "6b2e7d3a2a0842d4",
+      "size": 91,
+      "mtimeMs": 1790363611370.1016,
+      "updatedAt": "2026-09-25T22:20:40.396Z",
+      "source": "scan"
+    },
+    ".godot/imported/Meshy_AI_Little_Explorer_biped_Animation_FunnyDancing_03_withSkin.glb-a6f7a492f219a13587809243924a588c.md5": {
+      "description": "",
+      "tokens": 25,
+      "hash": "4393863e9a2953cc",
+      "size": 91,
+      "mtimeMs": 1790363634663.1855,
+      "updatedAt": "2026-09-25T22:20:40.396Z",
+      "source": "scan"
+    },
+    ".godot/imported/Meshy_AI_Little_Explorer_biped_Animation_Hit_Reaction_1_withSkin_texture_0.png-1a4c364d3c246774a2e437181bfc2246.md5": {
+      "description": "",
+      "tokens": 25,
+      "hash": "6b2e7d3a2a0842d4",
+      "size": 91,
+      "mtimeMs": 1790363611410.872,
+      "updatedAt": "2026-09-25T22:20:40.396Z",
+      "source": "scan"
+    },
+    ".godot/imported/Meshy_AI_Little_Explorer_biped_Animation_Hit_Reaction_1_withSkin.glb-bdcfe0cc0ce770340fe0a63a63eb715b.md5": {
+      "description": "",
+      "tokens": 25,
+      "hash": "888fd5e8a10f78ae",
+      "size": 91,
+      "mtimeMs": 1790363633673.8433,
+      "updatedAt": "2026-09-25T22:20:40.396Z",
+      "source": "scan"
+    },
+    ".godot/imported/Meshy_AI_Little_Explorer_biped_Animation_Idle_11_withSkin_texture_0.png-6790d55fdce524f72f2747d53c4bb864.md5": {
+      "description": "",
+      "tokens": 25,
+      "hash": "b494e502da70ceef",
+      "size": 91,
+      "mtimeMs": 1790369064453.4517,
+      "updatedAt": "2026-09-25T22:20:40.396Z",
+      "source": "scan"
+    },
+    ".godot/imported/Meshy_AI_Little_Explorer_biped_Animation_Idle_11_withSkin.glb-ac8a1013834a20caddbed67b8d73eb1f.md5": {
+      "description": "",
+      "tokens": 25,
+      "hash": "a557d4a3b00e1538",
+      "size": 91,
+      "mtimeMs": 1790363633189.9253,
+      "updatedAt": "2026-09-25T22:20:40.396Z",
+      "source": "scan"
+    },
+    ".godot/imported/Meshy_AI_Little_Explorer_biped_Animation_Punch_Combo_5_withSkin_texture_0.png-c541fd1b721e5f172deb3c7c503d3de4.md5": {
+      "description": "",
+      "tokens": 25,
+      "hash": "6b2e7d3a2a0842d4",
+      "size": 91,
+      "mtimeMs": 1790363611355.6428,
+      "updatedAt": "2026-09-25T22:20:40.396Z",
+      "source": "scan"
+    },
+    ".godot/imported/Meshy_AI_Little_Explorer_biped_Animation_Punch_Combo_5_withSkin.glb-7fde10e5d07c719156caf43c0c0dd883.md5": {
+      "description": "",
+      "tokens": 25,
+      "hash": "02a977a4ca1293fb",
+      "size": 91,
+      "mtimeMs": 1790363632244.9712,
+      "updatedAt": "2026-09-25T22:20:40.396Z",
+      "source": "scan"
+    },
+    ".godot/imported/Meshy_AI_Little_Explorer_biped_Animation_Right_Hand_Sword_Slash_withSkin_texture_0.png-31bbc10ee69c07a5be65f63cee382698.md5": {
+      "description": "",
+      "tokens": 25,
+      "hash": "6b2e7d3a2a0842d4",
+      "size": 91,
+      "mtimeMs": 1790363609903.5566,
+      "updatedAt": "2026-09-25T22:20:40.397Z",
+      "source": "scan"
+    },
+    ".godot/imported/Meshy_AI_Little_Explorer_biped_Animation_Right_Hand_Sword_Slash_withSkin.glb-90a869116b53d9cf462d476f3679b6be.md5": {
+      "description": "",
+      "tokens": 25,
+      "hash": "6a62b317baebd6e1",
+      "size": 91,
+      "mtimeMs": 1790363629745.4343,
+      "updatedAt": "2026-09-25T22:20:40.397Z",
+      "source": "scan"
+    },
+    ".godot/imported/Meshy_AI_Little_Explorer_biped_Animation_Running_withSkin_texture_0.png-03d048ce58382b7cd45eb583d728416e.md5": {
+      "description": "",
+      "tokens": 25,
+      "hash": "6b2e7d3a2a0842d4",
+      "size": 91,
+      "mtimeMs": 1790363609890.2822,
+      "updatedAt": "2026-09-25T22:20:40.397Z",
+      "source": "scan"
+    },
+    ".godot/imported/Meshy_AI_Little_Explorer_biped_Animation_Running_withSkin.glb-716c70788367234f5ed09e639771a348.md5": {
+      "description": "",
+      "tokens": 25,
+      "hash": "81d40dac3ee511e7",
+      "size": 91,
+      "mtimeMs": 1790363627297.0505,
+      "updatedAt": "2026-09-25T22:20:40.397Z",
+      "source": "scan"
+    },
+    ".godot/imported/Meshy_AI_Little_Explorer_biped_Animation_Simple_Kick_withSkin_texture_0.png-5f882fe4066e21acecfe78397348a383.md5": {
+      "description": "",
+      "tokens": 25,
+      "hash": "6b2e7d3a2a0842d4",
+      "size": 91,
+      "mtimeMs": 1790363609915.983,
+      "updatedAt": "2026-09-25T22:20:40.397Z",
+      "source": "scan"
+    },
+    ".godot/imported/Meshy_AI_Little_Explorer_biped_Animation_Simple_Kick_withSkin.glb-e1f6d93f23998d06e6e9f95f1b2bf67d.md5": {
+      "description": "",
+      "tokens": 25,
+      "hash": "dfe3813ec1cd81e5",
+      "size": 91,
+      "mtimeMs": 1790363624815.7634,
+      "updatedAt": "2026-09-25T22:20:40.397Z",
+      "source": "scan"
+    },
+    ".godot/imported/Meshy_AI_Little_Explorer_biped_Animation_Skill_03_withSkin_texture_0.png-dcab1005236c0408fae809db77e8a5ba.md5": {
+      "description": "",
+      "tokens": 25,
+      "hash": "6b2e7d3a2a0842d4",
+      "size": 91,
+      "mtimeMs": 1790363609905.3677,
+      "updatedAt": "2026-09-25T22:20:40.397Z",
+      "source": "scan"
+    },
+    ".godot/imported/Meshy_AI_Little_Explorer_biped_Animation_Skill_03_withSkin.glb-a46867082b8c5395bf3cb2f283db9bfd.md5": {
+      "description": "",
+      "tokens": 25,
+      "hash": "ca220eb7bf732f69",
+      "size": 91,
+      "mtimeMs": 1790363622361.044,
+      "updatedAt": "2026-09-25T22:20:40.397Z",
+      "source": "scan"
+    },
+    ".godot/imported/Meshy_AI_Little_Explorer_biped_Animation_Stand_Up8_withSkin_texture_0.png-eb08304c6c9aca416cac24e819ff171c.md5": {
+      "description": "",
+      "tokens": 25,
+      "hash": "6b2e7d3a2a0842d4",
+      "size": 91,
+      "mtimeMs": 1790363609862.716,
+      "updatedAt": "2026-09-25T22:20:40.397Z",
+      "source": "scan"
+    },
+    ".godot/imported/Meshy_AI_Little_Explorer_biped_Animation_Stand_Up8_withSkin.glb-f03ffc9895ccc5e54442ef3c55101c18.md5": {
+      "description": "",
+      "tokens": 25,
+      "hash": "3479c6da21561742",
+      "size": 91,
+      "mtimeMs": 1790363619950.6104,
+      "updatedAt": "2026-09-25T22:20:40.397Z",
+      "source": "scan"
+    },
+    ".godot/imported/Meshy_AI_Little_Explorer_biped_Animation_Walking_withSkin_texture_0.png-dd82829830b13629d2eaaf284d4ee515.md5": {
+      "description": "",
+      "tokens": 25,
+      "hash": "6b2e7d3a2a0842d4",
+      "size": 91,
+      "mtimeMs": 1790363609896.486,
+      "updatedAt": "2026-09-25T22:20:40.397Z",
+      "source": "scan"
+    },
+    ".godot/imported/Meshy_AI_Little_Explorer_biped_Animation_Walking_withSkin.glb-450fd967903b2fa5c83bf95aab6ac273.md5": {
+      "description": "",
+      "tokens": 25,
+      "hash": "8f728bb49a3c4db5",
+      "size": 91,
+      "mtimeMs": 1790363617544.6143,
+      "updatedAt": "2026-09-25T22:20:40.397Z",
+      "source": "scan"
+    },
+    ".godot/imported/Meshy_AI_Little_Explorer_biped_Animation_Weapon_Combo_withSkin_texture_0.png-54c2e4262c76a4fadbf09e6db6f9351a.md5": {
+      "description": "",
+      "tokens": 25,
+      "hash": "6b2e7d3a2a0842d4",
+      "size": 91,
+      "mtimeMs": 1790363609886.735,
+      "updatedAt": "2026-09-25T22:20:40.397Z",
+      "source": "scan"
+    },
+    ".godot/imported/Meshy_AI_Little_Explorer_biped_Animation_Weapon_Combo_withSkin.glb-023574e6b8ad3d35bf7059b896cdd818.md5": {
+      "description": "",
+      "tokens": 25,
+      "hash": "37fab82ecd777592",
+      "size": 91,
+      "mtimeMs": 1790363615078.9797,
+      "updatedAt": "2026-09-25T22:20:40.397Z",
+      "source": "scan"
+    },
+    ".godot/imported/preview.png-1e59b2e195d4fba00e08550326d80a91.ctex": {
+      "description": "",
+      "tokens": 6832,
+      "hash": "04b7bdf52097e07b",
+      "size": 26962,
+      "mtimeMs": 1790372696830.5105,
+      "updatedAt": "2026-09-25T22:20:40.398Z",
+      "source": "scan"
+    },
+    ".godot/imported/preview.png-1e59b2e195d4fba00e08550326d80a91.md5": {
+      "description": "",
+      "tokens": 25,
+      "hash": "8c67bdade4ea4807",
+      "size": 91,
+      "mtimeMs": 1790372696832.0107,
+      "updatedAt": "2026-09-25T22:20:40.398Z",
+      "source": "scan"
+    },
+    ".godot/scene_groups_cache.cfg": {
+      "description": "",
+      "tokens": 0,
+      "hash": "e3b0c44298fc1c14",
+      "size": 0,
+      "mtimeMs": 1790366896567.6782,
+      "updatedAt": "2026-09-25T22:20:40.398Z",
+      "source": "scan"
+    },
+    ".mcp.json": {
+      "description": "",
+      "tokens": 78,
+      "hash": "2f2fd507772e353e",
+      "size": 272,
+      "mtimeMs": 1790363674346.7598,
+      "updatedAt": "2026-09-25T22:20:40.403Z",
+      "source": "scan"
+    },
+    "addons/mcp_bridge/mcp_bridge_game.gd": {
+      "description": "Declares DEFAULT_PORT",
+      "tokens": 1185,
+      "hash": "bf2b9da2ba89fc4f",
+      "size": 4442,
+      "mtimeMs": 1790363579349.4216,
+      "updatedAt": "2026-09-25T22:20:40.404Z",
+      "source": "scan"
+    },
+    "addons/mcp_bridge/mcp_bridge_game.gd.uid": {
+      "description": "",
+      "tokens": 6,
+      "hash": "2864bcb2621eb1ec",
+      "size": 19,
+      "mtimeMs": 1790363608154.6892,
+      "updatedAt": "2026-09-25T22:20:40.404Z",
+      "source": "scan"
+    },
+    "addons/mcp_bridge/plugin.cfg": {
+      "description": "",
+      "tokens": 36,
+      "hash": "b6c98ee95019189a",
+      "size": 132,
+      "mtimeMs": 1790363561453.5295,
+      "updatedAt": "2026-09-25T22:20:40.404Z",
+      "source": "scan"
+    },
+    "addons/mcp_bridge/plugin.gd": {
+      "description": "Declares DEFAULT_PORT",
+      "tokens": 5503,
+      "hash": "46ee2053f38f36e4",
+      "size": 20908,
+      "mtimeMs": 1790363561453.182,
+      "updatedAt": "2026-09-25T22:20:40.404Z",
+      "source": "scan"
+    },
+    "addons/mcp_bridge/plugin.gd.uid": {
+      "description": "",
+      "tokens": 6,
+      "hash": "a7509a50be1b56ec",
+      "size": 20,
+      "mtimeMs": 1790363608157.9316,
+      "updatedAt": "2026-09-25T22:20:40.404Z",
+      "source": "scan"
+    },
+    "AGENTS.md": {
+      "description": "OpenWolf",
+      "tokens": 75,
+      "hash": "e401f79554a8d796",
+      "size": 297,
+      "mtimeMs": 1790374833769.19,
+      "updatedAt": "2026-09-25T22:20:40.404Z",
+      "source": "scan"
+    },
+    "characters/companion.gd": {
+      "description": "Declares TRAIL_SPACING",
+      "tokens": 2530,
+      "hash": "f42743319f50c325",
+      "size": 9730,
+      "mtimeMs": 1790375849946.4658,
+      "updatedAt": "2026-09-25T22:37:30.063Z",
+      "source": "hook"
+    },
+    "characters/companion.gd.uid": {
+      "description": "",
+      "tokens": 6,
+      "hash": "e0778efa75f4ff06",
+      "size": 19,
+      "mtimeMs": 1790372474380.11,
+      "updatedAt": "2026-09-25T22:20:40.405Z",
+      "source": "scan"
+    },
+    "CLAUDE.md": {
+      "description": "OpenWolf",
+      "tokens": 814,
+      "hash": "de7d875233643ac7",
+      "size": 3260,
+      "mtimeMs": 1790374833760.1956,
+      "updatedAt": "2026-09-25T22:20:40.405Z",
+      "source": "scan"
+    },
+    "creatures/ant_scout/Meshy_AI_Amber_Ant_Scout_biped_Animation_Left_Slash_withSkin_texture_0.png.import": {
+      "description": "",
+      "tokens": 320,
+      "hash": "74f0926c59f2322e",
+      "size": 1199,
+      "mtimeMs": 1790363614210.3372,
+      "updatedAt": "2026-09-25T22:20:40.405Z",
+      "source": "scan"
+    },
+    "creatures/ant_scout/Meshy_AI_Amber_Ant_Scout_biped_Animation_Left_Slash_withSkin.glb.import": {
+      "description": "",
+      "tokens": 351,
+      "hash": "d78c7259f6416bbc",
+      "size": 1315,
+      "mtimeMs": 1790363614594.5354,
+      "updatedAt": "2026-09-25T22:20:40.405Z",
+      "source": "scan"
+    },
+    "creatures/ant_scout/Meshy_AI_Amber_Ant_Scout_biped_Animation_Right_Hand_Sword_Slash_withSkin_texture_0.png.import": {
+      "description": "",
+      "tokens": 330,
+      "hash": "5cb2bf758733a210",
+      "size": 1235,
+      "mtimeMs": 1790363616689.0034,
+      "updatedAt": "2026-09-25T22:20:40.405Z",
+      "source": "scan"
+    },
+    "creatures/ant_scout/Meshy_AI_Amber_Ant_Scout_biped_Animation_Right_Hand_Sword_Slash_withSkin.glb.import": {
+      "description": "",
+      "tokens": 360,
+      "hash": "7571e13eb115c8d1",
+      "size": 1350,
+      "mtimeMs": 1790363617062.9187,
+      "updatedAt": "2026-09-25T22:20:40.405Z",
+      "source": "scan"
+    },
+    "creatures/ant_scout/Meshy_AI_Amber_Ant_Scout_biped_Animation_Running_withSkin_texture_0.png.import": {
+      "description": "",
+      "tokens": 318,
+      "hash": "4c4d871ef349c963",
+      "size": 1190,
+      "mtimeMs": 1790363619088.5437,
+      "updatedAt": "2026-09-25T22:20:40.405Z",
+      "source": "scan"
+    },
+    "creatures/ant_scout/Meshy_AI_Amber_Ant_Scout_biped_Animation_Running_withSkin.glb.import": {
+      "description": "",
+      "tokens": 349,
+      "hash": "242033432e208b3f",
+      "size": 1306,
+      "mtimeMs": 1790363619459.671,
+      "updatedAt": "2026-09-25T22:20:40.405Z",
+      "source": "scan"
+    },
+    "creatures/ant_scout/Meshy_AI_Amber_Ant_Scout_biped_Animation_Walking_withSkin_texture_0.png.import": {
+      "description": "",
+      "tokens": 331,
+      "hash": "ad06921588a68c46",
+      "size": 1240,
+      "mtimeMs": 1790372475380.6133,
+      "updatedAt": "2026-09-25T22:20:40.405Z",
+      "source": "scan"
+    },
+    "creatures/ant_scout/Meshy_AI_Amber_Ant_Scout_biped_Animation_Walking_withSkin.glb.import": {
+      "description": "",
+      "tokens": 349,
+      "hash": "c5d636724668ef38",
+      "size": 1306,
+      "mtimeMs": 1790363621866.4058,
+      "updatedAt": "2026-09-25T22:20:40.405Z",
+      "source": "scan"
+    },
+    "docs/lawn_map.svg.import": {
+      "description": "",
+      "tokens": 275,
+      "hash": "150d9d6ab1a90e1f",
+      "size": 1030,
+      "mtimeMs": 1790371369200.4666,
+      "updatedAt": "2026-09-25T22:20:40.405Z",
+      "source": "scan"
+    },
+    "docs/PLAN.md": {
+      "description": "Plan: Level 1, The Compound Grass",
+      "tokens": 2578,
+      "hash": "ebb6a959664fbfb2",
+      "size": 10334,
+      "mtimeMs": 1790374025031.7742,
+      "updatedAt": "2026-09-25T22:20:40.405Z",
+      "source": "scan"
+    },
+    "docs/STORY.md": {
+      "description": "Story: Ant Kingdom Saga",
+      "tokens": 3048,
+      "hash": "ddb89e8f1d0c7e8a",
+      "size": 12216,
+      "mtimeMs": 1790371903359.1643,
+      "updatedAt": "2026-09-25T22:20:40.405Z",
+      "source": "scan"
+    },
+    "docs/WORLD.md": {
+      "description": "World Bible: Level 1, The Compound Grass",
+      "tokens": 3783,
+      "hash": "bd0363b8bf15db7b",
+      "size": 15238,
+      "mtimeMs": 1790371785154.9895,
+      "updatedAt": "2026-09-25T22:20:40.406Z",
+      "source": "scan"
+    },
+    "GEMINI.md": {
+      "description": "OpenWolf",
+      "tokens": 75,
+      "hash": "e401f79554a8d796",
+      "size": 297,
+      "mtimeMs": 1790374833769.3384,
+      "updatedAt": "2026-09-25T22:20:40.406Z",
+      "source": "scan"
+    },
+    "mcp_ports.cfg": {
+      "description": "",
+      "tokens": 11,
+      "hash": "8a1eac84061352bb",
+      "size": 38,
+      "mtimeMs": 1790363561461.0999,
+      "updatedAt": "2026-09-25T22:20:40.406Z",
+      "source": "scan"
+    },
+    "player/camera_rig.gd": {
+      "description": "",
+      "tokens": 1122,
+      "hash": "b302c1e2c55d4c03",
+      "size": 4205,
+      "mtimeMs": 1790371612545.366,
+      "updatedAt": "2026-09-25T22:20:40.406Z",
+      "source": "scan"
+    },
+    "player/camera_rig.gd.uid": {
+      "description": "",
+      "tokens": 6,
+      "hash": "b0551c15353dc04c",
+      "size": 20,
+      "mtimeMs": 1790366350300.397,
+      "updatedAt": "2026-09-25T22:20:40.406Z",
+      "source": "scan"
+    },
+    "player/explorer/amodu_animations.res": {
+      "description": "",
+      "tokens": 113863,
+      "hash": "d8b6dc592439c4e0",
+      "size": 449616,
+      "mtimeMs": 1790365993119.0938,
+      "updatedAt": "2026-09-25T22:20:40.423Z",
+      "source": "scan"
+    },
+    "player/explorer/extracted_sources/amodu_attack_texture_0.png.import": {
+      "description": "",
+      "tokens": 286,
+      "hash": "1d271f87bbb33430",
+      "size": 1070,
+      "mtimeMs": 1790363623922.2761,
+      "updatedAt": "2026-09-25T22:20:40.423Z",
+      "source": "scan"
+    },
+    "player/explorer/extracted_sources/amodu_attack.glb.import": {
+      "description": "",
+      "tokens": 316,
+      "hash": "c0aff95462c82845",
+      "size": 1185,
+      "mtimeMs": 1790363624310.6729,
+      "updatedAt": "2026-09-25T22:20:40.423Z",
+      "source": "scan"
+    },
+    "player/explorer/extracted_sources/amodu_defeat_texture_0.png.import": {
+      "description": "",
+      "tokens": 286,
+      "hash": "fb4d09a8e567f7cd",
+      "size": 1070,
+      "mtimeMs": 1790363626416.3235,
+      "updatedAt": "2026-09-25T22:20:40.423Z",
+      "source": "scan"
+    },
+    "player/explorer/extracted_sources/amodu_defeat.glb.import": {
+      "description": "",
+      "tokens": 316,
+      "hash": "0f068631d4c817a0",
+      "size": 1185,
+      "mtimeMs": 1790363626802.045,
+      "updatedAt": "2026-09-25T22:20:40.423Z",
+      "source": "scan"
+    },
+    "player/explorer/extracted_sources/amodu_hit_texture_0.png.import": {
+      "description": "",
+      "tokens": 283,
+      "hash": "0f67587d67dff6d4",
+      "size": 1061,
+      "mtimeMs": 1790363628877.6873,
+      "updatedAt": "2026-09-25T22:20:40.423Z",
+      "source": "scan"
+    },
+    "player/explorer/extracted_sources/amodu_hit.glb.import": {
+      "description": "",
+      "tokens": 314,
+      "hash": "412b738654038c5c",
+      "size": 1176,
+      "mtimeMs": 1790363629262.9043,
+      "updatedAt": "2026-09-25T22:20:40.423Z",
+      "source": "scan"
+    },
+    "player/explorer/extracted_sources/amodu_run_texture_0.png.import": {
+      "description": "",
+      "tokens": 283,
+      "hash": "247cd43cb4a21b36",
+      "size": 1061,
+      "mtimeMs": 1790363631362.392,
+      "updatedAt": "2026-09-25T22:20:40.424Z",
+      "source": "scan"
+    },
+    "player/explorer/extracted_sources/amodu_run.glb.import": {
+      "description": "",
+      "tokens": 314,
+      "hash": "12f2c7adcb4c7862",
+      "size": 1176,
+      "mtimeMs": 1790363631748.098,
+      "updatedAt": "2026-09-25T22:20:40.424Z",
+      "source": "scan"
+    },
+    "player/explorer/Meshy_AI_Little_Explorer_biped_Animation_Checkout_Gesture_withSkin_texture_0.png.import": {
+      "description": "",
+      "tokens": 307,
+      "hash": "953b31608ead00d0",
+      "size": 1148,
+      "mtimeMs": 1790363612590.7773,
+      "updatedAt": "2026-09-25T22:20:40.424Z",
+      "source": "scan"
+    },
+    "player/explorer/Meshy_AI_Little_Explorer_biped_Animation_Checkout_Gesture_withSkin.glb.import": {
+      "description": "",
+      "tokens": 355,
+      "hash": "ca02c6c42a90a7fe",
+      "size": 1329,
+      "mtimeMs": 1790363632687.8425,
+      "updatedAt": "2026-09-25T22:20:40.428Z",
+      "source": "scan"
+    },
+    "player/explorer/Meshy_AI_Little_Explorer_biped_Animation_Crawl_and_Look_Back_withSkin_texture_0.png.import": {
+      "description": "",
+      "tokens": 309,
+      "hash": "1c1969903ad3351c",
+      "size": 1157,
+      "mtimeMs": 1790363612570.7925,
+      "updatedAt": "2026-09-25T22:20:40.428Z",
+      "source": "scan"
+    },
+    "player/explorer/Meshy_AI_Little_Explorer_biped_Animation_Crawl_and_Look_Back_withSkin.glb.import": {
+      "description": "",
+      "tokens": 357,
+      "hash": "d4ea170adf81acd8",
+      "size": 1337,
+      "mtimeMs": 1790363634149.2393,
+      "updatedAt": "2026-09-25T22:20:40.428Z",
+      "source": "scan"
+    },
+    "player/explorer/Meshy_AI_Little_Explorer_biped_Animation_Crawl_Backward_withSkin_texture_0.png.import": {
+      "description": "",
+      "tokens": 305,
+      "hash": "f65e9ea96097c47f",
+      "size": 1142,
+      "mtimeMs": 1790363612553.2722,
+      "updatedAt": "2026-09-25T22:20:40.428Z",
+      "source": "scan"
+    },
+    "player/explorer/Meshy_AI_Little_Explorer_biped_Animation_Crawl_Backward_withSkin.glb.import": {
+      "description": "",
+      "tokens": 353,
+      "hash": "7171575e35419fdc",
+      "size": 1323,
+      "mtimeMs": 1790363635554.1494,
+      "updatedAt": "2026-09-25T22:20:40.429Z",
+      "source": "scan"
+    },
+    "player/explorer/Meshy_AI_Little_Explorer_biped_Animation_Double_Combo_Attack_withSkin_texture_0.png.import": {
+      "description": "",
+      "tokens": 309,
+      "hash": "59cbed1d0689f393",
+      "size": 1157,
+      "mtimeMs": 1790363611423.942,
+      "updatedAt": "2026-09-25T22:20:40.429Z",
+      "source": "scan"
+    },
+    "player/explorer/Meshy_AI_Little_Explorer_biped_Animation_Double_Combo_Attack_withSkin.glb.import": {
+      "description": "",
+      "tokens": 357,
+      "hash": "44fce11b5a0dfeda",
+      "size": 1338,
+      "mtimeMs": 1790363636495.5242,
+      "updatedAt": "2026-09-25T22:20:40.429Z",
+      "source": "scan"
+    },
+    "player/explorer/Meshy_AI_Little_Explorer_biped_Animation_dying_backwards_withSkin_texture_0.png.import": {
+      "description": "",
+      "tokens": 306,
+      "hash": "5991c4d1d385383a",
+      "size": 1144,
+      "mtimeMs": 1790363611387.53,
+      "updatedAt": "2026-09-25T22:20:40.429Z",
+      "source": "scan"
+    },
+    "player/explorer/Meshy_AI_Little_Explorer_biped_Animation_dying_backwards_withSkin.glb.import": {
+      "description": "",
+      "tokens": 354,
+      "hash": "4fb32f84571afbcd",
+      "size": 1326,
+      "mtimeMs": 1790363636015.0972,
+      "updatedAt": "2026-09-25T22:20:40.430Z",
+      "source": "scan"
+    },
+    "player/explorer/Meshy_AI_Little_Explorer_biped_Animation_Fast_Ladder_Climb_withSkin_texture_0.png.import": {
+      "description": "",
+      "tokens": 307,
+      "hash": "316d5e7292a609ac",
+      "size": 1151,
+      "mtimeMs": 1790363611413.9524,
+      "updatedAt": "2026-09-25T22:20:40.430Z",
+      "source": "scan"
+    },
+    "player/explorer/Meshy_AI_Little_Explorer_biped_Animation_Fast_Ladder_Climb_withSkin.glb.import": {
+      "description": "",
+      "tokens": 356,
+      "hash": "f767e7b6bb8d874a",
+      "size": 1332,
+      "mtimeMs": 1790363635096.7615,
+      "updatedAt": "2026-09-25T22:20:40.431Z",
+      "source": "scan"
+    },
+    "player/explorer/Meshy_AI_Little_Explorer_biped_Animation_FunnyDancing_03_withSkin_texture_0.png.import": {
+      "description": "",
+      "tokens": 306,
+      "hash": "7391e0d8e00ffae8",
+      "size": 1145,
+      "mtimeMs": 1790363611347.1396,
+      "updatedAt": "2026-09-25T22:20:40.431Z",
+      "source": "scan"
+    },
+    "player/explorer/Meshy_AI_Little_Explorer_biped_Animation_FunnyDancing_03_withSkin.glb.import": {
+      "description": "",
+      "tokens": 354,
+      "hash": "4f2be8fe196bee21",
+      "size": 1326,
+      "mtimeMs": 1790363634636.6453,
+      "updatedAt": "2026-09-25T22:20:40.431Z",
+      "source": "scan"
+    },
+    "player/explorer/Meshy_AI_Little_Explorer_biped_Animation_Hit_Reaction_1_withSkin_texture_0.png.import": {
+      "description": "",
+      "tokens": 305,
+      "hash": "bb2fd9622fb4d51d",
+      "size": 1141,
+      "mtimeMs": 1790363611386.9531,
+      "updatedAt": "2026-09-25T22:20:40.431Z",
+      "source": "scan"
+    },
+    "player/explorer/Meshy_AI_Little_Explorer_biped_Animation_Hit_Reaction_1_withSkin.glb.import": {
+      "description": "",
+      "tokens": 353,
+      "hash": "02458cb95f8fb022",
+      "size": 1323,
+      "mtimeMs": 1790363633646.759,
+      "updatedAt": "2026-09-25T22:20:40.432Z",
+      "source": "scan"
+    },
+    "player/explorer/Meshy_AI_Little_Explorer_biped_Animation_Idle_11_withSkin_texture_0.png.import": {
+      "description": "",
+      "tokens": 312,
+      "hash": "6c3467ba0ebf7e2d",
+      "size": 1169,
+      "mtimeMs": 1790369064427.1746,
+      "updatedAt": "2026-09-25T22:20:40.432Z",
+      "source": "scan"
+    },
+    "player/explorer/Meshy_AI_Little_Explorer_biped_Animation_Idle_11_withSkin.glb.import": {
+      "description": "",
+      "tokens": 348,
+      "hash": "cbea44f7b40e0389",
+      "size": 1302,
+      "mtimeMs": 1790363633164.4094,
+      "updatedAt": "2026-09-25T22:20:40.432Z",
+      "source": "scan"
+    },
+    "player/explorer/Meshy_AI_Little_Explorer_biped_Animation_Punch_Combo_5_withSkin_texture_0.png.import": {
+      "description": "",
+      "tokens": 304,
+      "hash": "e191a75ab198703c",
+      "size": 1139,
+      "mtimeMs": 1790363611328.0935,
+      "updatedAt": "2026-09-25T22:20:40.432Z",
+      "source": "scan"
+    },
+    "player/explorer/Meshy_AI_Little_Explorer_biped_Animation_Punch_Combo_5_withSkin.glb.import": {
+      "description": "",
+      "tokens": 352,
+      "hash": "d2fb07afb2a636dc",
+      "size": 1320,
+      "mtimeMs": 1790363632219.6023,
+      "updatedAt": "2026-09-25T22:20:40.433Z",
+      "source": "scan"
+    },
+    "player/explorer/Meshy_AI_Little_Explorer_biped_Animation_Right_Hand_Sword_Slash_withSkin_texture_0.png.import": {
+      "description": "",
+      "tokens": 311,
+      "hash": "ce8928d7d19a7575",
+      "size": 1166,
+      "mtimeMs": 1790363609883.2869,
+      "updatedAt": "2026-09-25T22:20:40.433Z",
+      "source": "scan"
+    },
+    "player/explorer/Meshy_AI_Little_Explorer_biped_Animation_Right_Hand_Sword_Slash_withSkin.glb.import": {
+      "description": "",
+      "tokens": 360,
+      "hash": "f29b51ff9730f3df",
+      "size": 1347,
+      "mtimeMs": 1790363629720.2554,
+      "updatedAt": "2026-09-25T22:20:40.433Z",
+      "source": "scan"
+    },
+    "player/explorer/Meshy_AI_Little_Explorer_biped_Animation_Running_withSkin_texture_0.png.import": {
+      "description": "",
+      "tokens": 299,
+      "hash": "40f66f3250511f03",
+      "size": 1120,
+      "mtimeMs": 1790363609868.0671,
+      "updatedAt": "2026-09-25T22:20:40.433Z",
+      "source": "scan"
+    },
+    "player/explorer/Meshy_AI_Little_Explorer_biped_Animation_Running_withSkin.glb.import": {
+      "description": "",
+      "tokens": 348,
+      "hash": "2932db7e17171d04",
+      "size": 1302,
+      "mtimeMs": 1790363627271.7625,
+      "updatedAt": "2026-09-25T22:20:40.433Z",
+      "source": "scan"
+    },
+    "player/explorer/Meshy_AI_Little_Explorer_biped_Animation_Simple_Kick_withSkin_texture_0.png.import": {
+      "description": "",
+      "tokens": 303,
+      "hash": "5926626dd5fbcc43",
+      "size": 1133,
+      "mtimeMs": 1790363609892.2683,
+      "updatedAt": "2026-09-25T22:20:40.434Z",
+      "source": "scan"
+    },
+    "player/explorer/Meshy_AI_Little_Explorer_biped_Animation_Simple_Kick_withSkin.glb.import": {
+      "description": "",
+      "tokens": 351,
+      "hash": "85aee6815df106ff",
+      "size": 1314,
+      "mtimeMs": 1790363624790.4026,
+      "updatedAt": "2026-09-25T22:20:40.434Z",
+      "source": "scan"
+    },
+    "player/explorer/Meshy_AI_Little_Explorer_biped_Animation_Skill_03_withSkin_texture_0.png.import": {
+      "description": "",
+      "tokens": 300,
+      "hash": "3874470a5c439616",
+      "size": 1124,
+      "mtimeMs": 1790363609882.3909,
+      "updatedAt": "2026-09-25T22:20:40.434Z",
+      "source": "scan"
+    },
+    "player/explorer/Meshy_AI_Little_Explorer_biped_Animation_Skill_03_withSkin.glb.import": {
+      "description": "",
+      "tokens": 348,
+      "hash": "4ff17828e7bff191",
+      "size": 1304,
+      "mtimeMs": 1790363622335.7751,
+      "updatedAt": "2026-09-25T22:20:40.434Z",
+      "source": "scan"
+    },
+    "player/explorer/Meshy_AI_Little_Explorer_biped_Animation_Stand_Up8_withSkin_texture_0.png.import": {
+      "description": "",
+      "tokens": 301,
+      "hash": "39773f329bf0d6c4",
+      "size": 1126,
+      "mtimeMs": 1790363609833.2234,
+      "updatedAt": "2026-09-25T22:20:40.434Z",
+      "source": "scan"
+    },
+    "player/explorer/Meshy_AI_Little_Explorer_biped_Animation_Stand_Up8_withSkin.glb.import": {
+      "description": "",
+      "tokens": 349,
+      "hash": "c75229db86fe2110",
+      "size": 1308,
+      "mtimeMs": 1790363619924.7705,
+      "updatedAt": "2026-09-25T22:20:40.435Z",
+      "source": "scan"
+    },
+    "player/explorer/Meshy_AI_Little_Explorer_biped_Animation_Walking_withSkin_texture_0.png.import": {
+      "description": "",
+      "tokens": 299,
+      "hash": "585ce7ce4beb95f2",
+      "size": 1121,
+      "mtimeMs": 1790363609875.0173,
+      "updatedAt": "2026-09-25T22:20:40.435Z",
+      "source": "scan"
+    },
+    "player/explorer/Meshy_AI_Little_Explorer_biped_Animation_Walking_withSkin.glb.import": {
+      "description": "",
+      "tokens": 348,
+      "hash": "1ee3f0024bfab3ae",
+      "size": 1302,
+      "mtimeMs": 1790363617518.734,
+      "updatedAt": "2026-09-25T22:20:40.435Z",
+      "source": "scan"
+    },
+    "player/explorer/Meshy_AI_Little_Explorer_biped_Animation_Weapon_Combo_withSkin_texture_0.png.import": {
+      "description": "",
+      "tokens": 303,
+      "hash": "0bb202e2cb48ac2a",
+      "size": 1135,
+      "mtimeMs": 1790363609864.9558,
+      "updatedAt": "2026-09-25T22:20:40.436Z",
+      "source": "scan"
+    },
+    "player/explorer/Meshy_AI_Little_Explorer_biped_Animation_Weapon_Combo_withSkin.glb.import": {
+      "description": "",
+      "tokens": 352,
+      "hash": "70c9b7b3aa9b1e32",
+      "size": 1317,
+      "mtimeMs": 1790363615053.6016,
+      "updatedAt": "2026-09-25T22:20:40.436Z",
+      "source": "scan"
+    },
+    "player/player.gd": {
+      "description": "Declares State",
+      "tokens": 6581,
+      "hash": "80ecc6631dc618b8",
+      "size": 25464,
+      "mtimeMs": 1790376027141.7097,
+      "updatedAt": "2026-09-25T22:40:27.241Z",
+      "source": "hook"
+    },
+    "player/player.gd.uid": {
+      "description": "",
+      "tokens": 6,
+      "hash": "1603be6c3fef8e21",
+      "size": 20,
+      "mtimeMs": 1790366350302.3635,
+      "updatedAt": "2026-09-25T22:20:40.436Z",
+      "source": "scan"
+    },
+    "player/player.tscn": {
+      "description": "",
+      "tokens": 732,
+      "hash": "48bca2e96c8d6711",
+      "size": 2743,
+      "mtimeMs": 1790372266984.862,
+      "updatedAt": "2026-09-25T22:20:40.436Z",
+      "source": "scan"
+    },
+    "project.godot": {
+      "description": "",
+      "tokens": 2082,
+      "hash": "ec32fc3cd004e4ed",
+      "size": 7807,
+      "mtimeMs": 1790372074959.6829,
+      "updatedAt": "2026-09-25T22:20:40.436Z",
+      "source": "scan"
+    },
+    "README.md": {
+      "description": "Project documentation",
+      "tokens": 621,
+      "hash": "b993e30fd7ea0fe3",
+      "size": 2487,
+      "mtimeMs": 1790372990781.4028,
+      "updatedAt": "2026-09-25T22:20:40.437Z",
+      "source": "scan"
+    },
+    "source/.gdignore": {
+      "description": "",
+      "tokens": 0,
+      "hash": "e3b0c44298fc1c14",
+      "size": 0,
+      "mtimeMs": 1790363571531.3093,
+      "updatedAt": "2026-09-25T22:20:40.437Z",
+      "source": "scan"
+    },
+    "tests/lawn_graybox_test.gd": {
+      "description": "",
+      "tokens": 1910,
+      "hash": "3b45cbe78e68b444",
+      "size": 7445,
+      "mtimeMs": 1790373270542.1028,
+      "updatedAt": "2026-09-25T22:20:40.437Z",
+      "source": "scan"
+    },
+    "tests/lawn_graybox_test.gd.uid": {
+      "description": "",
+      "tokens": 6,
+      "hash": "9b5b621e742b4656",
+      "size": 19,
+      "mtimeMs": 1790369062491.1477,
+      "updatedAt": "2026-09-25T22:20:40.437Z",
+      "source": "scan"
+    },
+    "tests/lawn_tour.gd": {
+      "description": "",
+      "tokens": 1087,
+      "hash": "2f20f25041730979",
+      "size": 4077,
+      "mtimeMs": 1790372903704.2324,
+      "updatedAt": "2026-09-25T22:20:40.438Z",
+      "source": "scan"
+    },
+    "tests/lawn_tour.gd.uid": {
+      "description": "",
+      "tokens": 6,
+      "hash": "2fe74e186dc599f8",
+      "size": 20,
+      "mtimeMs": 1790369062492.1892,
+      "updatedAt": "2026-09-25T22:20:40.438Z",
+      "source": "scan"
+    },
+    "tests/player_movement_test.gd": {
+      "description": "Declares PlaygroundScript",
+      "tokens": 2118,
+      "hash": "2d428afb3e153ce3",
+      "size": 8222,
+      "mtimeMs": 1790372758959.2158,
+      "updatedAt": "2026-09-25T22:20:40.438Z",
+      "source": "scan"
+    },
+    "tests/player_movement_test.gd.uid": {
+      "description": "",
+      "tokens": 6,
+      "hash": "fd19930641877b38",
+      "size": 20,
+      "mtimeMs": 1790366350303.8462,
+      "updatedAt": "2026-09-25T22:20:40.440Z",
+      "source": "scan"
+    },
+    "tests/visual_tour.gd": {
+      "description": "",
+      "tokens": 759,
+      "hash": "79276c161f0111e1",
+      "size": 2844,
+      "mtimeMs": 1790366413027.0547,
+      "updatedAt": "2026-09-25T22:20:40.440Z",
+      "source": "scan"
+    },
+    "tests/visual_tour.gd.uid": {
+      "description": "",
+      "tokens": 6,
+      "hash": "345f3e554156f500",
+      "size": 20,
+      "mtimeMs": 1790366704558.1165,
+      "updatedAt": "2026-09-25T22:20:40.440Z",
+      "source": "scan"
+    },
+    "tools/build_explorer_anims.gd": {
+      "description": "Declares SRC",
+      "tokens": 2578,
+      "hash": "6a41656aa826e5e3",
+      "size": 9719,
+      "mtimeMs": 1790365985112.2263,
+      "updatedAt": "2026-09-25T22:20:40.440Z",
+      "source": "scan"
+    },
+    "tools/build_explorer_anims.gd.uid": {
+      "description": "",
+      "tokens": 6,
+      "hash": "6cd27eda79c03265",
+      "size": 20,
+      "mtimeMs": 1790366350305.2603,
+      "updatedAt": "2026-09-25T22:20:40.440Z",
+      "source": "scan"
+    },
+    "tools/lawn_layout.py": {
+      "description": "Validate and render the Lawn layout (world/lawn/layout.json).",
+      "tokens": 11232,
+      "hash": "762b378a350b1c86",
+      "size": 40141,
+      "mtimeMs": 1790372597027.9312,
+      "updatedAt": "2026-09-25T22:20:40.441Z",
+      "source": "scan",
+      "symbols": [
+        {
+          "name": "point_in_polygon",
+          "kind": "fn",
+          "startLine": 29,
+          "endLine": 38,
+          "tokens": 86
+        },
+        {
+          "name": "dist_to_segment",
+          "kind": "fn",
+          "startLine": 41,
+          "endLine": 48,
+          "tokens": 82
+        },
+        {
+          "name": "dist_to_polyline",
+          "kind": "fn",
+          "startLine": 51,
+          "endLine": 52,
+          "tokens": 36
+        },
+        {
+          "name": "Grid",
+          "kind": "class",
+          "startLine": 57,
+          "endLine": 125,
+          "tokens": 765
+        },
+        {
+          "name": "Grid.__init__",
+          "kind": "method",
+          "startLine": 58,
+          "endLine": 64,
+          "tokens": 95
+        },
+        {
+          "name": "Grid.cell_center",
+          "kind": "method",
+          "startLine": 66,
+          "endLine": 67,
+          "tokens": 30
+        },
+        {
+          "name": "Grid.to_cell",
+          "kind": "method",
+          "startLine": 69,
+          "endLine": 70,
+          "tokens": 28
+        },
+        {
+          "name": "Grid.cells_in_bbox",
+          "kind": "method",
+          "startLine": 72,
+          "endLine": 77,
+          "tokens": 76
+        },
+        {
+          "name": "Grid.mark",
+          "kind": "method",
+          "startLine": 79,
+          "endLine": 82,
+          "tokens": 38
+        },
+        {
+          "name": "Grid.block_polygon",
+          "kind": "method",
+          "startLine": 84,
+          "endLine": 89,
+          "tokens": 89
+        },
+        {
+          "name": "Grid.block_polyline",
+          "kind": "method",
+          "startLine": 91,
+          "endLine": 97,
+          "tokens": 111
+        },
+        {
+          "name": "Grid.block_circle",
+          "kind": "method",
+          "startLine": 99,
+          "endLine": 103,
+          "tokens": 73
+        },
+        {
+          "name": "Grid.is_blocked",
+          "kind": "method",
+          "startLine": 105,
+          "endLine": 109,
+          "tokens": 51
+        },
+        {
+          "name": "Grid.flood",
+          "kind": "method",
+          "startLine": 111,
+          "endLine": 125,
+          "tokens": 170
+        },
+        {
+          "name": "by_id",
+          "kind": "fn",
+          "startLine": 128,
+          "endLine": 129,
+          "tokens": 22
+        },
+        {
+          "name": "build_grid",
+          "kind": "fn",
+          "startLine": 132,
+          "endLine": 159,
+          "tokens": 403
+        },
+        {
+          "name": "solid_obstacles",
+          "kind": "fn",
+          "startLine": 170,
+          "endLine": 184,
+          "tokens": 224
+        },
+        {
+          "name": "check",
+          "kind": "fn",
+          "startLine": 187,
+          "endLine": 289,
+          "tokens": 1181
+        },
+        {
+          "name": "px",
+          "kind": "fn",
+          "startLine": 318,
+          "endLine": 319,
+          "tokens": 12
+        },
+        {
+          "name": "pz",
+          "kind": "fn",
+          "startLine": 322,
+          "endLine": 323,
+          "tokens": 12
+        },
+        {
+          "name": "pts_attr",
+          "kind": "fn",
+          "startLine": 326,
+          "endLine": 327,
+          "tokens": 24
+        },
+        {
+          "name": "esc",
+          "kind": "fn",
+          "startLine": 330,
+          "endLine": 331,
+          "tokens": 26
+        },
+        {
+          "name": "text",
+          "kind": "fn",
+          "startLine": 334,
+          "endLine": 338,
+          "tokens": 134
+        },
+        {
+          "name": "render",
+          "kind": "fn",
+          "startLine": 354,
+          "endLine": 584,
+          "tokens": 4032
+        },
+        {
+          "name": "smoothstep",
+          "kind": "fn",
+          "startLine": 601,
+          "endLine": 603,
+          "tokens": 31
+        },
+        {
+          "name": "base_relief",
+          "kind": "fn",
+          "startLine": 606,
+          "endLine": 610,
+          "tokens": 78
+        },
+        {
+          "name": "signed_poly_distance",
+          "kind": "fn",
+          "startLine": 613,
+          "endLine": 616,
+          "tokens": 70
+        },
+        {
+          "name": "ellipse_q",
+          "kind": "fn",
+          "startLine": 619,
+          "endLine": 621,
+          "tokens": 38
+        },
+        {
+          "name": "Feature",
+          "kind": "class",
+          "startLine": 624,
+          "endLine": 642,
+          "tokens": 217
+        },
+        {
+          "name": "Feature.__init__",
+          "kind": "method",
+          "startLine": 627,
+          "endLine": 633,
+          "tokens": 107
+        }
+      ],
+      "symbolSource": "ts",
+      "skeleton": "def point_in_polygon(x, z, poly):\ndef dist_to_segment(px, pz, a, b):\ndef dist_to_polyline(px, pz, pts):\nclass Grid:\n    def __init__(self, layout):\n    def cell_center(self, i, j):\n    def to_cell(self, x, z):\n    def cells_in_bbox(self, xa, za, xb, zb):\n    def mark(self, i, j, value, reason):\n    def block_polygon(self, poly, reason, value=True):\n    def block_polyline(self, pts, half_width, reason, value=True):\n    def block_circle(self, cx, cz, r, reason):\n    def is_blocked(self, x, z):\n    def flood(self, start):\ndef by_id(items, id_):\ndef build_grid(layout, bridge=True, tunnel=True):\ndef solid_obstacles(layout, margin=0.6):\ndef check(layout):\ndef px(x):\ndef pz(z):\ndef pts_attr(pts):\ndef esc(s):\ndef text(x, y, s, size=11, weight=400, anchor=\"start\", fill=None, halo=True, italic=False):\ndef render(layout):\ndef smoothstep(e0, e1, x):\ndef base_relief(x, z):\ndef signed_poly_distance(x, z, poly):\ndef ellipse_q(x, z, area):\nclass Feature:\n    def __init__(self, pts, clear, ramp, surface=None, surface_width=0.0):"
+    },
+    "world/grass_meshes.gd": {
+      "description": "",
+      "tokens": 620,
+      "hash": "592d9bff8c590ce8",
+      "size": 2323,
+      "mtimeMs": 1790371366684.6958,
+      "updatedAt": "2026-09-25T22:20:40.442Z",
+      "source": "scan"
+    },
+    "world/grass_meshes.gd.uid": {
+      "description": "",
+      "tokens": 6,
+      "hash": "37858bd1f5fc9aff",
+      "size": 20,
+      "mtimeMs": 1790368564848.097,
+      "updatedAt": "2026-09-25T22:20:40.442Z",
+      "source": "scan"
+    },
+    "world/lawn/baked/bake.json": {
+      "description": "",
+      "tokens": 97,
+      "hash": "5530a42506051723",
+      "size": 337,
+      "mtimeMs": 1790372599099.753,
+      "updatedAt": "2026-09-25T22:20:40.442Z",
+      "source": "scan"
+    },
+    "world/lawn/baked/density.u8": {
+      "description": "",
+      "tokens": 34753,
+      "hash": "8e4a3c0ea0e6e69a",
+      "size": 130321,
+      "mtimeMs": 1790372599086.3047,
+      "updatedAt": "2026-09-25T22:20:40.443Z",
+      "source": "scan"
+    },
+    "world/lawn/baked/height.f32": {
+      "description": "",
+      "tokens": 131801,
+      "hash": "2ef442e39b5d06f5",
+      "size": 521284,
+      "mtimeMs": 1790372599084.7695,
+      "updatedAt": "2026-09-25T22:20:40.449Z",
+      "source": "scan"
+    },
+    "world/lawn/baked/preview.png.import": {
+      "description": "",
+      "tokens": 252,
+      "hash": "041c4757bd2335b7",
+      "size": 942,
+      "mtimeMs": 1790372696831.3145,
+      "updatedAt": "2026-09-25T22:20:40.450Z",
+      "source": "scan"
+    },
+    "world/lawn/baked/surface.u8": {
+      "description": "",
+      "tokens": 34753,
+      "hash": "abfe7c91b4f9ff70",
+      "size": 130321,
+      "mtimeMs": 1790372599085.7937,
+      "updatedAt": "2026-09-25T22:20:40.450Z",
+      "source": "scan"
+    },
+    "world/lawn/lawn_builder.gd": {
+      "description": "Declares WORLD_LAYER",
+      "tokens": 17893,
+      "hash": "106d0cdfe690af1a",
+      "size": 68353,
+      "mtimeMs": 1790409878125.8828,
+      "updatedAt": "2026-09-26T08:04:38.219Z",
+      "source": "hook"
+    },
+    "world/lawn/lawn_builder.gd.uid": {
+      "description": "",
+      "tokens": 6,
+      "hash": "db4feae17d6df791",
+      "size": 20,
+      "mtimeMs": 1790368564842.6736,
+      "updatedAt": "2026-09-25T22:20:40.450Z",
+      "source": "scan"
+    },
+    "world/lawn/lawn_layout.gd": {
+      "description": "Declares LAYOUT_PATH",
+      "tokens": 934,
+      "hash": "4559363f6e94e639",
+      "size": 3750,
+      "mtimeMs": 1790371015724.199,
+      "updatedAt": "2026-09-25T22:20:40.451Z",
+      "source": "scan"
+    },
+    "world/lawn/lawn_layout.gd.uid": {
+      "description": "",
+      "tokens": 6,
+      "hash": "6951c45ef84b42bf",
+      "size": 20,
+      "mtimeMs": 1790368564844.0386,
+      "updatedAt": "2026-09-25T22:20:40.451Z",
+      "source": "scan"
+    },
+    "world/lawn/lawn_level.gd": {
+      "description": "Declares CHECKPOINT_RADIUS",
+      "tokens": 1543,
+      "hash": "ade2028a7b8cf73c",
+      "size": 5803,
+      "mtimeMs": 1790373270541.644,
+      "updatedAt": "2026-09-25T22:20:40.451Z",
+      "source": "scan"
+    },
+    "world/lawn/lawn_level.gd.uid": {
+      "description": "",
+      "tokens": 6,
+      "hash": "6836cdaaea15207c",
+      "size": 20,
+      "mtimeMs": 1790368564845.3982,
+      "updatedAt": "2026-09-25T22:20:40.452Z",
+      "source": "scan"
+    },
+    "world/lawn/lawn.tscn": {
+      "description": "",
+      "tokens": 741,
+      "hash": "daa2b5dbb1670737",
+      "size": 2783,
+      "mtimeMs": 1790373270541.2185,
+      "updatedAt": "2026-09-25T22:20:40.452Z",
+      "source": "scan"
+    },
+    "world/lawn/layout.json": {
+      "description": "",
+      "tokens": 5947,
+      "hash": "b19239b2b9c183f7",
+      "size": 20812,
+      "mtimeMs": 1790372597066.4539,
+      "updatedAt": "2026-09-25T22:20:40.452Z",
+      "source": "scan"
+    },
+    "world/playground/playground.gd": {
+      "description": "Declares WORLD_LAYER",
+      "tokens": 2064,
+      "hash": "665365014a9854a0",
+      "size": 7744,
+      "mtimeMs": 1790372758958.712,
+      "updatedAt": "2026-09-25T22:20:40.453Z",
+      "source": "scan"
+    },
+    "world/playground/playground.gd.uid": {
+      "description": "",
+      "tokens": 6,
+      "hash": "a7b28bca0102fc7d",
+      "size": 20,
+      "mtimeMs": 1790366350306.8892,
+      "updatedAt": "2026-09-25T22:20:40.453Z",
+      "source": "scan"
+    },
+    "world/playground/playground.tscn": {
+      "description": "",
+      "tokens": 420,
+      "hash": "31a5d3b128421d31",
+      "size": 1572,
+      "mtimeMs": 1790366923802.8289,
+      "updatedAt": "2026-09-25T22:20:40.453Z",
+      "source": "scan"
+    },
+    "world/props/heavable.gd": {
+      "description": "Declares Weight",
+      "tokens": 730,
+      "hash": "c7acae1697a413ea",
+      "size": 2738,
+      "mtimeMs": 1790372836313.4138,
+      "updatedAt": "2026-09-25T22:20:40.454Z",
+      "source": "scan"
+    },
+    "world/props/heavable.gd.uid": {
+      "description": "",
+      "tokens": 6,
+      "hash": "88c6911d3b47f25d",
+      "size": 20,
+      "mtimeMs": 1790372474712.5437,
+      "updatedAt": "2026-09-25T22:20:40.454Z",
+      "source": "scan"
+    },
+    "world/sun_light.gd": {
+      "description": "",
+      "tokens": 214,
+      "hash": "fe468bbab546af4f",
+      "size": 802,
+      "mtimeMs": 1790366895346.2783,
+      "updatedAt": "2026-09-25T22:20:40.454Z",
+      "source": "scan"
+    },
+    "world/sun_light.gd.uid": {
+      "description": "",
+      "tokens": 6,
+      "hash": "e1fcd7725a097ccf",
+      "size": 20,
+      "mtimeMs": 1790366974932.931,
+      "updatedAt": "2026-09-25T22:20:40.454Z",
+      "source": "scan"
+    },
+    "characters/ant_model.gd": {
+      "description": "Declares SCENE",
+      "tokens": 836,
+      "hash": "75f49af9079ac1fe",
+      "size": 3135,
+      "mtimeMs": 1790375832010.3652,
+      "updatedAt": "2026-09-25T22:37:12.135Z",
+      "source": "hook"
+    },
+    "world/props/haul.gd": {
+      "description": "Declares AMODU_STRENGTH",
+      "tokens": 2366,
+      "hash": "98b6238e379c508b",
+      "size": 9287,
+      "mtimeMs": 1790375905366.7502,
+      "updatedAt": "2026-09-25T22:38:25.456Z",
+      "source": "hook"
+    },
+    "characters/worker_ant.gd": {
+      "description": "Declares Mode",
+      "tokens": 1731,
+      "hash": "71ec2fa2989f95e0",
+      "size": 6490,
+      "mtimeMs": 1790375952688.1733,
+      "updatedAt": "2026-09-25T22:39:12.801Z",
+      "source": "hook"
+    },
+    "player/player_combat.gd": {
+      "description": "Declares CREATURES_LAYER",
+      "tokens": 3147,
+      "hash": "f96b1d9f784b6b64",
+      "size": 12328,
+      "mtimeMs": 1790376087208.5466,
+      "updatedAt": "2026-09-25T22:41:27.332Z",
+      "source": "hook"
+    },
+    "creatures/pill_bug/pill_bug.gd": {
+      "description": "Declares State",
+      "tokens": 5223,
+      "hash": "9d5e67f53e31d026",
+      "size": 20229,
+      "mtimeMs": 1790376226883.3994,
+      "updatedAt": "2026-09-25T22:43:47.006Z",
+      "source": "hook"
+    },
+    "world/expedition/colony.gd": {
+      "description": "Declares UPGRADES",
+      "tokens": 410,
+      "hash": "9c6bf9fb1889b2f4",
+      "size": 1534,
+      "mtimeMs": 1790376253745.5374,
+      "updatedAt": "2026-09-25T22:44:13.852Z",
+      "source": "hook"
+    },
+    "world/expedition/expedition.gd": {
+      "description": "Declares Phase",
+      "tokens": 3769,
+      "hash": "2f002e3d22cf09e2",
+      "size": 14544,
+      "mtimeMs": 1790378947906.0806,
+      "updatedAt": "2026-09-25T23:29:08.004Z",
+      "source": "hook"
+    },
+    "world/expedition/expedition_hud.gd": {
+      "description": "Declares GOLD",
+      "tokens": 1440,
+      "hash": "62b234b82cd61680",
+      "size": 5402,
+      "mtimeMs": 1790378977870.4248,
+      "updatedAt": "2026-09-25T23:29:38.040Z",
+      "source": "hook"
+    },
+    "world/expedition/colony_screen.gd": {
+      "description": "Declares UPGRADE_KEYS",
+      "tokens": 1749,
+      "hash": "1ce9bce0c1418548",
+      "size": 6573,
+      "mtimeMs": 1790379023001.7769,
+      "updatedAt": "2026-09-25T23:30:23.094Z",
+      "source": "hook"
+    },
+    "tests/expedition_test.gd": {
+      "description": "",
+      "tokens": 3386,
+      "hash": "2dfd8c2cea11ebcc",
+      "size": 13135,
+      "mtimeMs": 1790379119294.951,
+      "updatedAt": "2026-09-25T23:31:59.412Z",
+      "source": "hook"
+    },
+    "world/day_clock.gd": {
+      "description": "Declares SUNRISE",
+      "tokens": 541,
+      "hash": "5f8c18eed254589c",
+      "size": 2028,
+      "mtimeMs": 1790381568804.7754,
+      "updatedAt": "2026-09-26T00:12:48.903Z",
+      "source": "hook"
+    },
+    "ui/compass.gd": {
+      "description": "Declares SPAN",
+      "tokens": 844,
+      "hash": "81665135f836f822",
+      "size": 3166,
+      "mtimeMs": 1790381647335.241,
+      "updatedAt": "2026-09-26T00:14:07.473Z",
+      "source": "hook"
+    },
+    "ui/game_hud.gd": {
+      "description": "Declares CREAM",
+      "tokens": 3227,
+      "hash": "33da3bbcf1fa109b",
+      "size": 12635,
+      "mtimeMs": 1790381647547.0251,
+      "updatedAt": "2026-09-26T00:14:07.618Z",
+      "source": "hook"
+    },
+    "world/ambient_life.gd": {
+      "description": "Declares KINDS",
+      "tokens": 2654,
+      "hash": "13b38c726264dc59",
+      "size": 10092,
+      "mtimeMs": 1790385434442.932,
+      "updatedAt": "2026-09-26T01:17:14.574Z",
+      "source": "hook"
+    },
+    "world/lawn/garden_dressing.gd": {
+      "description": "Declares RULES",
+      "tokens": 1529,
+      "hash": "eb8d42ecd94dc49d",
+      "size": 5733,
+      "mtimeMs": 1790383601063.1128,
+      "updatedAt": "2026-09-26T00:46:41.183Z",
+      "source": "hook"
+    },
+    "tests/lookdev_tour.gd": {
+      "description": "Declares SHOTS",
+      "tokens": 588,
+      "hash": "6719973d9fea672a",
+      "size": 2202,
+      "mtimeMs": 1790383768818.573,
+      "updatedAt": "2026-09-26T00:49:28.925Z",
+      "source": "hook"
+    },
+    "world/shaders/water.gdshader": {
+      "description": "Declares spatial",
+      "tokens": 1543,
+      "hash": "abbe90a7d27ffe2e",
+      "size": 5786,
+      "mtimeMs": 1790397439955.9238,
+      "updatedAt": "2026-09-26T04:37:20.058Z",
+      "source": "hook"
+    },
+    "world/weather.gd": {
+      "description": "Declares SPLASHES",
+      "tokens": 2506,
+      "hash": "e6b68ec94ed5c85e",
+      "size": 9673,
+      "mtimeMs": 1790386746060.604,
+      "updatedAt": "2026-09-26T01:39:06.176Z",
+      "source": "hook"
+    },
+    "world/shaders/creature.gdshader": {
+      "description": "Declares spatial",
+      "tokens": 566,
+      "hash": "0410431a56a4bee5",
+      "size": 2121,
+      "mtimeMs": 1790385195031.5469,
+      "updatedAt": "2026-09-26T01:13:15.131Z",
+      "source": "hook"
+    },
+    "tools/build_amodu_anims.gd": {
+      "description": "Declares HIPS",
+      "tokens": 4455,
+      "hash": "688dcc60f47c74cf",
+      "size": 17076,
+      "mtimeMs": 1790387485182.891,
+      "updatedAt": "2026-09-26T01:51:25.312Z",
+      "source": "hook"
+    },
+    "world/shaders/rain_splash.gdshader": {
+      "description": "Declares spatial",
+      "tokens": 483,
+      "hash": "fbe6e6b730aafbe2",
+      "size": 1810,
+      "mtimeMs": 1790386592142.9434,
+      "updatedAt": "2026-09-26T01:36:32.239Z",
+      "source": "hook"
+    },
+    "tools/clip_sheet.gd": {
+      "description": "Declares COLS",
+      "tokens": 972,
+      "hash": "3193c2f2f4ad8d86",
+      "size": 3644,
+      "mtimeMs": 1790386900338.0798,
+      "updatedAt": "2026-09-26T01:41:40.458Z",
+      "source": "hook"
+    },
+    "world/water_body.gd": {
+      "description": "Declares GROUP",
+      "tokens": 368,
+      "hash": "4ea389bf3237b5c8",
+      "size": 1377,
+      "mtimeMs": 1790397069180.925,
+      "updatedAt": "2026-09-26T04:31:09.271Z",
+      "source": "hook"
+    },
+    "world/water_fx.gd": {
+      "description": "Declares POOL",
+      "tokens": 996,
+      "hash": "dec0f446f41f972a",
+      "size": 3734,
+      "mtimeMs": 1790397576541.0654,
+      "updatedAt": "2026-09-26T04:39:36.647Z",
+      "source": "hook"
+    },
+    "tools/bake_tree_base.py": {
+      "description": "Bake the apple tree's base (world/lawn/layout.json \"tree_base\") into",
+      "tokens": 3132,
+      "hash": "406fbf8f71438596",
+      "size": 11378,
+      "mtimeMs": 1790399185300.6636,
+      "updatedAt": "2026-09-26T05:06:25.418Z",
+      "source": "hook",
+      "symbols": [
+        {
+          "name": "bl",
+          "kind": "fn",
+          "startLine": 33,
+          "endLine": 37,
+          "tokens": 28
+        },
+        {
+          "name": "gd",
+          "kind": "fn",
+          "startLine": 38,
+          "endLine": 42,
+          "tokens": 25
+        },
+        {
+          "name": "smoothstep",
+          "kind": "fn",
+          "startLine": 43,
+          "endLine": 47,
+          "tokens": 32
+        },
+        {
+          "name": "trunk_r",
+          "kind": "fn",
+          "startLine": 48,
+          "endLine": 52,
+          "tokens": 56
+        },
+        {
+          "name": "bank_h",
+          "kind": "fn",
+          "startLine": 53,
+          "endLine": 61,
+          "tokens": 90
+        },
+        {
+          "name": "catmull",
+          "kind": "fn",
+          "startLine": 62,
+          "endLine": 79,
+          "tokens": 197
+        },
+        {
+          "name": "tunnel_points",
+          "kind": "fn",
+          "startLine": 80,
+          "endLine": 98,
+          "tokens": 186
+        },
+        {
+          "name": "cave_distance",
+          "kind": "fn",
+          "startLine": 99,
+          "endLine": 116,
+          "tokens": 218
+        },
+        {
+          "name": "new_object",
+          "kind": "fn",
+          "startLine": 117,
+          "endLine": 125,
+          "tokens": 58
+        },
+        {
+          "name": "bank_solid",
+          "kind": "fn",
+          "startLine": 126,
+          "endLine": 146,
+          "tokens": 326
+        },
+        {
+          "name": "trunk_solid",
+          "kind": "fn",
+          "startLine": 147,
+          "endLine": 157,
+          "tokens": 178
+        },
+        {
+          "name": "tube",
+          "kind": "fn",
+          "startLine": 158,
+          "endLine": 175,
+          "tokens": 154
+        },
+        {
+          "name": "chamber",
+          "kind": "fn",
+          "startLine": 176,
+          "endLine": 193,
+          "tokens": 244
+        },
+        {
+          "name": "select_only",
+          "kind": "fn",
+          "startLine": 194,
+          "endLine": 199,
+          "tokens": 42
+        },
+        {
+          "name": "join",
+          "kind": "fn",
+          "startLine": 200,
+          "endLine": 211,
+          "tokens": 92
+        },
+        {
+          "name": "main",
+          "kind": "fn",
+          "startLine": 212,
+          "endLine": 285,
+          "tokens": 887
+        }
+      ]
+    },
+    "world/shaders/tree_base.gdshader": {
+      "description": "Declares spatial",
+      "tokens": 1085,
+      "hash": "47e290ef4230a27a",
+      "size": 4067,
+      "mtimeMs": 1790399360677.9194,
+      "updatedAt": "2026-09-26T05:09:20.770Z",
+      "source": "hook"
+    },
+    "world/lawn/tree_base.gd": {
+      "description": "Declares MESH",
+      "tokens": 2564,
+      "hash": "2020a1de25c92c77",
+      "size": 9846,
+      "mtimeMs": 1790399450850.1416,
+      "updatedAt": "2026-09-26T05:10:50.968Z",
+      "source": "hook"
+    },
+    "world/props/seed_puff.gd": {
+      "description": "Declares GROUP",
+      "tokens": 547,
+      "hash": "82e92e1282c5f9ae",
+      "size": 2048,
+      "mtimeMs": 1790406965329.3196,
+      "updatedAt": "2026-09-26T07:16:05.432Z",
+      "source": "hook"
+    },
+    "world/route_guide.gd": {
+      "description": "",
+      "tokens": 1023,
+      "hash": "74b5b98e2f418fdf",
+      "size": 3833,
+      "mtimeMs": 1790407228393.082,
+      "updatedAt": "2026-09-26T07:20:28.517Z",
+      "source": "hook"
+    },
+    "player/hide_head.gd": {
+      "description": "Declares ARM_FORWARD",
+      "tokens": 548,
+      "hash": "03aa36297582ca2a",
+      "size": 2053,
+      "mtimeMs": 1790407945531.6108,
+      "updatedAt": "2026-09-26T07:32:25.640Z",
+      "source": "hook"
+    },
+    "world/shaders/ground.gdshader": {
+      "description": "Declares spatial",
+      "tokens": 1636,
+      "hash": "f05a22873fe2faa9",
+      "size": 6137,
+      "mtimeMs": 1790409550634.9143,
+      "updatedAt": "2026-09-26T07:59:10.746Z",
+      "source": "hook"
+    },
+    "world/lawn/soil_detail.gd": {
+      "description": "Declares CHUNK",
+      "tokens": 3974,
+      "hash": "928871426669811d",
+      "size": 15046,
+      "mtimeMs": 1790409776753.6753,
+      "updatedAt": "2026-09-26T08:02:56.851Z",
+      "source": "hook"
+    },
+    "world/shaders/grain.gdshader": {
+      "description": "Declares spatial",
+      "tokens": 728,
+      "hash": "d2a28e60627bfa0e",
+      "size": 2729,
+      "mtimeMs": 1790410145289.2188,
+      "updatedAt": "2026-09-26T08:09:05.389Z",
+      "source": "hook"
+    },
+    "world/shaders/thatch.gdshader": {
+      "description": "Declares spatial",
+      "tokens": 488,
+      "hash": "c3112b50821b4d9e",
+      "size": 1828,
+      "mtimeMs": 1790409877811.1887,
+      "updatedAt": "2026-09-26T08:04:37.906Z",
+      "source": "hook"
+    }
+  },
+  "preamble": [
+    "> Project structure index. Auto-maintained by OpenWolf hooks and daemon.",
+    "> Run `openwolf scan` to generate, or wait for the first Claude Code session.",
+    "> Status: Pending initial scan"
+  ]
+}

@@ -21,6 +21,7 @@ func _initialize() -> void:
 func _run() -> void:
 	var t0 := Time.get_ticks_msec()
 	level = load("res://world/lawn/lawn.tscn").instantiate()
+	level.set("expedition_mode", false)  # the Phase 3 free-roam graybox
 	root.add_child(level)
 	await _frames(3)
 	player = level.get_node("Player")
@@ -32,10 +33,14 @@ func _run() -> void:
 	await _test_spawn()
 	await _test_ground_matches_terrain()
 	await _test_viewpoints()
-	await _test_rut_respawns()
+	await _test_swim()
+	await _test_root_hall()
+	await _test_glide()
+	await _test_route_guide()
 	await _test_route("route_a", 0.0)
 	_test_companions()
 	await _test_route("route_b", 9.0)
+	await _test_way_home()
 
 	print("\n%s" % ("PASS" if failures == 0 else "%d failure(s)" % failures))
 	quit(failures)
@@ -105,7 +110,7 @@ func _test_ground_matches_terrain() -> void:
 
 func _test_viewpoints() -> void:
 	# height of the surface Amodu should end up standing on, above the local ground
-	var expected := {"V1": 0.0, "V2": 150.0, "V3": 25.0, "V5": 12.0}
+	var expected := {"V1": 0.0, "V2": 136.0, "V3": 25.0, "V5": 12.0}
 	var vps: Array = layout.items("viewpoints")
 	for i in vps.size():
 		var vp: Dictionary = vps[i]
@@ -130,13 +135,153 @@ func _test_viewpoints() -> void:
 		_check("viewpoint %s %s" % [vp["id"], vp["name"]], ok, detail)
 
 
-func _test_rut_respawns() -> void:
-	_respawn_reason = ""
+## Dropped into the Rut he swims: afloat with his head out, then out onto the nearest bank.
+func _test_swim() -> void:
+	var water := WaterBody.find(self, Vector3(100, 0, 195))
+	_check("the Rut is swimmable water", water != null, "")
+	if water == null:
+		return
 	var deep := layout.ground_point([100, 195], 0.0)
-	player.teleport(Vector3(deep.x, layout.water_level + 1.0, deep.z), 0.0)
-	await _frames(120)
-	_check("falling in the Rut respawns", _respawn_reason == "Swept into the Rut",
-		"reason='%s', now at (%.0f, %.0f)" % [_respawn_reason, player.global_position.x, player.global_position.z])
+	player.teleport(Vector3(deep.x, water.level + 1.5, deep.z), 0.0)
+	await _frames(150)
+	var head := player.global_position.y + 1.6
+	_check("falls in and swims", player.is_swimming() and head > water.level and head < water.level + 1.6,
+		"state=%s, head %.2f m above the water" % [Player.State.keys()[player.state], head - water.level])
+	# swim to the nearest bank
+	var here := Vector2(player.global_position.x, player.global_position.z)
+	var best := Vector2.ZERO
+	var best_d := INF
+	for i in water.polygon.size():
+		var q := Geometry2D.get_closest_point_to_segment(here, water.polygon[i], water.polygon[(i + 1) % water.polygon.size()])
+		if q.distance_to(here) < best_d:
+			best_d = q.distance_to(here)
+			best = q
+	var to := best - here
+	player.camera_rig.yaw = atan2(-to.x, -to.y)
+	Input.action_press("move_forward")
+	var out := false
+	for f in _seconds(30.0):
+		await physics_frame
+		if not player.is_swimming() and player.is_on_floor():
+			out = true
+			break
+	Input.action_release("move_forward")
+	_check("swims to the bank and wades out", out, "%.0f m to the bank; now %s" % [best_d, Player.State.keys()[player.state]])
+
+
+## Walks from the lawn into Root Hall's mouth, across the hall, up the
+## Heartwood Stair inside the trunk and out of the knot-hole onto its shelf.
+func _test_root_hall() -> void:
+	var tb: TreeBase = level.get("tree_base")
+	_check("the tree base is built", tb != null, "")
+	if tb == null:
+		return
+	var spec: Dictionary = layout.data["tree_base"]
+	var way: Array[Vector3] = []  # floor points to walk through
+	for t: Dictionary in spec["tunnels"]:
+		if String(t["id"]) == "grub_burrow":
+			continue
+		var pts := TreeBase.tunnel_points(t)
+		var step := 1 if String(t["id"]) != "chimney" else 6
+		for i in range(0, pts.size(), step):
+			way.append(pts[i] + Vector3.DOWN * float(t["radius"]))
+		if String(t["id"]) == "chimney":
+			way.append(pts[pts.size() - 1] + Vector3.DOWN * float(t["radius"]))
+	way.pop_back()  # the last knot-hole point is out in the air past the shelf
+	var start := layout.ground_point([-318, 2], 0.3)
+	player.teleport(start, PI / 2.0)
+	await _frames(20)
+	var dt := 1.0 / Engine.physics_ticks_per_second
+	var idx := 0
+	var best := INF
+	var since := 0.0
+	var outcome := ""
+	var elapsed := 0.0
+	Input.action_press("move_forward")
+	while idx < way.size():
+		await physics_frame
+		elapsed += dt
+		var p := player.global_position
+		var target := way[idx]
+		var flat := Vector2(target.x - p.x, target.z - p.z)
+		if flat.length() < 2.5 and absf(p.y - target.y) < 4.0:
+			idx += 1
+			best = INF
+			since = 0.0
+			continue
+		player.camera_rig.yaw = atan2(-flat.x, -flat.y)
+		if flat.length() < best - 0.3:
+			best = flat.length()
+			since = 0.0
+		else:
+			since += dt
+		if since > 5.0 or elapsed > 240.0:
+			outcome = "stuck at (%.1f, %.1f, %.1f) heading to %s (%d/%d)" % [p.x, p.y, p.z, str(target), idx, way.size()]
+			break
+	Input.action_release("move_forward")
+	await _frames(30)
+	var p := player.global_position
+	_check("through Root Hall, up the stair, out of the knot-hole", outcome == "" and p.y > 52.0,
+		outcome if outcome != "" else "at (%.0f, %.1f, %.0f) after %.0f s" % [p.x, p.y, p.z, elapsed])
+	var inside := tb.cave_factor(way[int(way.size() * 0.3)] + Vector3.UP)
+	_check("the hall is dark inside", inside > 0.8, "cave factor %.2f" % inside)
+
+
+## On the school bag's top: grab a snagged seed puff, run off the edge and glide.
+func _test_glide() -> void:
+	var summit := Vector3(115, 150, -298)
+	var puff: SeedPuff = null
+	for p: SeedPuff in get_nodes_in_group(SeedPuff.GROUP):
+		if puff == null or p.global_position.distance_to(summit) < puff.global_position.distance_to(summit):
+			puff = p
+	_check("seed puffs snag on the bag's top", puff != null and puff.global_position.y > 120.0,
+		"nearest at %s" % (str(puff.global_position) if puff else "none"))
+	if puff == null:
+		return
+	var start := puff.global_position + Vector3(0, 0.5, 3.0)
+	player.teleport(start, 0.0)
+	await _frames(30)
+	await _tap("interact")
+	await _frames(5)
+	_check("grab the puff", player.puff != null, "")
+	# off the bag's front (south) and away
+	player.camera_rig.yaw = PI
+	var slams := [0]
+	var on_slam := func(_at: Vector3, _fall: float) -> void: slams[0] += 1
+	player.slammed.connect(on_slam)
+	var from := player.global_position
+	var fastest := 0.0
+	var left := false
+	Input.action_press("move_forward")
+	for f in _seconds(60.0):
+		await physics_frame
+		if player.state == Player.State.AIR:
+			left = true
+			fastest = maxf(fastest, -player.velocity.y)
+		elif left and player.is_on_floor():
+			break
+	Input.action_release("move_forward")
+	player.slammed.disconnect(on_slam)
+	var flew := Vector2(player.global_position.x - from.x, player.global_position.z - from.z).length()
+	_check("glide down from the bag", left and flew > 40.0 and flew < 260.0 and fastest < player.glide_tired_sink + 0.6 and slams[0] == 0,
+		"%.0f m out, %.0f m down, falling at most %.1f m/s, %d slam(s)" % [flew, from.y - player.global_position.y, fastest, slams[0]])
+	await _tap("interact")
+	await _frames(5)
+
+
+## The route home points at the bag's top first and moves on as stages are reached.
+func _test_route_guide() -> void:
+	var guide: RouteGuide = level.get("route_guide")
+	_check("the way home has stages", guide != null and guide.stages.size() >= 5, "")
+	if guide == null:
+		return
+	guide.current = 0
+	var first := guide.goal()
+	var stage: Dictionary = guide.stages[2]
+	player.teleport(layout.ground_point(stage["at"], 0.3), 0.0)
+	await _frames(10)
+	_check("reaching a later stage skips ahead", guide.current == 3 and first.y > 100.0,
+		"first goal %s, now at stage %d" % [str(first), guide.current])
 
 
 ## Jogs a main route with the camera steering toward each waypoint.
@@ -196,6 +341,9 @@ func _test_route(route_id: String, start_offset: float) -> void:
 
 
 func _test_companions() -> void:
+	if (level.get("companions") as Array).is_empty():
+		print("  info  companions on hold (Companion.ENABLED is off)")
+		return
 	var p := player.global_position
 	var gaps: Array[String] = []
 	var worst := 0.0
@@ -204,3 +352,56 @@ func _test_companions() -> void:
 		worst = maxf(worst, d)
 		gaps.append("%s %.1f m" % [ant.display_name, d])
 	_check("companions kept up on route A", worst < 15.0, ", ".join(gaps))
+
+
+## The last stretch: up the trowel onto the patio, up the brush handle onto the
+## back step, and crawl under the door: home.
+func _test_way_home() -> void:
+	var patio: Dictionary = layout.data["patio"]
+	var top: float = patio["top"]
+	var sill := top + float(patio["step"]["height"])
+	var south := PI  # camera yaw looking south (+Z)
+	var t: Array = patio["trowel"]["from"]
+	player.teleport(layout.ground_point([float(t[0]), float(t[1]) - 6.0], 0.3), south)
+	await _walk("move_forward", 22.0)
+	var p := player.global_position
+	_check("trowel ramp onto the patio", absf(p.y - top) < 0.8 and p.z > float(patio["edge_z"]) + 10.0,
+		"at (%.0f, %.0f) y=%.1f (patio top %.0f)" % [p.x, p.z, p.y, top])
+	var b: Array = patio["brush"]["from"]
+	var r := float(patio["brush"]["width"]) / 2.0
+	player.teleport(Vector3(float(b[0]), top + 2.0 * r + 0.5, float(b[1]) + 1.0), south)
+	await _walk("move_forward", 35.0)
+	p = player.global_position
+	_check("brush handle up onto the back step", absf(p.y - sill) < 0.8, "y=%.1f (step top %.0f)" % [p.y, sill])
+	var door: Array = patio["door"]["x"]
+	player.teleport(Vector3((float(door[0]) + float(door[1])) / 2.0, sill + 0.3, float(patio["wall_z"]) - 12.0), south)
+	await _frames(20)
+	Input.action_press("move_forward")
+	await _frames(_seconds(3.0))
+	var blocked_standing := player.global_position.z < float(patio["wall_z"]) + 0.5
+	Input.action_press("crawl")
+	await _frames(2)
+	Input.action_release("crawl")
+	await _frames(_seconds(20.0))
+	Input.action_release("move_forward")
+	_check("the door gap: too low to walk, crawl under it", blocked_standing and bool(level.get("day_over")),
+		"standing stopped at z=%.1f; home reached: %s" % [player.global_position.z, level.get("day_over")])
+
+
+func _seconds(s: float) -> int:
+	return int(round(s * Engine.physics_ticks_per_second))
+
+
+func _walk(action: String, seconds: float) -> void:
+	await _frames(15)
+	Input.action_press(action)
+	await _frames(_seconds(seconds))
+	Input.action_release(action)
+	await _frames(10)
+
+
+func _tap(action: String) -> void:
+	Input.action_press(action)
+	await _frames(1)
+	Input.action_release(action)
+	await _frames(1)

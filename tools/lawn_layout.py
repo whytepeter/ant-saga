@@ -12,6 +12,7 @@ builder reads the same file, so this check guards the level before it exists.
 
 import json
 import math
+import random
 import struct
 import sys
 from collections import deque
@@ -140,8 +141,8 @@ def build_grid(layout, bridge=True, tunnel=True):
                 c = x if axis == "x" else z
                 if (c - v) * sign >= 0:
                     g.mark(i, j, True, f"boundary:{side}")
-    trunk = by_id(layout["skyline"], "mango_trunk")
-    g.block_circle(trunk["pos"][0], trunk["pos"][1], trunk["size"][0] / 2, "mango_trunk")
+    trunk = by_id(layout["skyline"], "apple_tree")
+    g.block_circle(trunk["pos"][0], trunk["pos"][1], trunk["size"][0] / 2, "apple_tree")
     for b in layout["barriers"]:
         g.block_polygon(b["polygon"], b["id"])
     for w in layout["water"]:
@@ -163,7 +164,7 @@ def build_grid(layout, bridge=True, tunnel=True):
 
 # Landmarks you can walk over, through or under (or that the builder keeps a lane through).
 WALKABLE = {"pot_ring", "trip_lines", "orb_web", "colony_gate", "lolly_stick", "spider_burrow",
-            "naira_coin_plaza", "termite_camp", "abandoned_post", "pencil_log", "mango_root_hall", "water_sachet"}
+            "coin_plaza", "termite_camp", "abandoned_post", "pencil_log", "root_hall", "crisp_packet"}
 STANDIN_RADIUS = {"ant": 1.4, "pill_bug": 2.8, "wolf_spider": 5.5}  # spider: solid body only, the legs are visual
 
 
@@ -171,7 +172,7 @@ def solid_obstacles(layout, margin=0.6):
     """(name, test(x, z)) pairs for footprints a walking player collides with."""
     obs = []
     for lm in layout["landmarks"]:
-        if lm["id"] in WALKABLE or lm["id"].startswith("mango_leaf"):
+        if lm["id"] in WALKABLE or lm["id"].startswith("fallen_leaf"):
             continue
         (cx, cz), (w, _, d) = lm["pos"], lm["size"]
         hw, hd = w / 2 + margin, d / 2 + margin
@@ -181,6 +182,9 @@ def solid_obstacles(layout, margin=0.6):
         r = STANDIN_RADIUS.get(sd["kind"], 1.5) + margin
         (cx, cz) = sd["pos"]
         obs.append((sd["name"], lambda x, z, cx=cx, cz=cz, r=r: math.hypot(x - cx, z - cz) < r))
+    for fl in layout.get("flowers", []):
+        (cx, cz), r = fl["pos"], 2.0 + margin  # the stem and its leaves; the head is overhead
+        obs.append((f'{fl["kind"]} stem', lambda x, z, cx=cx, cz=cz, r=r: math.hypot(x - cx, z - cz) < r))
     return obs
 
 
@@ -193,7 +197,7 @@ def check(layout):
         print(f"  FAIL  {msg}")
 
     spawn = layout["spawn"]["pos"]
-    south_areas = {"mango_rootlands", "spiders_edge"}
+    south_areas = {"windfall_roots", "spiders_edge"}
 
     print("Bounds")
     x0, z0, x1, z1 = layout["meta"]["playable_bounds"]
@@ -276,6 +280,72 @@ def check(layout):
     if len(failures) == before:
         ok("no route passes through a landmark or creature stand-in")
 
+    print("Patio and the way home")
+    before = len(failures)
+    patio = layout.get("patio")
+    if patio:
+        full = build_grid(layout)
+        seen_full = full.flood(spawn)
+        foot = patio["trowel"]["from"]
+        i, j = full.to_cell(*foot)
+        if full.is_blocked(*foot) or not seen_full[j][i]:
+            fail(f"trowel foot {foot} can't be reached from the spawn")
+        if not (patio["trowel"]["to"][1] >= patio["edge_z"] and foot[1] < patio["edge_z"]):
+            fail("the trowel must run from the lawn up onto the patio")
+        sx0, sz0, sx1, sz1 = patio["step"]["rect"]
+        bx, bz = patio["brush"]["to"]
+        if not (sx0 <= bx <= sx1 and sz0 <= bz <= sz1):
+            fail("the brush must lean on the back step")
+        dx0, dx1 = patio["door"]["x"]
+        hx, hz = patio["home"]
+        if not (dx0 <= hx <= dx1 and hz > patio["wall_z"]):
+            fail("home must be just inside the back door")
+    fl_bad = [f for f in layout.get("flowers", []) if not layout["areas"] or
+              not any(math.hypot((f["pos"][0] - a["center"][0]) / a["radii"][0], (f["pos"][1] - a["center"][1]) / a["radii"][1]) < 1.0
+                      for a in layout["areas"] if a["id"] == "flower_bed")]
+    if fl_bad:
+        fail(f"{len(fl_bad)} flower(s) outside the Flower Bed")
+    if len(failures) == before:
+        ok("trowel reachable, brush on the step, home inside the door, flowers in their bed")
+
+    print("Expedition (Phase 3c)")
+    before = len(failures)
+    exp = layout.get("expedition", {})
+    solid = [(n, t) for n, t in obstacles if n not in ("Pill bug", "Young pill bug")]  # live creatures on a run
+    for job in exp.get("jobs", []):
+        pts = job["haul_path"]
+        if pts[0] != job["prize"]["pos"]:
+            fail(f"{job['id']}: haul_path must start at the prize")
+        gate = next(lm for lm in layout["landmarks"] if lm["id"] == "colony_gate")["pos"]
+        if math.hypot(pts[-1][0] - gate[0], pts[-1][1] - gate[1]) > 2:
+            fail(f"{job['id']}: haul_path must end at the Colony Gate")
+        hit = None
+        for k in range(len(pts) - 1):
+            (ax, az), (bx, bz) = pts[k], pts[k + 1]
+            steps = max(1, int(math.hypot(bx - ax, bz - az)))
+            for st in range(steps + 1):
+                x, z = ax + (bx - ax) * st / steps, az + (bz - az) * st / steps
+                if g.is_blocked(x, z):
+                    hit = (k, x, z, "a wall")
+                for name, test in solid:
+                    if test(x, z):
+                        hit = (k, x, z, name)
+                if hit:
+                    break
+            if hit:
+                break
+        if hit:
+            fail(f"{job['id']}: haul_path segment {hit[0]} runs into {hit[3]} at ({hit[1]:.0f}, {hit[2]:.0f})")
+        spots = [("worker", w) for w in job["workers"] + job.get("storage_workers", [])]
+        spots += [(pr["name"], pr["pos"]) for pr in job.get("props", []) + job.get("pill_bugs", [])]
+        for name, (x, z) in spots:
+            if not (x0 <= x <= x1 and z0 <= z <= z1) or g.is_blocked(x, z) or any(t(x, z) for _, t in solid):
+                fail(f"{job['id']}: {name} at ({x}, {z}) is inside something or out of bounds")
+        L = sum(math.hypot(pts[k + 1][0] - pts[k][0], pts[k + 1][1] - pts[k][1]) for k in range(len(pts) - 1))
+        print(f"  info  {job['id']}: haul {L:.0f} m, {L / 1.6 / 60:.1f} min at the 1.6 m/s base carry speed")
+    if len(failures) == before:
+        ok("haul paths clear, job spots free")
+
     print("Route length")
     speed = 4.5  # m/s, Amodu jog (player.gd jog_speed)
     for p in layout["paths"]:
@@ -309,9 +379,9 @@ COL = {
 }
 
 AREA_TINT = {
-    "backpack_hollow": "#f3e7b0", "blade_forest": "#6f9d52", "dewdrop_garden": "#bfe3ea",
+    "backpack_hollow": "#f3e7b0", "blade_forest": "#6f9d52", "flower_bed": "#bfe3ea",
     "capstone_shelter": "#f0d6a8", "bare_patch": "#c9ad83", "hose_run": "#cfe8f3",
-    "lolly_bridge": "#e9d9b4", "mango_rootlands": "#b89a74", "spiders_edge": "#8c7a86",
+    "lolly_bridge": "#e9d9b4", "windfall_roots": "#b89a74", "spiders_edge": "#8c7a86",
 }
 
 
@@ -341,9 +411,9 @@ def text(x, y, s, size=11, weight=400, anchor="start", fill=None, halo=True, ita
 # Label placement for landmarks: (dx, dy, anchor) in px; omitted ids are drawn unlabeled.
 LABELS = {
     "backpack": (0, -52, "middle"), "pencil_log": (10, 22, "start"),
-    "tridax_bloom": (9, 4, "start"), "tridax_seed": (-9, 4, "end"),
-    "water_sachet": (0, -26, "middle"), "marble": (-8, 4, "end"), "orb_web": (10, 4, "start"),
-    "mango_root_hall": (12, -8, "start"), "lookout_blade": (8, -6, "start"),
+    "dandelion": (9, 4, "start"), "dandelion_clock": (-9, 4, "end"),
+    "crisp_packet": (0, -26, "middle"), "marble": (-8, 4, "end"), "orb_web": (10, 4, "start"),
+    "root_hall": (12, -8, "start"), "lookout_blade": (8, -6, "start"),
     "colony_gate": (10, 14, "start"), "patrol_gate": (10, 4, "start"),
     "hose_coupling": (12, -6, "start"), "lolly_stick": (8, -22, "start"),
     "abandoned_post": (-10, 4, "end"), "termite_camp": (0, 30, "middle"), "termite_tower": (8, -6, "start"),
@@ -391,7 +461,7 @@ def render(layout):
     a(f'<rect x="{px(-360)}" y="{pz(-360)}" width="{10 * S}" height="{MAPPX}" fill="url(#litter)"/>')
 
     # Big Oak trunk (mostly beyond the west edge)
-    trunk = by_id(layout["skyline"], "mango_trunk")
+    trunk = by_id(layout["skyline"], "apple_tree")
     tx, tz = trunk["pos"]
     a(f'<circle cx="{px(tx)}" cy="{pz(tz)}" r="{trunk["size"][0] / 2 * S:.1f}" fill="#6b4a2b" stroke="#4a321c" stroke-width="2"/>')
 
@@ -434,6 +504,27 @@ def render(layout):
     a(f'<polyline points="{pts_attr(paths["termite_trail"]["points"])}" fill="none" stroke="{COL["termite"]}" '
       f'stroke-width="2.2" stroke-dasharray="6 4"/>')
 
+    # Flower Bed climb: daisy and buttercup heads
+    for fl in layout.get("flowers", []):
+        col = "#fbf6e6" if fl["kind"] == "daisy" else "#f3c623"
+        a(f'<circle cx="{px(fl["pos"][0])}" cy="{pz(fl["pos"][1])}" r="{fl["head"] * S:.1f}" fill="{col}" stroke="#c9a13b" stroke-width="1"/>')
+
+    # The patio beyond the south edge, and the trowel ramp up onto it
+    patio = layout.get("patio")
+    if patio:
+        a(f'<rect x="{px(-360)}" y="{pz(patio["edge_z"])}" width="{720 * S}" height="{(M - 20)}" fill="#cfc8bc" stroke="#8f877a" stroke-width="1"/>')
+        for k in range(-360, 361, int(patio["slab"])):
+            a(f'<line x1="{px(k)}" y1="{pz(patio["edge_z"])}" x2="{px(k)}" y2="{pz(patio["edge_z"]) + M - 20}" stroke="#9e968a" stroke-width="1"/>')
+        t = patio["trowel"]
+        a(f'<line x1="{px(t["from"][0])}" y1="{pz(t["from"][1])}" x2="{px(t["to"][0])}" y2="{pz(t["to"][1])}" stroke="#7d8a92" stroke-width="{t["width"] * S:.1f}" stroke-linecap="round"/>')
+
+    # Expedition haul paths and prizes (Phase 3c)
+    for job in layout.get("expedition", {}).get("jobs", []):
+        a(f'<polyline points="{pts_attr(job["haul_path"])}" fill="none" stroke="#f2c14e" stroke-width="2.4" '
+          f'stroke-dasharray="4 3" stroke-linecap="round" opacity="0.95"/>')
+        pz_, pr_ = job["prize"]["pos"], job["prize"]["size"] / 2
+        a(f'<circle cx="{px(pz_[0])}" cy="{pz(pz_[1])}" r="{max(pr_ * S, 4):.1f}" fill="#c9782a" stroke="#fff" stroke-width="1.5"/>')
+
     # Main routes and shortcut
     for p in layout["paths"]:
         if p["kind"] == "main_route":
@@ -467,13 +558,13 @@ def render(layout):
         w, _, d = lm["size"]
         rw, rd = max(w * S, 5), max(d * S, 5)
         fill = {"backpack": "#3d5a80", "marble": "#9ad0e6", "crown_cap": "#d64541", "colony_gate": "#2b2a26",
-                "naira_coin_plaza": "#c9a13b", "water_sachet": "#cfe6f2", "spider_burrow": "#1d1b1f",
-                "abandoned_post": "#c7a36a", "termite_tower": "#9b6a43", "mango_root_hall": "#3a2716", "coral_bead_shrine": "#d8432c"}.get(lm["id"], "#5d4a36")
-        if lm["id"] in ("fallen_mango", "baby_mango"):
+                "coin_plaza": "#c9a13b", "crisp_packet": "#cfe6f2", "spider_burrow": "#1d1b1f",
+                "abandoned_post": "#c7a36a", "termite_tower": "#9b6a43", "root_hall": "#3a2716", "bead_shrine": "#d8432c"}.get(lm["id"], "#5d4a36")
+        if lm["id"] in ("fallen_apple", "windfall_apple"):
             fill = "#e0a526"
-        if lm["id"] == "mango_stone":
+        if lm["id"] == "apple_core":
             fill = "#c9b07a"
-        if lm["id"].startswith("mango_leaf"):
+        if lm["id"].startswith("fallen_leaf"):
             a(f'<ellipse cx="{px(x)}" cy="{pz(z)}" rx="{w * S / 2}" ry="{d * S / 2}" fill="#c08a3e" stroke="#7a5634" '
               f'transform="rotate(-25 {px(x)} {pz(z)})"/>')
             continue
@@ -488,7 +579,7 @@ def render(layout):
 
     # Area numbers and names
     name_off = {"hose_run": (38, 60), "lolly_bridge": (0, -46), "bare_patch": (0, -40), "capstone_shelter": (0, 44),
-                "spiders_edge": (26, -40), "mango_rootlands": (40, 8), "dewdrop_garden": (50, -30),
+                "spiders_edge": (26, -40), "windfall_roots": (40, 8), "flower_bed": (50, -30),
                 "backpack_hollow": (-120, 10), "blade_forest": (0, 12)}
     for ar in layout["areas"]:
         cx, cz = ar["center"]
@@ -522,7 +613,7 @@ def render(layout):
             continue
         x, z = sk["pos"]
         dist = math.hypot(x, z)
-        if sk["id"] == "mango_trunk":  # drawn on the map itself; label it beside the trunk
+        if sk["id"] == "apple_tree":  # drawn on the map itself; label it beside the trunk
             a(text(M - 118, pz(-128), "Mango tree (trunk)", 11, 700, "start", halo=False))
             a(text(M - 118, pz(-128) + 13, f"{dist:.0f} m · {sk['size'][0]:.0f} m wide", 10, 400, "start", fill=COL["muted"], halo=False))
             continue
@@ -593,7 +684,7 @@ def render(layout):
 # surface codes below.
 
 SURFACE = {"lawn": 0, "bare_soil": 1, "mud": 2, "leaf_litter": 3, "water": 4,
-           "flattened": 5, "tussock": 6, "mimosa": 7, "ant_road": 8}
+           "flattened": 5, "tussock": 6, "clover": 7, "ant_road": 8}
 
 FILL = 10.0  # standing blades per 100 m² in ordinary lawn (one per 10 m²)
 
@@ -610,6 +701,126 @@ def base_relief(x, z):
             + 0.2 * math.sin(x / 13.7) * math.sin(z / 17.1 + 2.0))
 
 
+# ── the floor's own relief ────────────────────────────────────────────────────
+# At 5 mm a lawn's floor is anything but flat: crumbs of earth heaped into
+# mounds, worm-cast humps, dips where rain pooled. Soft rolling ground plus
+# scattered mounds (1–4.6 m high, 18–68 m across), smooth enough to walk over
+# (slopes under ~30°) and real terrain, so they collide. Kept off the props, the
+# hollow Amodu wakes in, the Bare Patch dish, the runoff, the Rut's banks and the
+# tree's bank (relief_mask); routes keep their lumps but no mounds.
+
+RELIEF_PAD = 8.0
+MOUNDS = 90
+_PERM = list(range(256))
+random.Random(360).shuffle(_PERM)
+_PERM += _PERM
+_GRAD = [(math.cos(k * math.pi / 4), math.sin(k * math.pi / 4)) for k in range(8)]
+
+
+def noise2(x, z):
+    """2D gradient noise, roughly -1..1."""
+    xi, zi = math.floor(x), math.floor(z)
+    xf, zf = x - xi, z - zi
+    xi &= 255
+    zi &= 255
+    u = xf * xf * xf * (xf * (xf * 6 - 15) + 10)
+    v = zf * zf * zf * (zf * (zf * 6 - 15) + 10)
+
+    def g(ix, iz, dx, dz):
+        gx, gz = _GRAD[_PERM[_PERM[ix] + iz] & 7]
+        return gx * dx + gz * dz
+
+    n00 = g(xi, zi, xf, zf)
+    n10 = g(xi + 1, zi, xf - 1, zf)
+    n01 = g(xi, zi + 1, xf, zf - 1)
+    n11 = g(xi + 1, zi + 1, xf - 1, zf - 1)
+    return 1.4 * (n00 + u * (n10 - n00) + v * (n01 - n00) + u * v * (n00 - n10 - n01 + n11))
+
+
+def rolling(x, z):
+    """Soft rolls (±1 m) and lumps underfoot (±0.3 m)."""
+    return (0.7 * noise2(x / 38.0, z / 38.0) + 0.35 * noise2(x / 17.0 + 5.3, z / 17.0 + 9.1)
+            + 0.3 * noise2(x / 7.5 + 13.7, z / 7.5 + 2.9))
+
+
+class ReliefContext:
+    def __init__(self, layout, feats):
+        self.feats = feats
+        self.areas = {a["id"]: a for a in layout["areas"]}
+        ring = by_id(layout["landmarks"], "pot_ring")
+        self.ring_c, self.ring_r = ring["pos"], ring["size"][0] / 2
+        self.runoff = by_id(layout["paths"], "runoff")["points"]
+        self.rut = layout["water"][0]["polygon"]
+        self.patio_z = layout["patio"]["edge_z"] if "patio" in layout else 1e9
+        self.rut_box = (min(p[0] for p in self.rut) - 40, min(p[1] for p in self.rut) - 40,
+                        max(p[0] for p in self.rut) + 40, max(p[1] for p in self.rut) + 40)
+        tb = layout.get("tree_base")
+        self.tree = (tb["trunk"]["center"], tb["bank"]["outer"]) if tb else None
+
+
+def relief_mask(ctx, x, z):
+    """1 where the ground may heave freely, 0 where it must stay as laid out."""
+    edge = min(x + 360, 360 - x, z + 360, 360 - z)
+    m = smoothstep(0, 25, edge) * smoothstep(ctx.patio_z, ctx.patio_z - 30, z)
+    if m <= 0.0:
+        return 0.0
+    for f in ctx.feats:
+        if f.near(x, z):
+            d = f.distance(x, z)
+            if f.soft:
+                m *= 0.45 + 0.55 * smoothstep(f.clear, f.clear + f.ramp + 4, d)
+            else:
+                m *= smoothstep(f.clear, f.clear + f.ramp + RELIEF_PAD, d)
+    m *= smoothstep(1.0, 1.5, ellipse_q(x, z, ctx.areas["backpack_hollow"]))
+    m *= smoothstep(1.0, 1.4, ellipse_q(x, z, ctx.areas["lolly_bridge"]))
+    m *= smoothstep(ctx.ring_r + 15, ctx.ring_r + 40, math.hypot(x - ctx.ring_c[0], z - ctx.ring_c[1]))
+    if -30 < x < 270 and -80 < z < 190:
+        m *= smoothstep(4, 14, dist_to_polyline(x, z, ctx.runoff))
+    if ctx.tree:
+        c, outer = ctx.tree
+        m *= smoothstep(outer + 5, outer + 35, math.hypot(x - c[0], z - c[1]))
+    rb = ctx.rut_box
+    if m > 0.0 and rb[0] <= x <= rb[2] and rb[1] <= z <= rb[3]:
+        m *= smoothstep(8, 40, signed_poly_distance(x, z, ctx.rut))
+    return m
+
+
+def place_mounds(ctx):
+    """[(cx, cz, a, b, angle, height)], each clear of everything relief_mask protects."""
+    rnd = random.Random(2026)
+    mounds = []
+    for _ in range(6000):
+        if len(mounds) >= MOUNDS:
+            break
+        cx, cz = rnd.uniform(-335, 335), rnd.uniform(-335, 315)
+        h = 1.0 + 3.6 * rnd.random() ** 1.8
+        b = max(rnd.uniform(9.0, 20.0), 3.0 * h)  # never steeper than ~27°
+        a = b * rnd.uniform(1.0, 1.7)
+        th = rnd.uniform(0, math.pi)
+        if any(math.hypot(cx - m[0], cz - m[1]) < 0.7 * (a + m[2]) + 10 for m in mounds):
+            continue
+        if relief_mask(ctx, cx, cz) < 0.99:
+            continue
+        if any(relief_mask(ctx, cx + dx, cz + dz) < 0.7 for dx, dz in ((a, 0), (-a, 0), (0, a), (0, -a))):
+            continue
+        mounds.append((cx, cz, a, b, th, h))
+    return mounds
+
+
+def mound_height(mounds, x, z):
+    h = 0.0
+    for cx, cz, a, b, th, height in mounds:
+        dx, dz = x - cx, z - cz
+        if abs(dx) > a or abs(dz) > a:
+            continue
+        u = dx * math.cos(th) + dz * math.sin(th)
+        v = -dx * math.sin(th) + dz * math.cos(th)
+        q = math.hypot(u / a, v / b)
+        if q < 1.0:
+            h += height * (1.0 - smoothstep(0.0, 1.0, q))
+    return h
+
+
 def signed_poly_distance(x, z, poly):
     """Negative inside the polygon, positive outside."""
     d = min(dist_to_segment(x, z, poly[i], poly[(i + 1) % len(poly)]) for i in range(len(poly)))
@@ -624,10 +835,11 @@ def ellipse_q(x, z, area):
 class Feature:
     """A polyline or circle that carves grass (and optionally paints a surface)."""
 
-    def __init__(self, pts, clear, ramp, surface=None, surface_width=0.0):
+    def __init__(self, pts, clear, ramp, surface=None, surface_width=0.0, soft=False):
         self.pts, self.clear, self.ramp = pts, clear, ramp
         self.surface, self.surface_width = surface, surface_width
-        pad = clear + ramp
+        self.soft = soft  # a route: the ground's lumps carry on over it (see relief_mask)
+        pad = clear + ramp + RELIEF_PAD
         xs = [p[0] for p in pts]
         zs = [p[1] for p in pts]
         self.bbox = (min(xs) - pad, min(zs) - pad, max(xs) + pad, max(zs) + pad)
@@ -647,13 +859,13 @@ def bake_features(layout):
     for p in layout["paths"]:
         k = p["kind"]
         if k == "main_route":
-            feats.append(Feature(p["points"], 3.5, 4.0))
+            feats.append(Feature(p["points"], 3.5, 4.0, soft=True))
         elif k == "shortcut":
-            feats.append(Feature(p["points"], 2.5, 3.0))
+            feats.append(Feature(p["points"], 2.5, 3.0, soft=True))
         elif k == "ant_road":
-            feats.append(Feature(p["points"], 2.0, 3.0, "ant_road", 2.0))
+            feats.append(Feature(p["points"], 2.0, 3.0, "ant_road", 2.0, soft=True))
         elif k == "termite_trail":
-            feats.append(Feature(p["points"], 1.5, 2.0))
+            feats.append(Feature(p["points"], 1.5, 2.0, soft=True))
         elif k == "hose":
             feats.append(Feature(p["points"], p["diameter"] / 2 + 1.5, 3.0))
         elif k == "root":
@@ -670,6 +882,18 @@ def bake_features(layout):
         feats.append(Feature([sd["pos"]], 4.0, 2.0))
     for hv in layout.get("heavables", []):
         feats.append(Feature([hv["pos"]], hv["size"] / 2 + 2.5, 2.0))
+    for fl in layout.get("flowers", []):
+        feats.append(Feature([fl["pos"]], fl["head"] + 2.0, 2.0))
+    if "patio" in layout:
+        t = layout["patio"]["trowel"]
+        feats.append(Feature([t["from"], t["to"]], t["width"] / 2 + 4.0, 3.0))
+    for job in layout.get("expedition", {}).get("jobs", []):
+        # the carrying trail: wide enough for the load and the ants under its rim
+        feats.append(Feature(job["haul_path"], job["prize"]["size"] / 2 + 1.5, 3.0))
+        for pr in job.get("props", []):
+            feats.append(Feature([pr["pos"]], pr["size"] / 2 + 2.5, 2.0))
+        for pb in job.get("pill_bugs", []):
+            feats.append(Feature([pb["pos"]], 4.0, 2.0))
     return feats
 
 
@@ -686,6 +910,8 @@ def bake(layout):
     ring_c, ring_r = ring["pos"], ring["size"][0] / 2
     barriers = [b["polygon"] for b in layout["barriers"]]
     feats = bake_features(layout)
+    relief = ReliefContext(layout, feats)
+    mounds = place_mounds(relief)
 
     heights, surface, density = [], [], []
     for j in range(n):
@@ -694,6 +920,11 @@ def bake(layout):
             x = org + i * cell
             edge = min(x + 360, 360 - x, z + 360, 360 - z)
             h = base_relief(x, z) * smoothstep(0, 20, edge)
+            rm = relief_mask(relief, x, z)
+            mh = 0.0
+            if rm > 0.0:
+                mh = mound_height(mounds, x, z) * rm
+                h += rolling(x, z) * rm + mh
             surf = "lawn"
             dens = FILL
 
@@ -704,10 +935,10 @@ def bake(layout):
                     dens = min(dens, FILL * (0.15 + 0.85 * smoothstep(0.55, 1.0, qv)))
             if q["blade_forest"] < 1.0:
                 dens = FILL * (1.0 + 0.6 * (1 - smoothstep(0.6, 1.0, q["blade_forest"])))
-            if q["dewdrop_garden"] < 1.0:
-                surf = "mimosa"
+            if q["flower_bed"] < 1.0:
+                surf = "clover"
                 dens = min(dens, 5.0)
-            if q["mango_rootlands"] < 1.0 or q["spiders_edge"] < 1.0 or x < -330:
+            if q["windfall_roots"] < 1.0 or q["spiders_edge"] < 1.0 or x < -330:
                 surf = "leaf_litter"
                 dens = min(dens, 3.0)
             if q["backpack_hollow"] < 1.0:
@@ -752,8 +983,14 @@ def bake(layout):
                     d = f.distance(x, z)
                     if d < f.clear + f.ramp:
                         dens = min(dens, FILL * smoothstep(f.clear, f.clear + f.ramp, d))
-                    if f.surface and d < f.surface_width and surf in ("lawn", "mimosa", "leaf_litter"):
+                    if f.surface and d < f.surface_width and surf in ("lawn", "clover", "leaf_litter"):
                         surf = f.surface
+
+            # Mounds are bare heaps of dry earth, the grass only round their foot
+            if mh > 0.4:
+                dens = min(dens, FILL * (1 - smoothstep(0.4, 1.4, mh)))
+                if mh > 0.9 and surf == "lawn":
+                    surf = "bare_soil"
 
             # Tussock walls last: they override everything
             for poly in barriers:

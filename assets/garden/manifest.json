@@ -1,0 +1,196 @@
+{
+  "note": "Garden art made with Meshy (tools/meshy_assets.py). 'size' is the in-game size in metres of the object's longest side (Amodu is 1.8 m; the world is x360). Primitives in the builder are only layout and collision proxies; these replace their looks.",
+  "style": "Stylized 3D game asset: hand-sculpted chunky readable shapes, slightly exaggerated proportions, rich saturated natural colours, hand-painted look PBR textures, soft warm lighting feel, clean silhouette. Single object, no base, no ground plane, no background.",
+  "ai_model": "latest",
+  "assets": [
+    {
+      "id": "daisy",
+      "pilot": true,
+      "polycount": 15000,
+      "size": 40,
+      "prompt": "An ox-eye daisy flower on one slender curved green stem with two small leaves, bright white petals around a raised golden-yellow centre, flower head facing up."
+    },
+    {
+      "id": "buttercup",
+      "pilot": false,
+      "polycount": 10000,
+      "size": 26,
+      "prompt": "A single buttercup flower on a thin green stem, five glossy golden-yellow cup-shaped petals, one small lobed leaf."
+    },
+    {
+      "id": "clover",
+      "pilot": true,
+      "polycount": 12000,
+      "size": 7,
+      "prompt": "A small clump of white clover: several three-leaf clover leaves on thin stalks with pale chevron markings, and one round white clover flower head."
+    },
+    {
+      "id": "toadstools",
+      "pilot": true,
+      "polycount": 12000,
+      "size": 14,
+      "prompt": "A cluster of three red fly agaric toadstools with white spots and white stalks, one large, one medium, one small."
+    },
+    {
+      "id": "bracket_fungus",
+      "pilot": true,
+      "polycount": 12000,
+      "size": 20,
+      "prompt": "A cluster of layered orange-brown bracket fungus shelves growing from a chunk of tree bark, half-disc shelves with pale rims."
+    },
+    {
+      "id": "twig",
+      "pilot": true,
+      "polycount": 8000,
+      "size": 40,
+      "prompt": "A fallen dry twig with two small side branches and rough grey-brown bark, lying flat.",
+      "lie_flat": false
+    },
+    {
+      "id": "fallen_leaf",
+      "pilot": true,
+      "polycount": 5000,
+      "size": 30,
+      "prompt": "A single fallen dry apple leaf, slightly curled at the edges, clear veins, golden brown fading to green.",
+      "lie_flat": true
+    },
+    {
+      "id": "pebbles",
+      "pilot": true,
+      "polycount": 6000,
+      "size": 9,
+      "prompt": "A cluster of five smooth rounded garden pebbles in grey and tan, different sizes, touching each other."
+    },
+    {
+      "id": "tree_root",
+      "pilot": true,
+      "polycount": 25000,
+      "size": 90,
+      "prompt": "A thick gnarled tree root arching out of the ground and back in like a bridge, deep bark grooves, patches of green moss."
+    },
+    {
+      "id": "butterfly",
+      "group": "creatures",
+      "polycount": 8000,
+      "size": 18,
+      "prompt": "A butterfly with its wings spread wide open and flat, symmetrical, bright orange wings with black veins and white spots along black edges, slim black body, two antennae.",
+      "lie_flat": true
+    },
+    {
+      "id": "bee",
+      "group": "creatures",
+      "polycount": 8000,
+      "size": 6,
+      "prompt": "A fuzzy round honeybee in flight, wings spread out to the sides, golden-yellow and black striped body, small legs tucked under."
+    },
+    {
+      "id": "dragonfly",
+      "group": "creatures",
+      "polycount": 8000,
+      "size": 25,
+      "prompt": "A dragonfly with four long clear veined wings spread flat out to the sides, long slender metallic blue-green body, big round eyes.",
+      "lie_flat": true
+    },
+    {
+      "id": "water_strider",
+      "group": "creatures",
+      "polycount": 6000,
+      "size": 12,
+      "prompt": "A water strider pond skater insect standing on water: slim dark brown body and four very long thin legs spread wide, two short front legs."
+    },
+    {
+      "id": "tadpole",
+      "group": "creatures",
+      "polycount": 5000,
+      "size": 5,
+      "prompt": "A frog tadpole (pollywog): a smooth glossy dark grey-black oval blob body with no fins and no scales, two tiny eyes on top, and one long thin flat tail with a soft translucent edge fin. Simple, amphibian larva, not a fish."
+    },
+    {
+      "id": "backpack",
+      "group": "gear",
+      "polycount": 8000,
+      "size": 0.75,
+      "bone": "Spine",
+      "prompt": "A small rugged adventurer's backpack in olive canvas with brown leather straps and buckles, a rolled blanket on top and side pockets for tools, empty straps (no person)."
+    },
+    {
+      "id": "satchel",
+      "group": "gear",
+      "polycount": 6000,
+      "size": 0.4,
+      "bone": "Hips",
+      "prompt": "A small brown leather satchel bag with a flap, a brass clasp and a long shoulder strap, for carrying loot. No person."
+    },
+    {
+      "id": "belt_pouch",
+      "group": "gear",
+      "polycount": 4000,
+      "size": 0.22,
+      "bone": "Hips",
+      "prompt": "A small olive canvas belt pouch with a flap and a button, for carrying small tools. No person."
+    },
+    {
+      "id": "school_bag",
+      "group": "world2",
+      "polycount": 30000,
+      "size": 150,
+      "prompt": "A child's school backpack standing upright on the ground: blue canvas body, a darker navy front pocket with a zip and pull tab, a main zip curving over the top, padded shoulder straps hanging at the back, a grab loop on top, a small keyring charm on the zip. Worn and well used, a few scuffs and stitched seams."
+    },
+    {
+      "id": "ladybug",
+      "group": "world2",
+      "polycount": 8000,
+      "size": 2.8,
+      "prompt": "A seven-spot ladybird beetle walking: glossy domed bright red wing cases with black spots, black head with small white patches, six short black legs, short antennae."
+    },
+    {
+      "id": "aphid",
+      "group": "world2",
+      "polycount": 5000,
+      "size": 1.0,
+      "prompt": "A green aphid insect: soft plump pear-shaped pale green body, six thin legs, long thin antennae, two small tubes at the back end."
+    },
+    {
+      "id": "velvet_mite",
+      "group": "world2",
+      "polycount": 5000,
+      "size": 1.4,
+      "prompt": "A red velvet mite: a round plump fuzzy bright red body like velvet, eight short red legs, tiny head at the front."
+    },
+    {
+      "id": "springtail",
+      "group": "world2",
+      "polycount": 5000,
+      "size": 0.6,
+      "prompt": "A springtail (collembola) tiny soil hexapod: soft segmented grey-blue body, short antennae, six short legs, a small forked tail tucked underneath."
+    },
+    {
+      "id": "glow_mushroom",
+      "group": "world2",
+      "polycount": 8000,
+      "size": 3.0,
+      "prompt": "A cluster of five small bioluminescent mushrooms of different heights on thin pale stems, glowing soft cyan-green translucent caps with gills underneath."
+    },
+    {
+      "id": "dandelion_seed",
+      "group": "glide",
+      "polycount": 8000,
+      "size": 5.5,
+      "prompt": "A single dandelion seed parachute standing upright: a small slim brown seed at the bottom, a long thin pale stalk rising from it, topped by a wide white fluffy umbrella of fine radiating silky hairs (the pappus), like an open parasol. One seed, symmetrical."
+    },
+    {
+      "id": "dandelion_flower",
+      "group": "glide",
+      "polycount": 15000,
+      "size": 80,
+      "prompt": "A dandelion plant: one tall straight hollow pale green stalk with a single bright yellow shaggy flower head of many thin petals facing up, and a rosette of long jagged toothed green leaves spread flat around the base."
+    },
+    {
+      "id": "dandelion_clock",
+      "group": "glide",
+      "polycount": 15000,
+      "size": 70,
+      "prompt": "A dandelion seed head (clock): one tall straight pale green stalk topped by a perfect white fluffy sphere of many seed parachutes radiating from the centre, a few seeds missing, and a rosette of long jagged green leaves flat around the base."
+    }
+  ]
+}
