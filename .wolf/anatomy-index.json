@@ -1,13 +1,13 @@
 {
   "version": 1,
   "meta": {
-    "lastScanned": "2026-09-26T17:49:03.810Z",
-    "fileCount": 261,
+    "lastScanned": "2026-09-26T19:44:36.817Z",
+    "fileCount": 267,
     "hits": 0,
     "misses": 0,
-    "renderedHash": "acd1cc72105cb0410702ddef494a4735a9664375be7559526b5dcf03476d30dc",
-    "storeUpdatedAt": "2026-09-26T17:49:03.818Z",
-    "rootHash": "e03915ec1c0c44c6"
+    "renderedHash": "de92ad4fc42c6772ebd6b9f80e1135779eebef0835465556e97366a0c07e02af",
+    "storeUpdatedAt": "2026-09-26T19:44:36.826Z",
+    "rootHash": "74b813419be6a664"
   },
   "files": {
     ".gitattributes": {
@@ -2800,11 +2800,11 @@
     },
     "docs/GAMEPLAY.md": {
       "description": "Gameplay: Ant Kingdom Saga",
-      "tokens": 3485,
-      "hash": "c605a08b5a6177db",
-      "size": 14024,
-      "mtimeMs": 1790423306563.0247,
-      "updatedAt": "2026-09-26T11:48:26.668Z",
+      "tokens": 6320,
+      "hash": "cd4b55962f834e37",
+      "size": 25358,
+      "mtimeMs": 1790451140743.0447,
+      "updatedAt": "2026-09-26T19:32:20.867Z",
       "source": "hook"
     },
     "player/weapons.gd": {
@@ -2976,6 +2976,60 @@
       "size": 26819,
       "mtimeMs": 1790444943704.473,
       "updatedAt": "2026-09-26T17:49:03.809Z",
+      "source": "hook"
+    },
+    "docs/story/original_draft.md": {
+      "description": "Ant Kingdom Saga: original story draft (chapters 1–16)",
+      "tokens": 20639,
+      "hash": "07a45c0d5860b03a",
+      "size": 85907,
+      "mtimeMs": 1790448721342.3635,
+      "updatedAt": "2026-09-26T18:52:01.477Z",
+      "source": "hook"
+    },
+    "ui/subtitles.gd": {
+      "description": "Declares CREAM",
+      "tokens": 1142,
+      "hash": "b16ef667b9abcc4d",
+      "size": 4281,
+      "mtimeMs": 1790451876714.1072,
+      "updatedAt": "2026-09-26T19:44:36.816Z",
+      "source": "hook"
+    },
+    "world/dialogue.gd": {
+      "description": "",
+      "tokens": 845,
+      "hash": "c70d90b0ab747c28",
+      "size": 3168,
+      "mtimeMs": 1790450505786.9653,
+      "updatedAt": "2026-09-26T19:21:45.908Z",
+      "source": "hook"
+    },
+    "world/lawn/dialogue.json": {
+      "description": "",
+      "tokens": 1408,
+      "hash": "3bfd0ddf088e068a",
+      "size": 4928,
+      "mtimeMs": 1790450534618.7808,
+      "updatedAt": "2026-09-26T19:22:14.722Z",
+      "source": "hook"
+    },
+    "world/level_story.gd": {
+      "description": "Declares IDLE_AFTER",
+      "tokens": 1658,
+      "hash": "97f155059c01849f",
+      "size": 6483,
+      "mtimeMs": 1790450578921.3582,
+      "updatedAt": "2026-09-26T19:22:59.027Z",
+      "source": "hook"
+    },
+    "tools/render_portraits.gd": {
+      "description": "Declares OUT",
+      "tokens": 960,
+      "hash": "77566116cf5db4c7",
+      "size": 3597,
+      "mtimeMs": 1790451815883.8145,
+      "updatedAt": "2026-09-26T19:43:35.979Z",
       "source": "hook"
     }
   },

@@ -18,16 +18,18 @@ const ATTACK_RANGE := 2.6
 const ATTACK_INTERVAL := 1.2
 const DOWN_TIME := 3.0
 const CARRY_STRENGTH := 2
-## Heroes following Amodu are on hold while the game's direction is reviewed
-## (2026-09-26). Nothing spawns them while this is false; flip it to bring them back.
-const ENABLED := false
+## Opigo and Opumie travel with Amodu in Level 1 (The Road to the Kingdom).
+## Nothing spawns them while this is false.
+const ENABLED := true
+## A trail step longer than this (a glide, a big leap) starts the trail afresh,
+## so a catch-up never lands on a point in mid-air.
+const TRAIL_BREAK := 6.0
 
 @export var display_name := "Opigo"
 ## How far behind Amodu along his trail this ant walks.
 @export var trail_gap := 3.5
 ## Sideways offset from the trail (+ right, − left), so two ants don't stack.
 @export var side := 0.7
-@export var label_color := Color(1.0, 0.6, 0.45)
 @export var gravity := 20.0
 ## "warrior" only guards; "support" also carries while no pill bug is near.
 @export var role := &"warrior"
@@ -59,16 +61,6 @@ func _ready() -> void:
 	_body = AntModel.new()
 	_body.hero = display_name
 	add_child(_body)
-	var label := Label3D.new()
-	label.text = display_name
-	label.font_size = 48
-	label.outline_size = 10
-	label.pixel_size = 0.009
-	label.modulate = label_color
-	label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
-	label.position = Vector3(0, 2.3, 0)
-	label.visibility_range_end = 40.0
-	add_child(label)
 
 
 ## Starts following `new_leader` from a spot just behind it.
@@ -135,6 +127,8 @@ func _process_follow(delta: float) -> void:
 	_last_leader_pos = lp
 	var leader_grounded := leader.is_on_floor()
 	if leader_grounded and (_trail.is_empty() or _trail[_trail.size() - 1].distance_to(lp) > TRAIL_SPACING):
+		if not _trail.is_empty() and _trail[_trail.size() - 1].distance_to(lp) > TRAIL_BREAK:
+			_trail.clear()
 		_trail.append(lp)
 		if _trail.size() > TRAIL_LENGTH:
 			_trail.remove_at(0)

@@ -18,7 +18,7 @@ var view_half := Vector2(120.0, 120.0)
 var circle := false
 ## Names of areas and places (the full map).
 var labels := false
-## The next stage on the way home (RouteGuide), INF when none.
+## The next stage on the way (RouteGuide), INF when none.
 var next_stage := Vector2.INF
 
 var _tex: TextureRect
@@ -157,7 +157,7 @@ func _pin(ci: CanvasItem, world: Vector2, kind: String) -> void:
 		at = clamped
 	var col := Color(AMBER, 0.65 if edge else 1.0)
 	if kind == "home":
-		HudGlyphs.house(ci, at, 8.0, col)
+		HudGlyphs.anthill(ci, at, 8.0, col)
 		if labels and not edge:
 			_text(ci, "HOME", at + Vector2(0, 24), 13, Color(AMBER, 0.95), true)
 	else:

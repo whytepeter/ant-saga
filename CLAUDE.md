@@ -7,20 +7,22 @@ For the full operating protocol (session handoff, memory discipline, bug logging
 
 # Ant Kingdom Saga — Claude Code handoff
 
-Third-person 3D game in Godot 4.7 (Forward+, Jolt). **SMALL GIANT** (direction since 2026-09-26): Amodu, shrunk to 5 mm with full human strength, wakes by his school bag at the far end of an ordinary back garden and must get home under the back door before sunset. Everything is ×360: Amodu is 1.8 m in game. `.wolf/STATUS.md` has the current state.
+Third-person 3D game in Godot 4.7 (Forward+, Jolt). **The trio adventure** (direction since 2026-09-26): two warrior ants, Opigo and Opumie, shrink Amodu (a boy everyone mocks) to 5 mm with full human strength so he'll help end the insect war. Level 1 is their journey through the back garden toward the kingdom. Everything is ×360: Amodu is 1.8 m in game. `.wolf/STATUS.md` has the current state.
 
 ## Read first
-- `docs/GAMEPLAY.md`: how the game plays, and the **Level 1 plan (current work)**.
+- `docs/GAMEPLAY.md`: how the game plays (trio, survival, crafting and building, combat), **Levels 1–3 mission by mission**, and the build order (section 11, with what's done). The Levels 1–3 story plan is note 4 in `docs/design/gameplay_vision_chatgpt.md`; the user's own chapters are `docs/story/original_draft.md`.
 - `docs/PLAN.md`: phases and the deferred list (parts predate SMALL GIANT).
 - `docs/WORLD.md`: world bible (setting, scale table, areas, hazards).
-- `docs/ant_kingdom_saga_backyard_edition.pdf`: the design source (heroes, colony building, stages). `docs/STORY.md` is parked reference only.
+- `docs/ant_kingdom_saga_backyard_edition.pdf`: the design source (heroes, colony building, stages). `docs/STORY.md` is the user's own story: mine it for gameplay, don't edit or re-canonise it.
 
 ## Decisions (don't relitigate)
-- The adventure (SMALL GIANT) is the default mode. The "Pikmin meets Grounded" expedition slice is parked (`expedition_mode`), and heroes following Amodu are on hold (`Companion.ENABLED = false`).
+- The trio adventure is the default mode (not SMALL GIANT's "get home before sunset"). The "Pikmin meets Grounded" expedition slice stays parked (`expedition_mode`).
+- **Opigo and Opumie are companions** who travel with Amodu (`Companion.ENABLED` goes back on), with short subtitled lines; no voice acting yet.
+- **Survival is in:** hunger, thirst, real darkness, dangerous nights, and a data-driven craft/build system (weapons, lamps, shelters, camps, defences). Every recipe exists to get the player further.
 - The setting is an ordinary back garden; the Nigerian compound was dropped. Content is family-friendly: no sexual content.
 - Art: no blocky primitives as final visuals; Meshy models and CC0 textures (targets: Grounded, Smalland).
 - Amodu's signature weapon is the **axe** (also a chopping tool); he can use crafted weapons too. The gameplay design is `docs/GAMEPLAY.md` (Level 1 is planned there).
-- Companion dialogue was removed for now (it's in git history at e1ec4c4); don't re-add it unless asked.
+- Companion dialogue is back as subtitles in the compass's sleek style, with the speaker's face in a round frame (`ui/subtitles.gd`, lines in `world/lawn/dialogue.json`, faces rendered by `tools/render_portraits.gd` into `assets/ui/portraits/`; re-run it if a model changes). Level 1 lasts two days (the First Night camp between). The old Nigerian-compound banter (git e1ec4c4) stays retired.
 
 ## How the project works
 - `world/lawn/layout.json` is the single source of truth for Level 1. After editing it, run:

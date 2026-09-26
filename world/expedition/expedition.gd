@@ -107,7 +107,6 @@ func _spawn_heroes() -> void:
 		ant.display_name = hero_name
 		ant.trail_gap = float(spec["gap"])
 		ant.side = float(spec["side"])
-		ant.label_color = spec["color"]
 		ant.role = spec["role"]
 		level.add_child(ant)
 		ant.follow(player)

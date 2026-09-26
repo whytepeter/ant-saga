@@ -113,13 +113,22 @@ static func _spear(ci: CanvasItem, c: Vector2, s: float, col: Color) -> void:
 	ci.draw_line(socket - d * 0.4 * u + side * 1.0 * u, socket - d * 0.4 * u - side * 1.0 * u, Color(AMBER, col.a), maxf(1.0, 0.8 * u))
 
 
-## Home: a little house, as on the compass.
-static func house(ci: CanvasItem, c: Vector2, s: float, col: Color) -> void:
-	_shape(ci, PackedVector2Array([c + Vector2(-s, 0), c + Vector2(0, -s), c + Vector2(s, 0), c + Vector2(s * 0.7, 0),
-		c + Vector2(s * 0.7, s), c + Vector2(-s * 0.7, s), c + Vector2(-s * 0.7, 0)]), col)
+## The goal, the Ant Kingdom: a little anthill (a mound with its door), as on
+## the compass.
+static func anthill(ci: CanvasItem, c: Vector2, s: float, col: Color) -> void:
+	var pts := PackedVector2Array()
+	for i in 13:  # the mound: a low dome on a flat base
+		var a := PI + PI * float(i) / 12.0
+		pts.append(c + Vector2(cos(a) * s * 1.1, s * 0.75 + sin(a) * s * 1.35))
+	_shape(ci, pts, col)
+	var door := PackedVector2Array()
+	for i in 9:  # the door: a dark arch at its foot
+		var a := PI + PI * float(i) / 8.0
+		door.append(c + Vector2(cos(a) * s * 0.36, s * 0.75 + sin(a) * s * 0.5))
+	ci.draw_colored_polygon(door, Color(0.1, 0.07, 0.05, col.a))
 
 
-## The next stage on the way home: a gold diamond, as on the compass.
+## The next stage on the way: a gold diamond, as on the compass.
 static func diamond(ci: CanvasItem, c: Vector2, s: float, col: Color) -> void:
 	_shape(ci, PackedVector2Array([c + Vector2(0, -s), c + Vector2(s * 0.75, 0), c + Vector2(0, s), c + Vector2(-s * 0.75, 0)]), col)
 

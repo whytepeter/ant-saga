@@ -36,6 +36,8 @@ const PLACES := [["backpack", "School bag"], ["dandelion", "Dandelion"], ["dande
 	["spider_burrow", "Spider's burrow"]]
 
 var layout: LawnLayout
+## The goal (GameHud.home: the Colony Gate, then Root Hall); INF for none.
+var destination := Vector2.INF
 var texture: ImageTexture
 var fog: ImageTexture
 var _fog_image: Image
@@ -103,8 +105,10 @@ func places() -> Array[Dictionary]:
 	return out
 
 
-## The back door, home.
+## Where the anthill marker goes: the story's goal (destination), else the back door.
 func home() -> Vector2:
+	if destination != Vector2.INF:
+		return destination
 	var patio: Dictionary = layout.data.get("patio", {})
 	if patio.has("door"):
 		var door: Array = patio["door"]["x"]

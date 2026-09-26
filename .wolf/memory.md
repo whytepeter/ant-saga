@@ -203,3 +203,19 @@ description: chronological action log per session, consolidated weekly
 |------|--------|---------|---------|--------|
 | 18:49 | Created docs/design/gameplay_vision_chatgpt.md | — | ~7070 |
 | 18:49 | Created docs/design/gameplay_vision_chatgpt.md | — | ~7070 |
+| 19:52 | Created docs/story/original_draft.md | — | ~22015 |
+| 19:52 | Created docs/story/original_draft.md | — | ~22015 |
+| 20:21 | Created ui/subtitles.gd | — | ~646 |
+| 20:21 | Created ui/subtitles.gd | — | ~646 |
+| 20:21 | Created world/dialogue.gd | — | ~845 |
+| 20:21 | Created world/dialogue.gd | — | ~845 |
+| 20:22 | Created world/lawn/dialogue.json | — | ~1408 |
+| 20:22 | Created world/lawn/dialogue.json | — | ~1408 |
+| 20:22 | Created world/level_story.gd | — | ~1658 |
+| 20:22 | Created world/level_story.gd | — | ~1658 |
+| 20:32 | Created docs/GAMEPLAY.md | — | ~6741 |
+| 20:32 | Created docs/GAMEPLAY.md | — | ~6741 |
+| 20:43 | Created tools/render_portraits.gd | — | ~960 |
+| 20:43 | Created tools/render_portraits.gd | — | ~960 |
+| 20:44 | Created ui/subtitles.gd | — | ~1142 |
+| 20:44 | Created ui/subtitles.gd | — | ~1142 |

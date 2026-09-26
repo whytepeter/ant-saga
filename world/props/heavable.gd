@@ -25,6 +25,10 @@ const HIT_SPEED := 5.0
 @export var size := 1.5
 ## Food value when delivered to the colony (0 = not food).
 @export var food := 0
+## Won't budge whatever its size (a door stone before the story frees it).
+@export var locked := false
+## He can push it whatever its size (a door stone only he can shift).
+@export var heave_any_size := false
 
 ## Who threw it and how long the throw stays dangerous.
 var thrown_by: Node3D
@@ -33,6 +37,10 @@ var _last_velocity := Vector3.ZERO
 
 var weight: Weight:
 	get:
+		if locked:
+			return Weight.IMMOVABLE
+		if heave_any_size:
+			return Weight.PUSH
 		if size <= LIFT_LIMIT:
 			return Weight.CARRY
 		return Weight.PUSH if size <= PUSH_LIMIT else Weight.IMMOVABLE

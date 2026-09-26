@@ -1,10 +1,11 @@
 class_name RouteGuide
 extends Node3D
-## The way home, without words (layout "route_home"): one landmark per stage,
-## each in sight of the last. The next one has a column of golden motes rising
-## over it, seen above the grass from far off, and a gold diamond on the
-## compass (GameHud). Reach it, or any stage further on, and the column moves
-## on. Nothing forces the order: the garden stays open to wander.
+## The way to the Ant Kingdom, without words (layout "route"): one landmark
+## per stage, each in sight of the last. The next one has a column of golden
+## motes rising over it, seen above the grass from far off, and a gold diamond
+## on the compass (GameHud). Reach it, or any stage further on, and the column
+## moves on; an "in_order" stage (coming back to a place) counts only once it's
+## the next one. Nothing forces the order: the garden stays open to wander.
 
 signal stage_reached(index: int, stage: Dictionary)
 
@@ -19,7 +20,7 @@ var _beacon: GPUParticles3D
 func setup(l: LawnLayout, p: Node3D) -> void:
 	layout = l
 	player = p
-	stages = l.data.get("route_home", {}).get("stages", [])
+	stages = l.data.get("route", {}).get("stages", [])
 
 
 func _ready() -> void:
@@ -110,18 +111,26 @@ func _process(_delta: float) -> void:
 		return
 	var p := player.global_position
 	for i in range(current, stages.size()):
-		if _reached(stages[i], p):
+		if (i == current or not bool((stages[i] as Dictionary).get("in_order", false))) and _reached(stages[i], p):
 			current = i + 1
 			stage_reached.emit(i, stages[i])
 			_place_beacon()
 			break
 
 
-## Where the next stage is (Vector3.INF when home is the only goal left).
+## Where the next stage is (Vector3.INF once the last is reached).
 func goal() -> Vector3:
 	if current >= stages.size():
 		return Vector3.INF
 	return _point(stages[current])
+
+
+## Where stage `id` is (Vector3.INF if there's none).
+func stage_point(id: String) -> Vector3:
+	for s: Dictionary in stages:
+		if String(s["id"]) == id:
+			return _point(s)
+	return Vector3.INF
 
 
 func _reached(stage: Dictionary, p: Vector3) -> bool:
@@ -138,10 +147,9 @@ func _point(stage: Dictionary) -> Vector3:
 
 
 func _place_beacon() -> void:
-	# the last stage (the back door) has its own warm light and the house marker
-	var last := current >= stages.size() - 1
-	_beacon.emitting = not last
-	_beacon.visible = not last
-	if not last:
+	var done := current >= stages.size()
+	_beacon.emitting = not done
+	_beacon.visible = not done
+	if not done:
 		_beacon.global_position = _point(stages[current])
 		_beacon.restart()

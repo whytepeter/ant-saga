@@ -44,6 +44,7 @@ func _run() -> void:
 	_test_companions()
 	await _test_route("route_b", 9.0)
 	await _test_way_home()
+	await _test_story()
 
 	print("\n%s" % ("PASS" if failures == 0 else "%d failure(s)" % failures))
 	quit(failures)
@@ -192,6 +193,9 @@ func _test_root_hall() -> void:
 		if String(t["id"]) == "chimney":
 			way.append(pts[pts.size() - 1] + Vector3.DOWN * float(t["radius"]))
 	way.pop_back()  # the last knot-hole point is out in the air past the shelf
+	var story: LevelStory = level.get("story")
+	var stone_layer := story.door_stone.collision_layer
+	story.door_stone.collision_layer = 0  # the walk-through, not the story (_test_story)
 	var start := layout.ground_point([-318, 2], 0.3)
 	player.teleport(start, PI / 2.0)
 	await _frames(20)
@@ -229,6 +233,7 @@ func _test_root_hall() -> void:
 		outcome if outcome != "" else "at (%.0f, %.1f, %.0f) after %.0f s" % [p.x, p.y, p.z, elapsed])
 	var inside := tb.cave_factor(way[int(way.size() * 0.3)] + Vector3.UP)
 	_check("the hall is dark inside", inside > 0.8, "cave factor %.2f" % inside)
+	story.door_stone.collision_layer = stone_layer
 
 
 ## On the school bag's top: grab a snagged seed puff, run off the edge and glide.
@@ -273,10 +278,11 @@ func _test_glide() -> void:
 	await _frames(5)
 
 
-## The route home points at the bag's top first and moves on as stages are reached.
+## The way to the kingdom points at the ants' camp first and moves on as
+## stages are reached; coming back to Root Hall early doesn't count as the end.
 func _test_route_guide() -> void:
 	var guide: RouteGuide = level.get("route_guide")
-	_check("the way home has stages", guide != null and guide.stages.size() >= 5, "")
+	_check("the way has stages", guide != null and guide.stages.size() >= 5, "")
 	if guide == null:
 		return
 	guide.current = 0
@@ -284,8 +290,17 @@ func _test_route_guide() -> void:
 	var stage: Dictionary = guide.stages[2]
 	player.teleport(layout.ground_point(stage["at"], 0.3), 0.0)
 	await _frames(10)
-	_check("reaching a later stage skips ahead", guide.current == 3 and first.y > 100.0,
+	var camp := guide.stage_point("camp")
+	_check("reaching a later stage skips ahead", guide.current == 3 and first.distance_to(camp) < 1.0,
 		"first goal %s, now at stage %d" % [str(first), guide.current])
+	player.teleport(layout.ground_point([-322, 2], 0.3), 0.0)
+	await _frames(10)
+	var door_i := -1
+	for i in guide.stages.size():
+		if String((guide.stages[i] as Dictionary)["id"]) == "root_hall_door":
+			door_i = i
+	_check("Root Hall early is the sealed door, not the end", guide.current == door_i + 1,
+		"now at stage %d of %d" % [guide.current, guide.stages.size()])
 
 
 ## Jogs a main route with the camera steering toward each waypoint.
@@ -358,8 +373,9 @@ func _test_companions() -> void:
 	_check("companions kept up on route A", worst < 15.0, ", ".join(gaps))
 
 
-## The last stretch: up the trowel onto the patio, up the brush handle onto the
-## back step, and crawl under the door: home.
+## The patio (off Level 1's route, still in the world): up the trowel, up the
+## brush handle onto the back step, and crawl under the door. It isn't the end
+## of the level any more.
 func _test_way_home() -> void:
 	var patio: Dictionary = layout.data["patio"]
 	var top: float = patio["top"]
@@ -389,8 +405,55 @@ func _test_way_home() -> void:
 	Input.action_release("crawl")
 	await _frames(_seconds(20.0))
 	Input.action_release("move_forward")
-	_check("the door gap: too low to walk, crawl under it", blocked_standing and bool(level.get("day_over")),
-		"standing stopped at z=%.1f; home reached: %s" % [player.global_position.z, level.get("day_over")])
+	var through := player.global_position.z > float(patio["wall_z"]) + 1.0
+	_check("the door gap: too low to walk, crawl under it", blocked_standing and through and not bool(level.get("day_over")),
+		"standing stopped, then z=%.1f (wall %.0f); level over: %s" % [player.global_position.z, float(patio["wall_z"]), level.get("day_over")])
+
+
+## Level 1's story: the door stone won't move before the gate; at the Colony
+## Gate the ants turn back and the goal becomes Root Hall; then he pushes the
+## stone aside, goes in, and the level ends.
+func _test_story() -> void:
+	var story: LevelStory = level.get("story")
+	var guide: RouteGuide = level.get("route_guide")
+	_check("the ants talk", story != null and story.dialogue.lines_shown > 0,
+		"%d line(s) so far" % (story.dialogue.lines_shown if story != null else 0))
+	if story == null:
+		return
+	# (route A's autopilot already walked through the gate: start the beat afresh)
+	story.gate_shut = false
+	story.door_stone.locked = true
+	_check("the door stone is sealed before the gate", story.door_stone.weight == Heavable.Weight.IMMOVABLE, "")
+	var before := story.destination()
+	for i in guide.stages.size():
+		if String((guide.stages[i] as Dictionary)["id"]) == "colony_gate":
+			guide.current = i
+	player.teleport(layout.ground_point([40, 100], 0.3), 0.0)
+	await _frames(10)
+	var after := story.destination()
+	_check("the gate is shut: the goal becomes Root Hall", story.gate_shut and before.distance_to(after) > 100.0
+		and after.distance_to(guide.stage_point("root_hall")) < 1.0, "goal %s -> %s" % [str(before), str(after)])
+	_check("the door stone is free to push", story.door_stone.weight == Heavable.Weight.PUSH, "")
+	# walk into the stone from outside, holding E
+	var stone := story.door_stone.global_position
+	var from := Vector3(stone.x + 9.0, 0.0, stone.z)
+	player.teleport(layout.ground_point([from.x, from.z], 0.3), PI / 2.0)  # facing -x
+	await _frames(20)
+	Input.action_press("interact")
+	Input.action_press("move_forward")
+	for k in _seconds(4.0):
+		await physics_frame
+		if story.door_open:
+			break
+	Input.action_release("interact")
+	Input.action_release("move_forward")
+	_check("he pushes the door stone aside", story.door_open, "hint '%s' at %s" % [String(player.get("_hint")), str(player.global_position)])
+	await _frames(_seconds(2.2))
+	# and in
+	var inside: Array = (layout.data["story"]["inside"] as Dictionary)["at"]
+	player.teleport(Vector3(float(inside[0]), 0.5, float(inside[1])), PI / 2.0)
+	await _frames(_seconds(1.0))
+	_check("inside Root Hall: the end of Level 1", story.finished and bool(level.get("day_over")), "")
 
 
 ## Fists glance off the fallen twig, the axe cuts it in three chops and it

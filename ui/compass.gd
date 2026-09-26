@@ -1,8 +1,8 @@
 class_name Compass
 extends Control
 ## A thin compass strip (Grounded / Skyrim style): cardinal letters and ticks
-## sliding past as the camera turns, with markers for home, the next stage on
-## the way home (RouteGuide) and the sun.
+## sliding past as the camera turns, with markers for the goal (an anthill:
+## the Ant Kingdom), the next stage on the way (RouteGuide) and the sun.
 ## Bearings are compass degrees: 0 = north (−Z), 90 = east (+X).
 
 const SPAN := 170.0  # degrees visible across the strip
@@ -58,23 +58,14 @@ func _draw() -> void:
 		var x := cx + clamped / SPAN * w
 		var edge := absf(off) > SPAN * 0.5  # off to the side: pinned to the edge
 		match String(m["kind"]):
-			"home": _draw_house(Vector2(x, h * 0.5), 9.0, AMBER if not edge else Color(AMBER, 0.6))
+			"home": HudGlyphs.anthill(self, Vector2(x, h * 0.5), 9.0, AMBER if not edge else Color(AMBER, 0.6))
 			"sun": _draw_sun(Vector2(x, h * 0.5), 6.0, Color(1.0, 0.9, 0.5, 0.9 if not edge else 0.4))
 			"next": _draw_diamond(Vector2(x, h * 0.5), 7.0, Color(1.0, 0.85, 0.45, 1.0 if not edge else 0.55))
 	# the notch marking straight ahead
 	draw_colored_polygon(PackedVector2Array([Vector2(cx - 5, 0), Vector2(cx + 5, 0), Vector2(cx, 6)]), CREAM)
 
 
-func _draw_house(c: Vector2, s: float, col: Color) -> void:
-	var body := PackedVector2Array([c + Vector2(-s, 0), c + Vector2(0, -s), c + Vector2(s, 0),
-		c + Vector2(s * 0.7, 0), c + Vector2(s * 0.7, s), c + Vector2(-s * 0.7, s), c + Vector2(-s * 0.7, 0)])
-	var outline := PackedVector2Array(body)
-	outline.append(body[0])
-	draw_polyline(outline, Color(0, 0, 0, 0.6), 4.0)
-	draw_colored_polygon(body, col)
-
-
-## The next stage on the way home (RouteGuide): a gold diamond.
+## The next stage on the way (RouteGuide): a gold diamond.
 func _draw_diamond(c: Vector2, s: float, col: Color) -> void:
 	var d := PackedVector2Array([c + Vector2(0, -s), c + Vector2(s * 0.75, 0), c + Vector2(0, s), c + Vector2(-s * 0.75, 0)])
 	var outline := PackedVector2Array(d)

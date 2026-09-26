@@ -25,6 +25,9 @@ budget_tokens: 2000
 - [2026-09-26] Props and tools in the garden look used and weathered: dirt, scratches, rust, worn paint. Never clean, shiny, catalogue-new.
 - [2026-09-26] Creatures must be animated (legs, wings) and sit or walk on surfaces; hovering stand-ins read as broken.
 
+- [2026-09-26] Level 1 story (user's decisions): a boy shrunk by two warrior ants (Opigo, Opumie) to help end the insect war; Level 1 is the journey back to the ant kingdom through the backyard. The destination is NEVER the house/back door (the old "get home under the back door" goal is dead). Dialogue comes back, styled like the compass UI (sleek subtitles). The playable-Opigo opening comes later, not in the first build. Working proposal: "Road to the Kingdom" (Levels 1-3), Level 1 ends sealing themselves into Root Hall at the apple/mango tree.
+- [2026-09-26] Dialogue shows the speaker's face (round portrait, ringed in their colour) beside the subtitle, compass style. Level 1 spans two days (First Night camp). The user wants: the ants face each other when talking; an objective line so a new player is never lost; the playable-Opigo opening back (after the guidance basics).
+
 ## Key Learnings
 
 - **Project:** ant-game
@@ -46,9 +49,12 @@ budget_tokens: 2000
 - [2026-09-26] Don't round-trip Amodu's skeleton through Blender (re-export re-orients bones and breaks all 78 clips). Rig changes go through Godot tools that only add bones (tools/add_finger_bones.gd).
 - [2026-09-26] Tried to sell the miniature ground by scattering thousands of non-colliding 3D grains, clods and straw. The user rejected it ("too many pebbles"; the references have uneven ground, not loose clutter you walk through). Make the ground itself uneven (terrain relief with collision); anything that sticks up must collide.
 - [2026-09-26] A child node's _ready runs before the parent's @onready vars are set (player.model was null in Combat._ready). From children, use get_node() or defer.
+- [2026-09-26] Treated docs/STORY.md as a parked draft to audit, critique for fidelity and reconcile into canon. It is the user's own story: the source to MINE for gameplay. Ask "what does this story let the player do", take what serves play, leave the rest, and don't propose editing or re-canonising it.
 
 ## Decision Log
 
 <!-- Significant technical decisions with rationale. Why X was chosen over Y. -->
+- [2026-09-26] Direction: the trio adventure replaces SMALL GIANT's 'get home before sunset'. Opigo and Opumie shrink Amodu to help end the insect war and travel with him as companions. Levels: 1 backyard (ends shut out, into Root Hall), 2 the apple tree (roots, trunk, canopy, Maw), 3 the kingdom and the enlarged pond (no lolly-stick bridge; the Moat mission). Hunger, thirst, night danger and a data-driven build system are in. Plan: docs/GAMEPLAY.md.
+- [2026-09-26] Level 1 Stage 1 (The Road to the Kingdom): Companion.ENABLED = true; dialogue back as compass-style subtitles (world/dialogue.gd + world/lawn/dialogue.json + ui/subtitles.gd), driven by world/level_story.gd. Layout "route_home" became "route" (ends at Root Hall; "in_order" stages only count when next) plus a "story" block (door stone, inside). The compass/map goal is an anthill (HudGlyphs.anthill), pointing at the Colony Gate, then Root Hall. The back door is no longer an ending.
 - [2026-09-26] Weapons: the AXE is Amodu's signature weapon (always on him, also a chopping tool); he can also wield crafted weapons (hammer, spear, blade, bow, daggers...). This reverses the earlier 'no weapons' rule. Gameplay design lives in docs/GAMEPLAY.md: gameplay tells the story, strength is a world-changing system, Level 1 = the garden route home.
 - [2026-09-26] Sound: recorded CC0 field recordings and foley (BigSoundBank), processed by tools/process_sounds.py, instead of synthesis. The user found the synthesised set "off"; the Grounded/Smalland reference is real garden recordings, pitched-down creatures and muffled far-off human sounds, glued with one shared reverb.

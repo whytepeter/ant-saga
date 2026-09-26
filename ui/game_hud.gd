@@ -2,13 +2,15 @@ class_name GameHud
 extends CanvasLayer
 ## The adventure HUD, kept nearly empty (Grounded / Breath of the Wild style):
 ##
-##   top      a compass strip with home and the sun on it; a thin daylight line
+##   top      a compass strip with the goal (the Ant Kingdom) and the sun on
+##            it; a thin daylight line
 ##   bottom   key-cap prompts, only when Amodu is next to something
 ##   left     health, only after he's been hurt
 ##   right    the weapon in his hands (WeaponBadge), once he has one; Tab opens
 ##            the inventory (InventoryPanel)
 ##   top right  a round minimap; M opens the full map (MapHud)
 ##   centre   a place-name banner the first time he enters an area; end cards
+##   low      subtitles when the ants talk (Subtitles)
 ##
 ## Controls live on a card behind F1. Debug text (the level's Info) is behind F3.
 
@@ -26,7 +28,8 @@ const CONTROLS := [
 var player: Player
 var layout: LawnLayout
 var clock: DayClock
-## Where home is (the back door).
+## Where the goal is (the compass's and map's anthill): the Colony Gate, then
+## Root Hall (LevelStory.destination()).
 var home := Vector3.ZERO
 var font: Font
 
@@ -48,6 +51,8 @@ var _f1_hint: Control
 var _f1_left := 12.0
 var _seen_areas := {}
 var _area_check := 0.0
+var _subtitles: Subtitles
+var _maps: MapHud
 
 
 func setup(p: Player, l: LawnLayout, c: DayClock, home_at: Vector3) -> void:
@@ -65,6 +70,7 @@ func _ready() -> void:
 	_build_health()
 	_build_banner()
 	_build_card()
+	_build_subtitles()
 	_build_controls()
 	if player != null:
 		player.show_hint_label = false
@@ -98,6 +104,8 @@ func _process(delta: float) -> void:
 		_daylight.size.x = _daylight_back.size.x * clock.daylight()
 		_daylight.color = AMBER.lerp(Color(1.0, 0.45, 0.25), 1.0 - clock.daylight())
 	_compass.markers = markers
+	if _maps != null and _maps.map != null:
+		_maps.map.destination = Vector2(home.x, home.z)
 	# health fades out a while after it's full again
 	_health_shown = maxf(_health_shown - delta, 0.0)
 	_health_box.modulate.a = move_toward(_health_box.modulate.a, 1.0 if _health_shown > 0.0 else 0.0, delta * 3.0)
@@ -142,7 +150,12 @@ func show_banner(title: String) -> void:
 	_banner_tween.tween_property(_banner, "modulate:a", 0.0, 1.2)
 
 
-## A centred card (reaching home, nightfall). Empty title hides it.
+## A line of dialogue (Dialogue.line_shown).
+func show_line(speaker: String, text: String, color: Color, seconds: float) -> void:
+	_subtitles.show_line(speaker, text, color, seconds)
+
+
+## A centred card (the end of the level). Empty title hides it.
 func show_card(title: String, text: String) -> void:
 	_card.visible = title != ""
 	_card_title.text = title
@@ -221,12 +234,12 @@ func _build_health() -> void:
 
 func _build_weapons() -> void:
 	if layout != null:
-		var maps := MapHud.new()
-		maps.name = "MapHud"
-		maps.player = player
-		maps.layout = layout
-		maps.font = font
-		add_child(maps)
+		_maps = MapHud.new()
+		_maps.name = "MapHud"
+		_maps.player = player
+		_maps.layout = layout
+		_maps.font = font
+		add_child(_maps)
 	var inventory := player.get_node_or_null("Inventory") as Inventory
 	if inventory == null:
 		return
@@ -285,6 +298,17 @@ func _build_card() -> void:
 	_card_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_card_text = _label(box, 22, CREAM, 6)
 	_card_text.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+
+
+func _build_subtitles() -> void:
+	_subtitles = Subtitles.new()
+	_subtitles.font = font
+	_subtitles.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM)
+	_subtitles.offset_left = -560.0
+	_subtitles.offset_right = 560.0
+	_subtitles.offset_top = -236.0
+	_subtitles.offset_bottom = -140.0  # above the key-cap prompts
+	add_child(_subtitles)
 
 
 func _build_controls() -> void:

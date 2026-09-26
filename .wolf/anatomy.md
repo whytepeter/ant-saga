@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-26T17:49:03.810Z
-> Files: 261 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-26T19:44:36.817Z
+> Files: 267 tracked | Anatomy hits: 0 | Misses: 0
 
 > Project structure index. Auto-maintained by OpenWolf hooks and daemon.
 > Run `openwolf scan` to generate, or wait for the first Claude Code session.
@@ -150,7 +150,7 @@
 
 ## docs/
 
-- `GAMEPLAY.md` — Gameplay: Ant Kingdom Saga (~3485 tok)
+- `GAMEPLAY.md` — Gameplay: Ant Kingdom Saga (~6320 tok)
 - `lawn_map.svg.import` (~275 tok)
 - `PLAN.md` — Plan: Level 1, The Compound Grass (~2578 tok)
 - `STORY.md` — Story: Ant Kingdom Saga (~3048 tok)
@@ -159,6 +159,10 @@
 ## docs/design/
 
 - `gameplay_vision_chatgpt.md` — Gameplay vision (reference, verbatim) (~6628 tok)
+
+## docs/story/
+
+- `original_draft.md` — Ant Kingdom Saga: original story draft (chapters 1–16) (~20639 tok)
 
 ## player/
 
@@ -255,6 +259,7 @@
 - `make_sounds.py` — Synthesise the game's sound effects into assets/audio/ (16-bit mono WAV). (~5158 tok)
 - `process_sounds.py` — Make the game's sounds (assets/audio/*.ogg) from recorded CC0 sources. (~3133 tok)
 - `prop_sheet.gd` — Declares VIEWS (~787 tok)
+- `render_portraits.gd` — Declares OUT (~960 tok)
 - `retarget_ant_heroes.gd` — Declares SOURCE_DIR (~2084 tok)
 
 ## ui/
@@ -267,15 +272,18 @@
 - `map_hud.gd` — Declares MINI (~1306 tok)
 - `map_panel.gd` — Declares CREAM (~1448 tok)
 - `map.gdshader` — Declares canvas_item (~346 tok)
+- `subtitles.gd` — Declares CREAM (~1142 tok)
 - `weapon_badge.gd` — Declares CREAM (~648 tok)
 
 ## world/
 
 - `ambient_life.gd` — Declares KINDS (~2654 tok)
 - `day_clock.gd` — Declares SUNRISE (~541 tok)
+- `dialogue.gd` (~845 tok)
 - `garden_audio.gd` — Declares DIR (~3204 tok)
 - `grass_meshes.gd` (~620 tok)
 - `grass_meshes.gd.uid` (~6 tok)
+- `level_story.gd` — Declares IDLE_AFTER (~1658 tok)
 - `route_guide.gd` (~1023 tok)
 - `sun_light.gd` (~214 tok)
 - `sun_light.gd.uid` (~6 tok)
@@ -292,6 +300,7 @@
 
 ## world/lawn/
 
+- `dialogue.json` (~1408 tok)
 - `garden_dressing.gd` — Declares RULES (~1529 tok)
 - `lawn_builder.gd` — Declares WORLD_LAYER (~17893 tok)
 - `lawn_builder.gd.uid` (~6 tok)

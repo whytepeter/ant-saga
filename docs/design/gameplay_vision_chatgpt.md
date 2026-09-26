@@ -1,10 +1,13 @@
 # Gameplay vision (reference, verbatim)
 
-Three design notes the user brought in from ChatGPT on 2026-09-26, kept word for word as reference. The working design is `docs/GAMEPLAY.md`, which adapts them to SMALL GIANT (the back garden, get home before dark). Where they differ, GAMEPLAY.md and the user's later decisions win:
+Three design notes the user brought in from ChatGPT on 2026-09-26, plus a fourth (the Levels 1–3 story plan, from another Claude session, same day), kept word for word as reference. The working design is `docs/GAMEPLAY.md`. Where they differ, GAMEPLAY.md and the user's later decisions win:
 
 - **Loadout** (note 3): the user chose it. The knife is Amodu's permanent tool, the axe his main weapon, one secondary of his choice; X also swaps to the knife in a fight (the user asked for that).
 - **Weapons** (note 2): the axe is Amodu's signature weapon; crafted weapons alongside it. This replaced the earlier "no weapons" rule.
-- **Companions** stay at the Capstone for now (following is on hold). **Story chapters** are a source of moments, not the level list.
+- **Level 1's story** (note 4, user's decisions 2026-09-26): Amodu is shrunk by two warrior ants, Opigo and Opumie, to help end the insect war. Level 1 is their journey back to the ant kingdom through the backyard. **It never ends at the house or the back door**: that old goal ("get home before dark") is gone. Opigo and Opumie travel with him as companions.
+- **Dialogue comes back**, styled like the compass UI (sleek subtitles).
+- **The playable-Opigo opening** (note 4, Level 1 M1) comes later, not in the first build.
+- **Story chapters** are a source of moments, not the level list. The user's own chapters are in `docs/story/original_draft.md`.
 
 ---
 
@@ -1470,3 +1473,152 @@ And because the game is about a tiny human physically surviving in this enormous
 So I'd currently choose:
 Inventory can hold unlimited weapons → 3 physically equipped → knife is permanent + 2 selectable weapons.
 No backpack required.
+
+---
+
+## Note 4: Levels 1–3, the story plan
+
+From another Claude session, 2026-09-26, built on the user's chapters. The decisions at the top override it where they differ (the Opigo opening is deferred).
+
+# Ant Kingdom Saga: Levels 1–3
+
+**The premise:** two old warrior ants, **Opigo** and **Opumie**, come up into the human world to shrink a hero who'll end the insect war. They pick the tall, confident bully. Their potion hits **Amodu**, the boy everyone mocks, who was hiding behind the boxes. He's now 5 mm tall and has kept his full human strength.
+
+**The trio:** Amodu is the only playable character. Opigo and Opumie are always with him as **companions**:
+- **Opigo** charges and knocks enemies off balance.
+- **Opumie** squeezes through gaps and spots weak points.
+- **Amodu** lifts, throws, chops, and climbs the human things no ant can.
+
+## What runs through all three levels
+
+| Thread | How it grows |
+|---|---|
+| **Respect** | "That's a mistake" → "kid" → "champion". Ants mock, then stare, then cheer. The world's reactions are the progress bar. |
+| **The Hunt** | Akpuru chases them from the first mission. You lose to him in Level 1 and beat him in Level 3. |
+| **Oyibo's Trail** | The lost third musketeer. His gear keeps turning up where it shouldn't be. |
+| **Camps** | Glow-fungus fires between missions: save, rest, improve gear, and hear the stories. |
+
+---
+
+# LEVEL 1: THE ROAD TO THE KINGDOM
+*The backyard · about 35 minutes · "Nobody believes in you, including you."*
+
+### M1. The Wrong Boy
+**You open as Opigo, an ant.** Giant humans shake the ground. A pebble in your path is too heavy, so you go around. You creep up on the bully with the vial, his soda can explodes in a wave of fizz, the vial flies, and the green mist drifts onto the boy behind the boxes.
+**Now you're Amodu.** Opigo: *"No. That's a mistake."* The bully runs screaming about "alien bugs", and his can rolls toward the ants. **Amodu stops it with his hands, then lifts the pebble Opigo couldn't.**
+
+### M2. A Hero's Axe
+The ants' stakeout camp by the pencil log. They brought an axe for the chosen one: ant-made, and too heavy for any ant. **Amodu picks it up.** Opumie: *"Give the kid a chance."* Chop the dry straw and head east for home.
+
+### M3. The Cut Road
+The crisp packet, an old ant rest stop, has been torn open. There are mud tubes over the ant trail. *"Termites? This far north?"* Termite hunters spot them, and **the hunt begins.**
+
+### M4. Over the Top
+The only escape is up. **Amodu climbs his own school bag with both ants clinging to his back**, while Opigo complains the whole way. At the top the whole garden is laid out below, and there's smoke over the termite camp. **Grab a seed puff and glide.** The hunters can't follow.
+
+### M5. Hold Your Breath
+The Blade Forest. *THUMP.* A ground beetle the size of a bus. The ants freeze, so Amodu freezes. It passes close enough to touch.
+
+### M6. The Door That Won't Move
+Up the daisy stair in the Flower Bed. Between the roots of the great apple tree is **Root Hall**: an ancient ant door, sealed with stone. Opumie: *"Nobody's used that door since before my grandmother."* **Remember it.**
+
+### M7. Caught
+Opigo rushes ahead as always and gets **caught in the orb web**. The spider comes down. Ants can't cut silk that thick, but **Amodu can**: cut the anchor threads and drop the whole web. **You save the ant who called you a mistake.** In the silk: a small shield with a musketeer's mark. Opumie pockets it without a word.
+
+### M8. The Shut Gate
+From the Capstone lookout: **Akpuru's army is marching on the colony gate.** Race them there. The guards seal it for the siege and won't open for "that thing". **Last stand:** termites drive pill bugs at you like battering rams. **The coin in the plaza:** the ants think it's a monument, but Amodu knows coins roll. He stands it up and rolls it through the termite line.
+Then **Akpuru**. You can't win; you survive.
+Opumie: *"There's another way. The old way!"*
+The run through the dusk to the apple tree. **Amodu heaves the stone off Root Hall's door**, they dive in, and it slams shut. Through the stone: *"Let's see if he survives long enough to face me."*
+
+---
+
+# LEVEL 2: THE OLD WAY
+*Inside the apple tree: roots, trunk and canopy · about 45 minutes · "Become one of them."*
+
+### ⛺ Camp 1: Root Hall
+Night. The first fire. Opigo sulks, and Opumie makes his first ex-wife joke. They explain the plan: through the tree, down under its roots, to the kingdom's deepest halls.
+
+### M1. The Painted Wall
+Root Hall's walls hold **the prophecy, painted**: a two-legged figure standing among crawling ones. *Stand tall where others crawl.* Opigo goes quiet. There are ancient traps built for ant weight, and Amodu is too heavy for some floors, so he learns to watch where he steps.
+
+### M2. The Sleepers
+The **grub nest**: huge, blind beetle grubs asleep across the path. They feel vibration. Sneak past, or heave fallen roots to wall them in. Wake one and run.
+
+### ⛺ Camp 2: The Tale of Oyibo
+The ants tell the story, **and you play it.** A flashback as Opigo: Ugo the mad shrew's cave, **three riddles you answer by acting in the world** (dig a hole, flip a coin, shout for an echo), the spider children, and **Oyibo bringing the cave down on himself** so they can escape. *"Legends adapt… but legends also die."* Back at the fire, nobody talks.
+
+### M3. The Heartwood Stair
+The way down is flooded. The only way is **up the spiral inside the trunk**, past glowing sap veins, out of the **knot-hole 60 m above the garden**.
+
+### ⛺ Camp 3: The Knot-hole
+The whole garden at night. Termite fires are moving in the south-east. Amodu and Opigo on the ledge, and the first real conversation. **Opigo calls him "kid".**
+
+### M4. Prisoners of the Canopy
+Into the branches, where **weaver ants** arrest them: polite, disciplined, obsessed with order. *"Your cell has been cleaned and prepared. Please enjoy your stay."* Opumie plans the escape; Amodu nearly ruins it by complaining loudly about the food. Break out through the stitched-leaf barracks.
+
+### M5. Apple Fall
+The weavers' aphid farm is being raided. **Cut an apple loose so it drops onto the raiders, then ride it down.** The weaver captain, impressed, shows them the dry way down the far side of the trunk. **The first ants from another colony to respect him.**
+
+### M6. The Rootway
+Deep under the tree: dark, wet, glowing fungus. **Akpuru's tunnellers have followed them in**, and you hear them chewing through the walls behind you. Keep moving.
+
+### M7. The Maw (boss)
+A giant centipede guards the only root crossing; it's why the old way was abandoned. **You can't hurt it.** There's a boulder: heave it, throw it, and the Maw staggers. Opigo knocks it off balance and Opumie finds the weak joint. It flees into the dark, wounded. Where it lay: **a second piece of Oyibo's gear.**
+
+### ⛺ The Last Camp
+The roots open below onto thousands of lights: **the Ant Kingdom, seen from underneath.**
+
+---
+
+# LEVEL 3: THE KINGDOM
+*The ant kingdom and the pond · about 50 minutes · "Earn your place, then defend it."*
+
+### M1. The Whispers
+The city of fungus-light and amber, full of ants who stare. *"Uglier than a crushed cockroach."* Young ants follow him out of curiosity. He **trips bowing to Queen Titania**. She doubts him and orders the trials.
+
+### M2. The Trials
+The arena, with the whole colony watching:
+- **Moving platforms.** The crowd laughs, then goes quiet.
+- **The resin boulder, lifted over his head.** Silence, then a roar.
+- **Sparring with the colony's champion.** Parry and dodge, a proper fight.
+
+The laughter turns to applause. Titania names him champion, and he gets the **thorn spear**.
+
+### M3. The Moat (the pond)
+A messenger: **the termites are building a causeway across the Rut**, the pond that guards the colony gate. It's twice the size it was, the bridge is gone, and the causeway is a bit further across every night.
+- **Scout it:** glide from the gate or swim the edges to find the weak points.
+- **Take the leaf raft:** Opigo paddles, Opumie "supervises".
+- **What's under the water:** a diving beetle. It's deadly, but splash in the right place and it takes termite workers instead of you.
+- **Break the causeway:** chop the reed supports and heave stones off the raft, section by section.
+
+### M4. The War Plan
+The last section can't be broken, and Akpuru's army is coming across it tonight. On the shore, **you set the battlefield**: where the resin pit goes, which gaps to close with heaved stones, where the ants wait.
+
+### M5. Akpuru (boss)
+The border battle. Termite waves hit your defences. **Akpuru is still too strong.** Titania's scent-call brings reinforcements up from hidden tunnels. Then: *"Hey, big guy! Over here!"* **He charges straight into your pit.**
+**He's stuck in the resin. Spare him or finish him.** (Your story wants mercy, and it pays off much later.)
+
+### Level 3 ends
+The colony celebrates its champion. Then Opumie finally lays out the gear from the web and the Maw's lair. *"This is Oyibo's. He went into Ugo's cave and never came out… so how are his things getting out?"*
+**→ The next part of the adventure.**
+
+---
+
+## Hidden missions
+No markers. You find them by noticing things.
+
+| Level | Hidden mission | How you find it | Reward |
+|---|---|---|---|
+| 1 | **The Con Beetle** | The old beetle who conned the musketeers, selling "miracle elixir" from the crisp packet. Catch him. | Their food back, and a map fragment showing secret spots |
+| 1 | **The Bully's Phone** | Lost in the long grass. Heave it over and the screen lights up: *"Amodu, where are you? — Mum"* | The thread back to the human world |
+| 1 | **The Mantis** | A praying mantis in the Flower Bed, only visible when it moves. Hunt it. | The mantis-blade, a fast weapon |
+| 2 | **The Glass World** | The marble. Roll it into the light and it reveals ancient ant markings. | Lore about the old kingdom |
+| 2 | **The Queen of Aphids** | The weavers' aphid farm has one aphid that isn't what it seems. | A healing honeydew recipe |
+| 3 | **Oyibo's Trail** | Every piece of his gear across all three levels. | A secret scene, and the first hint at **"Him"** |
+
+## Why it's exciting
+- **Each level turns the last one around.** You're shut out in Level 1, find the forgotten way in Level 2, and defend the place that shut you out in Level 3.
+- **Every boss is a puzzle:** the web, the Maw's boulder, Akpuru's pit. Strength plus cleverness, never a health-bar grind.
+- **The garden grows:** backyard, then inside a tree, up into its canopy, down under its roots, into the kingdom, and back up to the pond.
+- **The companions carry the heart:** Opigo from "mistake" to "kid", and Opumie keeping Oyibo's gear to himself until the end.

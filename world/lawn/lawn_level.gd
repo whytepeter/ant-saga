@@ -3,12 +3,14 @@ extends Node3D
 ## checkpoint, respawns him after the Rut or a fall out of the world, and drives
 ## the HUD.
 ##
-## Adventure mode (the default): Amodu wakes by his school bag at the far end of
-## the garden and has one day to get home, under the back door on the far side.
-## The sun is the clock (DayClock) and the HUD stays nearly empty (GameHud).
+## Adventure mode (the default): Level 1, The Road to the Kingdom. Amodu wakes
+## by his school bag, shrunk by mistake, with Opigo and Opumie standing over
+## him; they cross the garden to the Colony Gate, find it shut, and escape at
+## dusk into Root Hall (LevelStory). The sun is the clock (DayClock) and the
+## HUD stays nearly empty (GameHud).
 ## Expedition mode is the parked Phase 3c colony run (Expedition).
 ##
-## Keys: R respawn (after home or nightfall: a new day) · L signs and labels ·
+## Keys: R respawn (after the end: play again) · L signs and labels ·
 ## F3 debug info · F6 rain · 1–5 viewpoints V1–V5 · 0 start · T route timer.
 
 signal checkpoint_reached(checkpoint_name: String)
@@ -19,8 +21,8 @@ const FALL_LIMIT := -40.0
 
 ## Run the parked Phase 3c colony expedition instead of the adventure.
 @export var expedition_mode := false
-## The opening: waking, the house far off across the garden, then the camera
-## turns to the first stage (off in tests).
+## The opening: waking, the garden and the kingdom's gate far off, then the
+## camera turns to the first stage (off in tests).
 @export var opening := true
 ## Live pill bugs at the Bare Patch (off for the route autopilot in tests).
 @export var live_creatures := true
@@ -34,15 +36,14 @@ var route_time := 0.0
 
 var _toast_left := 0.0
 var _hud_refresh := 0.0
-var _gate_announced := false
 var companions: Array[Companion] = []
 var expedition: Expedition
 var clock: DayClock
 var tree_base: TreeBase
 var route_guide: RouteGuide
+var story: LevelStory
 var hud: GameHud
-## The spot just inside the back door (layout.json patio.home).
-var home := Vector3.ZERO
+## The level is over (Root Hall reached); R plays again.
 var day_over := false
 
 @onready var player: Player = $Player
@@ -91,9 +92,6 @@ func _ready() -> void:
 
 
 func _setup_adventure() -> void:
-	var patio: Dictionary = layout.data["patio"]
-	var h: Array = patio["home"]
-	home = Vector3(float(h[0]), float(patio["top"]) + float(patio["step"]["height"]), float(h[1]))
 	clock = DayClock.new()
 	clock.name = "DayClock"
 	add_child(clock)
@@ -107,6 +105,11 @@ func _setup_adventure() -> void:
 	route_guide.name = "RouteGuide"
 	route_guide.setup(layout, player)
 	add_child(route_guide)
+	story = LevelStory.new()
+	story.name = "LevelStory"
+	story.setup(self, player, layout, route_guide, clock)
+	add_child(story)
+	story.level_finished.connect(_finish_level)
 	var water_fx := WaterFx.new()
 	water_fx.name = "WaterFx"
 	water_fx.setup(player)
@@ -123,23 +126,27 @@ func _setup_adventure() -> void:
 	add_child(audio)
 	hud = GameHud.new()
 	hud.name = "GameHud"
-	hud.setup(player, layout, clock, home)
+	hud.setup(player, layout, clock, story.destination())
 	add_child(hud)
+	story.dialogue.line_shown.connect(hud.show_line)
 	info.visible = false
 	$HUD/Help.visible = false
 	player.wake_up()
 	if opening:
 		_opening.call_deferred()
+	else:
+		story.start.call_deferred()
 
 
-## He gets up while a camera high above the grass looks south across the
-## garden to the house, the goal comes up, then the view drops to him and turns
-## to the first stage on the way (the bag); then he's free to go. A move key
-## skips it.
+## He gets up while a camera high above the grass looks across the garden
+## toward the Colony Gate, the title comes up, then the view drops to him and
+## turns to the first stage on the way (the ants' camp); then he's free to go
+## and the ants have their say. A move key skips it.
 func _opening() -> void:
 	var rig := player.camera_rig
 	var game_cam := get_viewport().get_camera_3d()
-	var to_home := home - player.global_position
+	var kingdom := story.destination()
+	var to_home := kingdom - player.global_position
 	to_home.y = 0.0
 	var dir := to_home.normalized()
 	var home_yaw := atan2(-dir.x, -dir.z)
@@ -153,17 +160,17 @@ func _opening() -> void:
 	var skip := func() -> bool:
 		return Input.is_action_pressed("move_forward") or Input.is_action_pressed("move_back") \
 			or Input.is_action_pressed("move_left") or Input.is_action_pressed("move_right") or Input.is_action_pressed("jump")
-	# high over the grass, looking across the whole garden to the house
+	# high over the grass, looking across the garden toward the kingdom's gate
 	var high := Camera3D.new()
 	high.fov = game_cam.fov if game_cam != null else 70.0
 	add_child(high)
 	high.global_position = player.global_position - dir * 25.0 + Vector3.UP * 48.0
-	high.look_at(home + Vector3.UP * 60.0)
+	high.look_at(kingdom + Vector3.UP * 5.0)
 	high.make_current()
 	var t := 0.0
 	while t < 4.0 and not skip.call():
 		if t > 0.8 and t - get_process_delta_time() <= 0.8:
-			hud.show_banner("Get home before dark")
+			hud.show_banner("The Road to the Kingdom")
 		high.global_position += dir * get_process_delta_time() * 2.0  # a slow drift toward it
 		await get_tree().process_frame
 		t += get_process_delta_time()
@@ -188,26 +195,26 @@ func _opening() -> void:
 			rig._apply_rotation(), home_yaw, goal_yaw, 2.0)
 		await turn.finished
 	player.input_enabled = true
+	story.start()
 
 
 ## The sun is down: the garden goes blue and the creatures get bolder, but
-## the way home stays open (it just gets harder).
+## the way stays open (it just gets harder). The ants have their say (LevelStory).
 func _on_sunset() -> void:
 	if day_over:
 		return
 	PillBug.night_boost = 1.7
 	hud.show_banner("Dusk")
-	show_toast("The sun is down. Get home before it's dark.", 5.0)
 
 
-func _reach_home() -> void:
+## Into Root Hall, the stone rolled back behind them: the end of Level 1.
+func _finish_level() -> void:
 	day_over = true
 	clock.running = false
 	player.play_action("victory", 1.0)
-	var late := clock.night() > 0.0
-	hud.show_card("Home" if not late else "Home, late",
-		("Back under the door at %s, before the sun went down." if not late else "Back under the door at %s, in the dark.") % clock.clock_text()
-		+ "\nPress R to play again.")
+	get_tree().create_timer(2.0).timeout.connect(func() -> void:
+		hud.show_card("The Road to the Kingdom",
+			"Through the stone, a voice: \"Let's see if he survives long enough to face me.\"\n\nEnd of Level 1 · Press R to play again."))
 
 
 func _spawn_props() -> void:
@@ -244,14 +251,14 @@ func _spawn_props() -> void:
 		puff.global_position = Vector3(float(spot["at"][0]), 0.0, float(spot["at"][1]))
 
 
-## The ants who live here (layout stand-ins): Opigo and Opumie at their watch
-## post under the Capstone, guards at the Colony Gate, carriers at the water
-## station. They stand their ground, looking about (Companion.ENABLED is off:
-## nobody follows Amodu yet).
+## The ants who live here (layout stand-ins): guards at the Colony Gate,
+## carriers at the water station; Opigo and Opumie at their watch post under
+## the Capstone only when they aren't travelling with Amodu (Companion.ENABLED).
+## They stand their ground, looking about.
 func _spawn_ants() -> void:
 	var capstone := layout.ground_point(layout.item("landmarks", "crown_cap")["pos"])
 	for sd: Dictionary in layout.items("standins"):
-		if String(sd["kind"]) != "ant":
+		if String(sd["kind"]) != "ant" or (Companion.ENABLED and String(sd["name"]) in AntModel.HEROES):
 			continue
 		var body := StaticBody3D.new()
 		body.name = String(sd["name"]).replace(" ", "")
@@ -291,14 +298,13 @@ func _spawn_pill_bugs() -> void:
 
 
 func _spawn_companions() -> void:
-	var cast := [["Opigo", 3.5, 0.8, Color(1.0, 0.55, 0.45)], ["Opumie", 6.0, -0.8, Color(1.0, 0.82, 0.4)]]
+	var cast := [["Opigo", 3.5, 0.8], ["Opumie", 6.0, -0.8]]
 	for c: Array in cast:
 		var ant := Companion.new()
 		ant.name = String(c[0])
 		ant.display_name = String(c[0])
 		ant.trail_gap = float(c[1])
 		ant.side = float(c[2])
-		ant.label_color = c[3]
 		add_child(ant)
 		ant.follow(player)
 		companions.append(ant)
@@ -317,18 +323,6 @@ func _physics_process(delta: float) -> void:
 				show_toast("Checkpoint · %s" % checkpoint["name"])
 			checkpoint_reached.emit(checkpoint["name"])
 
-	if not expedition_mode:
-		var gate := LawnLayout.xz(layout.item("landmarks", "colony_gate")["pos"])
-		var near_gate := Vector2(p.x, p.z).distance_to(gate) < 9.0
-		if near_gate and not _gate_announced:
-			show_toast("Colony Gate · the colony interior is a later level")
-		_gate_announced = near_gate
-
-	if clock != null and not day_over:
-		var door: Array = layout.data["patio"]["door"]["x"]
-		if p.z > home.z - 4.0 and p.x > float(door[0]) and p.x < float(door[1]) and p.y > home.y - 3.0:
-			_reach_home()
-
 	if p.y < FALL_LIMIT:
 		respawn("Fell out of the world")  # (the Rut no longer sweeps him away: he swims)
 
@@ -339,6 +333,8 @@ func _process(delta: float) -> void:
 	if _hud_refresh > 0.0:
 		return
 	_hud_refresh = 0.2
+	if story != null and hud != null:
+		hud.home = story.destination()
 	var p := player.global_position
 	var area := layout.area_at(p.x, p.z)
 	var area_name := "%d · %s" % [int(area["order"]), String(area["name"])] if not area.is_empty() else "Open lawn"

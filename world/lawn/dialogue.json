@@ -1,0 +1,116 @@
+{
+  "note": "Level 1, The Road to the Kingdom (docs/GAMEPLAY.md). Played by world/dialogue.gd, triggered by world/level_story.gd. Conversations play once; pools repeat (random pick, cooldown in seconds). Opigo is gruff and calls Amodu a mistake; Opumie is warm and funny. Family-friendly.",
+  "speakers": {
+    "Opigo": "#ff8f73",
+    "Opumie": "#ffd166",
+    "Amodu": "#9fd8ff",
+    "Gate guard": "#d9cbb3"
+  },
+  "conversations": {
+    "start": [
+      ["Opigo", "No. No, no, no. That's a mistake."],
+      ["Opumie", "The potion's gone, old friend. There's no second shot."],
+      ["Opigo", "We came for the big one. The loud one. Not... this."],
+      ["Amodu", "I'm standing right here, you know."],
+      ["Opumie", "And you're what we've got. Come on, kid. Our camp's by the pencil."]
+    ],
+    "first_lift": [
+      ["Opigo", "...He lifted that."],
+      ["Opumie", "With his arms, even. You were saying?"],
+      ["Opigo", "I wasn't saying anything."]
+    ],
+    "stage:camp": [
+      ["Opumie", "Home sweet camp. And there it is: an axe for the chosen one."],
+      ["Opigo", "Took three of us to drag it here. Nobody could swing it."],
+      ["Opumie", "Go on. Give the kid a chance."]
+    ],
+    "axe": [
+      ["Opigo", "Hm. He can hold it. Doesn't mean he can use it."],
+      ["Opumie", "That twig's blocked our road for a week. Show him."]
+    ],
+    "twig_cut": [
+      ["Opumie", "Road's open!"],
+      ["Opigo", "Lucky swing."]
+    ],
+    "stage:bag_top": [
+      ["Amodu", "That's my school bag. I just climbed my own school bag."],
+      ["Opumie", "See the red earth in the middle? That's our gate. Home."],
+      ["Opigo", "And smoke in the south. Termites. Too close to the colony."],
+      ["Opumie", "Grab a seed puff. Faster than walking, and a lot more fun."]
+    ],
+    "stage:dandelion": [
+      ["Opigo", "Keep your voice down in the grass. Things live here that eat things like us."],
+      ["Amodu", "Like what?"],
+      ["Opigo", "Like everything."]
+    ],
+    "stage:daisy_stair": [
+      ["Opumie", "Up the daisies. Mind the pollen, it gets everywhere."]
+    ],
+    "stage:root_hall_door": [
+      ["Opumie", "Root Hall. Nobody's used that door since before my grandmother."],
+      ["Opigo", "Sealed with stone. The old way's closed. Keep moving."],
+      ["Amodu", "What's behind it?"],
+      ["Opumie", "Old tunnels. Older stories. Remember it."]
+    ],
+    "stage:orb_web": [
+      ["Opigo", "Web. Walk around it. Don't touch anything."],
+      ["Opumie", "He means you, kid."]
+    ],
+    "stage:capstone": [
+      ["Opumie", "The Capstone. Best view in the garden."],
+      ["Opigo", "...Opumie. Look at the gate."],
+      ["Opumie", "Termites. Hundreds of them. That's Akpuru's army."],
+      ["Opigo", "They're marching on the colony. Run!"]
+    ],
+    "gate": [
+      ["Gate guard", "Halt! The gate is sealed. Nobody in, nobody out."],
+      ["Opigo", "It's us, you fool. Opigo and Opumie!"],
+      ["Gate guard", "You two can come in. Not that thing."],
+      ["Amodu", "I'm not a thing."],
+      ["Gate guard", "Queen's orders. The siege has begun."],
+      ["Opumie", "Then there's another way. The old way!"],
+      ["Opigo", "Root Hall? Nobody can move that stone."],
+      ["Opumie", "Nobody we'd met before today."]
+    ],
+    "dusk": [
+      ["Opigo", "Sun's going. Termites hunt in the dark."],
+      ["Opumie", "Then let's not be here for it. To the apple tree!"]
+    ],
+    "door_ready": [
+      ["Opumie", "Here. The old door. Kid... push."]
+    ],
+    "door_open": [
+      ["Opigo", "He moved it. He actually moved it."],
+      ["Opumie", "In! Everyone in!"]
+    ]
+  },
+  "pools": {
+    "idle": {
+      "cooldown": 110,
+      "lines": [
+        [["Opumie", "You know what they called us, back in the day? The Musketeers."], ["Opigo", "Don't start."]],
+        [["Amodu", "Are you sure you know the way?"], ["Opigo", "I've walked this garden since before you were born."], ["Opumie", "He got lost behind the watering can last spring."]],
+        [["Opigo", "Walk quieter. You stomp like a beetle."]],
+        [["Opumie", "Hungry? There are cake crumbs about. Humans are generous without knowing it."]],
+        [["Amodu", "My mum's going to be so worried."], ["Opumie", "Then let's get you somewhere safe, and quick."]],
+        [["Opigo", "Three of us went out once. Only two came back."], ["Opumie", "Not now, Opigo."]]
+      ]
+    },
+    "lift": {
+      "cooldown": 150,
+      "lines": [
+        [["Opumie", "Show-off."]],
+        [["Opigo", "Put that down before you hurt yourself. ...Fine."]],
+        [["Opumie", "Every time. Every single time, it's still amazing."]]
+      ]
+    },
+    "knocked_out": {
+      "cooldown": 30,
+      "lines": [
+        [["Opigo", "Up you get. Heroes don't nap."]],
+        [["Opumie", "You're all right. Mostly."]],
+        [["Opigo", "Told you. A mistake."], ["Opumie", "A mistake who keeps getting back up."]]
+      ]
+    }
+  }
+}

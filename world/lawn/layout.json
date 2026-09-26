@@ -2242,9 +2242,19 @@
       ]
     ]
   },
-  "route_home": {
-    "note": "The way home without words (world/route_guide.gd): one landmark per stage, each in sight of the last. A column of golden motes rises over the next one and a gold diamond marks it on the compass. Reaching a later stage skips ahead.",
+  "route": {
+    "note": "Level 1, The Road to the Kingdom (docs/GAMEPLAY.md), without words (world/route_guide.gd): one landmark per stage, each in sight of the last. A column of golden motes rises over the next one and a gold diamond marks it on the compass. Reaching a later stage skips ahead, except an \"in_order\" stage, which counts only once it's the next one.",
     "stages": [
+      {
+        "id": "camp",
+        "name": "The ants' camp",
+        "at": [
+          64,
+          -242
+        ],
+        "radius": 14,
+        "why": "M2 A Hero's Axe: the stakeout camp by the pencil log, where the ants left an axe no ant can lift."
+      },
       {
         "id": "bag_top",
         "name": "The top of the bag",
@@ -2255,7 +2265,7 @@
         "radius": 24,
         "min_y": 110,
         "y": 136,
-        "why": "The view home, and seed puffs snagged there to glide down on."
+        "why": "M4 Over the Top: the whole garden below, and seed puffs snagged there to glide down on."
       },
       {
         "id": "dandelion",
@@ -2278,68 +2288,81 @@
         "why": "Leap up the daisy heads in the Flower Bed."
       },
       {
+        "id": "root_hall_door",
+        "name": "Root Hall's door",
+        "at": [
+          -330,
+          2
+        ],
+        "radius": 16,
+        "why": "M6: an ancient ant door between the apple tree's roots, sealed with stone. Remember it."
+      },
+      {
+        "id": "orb_web",
+        "name": "The orb web",
+        "at": [
+          -205,
+          -15
+        ],
+        "radius": 20,
+        "why": "M7 Caught: Opigo in the web (Stage 2)."
+      },
+      {
         "id": "capstone",
-        "name": "Capstone",
+        "name": "The Capstone lookout",
         "at": [
           -140,
           55
         ],
         "radius": 25,
-        "why": "The bottle-cap shelter and its lookout blade."
+        "why": "M8: from the lookout, Akpuru's army marching on the gate."
       },
       {
-        "id": "great_root",
-        "name": "The Great Root",
+        "id": "colony_gate",
+        "name": "The Colony Gate",
         "at": [
-          -200,
-          150
+          40,
+          112
         ],
-        "radius": 30,
-        "y": 12,
-        "why": "Leap onto the root that walls off the south."
+        "radius": 16,
+        "why": "M8 The Shut Gate: sealed for the siege; dusk falls; the old way (world/level_story.gd)."
       },
       {
-        "id": "windfall_apple",
-        "name": "The windfall apple",
+        "id": "root_hall",
+        "name": "Root Hall",
         "at": [
-          -235,
-          200
-        ],
-        "radius": 32,
-        "why": "A red boulder of an apple among the Windfall Roots."
-      },
-      {
-        "id": "trowel",
-        "name": "The trowel",
-        "at": [
-          -265,
-          292
-        ],
-        "radius": 18,
-        "why": "Its blade is the ramp up onto the patio."
-      },
-      {
-        "id": "brush",
-        "name": "The brush",
-        "at": [
-          -60,
-          490
-        ],
-        "radius": 26,
-        "y": 18,
-        "why": "Its handle leans on the back step."
-      },
-      {
-        "id": "back_door",
-        "name": "The back door",
-        "at": [
-          -185,
-          640
+          -330,
+          2
         ],
         "radius": 12,
-        "why": "Warm light under the door: crawl through, home."
+        "in_order": true,
+        "why": "M9 The Old Way: heave the door stone and go in. The end of Level 1."
       }
     ]
+  },
+  "story": {
+    "note": "Level 1's story beats that need places (world/level_story.gd). The door stone seals Root Hall's mouth until the Colony Gate shuts; then Amodu can heave it aside. Past \"inside\" (in the tunnel, below max_y) the level ends.",
+    "door_stone": {
+      "pos": [
+        -343,
+        1
+      ],
+      "size": 8.0,
+      "floor_y": -0.4,
+      "aside": [
+        -334,
+        -9
+      ]
+    },
+    "inside": {
+      "at": [
+        -356,
+        1
+      ],
+      "radius": 6,
+      "max_y": 6
+    },
+    "gate_dusk": 1100
   },
   "puffs": {
     "note": "Dandelion seed puffs snagged high up (world/props/seed_puff.gd): grab one and glide down. Each settles on the highest surface below from_height (default 400).",
