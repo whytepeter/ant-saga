@@ -463,30 +463,43 @@ func _test_leading() -> void:
 	story.set_process(true)
 
 
-## The first objective is the ants' pebble, marked in front of him; lifting
-## it moves the objective on to following the ants.
+## The first objective is following the ants to their camp; there a stone
+## the ants strain at but can't move sits on it; he pushes it off and the
+## objective moves on.
 func _test_objectives() -> void:
 	var story: LevelStory = level.get("story")
 	var hud: GameHud = level.get("hud")
 	await _frames(40)  # the objective fades in
 	var first := hud.objective_text()
-	_check("the first objective is the pebble", "pebble" in first.to_lower() and story.first_pebble != null,
+	_check("the first objective is following the ants to camp", "camp" in first.to_lower() and story.camp_stone != null,
 		"'%s'" % first)
-	if story.first_pebble == null:
+	if story.camp_stone == null:
 		return
-	var at := story.first_pebble.global_position
-	var to := at - player.global_position
-	player.teleport(layout.ground_point([at.x - to.normalized().x * 2.6, at.z - to.normalized().z * 2.6], 0.3),
-		atan2(-to.x, -to.z))
-	await _frames(20)
-	await _tap("interact")
-	await _frames(60)
-	var lifted := player.carried == story.first_pebble
-	var next := hud.objective_text()
-	_check("lifting it moves the objective on", lifted and "follow" in next.to_lower(),
-		"carrying it: %s; now '%s'" % [lifted, next])
-	await _tap("interact")  # put it down
+	var stone := story.camp_stone.global_position
+	var weight_ok := story.camp_stone.weight == Heavable.Weight.PUSH
+	# arrive from the west; the ants go and strain at it
+	player.teleport(layout.ground_point([stone.x - 9.0, stone.z + 0.3], 0.3), -PI / 2.0)  # facing +x
+	await _frames(_seconds(4.0))
+	var pushing := 0
+	for ant: Companion in level.get("companions"):
+		if ant.is_standing():
+			pushing += 1
+	var still := story.camp_stone.global_position.distance_to(stone) < 0.5
+	_check("the ants strain at the stone on their camp, and it doesn't move", pushing == 2 and still and weight_ok,
+		"%d ant(s) pushing; stone moved %.1f m" % [pushing, story.camp_stone.global_position.distance_to(stone)])
+	var push_prompt := String(player.get("_hint"))
+	Input.action_press("interact")
+	Input.action_press("move_forward")
+	for k in _seconds(8.0):
+		await physics_frame
+		if story.camp_freed:
+			break
+	Input.action_release("interact")
+	Input.action_release("move_forward")
 	await _frames(30)
+	var next := hud.objective_text()
+	_check("he pushes it off the camp; the objective moves on", story.camp_freed and "crisp packet" in next.to_lower(),
+		"prompt '%s'; freed: %s; now '%s'" % [push_prompt, story.camp_freed, next])
 	# the Cut Road: at the torn-open crisp packet the ants hand him an axe
 	var inv := player.get_node("Inventory") as Inventory
 	var had := inv.has_weapon(Weapons.AXE)
@@ -562,6 +575,7 @@ func _test_chopping() -> void:
 	var combat := player.get_node("Combat") as PlayerCombat
 	inv.add_weapon(Weapons.AXE, false)
 	inv.add_weapon(Weapons.KNIFE, false)
+	inv.equip(Weapons.FISTS)  # (the ants may have handed him the axe already)
 	# stand beside the twig's middle; teleport's yaw is the camera's: looking at it
 	var side := twig.global_transform.basis.x.normalized()
 	var at := twig.global_position + side * 2.4

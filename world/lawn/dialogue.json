@@ -25,22 +25,32 @@
         "I'm standing right here, you know."
       ],
       [
-        "Opigo",
-        "Then make yourself useful. That pebble's been in our road all morning."
-      ],
-      [
         "Opumie",
-        "Go on, kid. Lift it."
+        "Then come on. Our camp's by the pencil, and we need our things."
       ]
     ],
-    "first_lift": [
+    "camp_stone": [
       [
         "Opigo",
-        "...He lifted that."
+        "Push! ...It won't budge."
       ],
       [
         "Opumie",
-        "Like it was a crumb. You were saying?"
+        "The giant's stomping brought it down on our camp. Everything we have is under there."
+      ],
+      [
+        "Opumie",
+        "Well, kid? Don't just stand there."
+      ]
+    ],
+    "camp_freed": [
+      [
+        "Opigo",
+        "...He moved it."
+      ],
+      [
+        "Opumie",
+        "On his own. You were saying?"
       ],
       [
         "Opigo",
@@ -48,21 +58,7 @@
       ],
       [
         "Opumie",
-        "Come on, kid. Our camp's by the big pencil. Stay close."
-      ]
-    ],
-    "stage:camp": [
-      [
-        "Opumie",
-        "Home sweet camp. Such as it is."
-      ],
-      [
-        "Opigo",
-        "Make yourself useful. Grass fibre, pebbles, anything we can use."
-      ],
-      [
-        "Opumie",
-        "Go on. Give the kid a chance."
+        "Grab what you can carry. Then east, to our old rest stop."
       ]
     ],
     "stage:crisp_packet": [
@@ -92,11 +88,11 @@
     "cut_road_escape": [
       [
         "Opigo",
-        "They'll be back, and more of them. We need to get high, somewhere they can't follow."
+        "They'll be back, and more of them. We need to get away, fast."
       ],
       [
         "Opumie",
-        "Your bag, kid. Climb it. We'll hang on."
+        "Up your bag, kid. From the top, we fly."
       ]
     ],
     "twig_cut": [
@@ -111,6 +107,10 @@
     ],
     "stage:bag_top": [
       [
+        "Opigo",
+        "Took you long enough."
+      ],
+      [
         "Amodu",
         "That's my school bag. I just climbed my own school bag."
       ],
@@ -124,7 +124,7 @@
       ],
       [
         "Opumie",
-        "Grab a seed puff. Faster than walking, and a lot more fun."
+        "Grab a seed puff. Faster than walking, and they can't follow us through the air."
       ]
     ],
     "stage:dandelion": [
@@ -150,11 +150,11 @@
     "stage:root_hall_door": [
       [
         "Opumie",
-        "Root Hall. Nobody's used that door since before my grandmother."
+        "Root Hall. The colony sealed that door before my grandmother's time."
       ],
       [
         "Opigo",
-        "Sealed with stone. The old way's closed. Keep moving."
+        "Wedged tight. A hundred of us couldn't shift it. Keep moving."
       ],
       [
         "Amodu",
@@ -230,11 +230,11 @@
       ],
       [
         "Opigo",
-        "Root Hall? Nobody can move that stone."
+        "Root Hall? The colony sealed it for good. It'd take a hundred of us."
       ],
       [
         "Opumie",
-        "Nobody we'd met before today."
+        "Or one of him."
       ]
     ],
     "dusk": [

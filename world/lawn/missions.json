@@ -1,16 +1,16 @@
 {
-  "note": "Level 1's missions as the player sees them: a title, then one objective at a time (world/missions.gd, shown by ui/objective.gd). A step is done when its event happens (world/level_story.gd sends them): lift, puff, chop:<kind>, weapon:<id>, stage:<route stage id>, door_open, inside. An event that finishes a later step skips ahead. If the player makes no progress for a while, the hint is said aloud.",
+  "note": "Level 1's missions as the player sees them: a title, then one objective at a time (world/missions.gd, shown by ui/objective.gd). A step is done when its event happens (world/level_story.gd sends them): lift, camp_freed, puff, chop:<kind>, weapon:<id>, stage:<route stage id>, door_open, inside. An event that finishes a later step skips ahead. If the player makes no progress for a while, the hint is said aloud.",
   "missions": [
     {
       "id": "wrong_boy",
       "title": "The Wrong Boy",
       "steps": [
         {
-          "text": "Lift the pebble the ants couldn't move",
-          "done_on": "lift",
+          "text": "Follow the ants to their camp by the pencil",
+          "done_on": "stage:camp",
           "hint": [
             "Opumie",
-            "That pebble, kid. Walk up to it and lift it. Go on."
+            "The camp's by the big yellow pencil. Follow me, kid."
           ]
         }
       ]
@@ -20,11 +20,11 @@
       "title": "The Stakeout Camp",
       "steps": [
         {
-          "text": "Follow the ants to their camp by the pencil",
-          "done_on": "stage:camp",
+          "text": "Push the stone off the ants' camp",
+          "done_on": "camp_freed",
           "hint": [
             "Opumie",
-            "The camp's by the big yellow pencil. Follow me, kid."
+            "Lean on it, kid. Put your back into it."
           ]
         },
         {
@@ -60,7 +60,7 @@
           "done_on": "stage:bag_top",
           "hint": [
             "Opumie",
-            "Up the bag, kid. The hunters can't climb that."
+            "Up the bag, kid. From the top we can fly out of here."
           ]
         },
         {
@@ -150,7 +150,7 @@
           "done_on": "door_open",
           "hint": [
             "Opumie",
-            "Lean on it, kid. Hold E and push."
+            "Lean on it, kid. Push!"
           ]
         },
         {

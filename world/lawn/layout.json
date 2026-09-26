@@ -1606,13 +1606,13 @@
   "heavables": [
     {
       "kind": "pebble",
-      "size": 2.2,
-      "name": "The ants' pebble",
+      "size": 5.0,
+      "name": "Fallen stone",
       "pos": [
-        32,
-        -203
+        62,
+        -230
       ],
-      "note": "M1 The Wrong Boy: the pebble Opigo couldn't shift, right in front of Amodu as he wakes; lifting it is the first objective (world/lawn/missions.json)."
+      "note": "M2 The Stakeout Camp: shaken down onto the ants' camp by the bully's stomping, with their kit under it. Far heavier than any team of ants can shift (push class); pushing it off is the first thing Amodu does for them (world/level_story.gd)."
     },
     {
       "kind": "crumb",
@@ -2259,8 +2259,8 @@
         "id": "camp",
         "name": "The ants' camp",
         "at": [
-          64,
-          -242
+          60,
+          -232
         ],
         "radius": 14,
         "why": "M2 The Stakeout Camp: the ants' camp by the pencil log."
@@ -2391,12 +2391,12 @@
           -207
         ],
         [
-          50,
-          -219
+          46,
+          -218
         ],
         [
-          57,
-          -231
+          52,
+          -228
         ]
       ],
       "stage:orb_web": [
@@ -2491,8 +2491,8 @@
       ],
       "stage:crisp_packet": [
         [
-          57,
-          -231
+          66,
+          -224
         ],
         [
           120,
@@ -2507,6 +2507,21 @@
           -234
         ]
       ]
+    },
+    "camp_stone": {
+      "name": "Fallen stone",
+      "freed_after": 3.5,
+      "ant_spots": [
+        [
+          59,
+          -232.2
+        ],
+        [
+          59,
+          -227.8
+        ]
+      ],
+      "note": "While the stone sits on the camp the ants push at it from these spots; it counts as freed once moved freed_after metres."
     }
   },
   "puffs": {

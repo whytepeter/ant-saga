@@ -162,6 +162,34 @@ func objective_text() -> String:
 	return _objective.current_text()
 
 
+## Story time passing: the screen fades to black with `caption` (small,
+## spaced, in cream), `at_dark` runs while it's dark, then it fades back.
+func fade_through(caption: String, at_dark: Callable) -> void:
+	var veil := ColorRect.new()
+	veil.color = Color(0.02, 0.02, 0.02, 0.0)
+	veil.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	veil.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(veil)
+	move_child(veil, 0)  # under the subtitles and the objective
+	var words := _label(veil, 26, CREAM, 0, caption.to_upper())
+	var spaced := FontVariation.new()
+	spaced.base_font = font
+	spaced.spacing_glyph = 5
+	words.label_settings.font = spaced
+	words.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
+	words.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	words.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	words.modulate.a = 0.0
+	var t := create_tween()
+	t.tween_property(veil, "color:a", 1.0, 0.9)
+	t.tween_property(words, "modulate:a", 1.0, 0.5)
+	t.tween_callback(at_dark)
+	t.tween_interval(1.4)
+	t.tween_property(words, "modulate:a", 0.0, 0.5)
+	t.tween_property(veil, "color:a", 0.0, 1.2)
+	t.tween_callback(veil.queue_free)
+
+
 ## A line of dialogue (Dialogue.line_shown).
 func show_line(speaker: String, text: String, color: Color, seconds: float) -> void:
 	_subtitles.show_line(speaker, text, color, seconds)

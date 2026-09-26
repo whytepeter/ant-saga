@@ -13,14 +13,17 @@ extends Node
 ##   inside            the level ends (LawnLayout "story")
 ##
 ## The objective under the compass comes from Missions (world/lawn/missions.json):
-## this reports what happens to it as events. The first one is the ants'
-## pebble, marked, right in front of Amodu as he wakes. While an objective is
+## this reports what happens to it as events. The first real task is the
+## stone shaken down onto the ants' camp: both ants strain at it and it won't
+## budge; he pushes it off. While an objective is
 ## up, Opumie leads the way where the layout has a path for it ("story"
 ## "leads"); during a conversation the ants face whoever they're talking to.
 ## The compass's and map's goal marker (GameHud.home) follows destination().
 
 signal door_opened
 signal level_finished
+## Story time passes (the siege runs late): LawnLevel fades through it.
+signal time_skip(to_minutes: float, caption: String)
 
 const IDLE_AFTER := 75.0
 
@@ -31,8 +34,9 @@ var guide: RouteGuide
 var clock: DayClock
 var dialogue: Dialogue
 var missions: Missions
-## The pebble the ants couldn't move (the first objective).
-var first_pebble: Heavable
+## The stone on the ants' camp (layout "story" "camp_stone").
+var camp_stone: Heavable
+var camp_freed := false
 var door_stone: Heavable
 var gate_shut := false
 var door_open := false
@@ -40,9 +44,11 @@ var finished := false
 
 var _spec := {}
 var _door_home := Vector3.ZERO
-var _lifted_once := false
 var _started := false
-var _pebble_marker: PickupMarker
+var _stone_marker: PickupMarker
+var _stone_home := Vector3.ZERO
+## The ants ran up the bag ahead of him and are waiting at the top.
+var _ants_on_bag := false
 var _speaker := ""
 
 
@@ -67,7 +73,7 @@ func _ready() -> void:
 	missions.changed.connect(func(_t: String, _x: String, _n: bool) -> void: _lead_for_step())
 	dialogue.line_shown.connect(func(speaker: String, _text: String, _c: Color, _s: float) -> void: _speaker = speaker)
 	_build_door_stone()
-	_mark_first_pebble()
+	_find_camp_stone()
 	player.puff_changed.connect(func(holding: bool) -> void:
 		if holding:
 			missions.notify("puff"))
@@ -101,9 +107,9 @@ func start() -> void:
 	missions.begin()
 
 
-## Where the opening's camera ends up looking: the first thing to do.
+## Where the opening's camera ends up looking: the way to the ants' camp.
 func first_look() -> Vector3:
-	return first_pebble.global_position if first_pebble != null else guide.goal()
+	return camp_stone.global_position if camp_stone != null else guide.goal()
 
 
 ## Where the compass's goal marker points: the Colony Gate, then Root Hall.
@@ -117,6 +123,10 @@ func _process(delta: float) -> void:
 		return
 	if _started and player.input_enabled:
 		missions.tick(delta)
+	if camp_stone != null and not camp_freed and _flat(camp_stone.global_position - _stone_home) \
+			> float((_spec.get("camp_stone", {}) as Dictionary).get("freed_after", 3.5)):
+		_free_camp()
+	_ants_race_up_the_bag()
 	# a quiet walk gets some chatter
 	if dialogue.quiet_for() > IDLE_AFTER and Vector2(player.velocity.x, player.velocity.z).length() > 1.0:
 		dialogue.chatter("idle")
@@ -130,6 +140,10 @@ func _on_stage(_index: int, stage: Dictionary) -> void:
 	var id := String(stage["id"])
 	missions.notify("stage:" + id)
 	match id:
+		"camp":
+			if not camp_freed:
+				_ants_push_stone()
+				dialogue.say("camp_stone")
 		"colony_gate":
 			_shut_gate()
 		"root_hall":
@@ -166,7 +180,7 @@ func _on_conversation_done(id: String) -> void:
 		# the siege runs late: the sun is nearly down by the time they turn back
 		var dusk := float(_spec.get("gate_dusk", 1100.0))
 		if clock.minutes < dusk:
-			create_tween().set_trans(Tween.TRANS_SINE).tween_property(clock, "minutes", dusk, 6.0)
+			time_skip.emit(dusk, "Hours later")
 
 
 func _on_heaved(action: String, prop: Heavable) -> void:
@@ -177,14 +191,7 @@ func _on_heaved(action: String, prop: Heavable) -> void:
 	if action != "lift":
 		return
 	missions.notify("lift")
-	if prop == first_pebble and _pebble_marker != null:
-		_pebble_marker.queue_free()
-		_pebble_marker = null
-	if not _lifted_once:
-		_lifted_once = true
-		dialogue.say("first_lift")
-	else:
-		dialogue.chatter("lift")
+	dialogue.chatter("lift")
 
 
 ## He leans on it and the stone grinds aside, off the mouth of the tunnel.
@@ -250,17 +257,73 @@ func _build_door_stone() -> void:
 	door_stone.global_position = _door_home
 
 
-## The ants' pebble (layout "heavables"): a marker over it until he lifts it.
-func _mark_first_pebble() -> void:
+## The stone on the ants' camp: marked until it's pushed off.
+func _find_camp_stone() -> void:
+	var spec: Dictionary = _spec.get("camp_stone", {})
 	for h: Node in get_tree().get_nodes_in_group(&"heavables"):
-		if h is Heavable and (h as Heavable).display_name == "The ants' pebble":
-			first_pebble = h
-	if first_pebble == null:
+		if h is Heavable and (h as Heavable).display_name == String(spec.get("name", "")):
+			camp_stone = h
+	if camp_stone == null:
 		return
-	_pebble_marker = PickupMarker.new()
-	_pebble_marker.height = first_pebble.size * 0.5 + 1.6
-	_pebble_marker.reach = 30.0
-	first_pebble.add_child(_pebble_marker)
+	_stone_home = camp_stone.global_position
+	_stone_marker = PickupMarker.new()
+	_stone_marker.height = camp_stone.size * 0.5 + 1.8
+	_stone_marker.reach = 40.0
+	camp_stone.add_child(_stone_marker)
+
+
+## Both ants put their shoulders to the stone (and it doesn't move).
+func _ants_push_stone() -> void:
+	var spots: Array = (_spec.get("camp_stone", {}) as Dictionary).get("ant_spots", [])
+	var k := 0
+	for name: String in ["Opigo", "Opumie"]:
+		var ant := _hero(name)
+		if ant != null and k < spots.size():
+			ant.push_at(layout.ground_point(spots[k]), camp_stone.global_position)
+		k += 1
+
+
+## Ants run up walls far faster than a boy climbs: once he's partway up his
+## bag they're already on top, watching him come. When he gets there they
+## carry on as before.
+func _ants_race_up_the_bag() -> void:
+	var top := guide.stage_point("bag_top")
+	if top == Vector3.INF:
+		return
+	var p := player.global_position
+	var near_bag := _flat(p - top) < 70.0
+	if not _ants_on_bag and near_bag and player.state == Player.State.CLIMB and p.y > 25.0 and p.y < top.y - 10.0:
+		_ants_on_bag = true
+		var k := 0
+		for name: String in ["Opigo", "Opumie"]:
+			var ant := _hero(name)
+			if ant != null:
+				ant.wait_at(top + Vector3(-2.5 + 5.0 * k, 0.0, 2.0))
+			k += 1
+	elif _ants_on_bag and (_flat(p - top) < 12.0 and p.y > top.y - 3.0 and player.is_on_floor() or not near_bag):
+		_ants_on_bag = false
+		for name: String in ["Opigo", "Opumie"]:
+			var ant := _hero(name)
+			if ant != null and ant.is_standing():
+				ant.stop_standing()
+
+
+## He's pushed it off: their camp and their kit are free.
+func _free_camp() -> void:
+	camp_freed = true
+	if _stone_marker != null:
+		_stone_marker.queue_free()
+		_stone_marker = null
+	for name: String in ["Opigo", "Opumie"]:
+		var ant := _hero(name)
+		if ant != null:
+			ant.stop_standing()
+	dialogue.say("camp_freed")
+	missions.notify("camp_freed")
+
+
+func _flat(v: Vector3) -> float:
+	return Vector2(v.x, v.z).length()
 
 
 # ── the ants ──────────────────────────────────────────────────────────────────

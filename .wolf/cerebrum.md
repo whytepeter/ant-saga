@@ -28,6 +28,7 @@ budget_tokens: 2000
 - [2026-09-26] Level 1 story (user's decisions): a boy shrunk by two warrior ants (Opigo, Opumie) to help end the insect war; Level 1 is the journey back to the ant kingdom through the backyard. The destination is NEVER the house/back door (the old "get home under the back door" goal is dead). Dialogue comes back, styled like the compass UI (sleek subtitles). The playable-Opigo opening comes later, not in the first build. Working proposal: "Road to the Kingdom" (Levels 1-3), Level 1 ends sealing themselves into Root Hall at the apple/mango tree.
 - [2026-09-26] Dialogue shows the speaker's face (round portrait, ringed in their colour) beside the subtitle, compass style. Level 1 spans two days (First Night camp). The user wants: the ants face each other when talking; an objective line so a new player is never lost; the playable-Opigo opening back (after the guidance basics).
 - [2026-09-26] Items in the world mustn't always be surrounded or propped up by rocks: a dropped weapon just lies on the ground. Weapons are ant size (ordinary ant weapons anyone can wield), not oversized.
+- [2026-09-26] Be realistic and criticise what doesn't make sense: real ants lift many times their weight and climb walls. Never make the ants fail at something an ant could do (the "pebble the ants couldn't move" was wrong). Amodu's tasks must be beyond any team of ants AND matter to someone (the stone on the ants' camp). Hints never name keys; the on-screen prompt does.
 
 ## Key Learnings
 

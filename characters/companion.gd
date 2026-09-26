@@ -9,7 +9,10 @@ extends CharacterBody3D
 ## waits looking back when he falls behind, and drops back to following if he
 ## runs on ahead or wanders off. Talking (talk_focus): while a conversation
 ## plays and he's close and standing still, it stops and faces whoever it's
-## talking to (LevelStory sets the focus each frame).
+## talking to (LevelStory sets the focus each frame). Standing (stand_at): goes
+## to a spot and stays there, straining against something (push_at: the stone
+## on the ants' camp) or waiting for him (wait_at: on top of his bag, having
+## run up it ahead of him) until stop_standing().
 ##
 ## On an expedition, while a haul is on the move, the hero guards it instead:
 ## it walks beside the carriers and fights any pill bug that comes for the food
@@ -64,6 +67,9 @@ var talk_focus := Vector3.INF
 var _path := PackedVector3Array()
 var _path_i := 0
 var _waiting := false
+var _push_spot := Vector3.INF
+var _push_face := Vector3.INF  # INF: face Amodu
+var _stand_clip := "idle"
 ## Times it hopped past something while leading (tests watch this).
 var hops := 0
 
@@ -138,13 +144,44 @@ func _physics_process(delta: float) -> void:
 	_let_go()
 	if _track_leader():
 		return  # he teleported: regrouped beside him
-	if talk_focus != Vector3.INF and _flat(leader.global_position - global_position) < TALK_REACH \
+	if _push_spot != Vector3.INF:
+		_process_push(delta)
+	elif talk_focus != Vector3.INF and _flat(leader.global_position - global_position) < TALK_REACH \
 			and _flat(leader.velocity) < 1.5:
 		_process_talk(delta)
 	elif not _path.is_empty():
 		_process_lead(delta)
 	else:
 		_process_follow(delta)
+
+
+## Goes to `spot` and pushes toward `face` (the ants straining at the stone).
+func push_at(spot: Vector3, face: Vector3) -> void:
+	stand_at(spot, face, "push")
+
+
+## Goes to `spot` (or appears there, off in the distance) and waits, watching him.
+func wait_at(spot: Vector3) -> void:
+	stand_at(spot, Vector3.INF, "idle")
+	global_position = spot + Vector3.UP * 0.5
+	velocity = Vector3.ZERO
+
+
+func stand_at(spot: Vector3, face: Vector3, clip: String) -> void:
+	_push_spot = spot
+	_push_face = face
+	_stand_clip = clip
+	stop_leading()
+
+
+func stop_standing() -> void:
+	if _push_spot != Vector3.INF:
+		_push_spot = Vector3.INF
+		_body.play("idle", 1.0)
+
+
+func is_standing() -> bool:
+	return _push_spot != Vector3.INF
 
 
 ## Walks `points` ahead of Amodu, from the one nearest it.
@@ -188,6 +225,25 @@ func _track_leader() -> bool:
 		if _trail.size() > TRAIL_LENGTH:
 			_trail.remove_at(0)
 	return false
+
+
+# ── pushing ───────────────────────────────────────────────────────────────────
+
+func _process_push(delta: float) -> void:
+	var to := _push_spot - global_position
+	to.y = 0.0
+	if to.length() > 0.6:
+		var moved := _steer(to.normalized() * LEAD_SPEED, delta)
+		_stuck_time = _stuck_time + delta if moved < 0.4 else 0.0
+		if _stuck_time > 2.0 or to.length() > 40.0:
+			_stuck_time = 0.0
+			global_position = _push_spot + Vector3.UP * 0.5
+		return
+	velocity = Vector3(0.0, 0.0 if is_on_floor() else velocity.y - gravity * delta, 0.0)
+	move_and_slide()
+	var look := _push_face if _push_face != Vector3.INF else leader.global_position
+	_face(look - global_position, delta)
+	_body.play(_stand_clip, 0.8 if _stand_clip == "push" else 1.0)
 
 
 # ── talking ───────────────────────────────────────────────────────────────────

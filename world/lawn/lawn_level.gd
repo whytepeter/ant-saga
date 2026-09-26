@@ -130,6 +130,8 @@ func _setup_adventure() -> void:
 	add_child(hud)
 	story.dialogue.line_shown.connect(hud.show_line)
 	story.missions.changed.connect(hud.show_objective)
+	story.time_skip.connect(func(to_minutes: float, caption: String) -> void:
+		hud.fade_through(caption, func() -> void: clock.minutes = maxf(clock.minutes, to_minutes)))
 	info.visible = false
 	$HUD/Help.visible = false
 	player.wake_up()

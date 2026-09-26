@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-26T19:50:45.242Z
-> Files: 270 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-26T20:18:39.200Z
+> Files: 271 tracked | Anatomy hits: 0 | Misses: 0
 
 > Project structure index. Auto-maintained by OpenWolf hooks and daemon.
 > Run `openwolf scan` to generate, or wait for the first Claude Code session.
@@ -18,6 +18,10 @@
 - `mcp_ports.cfg` (~11 tok)
 - `project.godot` (~2082 tok)
 - `README.md` — Project documentation (~621 tok)
+
+## .claude/agents/
+
+- `narrative-designer.md` — The game in one paragraph (~2145 tok)
 
 ## .godot/
 

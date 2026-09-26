@@ -1,13 +1,13 @@
 {
   "version": 1,
   "meta": {
-    "lastScanned": "2026-09-26T19:50:45.242Z",
-    "fileCount": 270,
+    "lastScanned": "2026-09-26T20:18:39.200Z",
+    "fileCount": 271,
     "hits": 0,
     "misses": 0,
-    "renderedHash": "e09f7e98281ddc98645258fe6e8a2a55575fbd756da63ae6fc35f66676feb434",
-    "storeUpdatedAt": "2026-09-26T19:50:45.250Z",
-    "rootHash": "ba7299cd1fa6c0d0"
+    "renderedHash": "1410520a7ce9c92dce788ea52944f4c739f9e7073c121b345fbe79449d2816de",
+    "storeUpdatedAt": "2026-09-26T20:18:39.209Z",
+    "rootHash": "67c7c49bcd665573"
   },
   "files": {
     ".gitattributes": {
@@ -3057,6 +3057,15 @@
       "size": 3063,
       "mtimeMs": 1790452245152.7283,
       "updatedAt": "2026-09-26T19:50:45.241Z",
+      "source": "hook"
+    },
+    ".claude/agents/narrative-designer.md": {
+      "description": "The game in one paragraph",
+      "tokens": 2145,
+      "hash": "08e4fc0fb7a30fc1",
+      "size": 8592,
+      "mtimeMs": 1790453919076.1428,
+      "updatedAt": "2026-09-26T20:18:39.199Z",
       "source": "hook"
     }
   },
