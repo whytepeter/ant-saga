@@ -1,13 +1,13 @@
 {
   "version": 1,
   "meta": {
-    "lastScanned": "2026-09-26T16:37:20.930Z",
-    "fileCount": 259,
+    "lastScanned": "2026-09-26T17:04:35.200Z",
+    "fileCount": 260,
     "hits": 0,
     "misses": 0,
-    "renderedHash": "6998f6b600c96c13210ef4e21d6fe30c568eecb2f474d38a923fe51f9e66c427",
-    "storeUpdatedAt": "2026-09-26T16:37:20.938Z",
-    "rootHash": "7c14491d7626cf2d"
+    "renderedHash": "067837751d270e9832084f80d0e8784761790fdb255c92e917b45cef2c23e03b",
+    "storeUpdatedAt": "2026-09-26T17:04:35.209Z",
+    "rootHash": "576746705dd83498"
   },
   "files": {
     ".gitattributes": {
@@ -2958,6 +2958,15 @@
       "size": 3635,
       "mtimeMs": 1790438586766.6704,
       "updatedAt": "2026-09-26T16:03:06.881Z",
+      "source": "hook"
+    },
+    "tools/retarget_ant_heroes.gd": {
+      "description": "Declares SOURCE_DIR",
+      "tokens": 2084,
+      "hash": "7163a5c742210101",
+      "size": 7817,
+      "mtimeMs": 1790442275092.126,
+      "updatedAt": "2026-09-26T17:04:35.200Z",
       "source": "hook"
     }
   },

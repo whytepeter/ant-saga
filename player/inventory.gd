@@ -4,14 +4,14 @@ extends Node
 ##
 ## He can own any number of weapons, but carries three on his body:
 ##   the knife     his permanent tool, always at his hip: E cuts silk and vines
-##                 with it (never a combat slot)
+##                 with it whatever he's holding, and he can fight with it too
 ##   the axe       his signature weapon, across his back ("main")
 ##   a secondary   one more weapon of his choice on the other side of his back
 ##                 (hammer, spear, ...): chosen in the inventory panel (Tab);
 ##                 the one it replaces stays owned, not carried
-## In a fight he swaps between the axe, the secondary and his bare fists:
+## In a fight he swaps between the axe, the secondary, the knife and his fists:
 ##
-##   X / mouse wheel  axe → secondary → fists → axe
+##   X / mouse wheel  axe → secondary → knife → fists → axe
 ##   Tab              the inventory panel (InventoryPanel)
 
 signal changed
@@ -60,6 +60,8 @@ func combat_cycle() -> Array[StringName]:
 		out.append(main)
 	if secondary != &"":
 		out.append(secondary)
+	if has_knife:
+		out.append(Weapons.KNIFE)
 	out.append(Weapons.FISTS)
 	return out
 

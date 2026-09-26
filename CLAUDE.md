@@ -32,6 +32,7 @@ Third-person 3D game in Godot 4.7 (Forward+, Jolt). **SMALL GIANT** (direction s
 - The apple tree's base and Root Hall's caves are baked from layout "tree_base" with Blender:
   `/Applications/Blender.app/Contents/MacOS/Blender -b --factory-startup --python tools/bake_tree_base.py`, then reimport. `world/lawn/tree_base.gd` places it.
 - Amodu's fingers: Meshy's rig has none; `tools/add_finger_bones.gd` adds two bones per finger and thumb and writes `hands_mesh.res`, `hands_skin.res`, `hands.json` (re-run it if `rigged.glb` changes). `player/finger_curl.gd` bends them.
+- Opigo and Opumie (the user's Meshy models, Mixamo-named rig in metres) run on Amodu's current clips retargeted by `Godot --headless --path . -s tools/retarget_ant_heroes.gd` (re-run after rebuilding Amodu's library).
 - Companions and ants: `characters/ant_model.gd` runs on the older library `player/explorer/amodu_animations.res` (`tools/build_explorer_anims.gd`).
 
 ## Verify every change

@@ -324,6 +324,24 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-09-26"
+    },
+    {
+      "id": "bug-023",
+      "timestamp": "2026-09-26",
+      "error_message": "Opigo floats above the ground, hunched with clenched fists",
+      "file": "characters/ant_model.gd",
+      "root_cause": "The heroes' Mixamo-named rig rests with different bone axes from the rig Amodu's old clips were made for, so copied local rotations bent every joint wrong; hips too high.",
+      "fix": "tools/retarget_ant_heroes.gd retargets Amodu2's library per hero in skeleton space (rest-relative world rotations, bone map), scales hips travel and pins the lowest foot to Amodu's (scaled) height; AntModel loads <hero>_animations.res.",
+      "tags": [
+        "animation",
+        "retarget",
+        "rig"
+      ],
+      "related_bugs": [
+        "bug-022"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-09-26"
     }
   ]
 }

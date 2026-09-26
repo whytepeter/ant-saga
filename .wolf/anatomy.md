@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-26T16:37:20.930Z
-> Files: 259 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-26T17:04:35.200Z
+> Files: 260 tracked | Anatomy hits: 0 | Misses: 0
 
 > Project structure index. Auto-maintained by OpenWolf hooks and daemon.
 > Run `openwolf scan` to generate, or wait for the first Claude Code session.
@@ -251,6 +251,7 @@
 - `make_sounds.py` — Synthesise the game's sound effects into assets/audio/ (16-bit mono WAV). (~5158 tok)
 - `process_sounds.py` — Make the game's sounds (assets/audio/*.ogg) from recorded CC0 sources. (~3133 tok)
 - `prop_sheet.gd` — Declares VIEWS (~787 tok)
+- `retarget_ant_heroes.gd` — Declares SOURCE_DIR (~2084 tok)
 
 ## ui/
 

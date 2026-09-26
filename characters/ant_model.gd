@@ -1,9 +1,9 @@
 class_name AntModel
 extends Node3D
 ## An ant character: the ant scout model for the workers, and the heroes' own
-## models (Opigo, Opumie: the user's Meshy characters, assets/characters/). All
-## have the Mixamo rig, so they run on Amodu's old animation library (minus the
-## bones a model doesn't have).
+## models (Opigo, Opumie: the user's Meshy characters, assets/characters/).
+## The workers run on Amodu's old animation library (minus the bones the model
+## doesn't have); the heroes on his current one, retargeted to their rig.
 
 const SCENE := preload("res://creatures/ant_scout/Meshy_AI_Amber_Ant_Scout_biped_Animation_Walking_withSkin.glb")
 ## The heroes' own models, by name.
@@ -35,8 +35,13 @@ func _ready() -> void:
 	_anim = model.find_children("*", "AnimationPlayer", true, false)[0]
 	for lib_name in _anim.get_animation_library_list():
 		_anim.remove_animation_library(lib_name)
-	_anim.add_animation_library("", _library_for(model.find_children("*", "Skeleton3D", true, false)[0]))
-	var speeds: Dictionary = ANIMATIONS.get_meta("natural_speed")
+	# a hero has Amodu's current clips, retargeted to their own rig
+	# (tools/retarget_ant_heroes.gd); the workers share his old ones
+	var own := "res://assets/characters/%s/%s_animations.res" % [hero.to_lower(), hero.to_lower()]
+	var lib: AnimationLibrary = load(own) if HEROES.has(hero) and ResourceLoader.exists(own) \
+		else _library_for(model.find_children("*", "Skeleton3D", true, false)[0])
+	_anim.add_animation_library("", lib)
+	var speeds: Dictionary = lib.get_meta("natural_speed", ANIMATIONS.get_meta("natural_speed"))
 	_walk_natural = speeds["walk"]
 	_run_natural = speeds["run"]
 	play("idle", 1.0)
