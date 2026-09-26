@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-26T17:04:35.200Z
-> Files: 260 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-26T17:49:03.810Z
+> Files: 261 tracked | Anatomy hits: 0 | Misses: 0
 
 > Project structure index. Auto-maintained by OpenWolf hooks and daemon.
 > Run `openwolf scan` to generate, or wait for the first Claude Code session.
@@ -155,6 +155,10 @@
 - `PLAN.md` — Plan: Level 1, The Compound Grass (~2578 tok)
 - `STORY.md` — Story: Ant Kingdom Saga (~3048 tok)
 - `WORLD.md` — World Bible: Level 1, The Compound Grass (~3783 tok)
+
+## docs/design/
+
+- `gameplay_vision_chatgpt.md` — Gameplay vision (reference, verbatim) (~6628 tok)
 
 ## player/
 

@@ -1,13 +1,13 @@
 {
   "version": 1,
   "meta": {
-    "lastScanned": "2026-09-26T17:04:35.200Z",
-    "fileCount": 260,
+    "lastScanned": "2026-09-26T17:49:03.810Z",
+    "fileCount": 261,
     "hits": 0,
     "misses": 0,
-    "renderedHash": "067837751d270e9832084f80d0e8784761790fdb255c92e917b45cef2c23e03b",
-    "storeUpdatedAt": "2026-09-26T17:04:35.209Z",
-    "rootHash": "576746705dd83498"
+    "renderedHash": "acd1cc72105cb0410702ddef494a4735a9664375be7559526b5dcf03476d30dc",
+    "storeUpdatedAt": "2026-09-26T17:49:03.818Z",
+    "rootHash": "e03915ec1c0c44c6"
   },
   "files": {
     ".gitattributes": {
@@ -2967,6 +2967,15 @@
       "size": 7817,
       "mtimeMs": 1790442275092.126,
       "updatedAt": "2026-09-26T17:04:35.200Z",
+      "source": "hook"
+    },
+    "docs/design/gameplay_vision_chatgpt.md": {
+      "description": "Gameplay vision (reference, verbatim)",
+      "tokens": 6628,
+      "hash": "ee05922339241f2e",
+      "size": 26819,
+      "mtimeMs": 1790444943704.473,
+      "updatedAt": "2026-09-26T17:49:03.809Z",
       "source": "hook"
     }
   },

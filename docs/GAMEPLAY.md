@@ -1,6 +1,6 @@
 # Gameplay: Ant Kingdom Saga
 
-How the game plays, from the whole game down to Level 1. `docs/PLAN.md` says what we build and when; `docs/WORLD.md` and `world/lawn/layout.json` hold the world itself.
+How the game plays, from the whole game down to Level 1. The original design notes this adapts are kept word for word in [`docs/design/gameplay_vision_chatgpt.md`](design/gameplay_vision_chatgpt.md). `docs/PLAN.md` says what we build and when; `docs/WORLD.md` and `world/lawn/layout.json` hold the world itself.
 
 Decided 2026-09-26: **the gameplay tells the story.** The chapters of `docs/STORY.md` are not the level list; they're a source of moments (the Maw, Silkfang, the Whisperers) that we turn into things the player *does*.
 
@@ -71,6 +71,17 @@ Always on him, and his silhouette. It's also a **tool**: he chops roots, vines, 
 The axe levels up rather than being replaced: **Ant axe → Reinforced → Insect-forged → Ancient**.
 
 **The axe is ant-made:** a knapped stone head (a sand grain, which is 11 cm to Amodu) lashed to a crooked twig with strips of dry leaf and grass fibre. It looks handmade and rickety, not forged. Ant craft is the look for every crafted weapon: leaves, sticks, stones, silk, shell.
+
+### What he carries (decided 2026-09-26)
+He can own any number of weapons, but carries three on his body, no backpack:
+
+| Where | What | Use |
+|---|---|---|
+| Right hip | **Knife**: his permanent tool | E cuts silk and vines whatever he's holding; he can fight with it too |
+| Across his back | **Axe**: his main, signature weapon | chops, and the main way he fights |
+| Other side of his back | **One secondary** of his choice (hammer, spear, bow...) | picked in the inventory (Tab); the one it replaces stays owned |
+
+In a fight, X or the wheel swaps axe → secondary → knife → fists.
 
 ### Other weapons, crafted from the world
 He can carry and switch to crafted weapons. Each changes how a fight plays, not only the numbers:
