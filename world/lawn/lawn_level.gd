@@ -99,6 +99,10 @@ func _setup_adventure() -> void:
 	life.name = "AmbientLife"
 	life.setup(layout, player)
 	add_child(life)
+	var audio := GardenAudio.new()
+	audio.name = "GardenAudio"
+	audio.setup(player, clock, weather, layout, life, route_guide)
+	add_child(audio)
 	hud = GameHud.new()
 	hud.name = "GameHud"
 	hud.setup(player, layout, clock, home)

@@ -7,6 +7,9 @@ extends Node3D
 ## find the ground, a log or a leaf, and a pooled MultiMesh draws each splash
 ## (world/shaders/rain_splash.gdshader). The pond rings itself (water.gdshader).
 ##
+## Under cover (in Root Hall, up the Heartwood Stair, beneath the bottle cap)
+## the streaks fade away and splashes only land where there is sky overhead.
+##
 ## While it rains the day goes overcast: the sun dims, its shadows soften, and
 ## the fog thickens. The global `rain` shader parameter wets the ground and grass.
 ##
@@ -33,6 +36,8 @@ var clock: DayClock
 var water_level := -INF
 var intensity := 0.0
 var raining := false
+## 0 under open sky, 1 with something solid overhead (a cave roof, the cap).
+var shelter := 0.0
 
 var _drops: GPUParticles3D
 var _crowns: MultiMesh
@@ -106,7 +111,9 @@ func _process(delta: float) -> void:
 			_stop_at = -1.0
 			stop_rain()
 	intensity = move_toward(intensity, 1.0 if raining else 0.0, delta / 6.0)  # showers roll in and out
-	_drops.amount_ratio = intensity
+	if focus != null:
+		shelter = move_toward(shelter, 1.0 if _covered(focus.global_position + Vector3.UP * 2.0) else 0.0, delta * 3.0)
+	_drops.amount_ratio = intensity * (1.0 - shelter)
 	if intensity <= 0.0 and not raining:
 		_drops.emitting = false
 	RenderingServer.global_shader_parameter_set("rain", intensity)
@@ -251,6 +258,14 @@ func _update_splashes(delta: float) -> void:
 		_rings.set_instance_custom_data(i, data)
 
 
+## Whether something solid is overhead: a cave roof, a trunk, a leaf or a cap.
+func _covered(at: Vector3) -> bool:
+	var query := PhysicsRayQueryParameters3D.create(at, at + Vector3.UP * 150.0, SPLASH_MASK)
+	if focus is CollisionObject3D:
+		query.exclude = [(focus as CollisionObject3D).get_rid()]
+	return not get_world_3d().direct_space_state.intersect_ray(query).is_empty()
+
+
 ## Drops one splash where a ray from the sky lands near Amodu.
 func _spawn_splash() -> void:
 	var angle := randf() * TAU
@@ -263,8 +278,8 @@ func _spawn_splash() -> void:
 	if hit.is_empty():
 		return
 	var at: Vector3 = hit["position"]
-	if at.y < water_level:
-		return
+	if at.y < water_level or _covered(at + Vector3.UP * 0.3):
+		return  # in the pond (it ripples itself), or out of the rain
 	var normal: Vector3 = hit["normal"]
 	var i := _next
 	_next = (_next + 1) % SPLASHES

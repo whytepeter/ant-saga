@@ -1,13 +1,13 @@
 {
   "version": 1,
   "meta": {
-    "lastScanned": "2026-09-26T10:18:04.863Z",
-    "fileCount": 237,
+    "lastScanned": "2026-09-26T10:32:05.448Z",
+    "fileCount": 240,
     "hits": 0,
     "misses": 0,
-    "renderedHash": "0e820f60874fa8ecca5750ef0b7f1ff6fa48025b8ce49b874a454be5538b57da",
-    "storeUpdatedAt": "2026-09-26T10:18:04.873Z",
-    "rootHash": "18e8c920a6147a7b"
+    "renderedHash": "e38e89264ebccd3f23e6f9736b5b627e485dd1bc922f6ac0fd899a911d57bb94",
+    "storeUpdatedAt": "2026-09-26T10:32:05.458Z",
+    "rootHash": "27f188ebcd5f4ae5"
   },
   "files": {
     ".gitattributes": {
@@ -2469,6 +2469,245 @@
       "size": 4181,
       "mtimeMs": 1790417884764.2534,
       "updatedAt": "2026-09-26T10:18:04.863Z",
+      "source": "hook"
+    },
+    "tools/make_sounds.py": {
+      "description": "Synthesise the game's sound effects into assets/audio/ (16-bit mono WAV).",
+      "tokens": 5158,
+      "hash": "c56ff037043d682d",
+      "size": 18860,
+      "mtimeMs": 1790418433527.9883,
+      "updatedAt": "2026-09-26T10:27:13.618Z",
+      "source": "hook",
+      "symbols": [
+        {
+          "name": "silence",
+          "kind": "fn",
+          "startLine": 28,
+          "endLine": 31,
+          "tokens": 18
+        },
+        {
+          "name": "noise",
+          "kind": "fn",
+          "startLine": 32,
+          "endLine": 36,
+          "tokens": 25
+        },
+        {
+          "name": "lowpass",
+          "kind": "fn",
+          "startLine": 37,
+          "endLine": 45,
+          "tokens": 53
+        },
+        {
+          "name": "highpass",
+          "kind": "fn",
+          "startLine": 46,
+          "endLine": 50,
+          "tokens": 28
+        },
+        {
+          "name": "bandpass",
+          "kind": "fn",
+          "startLine": 51,
+          "endLine": 66,
+          "tokens": 138
+        },
+        {
+          "name": "pink",
+          "kind": "fn",
+          "startLine": 67,
+          "endLine": 72,
+          "tokens": 61
+        },
+        {
+          "name": "brown",
+          "kind": "fn",
+          "startLine": 73,
+          "endLine": 76,
+          "tokens": 22
+        },
+        {
+          "name": "env_exp",
+          "kind": "fn",
+          "startLine": 77,
+          "endLine": 85,
+          "tokens": 82
+        },
+        {
+          "name": "mul",
+          "kind": "fn",
+          "startLine": 86,
+          "endLine": 89,
+          "tokens": 17
+        },
+        {
+          "name": "add_at",
+          "kind": "fn",
+          "startLine": 90,
+          "endLine": 96,
+          "tokens": 45
+        },
+        {
+          "name": "sweep",
+          "kind": "fn",
+          "startLine": 97,
+          "endLine": 106,
+          "tokens": 110
+        },
+        {
+          "name": "reverb",
+          "kind": "fn",
+          "startLine": 107,
+          "endLine": 127,
+          "tokens": 202
+        },
+        {
+          "name": "seamless",
+          "kind": "fn",
+          "startLine": 128,
+          "endLine": 138,
+          "tokens": 80
+        },
+        {
+          "name": "normalize",
+          "kind": "fn",
+          "startLine": 139,
+          "endLine": 143,
+          "tokens": 32
+        },
+        {
+          "name": "fade_edges",
+          "kind": "fn",
+          "startLine": 144,
+          "endLine": 152,
+          "tokens": 64
+        },
+        {
+          "name": "write",
+          "kind": "fn",
+          "startLine": 153,
+          "endLine": 173,
+          "tokens": 263
+        },
+        {
+          "name": "wind",
+          "kind": "fn",
+          "startLine": 174,
+          "endLine": 189,
+          "tokens": 253
+        },
+        {
+          "name": "bird",
+          "kind": "fn",
+          "startLine": 190,
+          "endLine": 223,
+          "tokens": 484
+        },
+        {
+          "name": "crickets",
+          "kind": "fn",
+          "startLine": 224,
+          "endLine": 238,
+          "tokens": 191
+        },
+        {
+          "name": "water_lap",
+          "kind": "fn",
+          "startLine": 239,
+          "endLine": 253,
+          "tokens": 178
+        },
+        {
+          "name": "rain_loop",
+          "kind": "fn",
+          "startLine": 254,
+          "endLine": 270,
+          "tokens": 192
+        },
+        {
+          "name": "drop_impact",
+          "kind": "fn",
+          "startLine": 271,
+          "endLine": 284,
+          "tokens": 207
+        },
+        {
+          "name": "thunder",
+          "kind": "fn",
+          "startLine": 285,
+          "endLine": 303,
+          "tokens": 212
+        },
+        {
+          "name": "bee",
+          "kind": "fn",
+          "startLine": 304,
+          "endLine": 319,
+          "tokens": 170
+        },
+        {
+          "name": "dragonfly",
+          "kind": "fn",
+          "startLine": 320,
+          "endLine": 332,
+          "tokens": 118
+        },
+        {
+          "name": "wing_whirr",
+          "kind": "fn",
+          "startLine": 333,
+          "endLine": 346,
+          "tokens": 158
+        },
+        {
+          "name": "step_soil",
+          "kind": "fn",
+          "startLine": 347,
+          "endLine": 358,
+          "tokens": 177
+        },
+        {
+          "name": "step_hard",
+          "kind": "fn",
+          "startLine": 359,
+          "endLine": 366,
+          "tokens": 98
+        },
+        {
+          "name": "land",
+          "kind": "fn",
+          "startLine": 367,
+          "endLine": 378,
+          "tokens": 157
+        },
+        {
+          "name": "jump",
+          "kind": "fn",
+          "startLine": 379,
+          "endLine": 483,
+          "tokens": 1070
+        }
+      ]
+    },
+    "world/garden_audio.gd": {
+      "description": "Declares DIR",
+      "tokens": 1693,
+      "hash": "265faf0e6c336655",
+      "size": 6349,
+      "mtimeMs": 1790418725159.0579,
+      "updatedAt": "2026-09-26T10:32:05.272Z",
+      "source": "hook"
+    },
+    "player/player_audio.gd": {
+      "description": "Declares SOIL",
+      "tokens": 1255,
+      "hash": "02bc8ec514f3c080",
+      "size": 4706,
+      "mtimeMs": 1790418725348.8625,
+      "updatedAt": "2026-09-26T10:32:05.447Z",
       "source": "hook"
     }
   },

@@ -3,9 +3,10 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://hfjbgh84xttf"
-path="res://.godot/imported/apple_core_0.jpg-e08498930e12c0f449c5b05529a97906.ctex"
+path.s3tc="res://.godot/imported/apple_core_0.jpg-e08498930e12c0f449c5b05529a97906.s3tc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 generator_parameters={
 "md5": "127ba1a8888b22828e542e0477114143"
@@ -14,11 +15,11 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/garden/apple_core/apple_core_0.jpg"
-dest_files=["res://.godot/imported/apple_core_0.jpg-e08498930e12c0f449c5b05529a97906.ctex"]
+dest_files=["res://.godot/imported/apple_core_0.jpg-e08498930e12c0f449c5b05529a97906.s3tc.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0
@@ -40,4 +41,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=1
+detect_3d/compress_to=0

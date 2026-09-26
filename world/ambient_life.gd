@@ -121,6 +121,15 @@ func _ready() -> void:
 	seeds.global_position = layout.ground_point(clock_lm["pos"], float(clock_lm["size"][1]) + 3.0)
 
 
+## The critters of one kind (their holder nodes), for GardenAudio to give voices.
+func critters(kind: String) -> Array[Node3D]:
+	var out: Array[Node3D] = []
+	for c: Dictionary in _critters:
+		if c["kind"] == kind:
+			out.append(c["node"])
+	return out
+
+
 func _physics_process(delta: float) -> void:
 	_time += delta
 	var center := focus.global_position if focus != null else Vector3.ZERO

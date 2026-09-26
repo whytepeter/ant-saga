@@ -127,3 +127,10 @@ description: chronological action log per session, consolidated weekly
 | 11:18 | Created world/shaders/weathered.gdshader | — | ~1115 |
 | 11:18 | Created world/shaders/weathered.gdshader | — | ~1115 |
 | 11:22 | Six Meshy route props (cap, apples, pencil, trowel, brush) placed with baked collision + weathered shader; sideways climb and rope-hang glide clips (library 439/440/477/478); trowel flipped (handle bedded, tip on slabs); tests hop over lips | lawn_builder.gd, weathered.gdshader, player.gd, build_amodu_anims.gd, meshy_character.py, layout.json, lawn_graybox_test.gd | all 3 suites pass; 192 credits spent (1560 left) | ~90k |
+| 11:27 | Created tools/make_sounds.py | — | ~5158 |
+| 11:27 | Created tools/make_sounds.py | — | ~5158 |
+| 11:32 | Created world/garden_audio.gd | — | ~1693 |
+| 11:32 | Created world/garden_audio.gd | — | ~1693 |
+| 11:32 | Created player/player_audio.gd | — | ~1255 |
+| 11:32 | Created player/player_audio.gd | — | ~1255 |
+| 11:40 | Synthesised sound (31 files) + GardenAudio/PlayerAudio; rain now stops under cover (Root Hall, stair, cap) | make_sounds.py, garden_audio.gd, player_audio.gd, weather.gd, ambient_life.gd, lawn_level.gd | all 3 suites pass | ~40k |
