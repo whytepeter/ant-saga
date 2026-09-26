@@ -5,51 +5,162 @@
       "id": "wrong_boy",
       "title": "The Wrong Boy",
       "steps": [
-        {"text": "Lift the pebble the ants couldn't move", "done_on": "lift", "hint": ["Opumie", "That pebble, kid. Walk up to it and lift it. Go on."]},
-        {"text": "Follow the ants to their camp by the pencil", "done_on": "stage:camp", "hint": ["Opumie", "The camp's by the big yellow pencil. Follow the gold light."]}
+        {
+          "text": "Lift the pebble the ants couldn't move",
+          "done_on": "lift",
+          "hint": [
+            "Opumie",
+            "That pebble, kid. Walk up to it and lift it. Go on."
+          ]
+        }
       ]
     },
     {
-      "id": "heros_axe",
-      "title": "A Hero's Axe",
+      "id": "stakeout_camp",
+      "title": "The Stakeout Camp",
       "steps": [
-        {"text": "Take the axe", "done_on": "weapon:stone_axe", "hint": ["Opumie", "The axe, leaning on the stone. It's yours if you can lift it."]},
-        {"text": "Chop through the fallen twig", "done_on": "chop:twig", "hint": ["Opigo", "The twig across the road. Swing, don't stroke it."]}
+        {
+          "text": "Follow the ants to their camp by the pencil",
+          "done_on": "stage:camp",
+          "hint": [
+            "Opumie",
+            "The camp's by the big yellow pencil. Follow me, kid."
+          ]
+        },
+        {
+          "text": "Follow them east to their old rest stop in the crisp packet",
+          "done_on": "stage:crisp_packet",
+          "hint": [
+            "Opumie",
+            "East, to the shiny crisp packet. Our rest stop. Stay close."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cut_road",
+      "title": "The Cut Road",
+      "steps": [
+        {
+          "text": "Take the axe the ants give you",
+          "done_on": "weapon:stone_axe",
+          "hint": [
+            "Opumie",
+            "Kid, the axe. Take it."
+          ]
+        }
       ]
     },
     {
       "id": "over_the_top",
       "title": "Over the Top",
       "steps": [
-        {"text": "Climb to the top of your school bag", "done_on": "stage:bag_top", "hint": ["Opumie", "Up the bag, kid. Grab the straps and climb."]},
-        {"text": "Grab a seed puff and glide down", "done_on": "puff", "hint": ["Opumie", "The fluffy seeds up here. Grab one and jump. Trust me."]},
-        {"text": "Make for the dandelion in the Blade Forest", "done_on": "stage:dandelion", "hint": ["Opigo", "The big yellow flower. Can't miss it. Well, you might."]}
+        {
+          "text": "Escape: climb to the top of your school bag",
+          "done_on": "stage:bag_top",
+          "hint": [
+            "Opumie",
+            "Up the bag, kid. The hunters can't climb that."
+          ]
+        },
+        {
+          "text": "Grab a seed puff and glide down",
+          "done_on": "puff",
+          "hint": [
+            "Opumie",
+            "The fluffy seeds up here. Grab one and jump. Trust me."
+          ]
+        },
+        {
+          "text": "Make for the dandelion in the Blade Forest",
+          "done_on": "stage:dandelion",
+          "hint": [
+            "Opigo",
+            "The big yellow flower. Can't miss it. Well, you might."
+          ]
+        }
       ]
     },
     {
       "id": "door_wont_move",
       "title": "The Door That Won't Move",
       "steps": [
-        {"text": "Climb the daisy stair in the Flower Bed", "done_on": "stage:daisy_stair", "hint": ["Opumie", "West, to the flowers. Hop up the daisy heads."]},
-        {"text": "Find the old door between the apple tree's roots", "done_on": "stage:root_hall_door", "hint": ["Opumie", "The apple tree, kid. There's a door in its roots. Follow the gold."]}
+        {
+          "text": "Climb the daisy stair in the Flower Bed",
+          "done_on": "stage:daisy_stair",
+          "hint": [
+            "Opumie",
+            "West, to the flowers. Hop up the daisy heads."
+          ]
+        },
+        {
+          "text": "Find the old door between the apple tree's roots",
+          "done_on": "stage:root_hall_door",
+          "hint": [
+            "Opumie",
+            "The apple tree, kid. There's a door in its roots. Follow the gold."
+          ]
+        }
       ]
     },
     {
       "id": "shut_gate",
       "title": "The Shut Gate",
       "steps": [
-        {"text": "Go around the orb web", "done_on": "stage:orb_web", "hint": ["Opigo", "East, past the web. Don't touch it."]},
-        {"text": "Climb up to the Capstone lookout", "done_on": "stage:capstone", "hint": ["Opumie", "The bottle cap, kid. Best view in the garden."]},
-        {"text": "Race to the Colony Gate", "done_on": "stage:colony_gate", "hint": ["Opigo", "The gate! The red earth, east! Move!"]}
+        {
+          "text": "Go around the orb web",
+          "done_on": "stage:orb_web",
+          "hint": [
+            "Opigo",
+            "East, past the web. Don't touch it."
+          ]
+        },
+        {
+          "text": "Climb up to the Capstone lookout",
+          "done_on": "stage:capstone",
+          "hint": [
+            "Opumie",
+            "The bottle cap, kid. Best view in the garden."
+          ]
+        },
+        {
+          "text": "Race to the Colony Gate",
+          "done_on": "stage:colony_gate",
+          "hint": [
+            "Opigo",
+            "The gate! The red earth, east! Move!"
+          ]
+        }
       ]
     },
     {
       "id": "old_way",
       "title": "The Old Way",
       "steps": [
-        {"text": "Run back to Root Hall before dark", "done_on": "stage:root_hall", "hint": ["Opumie", "Back to the apple tree. The old door. Run!"]},
-        {"text": "Push the door stone aside", "done_on": "door_open", "hint": ["Opumie", "Lean on it, kid. Hold E and push."]},
-        {"text": "Get inside", "done_on": "inside", "hint": ["Opigo", "In! Before they see us!"]}
+        {
+          "text": "Run back to Root Hall before dark",
+          "done_on": "stage:root_hall",
+          "hint": [
+            "Opumie",
+            "Back to the apple tree. The old door. Run!"
+          ]
+        },
+        {
+          "text": "Push the door stone aside",
+          "done_on": "door_open",
+          "hint": [
+            "Opumie",
+            "Lean on it, kid. Hold E and push."
+          ]
+        },
+        {
+          "text": "Get inside",
+          "done_on": "inside",
+          "hint": [
+            "Opigo",
+            "In! Before they see us!"
+          ]
+        }
       ]
     }
   ]

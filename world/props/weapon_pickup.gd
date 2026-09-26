@@ -1,8 +1,8 @@
 class_name WeaponPickup
 extends Node3D
 ## A weapon lying in the world for Amodu to take (E), from layout "pickups":
-## the ant axe leans against a stone at an abandoned ant forage camp by the
-## pencil log. Taking it puts it in his Inventory and in his hand.
+## an ordinary ant weapon, dropped flat on the ground where it was left (no
+## stones propping it up). Taking it puts it in his Inventory and in his hand.
 
 const GROUP := &"weapon_pickups"
 const REACH := 2.4
@@ -16,16 +16,15 @@ func _ready() -> void:
 	var prop := GardenProps.get_prop(String(info.get("model", "")))
 	if prop != null:
 		var length := float(info.get("length", 0.6))
-		# leaning back against its stone, head up
-		var lean := Basis(Vector3.RIGHT, deg_to_rad(-24.0)) * Basis(Vector3.UP, deg_to_rad(70.0))
-		add_child(GardenProps.instance(prop, Transform3D(lean.scaled(Vector3.ONE * length), Vector3.ZERO)))
+		# lying on its side, turned any which way
+		var rng := RandomNumberGenerator.new()
+		rng.seed = hash(String(weapon))
+		var lying := Basis(Vector3.UP, rng.randf() * TAU) * Basis(Vector3.BACK, deg_to_rad(90.0))
+		add_child(GardenProps.instance(prop, Transform3D(lying.scaled(Vector3.ONE * length), Vector3.UP * length * 0.06)))
 	var marker := PickupMarker.new()
 	marker.height = 1.6
 	marker.reach = 70.0
 	add_child(marker)
-	var rest := GardenProps.get_prop("pebbles")
-	if rest != null:
-		add_child(GardenProps.instance(rest, Transform3D(Basis().scaled(Vector3.ONE * 0.9), Vector3(0.0, -0.05, -0.45))))
 
 
 ## Label for the prompt.

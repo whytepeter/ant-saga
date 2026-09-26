@@ -4,6 +4,8 @@ extends Node
 ## Opumie say along the way (Dialogue, world/lawn/dialogue.json), and the beats
 ## that change the level:
 ##
+##   the crisp packet  the ants' rest stop torn open by termites: they hand
+##                     Amodu an axe (docs/GAMEPLAY.md M3, The Cut Road)
 ##   the Colony Gate   sealed for the siege: the ants argue, the day turns to
 ##                     dusk, the goal becomes Root Hall and its door stone frees
 ##   Root Hall's door  a stone no ant can move; once freed, Amodu pushes it
@@ -137,6 +139,14 @@ func _on_stage(_index: int, stage: Dictionary) -> void:
 			dialogue.say("stage:" + id)
 
 
+## The Cut Road: termites have been at the ants' rest stop, and Amodu has
+## nothing to fight with, so the ants hand him an axe (an ordinary ant axe).
+func _give_axe() -> void:
+	var inventory := player.get_node_or_null("Inventory") as Inventory
+	if inventory != null and not inventory.has_weapon(Weapons.AXE):
+		inventory.add_weapon(Weapons.AXE)
+
+
 ## The guards won't open for "that thing": dusk comes on, and the only way
 ## left is the old one.
 func _shut_gate() -> void:
@@ -148,6 +158,10 @@ func _shut_gate() -> void:
 
 
 func _on_conversation_done(id: String) -> void:
+	if id == "stage:crisp_packet":
+		_give_axe()
+	elif id == "axe":
+		dialogue.say("cut_road_escape")
 	if id == "gate" and clock != null:
 		# the siege runs late: the sun is nearly down by the time they turn back
 		var dusk := float(_spec.get("gate_dusk", 1100.0))

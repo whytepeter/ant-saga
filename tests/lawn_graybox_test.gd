@@ -289,11 +289,11 @@ func _test_route_guide() -> void:
 		return
 	guide.current = 0
 	var first := guide.goal()
-	var stage: Dictionary = guide.stages[2]
+	var stage: Dictionary = guide.stages[3]  # the dandelion (the bag's top counts only up high)
 	player.teleport(layout.ground_point(stage["at"], 0.3), 0.0)
 	await _frames(10)
 	var camp := guide.stage_point("camp")
-	_check("reaching a later stage skips ahead", guide.current == 3 and first.distance_to(camp) < 1.0,
+	_check("reaching a later stage skips ahead", guide.current == 4 and first.distance_to(camp) < 1.0,
 		"first goal %s, now at stage %d" % [str(first), guide.current])
 	player.teleport(layout.ground_point([-322, 2], 0.3), 0.0)
 	await _frames(10)
@@ -487,6 +487,16 @@ func _test_objectives() -> void:
 		"carrying it: %s; now '%s'" % [lifted, next])
 	await _tap("interact")  # put it down
 	await _frames(30)
+	# the Cut Road: at the torn-open crisp packet the ants hand him an axe
+	var inv := player.get_node("Inventory") as Inventory
+	var had := inv.has_weapon(Weapons.AXE)
+	player.teleport(layout.ground_point([226, -236], 0.3), 0.0)
+	var waited := 0
+	while not inv.has_weapon(Weapons.AXE) and waited < _seconds(120.0):
+		await physics_frame
+		waited += 1
+	_check("the ants hand him the axe at the crisp packet", not had and inv.has_weapon(Weapons.AXE),
+		"after %.0f s; objective now '%s'" % [waited / float(Engine.physics_ticks_per_second), hud.objective_text()])
 
 
 ## Level 1's story: the door stone won't move before the gate; at the Colony

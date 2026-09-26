@@ -54,25 +54,49 @@
     "stage:camp": [
       [
         "Opumie",
-        "Home sweet camp. And there it is: an axe for the chosen one."
+        "Home sweet camp. Such as it is."
       ],
       [
         "Opigo",
-        "Took three of us to drag it here. Nobody could swing it."
+        "Make yourself useful. Grass fibre, pebbles, anything we can use."
       ],
       [
         "Opumie",
         "Go on. Give the kid a chance."
       ]
     ],
-    "axe": [
+    "stage:crisp_packet": [
+      [
+        "Opumie",
+        "Our old rest stop... Look at it. Torn wide open."
+      ],
       [
         "Opigo",
-        "Hm. He can hold it. Doesn't mean he can use it."
+        "Mud tubes over the trail. Termites? This far north?"
       ],
       [
         "Opumie",
-        "That twig's blocked our road for a week. Show him."
+        "Hunters. And where there are hunters, Akpuru isn't far behind."
+      ]
+    ],
+    "axe": [
+      [
+        "Opumie",
+        "Kid! You can't fight them with your hands. Here, take this!"
+      ],
+      [
+        "Opigo",
+        "It's an axe. The sharp end goes at them."
+      ]
+    ],
+    "cut_road_escape": [
+      [
+        "Opigo",
+        "They'll be back, and more of them. We need to get high, somewhere they can't follow."
+      ],
+      [
+        "Opumie",
+        "Your bag, kid. Climb it. We'll hang on."
       ]
     ],
     "twig_cut": [
@@ -149,6 +173,16 @@
       [
         "Opumie",
         "He means you, kid."
+      ]
+    ],
+    "knife": [
+      [
+        "Opumie",
+        "The silk's too thick for the axe that close to him. Here, my knife. Cut him down!"
+      ],
+      [
+        "Opigo",
+        "Hurry up, kid!"
       ]
     ],
     "stage:capstone": [

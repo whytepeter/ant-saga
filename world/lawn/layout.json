@@ -2263,7 +2263,17 @@
           -242
         ],
         "radius": 14,
-        "why": "M2 A Hero's Axe: the stakeout camp by the pencil log, where the ants left an axe no ant can lift."
+        "why": "M2 The Stakeout Camp: the ants' camp by the pencil log."
+      },
+      {
+        "id": "crisp_packet",
+        "name": "The crisp packet",
+        "at": [
+          226,
+          -236
+        ],
+        "radius": 22,
+        "why": "M3 The Cut Road: the ants' old rest stop, torn open, mud tubes over the trail; the ants hand Amodu an axe (world/level_story.gd)."
       },
       {
         "id": "bag_top",
@@ -2478,6 +2488,24 @@
           -318,
           9
         ]
+      ],
+      "stage:crisp_packet": [
+        [
+          57,
+          -231
+        ],
+        [
+          120,
+          -226
+        ],
+        [
+          180,
+          -230
+        ],
+        [
+          212,
+          -234
+        ]
       ]
     }
   },
@@ -2547,22 +2575,6 @@
     ]
   },
   "pickups": [
-    {
-      "weapon": "stone_axe",
-      "pos": [
-        60,
-        -238
-      ],
-      "note": "Beat 2 (docs/GAMEPLAY.md): an abandoned ant forage camp by the pencil log; the stone axe leans on a stone. world/props/weapon_pickup.gd"
-    },
-    {
-      "weapon": "stone_knife",
-      "pos": [
-        -134,
-        62
-      ],
-      "note": "Beat 6: the ants' watch post under the Capstone; a stone knife left on the bead shrine's step."
-    },
     {
       "weapon": "thorn_spear",
       "pos": [
