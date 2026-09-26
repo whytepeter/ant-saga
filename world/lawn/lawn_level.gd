@@ -129,6 +129,7 @@ func _setup_adventure() -> void:
 	hud.setup(player, layout, clock, story.destination())
 	add_child(hud)
 	story.dialogue.line_shown.connect(hud.show_line)
+	story.missions.changed.connect(hud.show_objective)
 	info.visible = false
 	$HUD/Help.visible = false
 	player.wake_up()
@@ -140,8 +141,9 @@ func _setup_adventure() -> void:
 
 ## He gets up while a camera high above the grass looks across the garden
 ## toward the Colony Gate, the title comes up, then the view drops to him and
-## turns to the first stage on the way (the ants' camp); then he's free to go
-## and the ants have their say. A move key skips it.
+## turns to the first thing to do (the ants' pebble); then he's free to go,
+## the ants have their say and the first objective comes up. A move key
+## skips it.
 func _opening() -> void:
 	var rig := player.camera_rig
 	var game_cam := get_viewport().get_camera_3d()
@@ -184,7 +186,7 @@ func _opening() -> void:
 	if game_cam != null:
 		game_cam.make_current()
 	high.queue_free()
-	var goal := route_guide.goal() if route_guide != null else Vector3.INF
+	var goal := story.first_look()
 	if goal != Vector3.INF and not skip.call():
 		var d := goal - player.global_position
 		var goal_yaw := home_yaw + wrapf(atan2(-d.x, -d.z) - home_yaw, -PI, PI)

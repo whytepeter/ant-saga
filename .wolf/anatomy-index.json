@@ -1,13 +1,13 @@
 {
   "version": 1,
   "meta": {
-    "lastScanned": "2026-09-26T19:44:36.817Z",
-    "fileCount": 267,
+    "lastScanned": "2026-09-26T19:50:45.242Z",
+    "fileCount": 270,
     "hits": 0,
     "misses": 0,
-    "renderedHash": "de92ad4fc42c6772ebd6b9f80e1135779eebef0835465556e97366a0c07e02af",
-    "storeUpdatedAt": "2026-09-26T19:44:36.826Z",
-    "rootHash": "74b813419be6a664"
+    "renderedHash": "e09f7e98281ddc98645258fe6e8a2a55575fbd756da63ae6fc35f66676feb434",
+    "storeUpdatedAt": "2026-09-26T19:50:45.250Z",
+    "rootHash": "ba7299cd1fa6c0d0"
   },
   "files": {
     ".gitattributes": {
@@ -3030,6 +3030,33 @@
       "size": 3597,
       "mtimeMs": 1790451815883.8145,
       "updatedAt": "2026-09-26T19:43:35.979Z",
+      "source": "hook"
+    },
+    "world/lawn/missions.json": {
+      "description": "",
+      "tokens": 932,
+      "hash": "3fe02c82d7ab26ca",
+      "size": 3262,
+      "mtimeMs": 1790452220698.6172,
+      "updatedAt": "2026-09-26T19:50:20.804Z",
+      "source": "hook"
+    },
+    "world/missions.gd": {
+      "description": "Declares HINT_AFTER",
+      "tokens": 671,
+      "hash": "d7d4a566ea147e9d",
+      "size": 2513,
+      "mtimeMs": 1790452220880.963,
+      "updatedAt": "2026-09-26T19:50:20.978Z",
+      "source": "hook"
+    },
+    "ui/objective.gd": {
+      "description": "Declares CREAM",
+      "tokens": 817,
+      "hash": "0c096199639cc599",
+      "size": 3063,
+      "mtimeMs": 1790452245152.7283,
+      "updatedAt": "2026-09-26T19:50:45.241Z",
       "source": "hook"
     }
   },

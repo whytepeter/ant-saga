@@ -51,6 +51,8 @@ budget_tokens: 2000
 - [2026-09-26] A child node's _ready runs before the parent's @onready vars are set (player.model was null in Combat._ready). From children, use get_node() or defer.
 - [2026-09-26] Treated docs/STORY.md as a parked draft to audit, critique for fidelity and reconcile into canon. It is the user's own story: the source to MINE for gameplay. Ask "what does this story let the player do", take what serves play, leave the rest, and don't propose editing or re-canonising it.
 
+- [2026-09-26] Over-dramatised how Amodu gets his axe and knife (Oyibo's axe, symbolic hand-offs). The user wants it plain: he needed a weapon, so the ants gave him one. Ordinary ant weapons, any ant can wield them. Don't load simple beats with extra meaning.
+
 ## Decision Log
 
 <!-- Significant technical decisions with rationale. Why X was chosen over Y. -->

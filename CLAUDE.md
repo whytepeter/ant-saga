@@ -22,7 +22,8 @@ Third-person 3D game in Godot 4.7 (Forward+, Jolt). **The trio adventure** (dire
 - The setting is an ordinary back garden; the Nigerian compound was dropped. Content is family-friendly: no sexual content.
 - Art: no blocky primitives as final visuals; Meshy models and CC0 textures (targets: Grounded, Smalland).
 - Amodu's signature weapon is the **axe** (also a chopping tool); he can use crafted weapons too. The gameplay design is `docs/GAMEPLAY.md` (Level 1 is planned there).
-- Companion dialogue is back as subtitles in the compass's sleek style, with the speaker's face in a round frame (`ui/subtitles.gd`, lines in `world/lawn/dialogue.json`, faces rendered by `tools/render_portraits.gd` into `assets/ui/portraits/`; re-run it if a model changes). Level 1 lasts two days (the First Night camp between). The old Nigerian-compound banter (git e1ec4c4) stays retired.
+- Companion dialogue is back as subtitles in the compass's sleek style, with the speaker's face in a round frame (`ui/subtitles.gd`, lines in `world/lawn/dialogue.json`, faces rendered by `tools/render_portraits.gd` into `assets/ui/portraits/`; re-run it if a model changes). Level 1 lasts two days (the First Night camp between).
+- Level 1's objectives are data (`world/lawn/missions.json`): one line at a time under the compass, completed by events from `world/level_story.gd`; a new player must always know what to do next. The old Nigerian-compound banter (git e1ec4c4) stays retired.
 
 ## How the project works
 - `world/lawn/layout.json` is the single source of truth for Level 1. After editing it, run:

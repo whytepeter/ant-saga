@@ -34,6 +34,21 @@ func _run() -> void:
 	story.dialogue.say("gate")
 	await _frames(20)
 	await _shot("gate_subtitles")
+	# the ants facing each other mid-conversation, seen from the side
+	player.teleport(level.get("layout").ground_point([40, -205], 0.3), 0.0)
+	await _frames(30)
+	story.dialogue.say("stage:dandelion")
+	await _frames(120)
+	player.camera_rig.yaw += 1.2
+	player.camera_rig._apply_rotation()
+	await _frames(20)
+	await _shot("ants_talking")
+	# Opumie leading toward the camp
+	story.missions.notify("lift")
+	player.camera_rig.yaw = 2.4
+	player.camera_rig._apply_rotation()
+	await _frames(240)
+	await _shot("opumie_leading")
 	quit()
 
 

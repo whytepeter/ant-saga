@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-26T19:44:36.817Z
-> Files: 267 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-26T19:50:45.242Z
+> Files: 270 tracked | Anatomy hits: 0 | Misses: 0
 
 > Project structure index. Auto-maintained by OpenWolf hooks and daemon.
 > Run `openwolf scan` to generate, or wait for the first Claude Code session.
@@ -272,6 +272,7 @@
 - `map_hud.gd` — Declares MINI (~1306 tok)
 - `map_panel.gd` — Declares CREAM (~1448 tok)
 - `map.gdshader` — Declares canvas_item (~346 tok)
+- `objective.gd` — Declares CREAM (~817 tok)
 - `subtitles.gd` — Declares CREAM (~1142 tok)
 - `weapon_badge.gd` — Declares CREAM (~648 tok)
 
@@ -284,6 +285,7 @@
 - `grass_meshes.gd` (~620 tok)
 - `grass_meshes.gd.uid` (~6 tok)
 - `level_story.gd` — Declares IDLE_AFTER (~1658 tok)
+- `missions.gd` — Declares HINT_AFTER (~671 tok)
 - `route_guide.gd` (~1023 tok)
 - `sun_light.gd` (~214 tok)
 - `sun_light.gd.uid` (~6 tok)
@@ -310,6 +312,7 @@
 - `lawn_level.gd.uid` (~6 tok)
 - `lawn.tscn` (~741 tok)
 - `layout.json` (~5947 tok)
+- `missions.json` (~932 tok)
 - `soil_detail.gd` — Declares CHUNK (~3974 tok)
 - `tree_base.gd` — Declares MESH (~2564 tok)
 

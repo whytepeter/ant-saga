@@ -64,6 +64,7 @@ static func make(kind: String, prop_size: float, prop_name: String) -> Heavable:
 	material.friction = 0.9
 	material.bounce = 0.15
 	h.physics_material_override = material
+	h.add_to_group(&"heavables")
 
 	match kind:
 		"crumb":

@@ -219,3 +219,10 @@ description: chronological action log per session, consolidated weekly
 | 20:43 | Created tools/render_portraits.gd | — | ~960 |
 | 20:44 | Created ui/subtitles.gd | — | ~1142 |
 | 20:44 | Created ui/subtitles.gd | — | ~1142 |
+| 20:50 | Created world/lawn/missions.json | — | ~932 |
+| 20:50 | Created world/lawn/missions.json | — | ~932 |
+| 20:50 | Created world/missions.gd | — | ~671 |
+| 20:50 | Created world/missions.gd | — | ~671 |
+| 20:50 | Created ui/objective.gd | — | ~817 |
+| 20:50 | Created ui/objective.gd | — | ~817 |
+| 21:00 | Axe/knife: the ants give them when needed (M3 axe, M7 knife), ordinary ant weapons; M2 renamed The Stakeout Camp | docs/GAMEPLAY.md | done | ~400 |

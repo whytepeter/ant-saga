@@ -5,6 +5,12 @@ extends CharacterBody3D
 ## same gaps between blades. If it falls far behind or gets stuck it catches up
 ## by reappearing on the trail behind him; while he climbs it waits below.
 ##
+## Leading (lead_along): walks a path ahead of him (the ants know the garden),
+## waits looking back when he falls behind, and drops back to following if he
+## runs on ahead or wanders off. Talking (talk_focus): while a conversation
+## plays and he's close and standing still, it stops and faces whoever it's
+## talking to (LevelStory sets the focus each frame).
+##
 ## On an expedition, while a haul is on the move, the hero guards it instead:
 ## it walks beside the carriers and fights any pill bug that comes for the food
 ## (its jabs make the bug turn on it instead of the haul). A "support" hero also
@@ -24,6 +30,14 @@ const ENABLED := true
 ## A trail step longer than this (a glide, a big leap) starts the trail afresh,
 ## so a catch-up never lands on a point in mid-air.
 const TRAIL_BREAK := 6.0
+const LEAD_SPEED := 3.8
+## Leading, it waits for him past WAIT_GAP and walks on again inside GO_GAP.
+const WAIT_GAP := 15.0
+const GO_GAP := 8.0
+## He's this much nearer the path's end than the leader: he knows the way.
+const OVERTAKE := 8.0
+const LOST := 60.0
+const TALK_REACH := 12.0
 
 @export var display_name := "Opigo"
 ## How far behind Amodu along his trail this ant walks.
@@ -45,6 +59,13 @@ var _down_left := 0.0
 var _attack_left := 0.0
 var _threat: Node3D
 var _carrying := false
+## Where to look while a conversation plays (Vector3.INF: not talking).
+var talk_focus := Vector3.INF
+var _path := PackedVector3Array()
+var _path_i := 0
+var _waiting := false
+## Times it hopped past something while leading (tests watch this).
+var hops := 0
 
 
 func _ready() -> void:
@@ -115,23 +136,108 @@ func _physics_process(delta: float) -> void:
 		_last_leader_pos = leader.global_position
 		return
 	_let_go()
-	_process_follow(delta)
+	if _track_leader():
+		return  # he teleported: regrouped beside him
+	if talk_focus != Vector3.INF and _flat(leader.global_position - global_position) < TALK_REACH \
+			and _flat(leader.velocity) < 1.5:
+		_process_talk(delta)
+	elif not _path.is_empty():
+		_process_lead(delta)
+	else:
+		_process_follow(delta)
+
+
+## Walks `points` ahead of Amodu, from the one nearest it.
+func lead_along(points: PackedVector3Array) -> void:
+	_path = points
+	_waiting = false
+	_path_i = 0
+	var best := INF
+	for i in points.size():
+		var d := _flat(points[i] - global_position)
+		if d < best:
+			best = d
+			_path_i = i
+
+
+func stop_leading() -> void:
+	_path = PackedVector3Array()
+
+
+func is_leading() -> bool:
+	return not _path.is_empty()
+
+
+func _flat(v: Vector3) -> float:
+	return Vector2(v.x, v.z).length()
+
+
+## Keeps his trail and notices teleports (every frame, whatever this ant is
+## doing, so following picks up smoothly). True if it just regrouped.
+func _track_leader() -> bool:
+	var lp := leader.global_position
+	if _last_leader_pos != Vector3.INF and lp.distance_to(_last_leader_pos) > 15.0:
+		regroup()  # the leader teleported
+		stop_leading()
+		return true
+	_last_leader_pos = lp
+	if leader.is_on_floor() and (_trail.is_empty() or _trail[_trail.size() - 1].distance_to(lp) > TRAIL_SPACING):
+		if not _trail.is_empty() and _trail[_trail.size() - 1].distance_to(lp) > TRAIL_BREAK:
+			_trail.clear()
+		_trail.append(lp)
+		if _trail.size() > TRAIL_LENGTH:
+			_trail.remove_at(0)
+	return false
+
+
+# ── talking ───────────────────────────────────────────────────────────────────
+
+func _process_talk(delta: float) -> void:
+	_steer(Vector3.ZERO, delta)
+	_face(talk_focus - global_position, delta)
+
+
+# ── leading ───────────────────────────────────────────────────────────────────
+
+func _process_lead(delta: float) -> void:
+	var lp := leader.global_position
+	var last := _path.size() - 1
+	var end := _path[last]
+	# he's gone on ahead toward the end (he knows the way), or off elsewhere
+	if _flat(lp - end) < _flat(global_position - end) - OVERTAKE or _flat(lp - global_position) > LOST:
+		stop_leading()
+		_process_follow(delta)
+		return
+	while _path_i < last and _flat(_path[_path_i] - global_position) < 2.0:
+		_path_i += 1
+	var gap := _flat(lp - global_position)
+	if _waiting and gap < GO_GAP:
+		_waiting = false
+	elif not _waiting and gap > WAIT_GAP:
+		_waiting = true
+	var arrived := _path_i == last and _flat(end - global_position) < 2.0
+	if _waiting or arrived:
+		_steer(Vector3.ZERO, delta)
+		_face(lp - global_position, delta)  # looking back for him
+		_stuck_time = 0.0
+		return
+	var to := _path[_path_i] - global_position
+	to.y = 0.0
+	var moved := _steer(to.normalized() * (LEAD_SPEED if gap > 5.0 else LEAD_SPEED * 1.2), delta)
+	# wedged on a blade or a lip: a hop further along
+	_stuck_time = _stuck_time + delta if moved < 0.5 else 0.0
+	if _stuck_time > 2.0:
+		_stuck_time = 0.0
+		hops += 1
+		global_position += to.normalized() * minf(3.0, to.length()) + Vector3.UP * 1.0
+		velocity = Vector3.ZERO
 
 
 # ── following Amodu ───────────────────────────────────────────────────────────
 
 func _process_follow(delta: float) -> void:
 	var lp := leader.global_position
-	if _last_leader_pos != Vector3.INF and lp.distance_to(_last_leader_pos) > 15.0:
-		regroup()  # the leader teleported
-	_last_leader_pos = lp
 	var leader_grounded := leader.is_on_floor()
-	if leader_grounded and (_trail.is_empty() or _trail[_trail.size() - 1].distance_to(lp) > TRAIL_SPACING):
-		if not _trail.is_empty() and _trail[_trail.size() - 1].distance_to(lp) > TRAIL_BREAK:
-			_trail.clear()
-		_trail.append(lp)
-		if _trail.size() > TRAIL_LENGTH:
-			_trail.remove_at(0)
 
 	var target := _trail_target()
 	var to := target - global_position

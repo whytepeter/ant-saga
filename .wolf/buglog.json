@@ -342,6 +342,19 @@
       ],
       "occurrences": 1,
       "last_seen": "2026-09-26"
+    },
+    {
+      "id": "bug-024",
+      "timestamp": "2026-09-26",
+      "error_message": "Companions froze in place (Opumie never led) after the level ended or while a line was up with Amodu moved without velocity",
+      "file": "world/level_story.gd",
+      "root_cause": "LevelStory._process returned early once finished, so Companion.talk_focus kept the last speaker; talk mode (Amodu near and slow) then held the ants forever",
+      "fix": "_face_the_talk() runs before the finished check, so focus clears when nobody talks; tests set player.velocity when moving him by position",
+      "tags": [
+        "companion",
+        "dialogue",
+        "level_story"
+      ]
     }
   ]
 }

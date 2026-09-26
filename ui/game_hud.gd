@@ -3,7 +3,8 @@ extends CanvasLayer
 ## The adventure HUD, kept nearly empty (Grounded / Breath of the Wild style):
 ##
 ##   top      a compass strip with the goal (the Ant Kingdom) and the sun on
-##            it; a thin daylight line
+##            it; a thin daylight line; under it, the current objective
+##            (ObjectiveLine)
 ##   bottom   key-cap prompts, only when Amodu is next to something
 ##   left     health, only after he's been hurt
 ##   right    the weapon in his hands (WeaponBadge), once he has one; Tab opens
@@ -52,6 +53,7 @@ var _f1_left := 12.0
 var _seen_areas := {}
 var _area_check := 0.0
 var _subtitles: Subtitles
+var _objective: ObjectiveLine
 var _maps: MapHud
 
 
@@ -71,6 +73,7 @@ func _ready() -> void:
 	_build_banner()
 	_build_card()
 	_build_subtitles()
+	_build_objective()
 	_build_controls()
 	if player != null:
 		player.show_hint_label = false
@@ -148,6 +151,15 @@ func show_banner(title: String) -> void:
 	_banner_tween.tween_property(_banner, "modulate:a", 1.0, 0.8)
 	_banner_tween.tween_interval(2.4)
 	_banner_tween.tween_property(_banner, "modulate:a", 0.0, 1.2)
+
+
+## The objective under the compass (Missions.changed).
+func show_objective(title: String, text: String, new_mission: bool) -> void:
+	_objective.show_objective(title, text, new_mission)
+
+
+func objective_text() -> String:
+	return _objective.current_text()
 
 
 ## A line of dialogue (Dialogue.line_shown).
@@ -298,6 +310,17 @@ func _build_card() -> void:
 	_card_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_card_text = _label(box, 22, CREAM, 6)
 	_card_text.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+
+
+func _build_objective() -> void:
+	_objective = ObjectiveLine.new()
+	_objective.font = font
+	_objective.set_anchors_and_offsets_preset(Control.PRESET_CENTER_TOP)
+	_objective.offset_left = -330.0
+	_objective.offset_right = 330.0
+	_objective.offset_top = 66.0
+	_objective.offset_bottom = 120.0
+	add_child(_objective)
 
 
 func _build_subtitles() -> void:

@@ -52,6 +52,14 @@ func say(id: String) -> bool:
 	return true
 
 
+## Says one line (a hint) if nobody's talking; returns whether it did.
+func speak(speaker: String, text: String) -> bool:
+	if is_speaking():
+		return false
+	_queue.append([speaker, text, ""])
+	return true
+
+
 func has_played(id: String) -> bool:
 	return _played.has(id)
 

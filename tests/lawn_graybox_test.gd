@@ -33,6 +33,7 @@ func _run() -> void:
 	_report_build(built_ms)
 
 	await _test_spawn()
+	await _test_objectives()
 	await _test_chopping()
 	await _test_ground_matches_terrain()
 	await _test_viewpoints()
@@ -45,6 +46,7 @@ func _run() -> void:
 	await _test_route("route_b", 9.0)
 	await _test_way_home()
 	await _test_story()
+	await _test_leading()
 
 	print("\n%s" % ("PASS" if failures == 0 else "%d failure(s)" % failures))
 	quit(failures)
@@ -408,6 +410,83 @@ func _test_way_home() -> void:
 	var through := player.global_position.z > float(patio["wall_z"]) + 1.0
 	_check("the door gap: too low to walk, crawl under it", blocked_standing and through and not bool(level.get("day_over")),
 		"standing stopped, then z=%.1f (wall %.0f); level over: %s" % [player.global_position.z, float(patio["wall_z"]), level.get("day_over")])
+
+
+## Opumie leads each path in the layout ("story" "leads") with Amodu a few
+## metres behind: she gets to the end, rarely having to hop past anything.
+func _test_leading() -> void:
+	var story: LevelStory = level.get("story")
+	var opumie: Companion = null
+	for ant: Companion in level.get("companions"):
+		if ant.display_name == "Opumie":
+			opumie = ant
+	if opumie == null:
+		return
+	var leads: Dictionary = layout.data["story"]["leads"]
+	for key: String in leads:
+		var xz: Array = leads[key]
+		if xz.size() < 2:
+			continue
+		var pts := PackedVector3Array()
+		for p: Array in xz:
+			pts.append(layout.ground_point(p))
+		var start := pts[0]
+		var ahead := (pts[1] - pts[0]).normalized()
+		player.teleport(layout.ground_point([start.x - ahead.x * 5.0, start.z - ahead.z * 5.0], 0.3), atan2(-ahead.x, -ahead.z))
+		await _frames(5)
+		opumie.regroup()
+		opumie.global_position = start + Vector3.UP * 0.5
+		opumie.lead_along(pts)
+		opumie.hops = 0
+		var dt := 1.0 / Engine.physics_ticks_per_second
+		var t := 0.0
+		var end := pts[pts.size() - 1]
+		while t < 150.0 and opumie.is_leading():
+			await physics_frame
+			t += dt
+			# Amodu walks after her, stopping 5 m short
+			var to := opumie.global_position - player.global_position
+			to.y = 0.0
+			if to.length() > 5.0:
+				var step := to.normalized() * minf(4.0 * dt, to.length() - 5.0)
+				var at := player.global_position + step
+				player.global_position = layout.ground_point([at.x, at.z], 0.05) if absf(at.y - layout.height_at(at.x, at.z)) < 3.0 else at
+				player.velocity = step / dt  # walking, as far as the ants can tell
+			else:
+				player.velocity = Vector3.ZERO
+			if Vector2(end.x - opumie.global_position.x, end.z - opumie.global_position.z).length() < 2.5:
+				break
+		var left := Vector2(end.x - opumie.global_position.x, end.z - opumie.global_position.z).length()
+		_check("Opumie leads %s" % key, left < 3.0 and opumie.hops <= 3,
+			"%.0f m short after %.0f s, %d hop(s)" % [left, t, opumie.hops])
+		opumie.stop_leading()
+	story.set_process(true)
+
+
+## The first objective is the ants' pebble, marked in front of him; lifting
+## it moves the objective on to following the ants.
+func _test_objectives() -> void:
+	var story: LevelStory = level.get("story")
+	var hud: GameHud = level.get("hud")
+	await _frames(40)  # the objective fades in
+	var first := hud.objective_text()
+	_check("the first objective is the pebble", "pebble" in first.to_lower() and story.first_pebble != null,
+		"'%s'" % first)
+	if story.first_pebble == null:
+		return
+	var at := story.first_pebble.global_position
+	var to := at - player.global_position
+	player.teleport(layout.ground_point([at.x - to.normalized().x * 2.6, at.z - to.normalized().z * 2.6], 0.3),
+		atan2(-to.x, -to.z))
+	await _frames(20)
+	await _tap("interact")
+	await _frames(60)
+	var lifted := player.carried == story.first_pebble
+	var next := hud.objective_text()
+	_check("lifting it moves the objective on", lifted and "follow" in next.to_lower(),
+		"carrying it: %s; now '%s'" % [lifted, next])
+	await _tap("interact")  # put it down
+	await _frames(30)
 
 
 ## Level 1's story: the door stone won't move before the gate; at the Colony

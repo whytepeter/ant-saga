@@ -1605,6 +1605,16 @@
   ],
   "heavables": [
     {
+      "kind": "pebble",
+      "size": 2.2,
+      "name": "The ants' pebble",
+      "pos": [
+        32,
+        -203
+      ],
+      "note": "M1 The Wrong Boy: the pebble Opigo couldn't shift, right in front of Amodu as he wakes; lifting it is the first objective (world/lawn/missions.json)."
+    },
+    {
       "kind": "crumb",
       "size": 1.0,
       "name": "Cake crumb",
@@ -2301,11 +2311,11 @@
         "id": "orb_web",
         "name": "The orb web",
         "at": [
-          -205,
-          -15
+          -208,
+          15
         ],
         "radius": 20,
-        "why": "M7 Caught: Opigo in the web (Stage 2)."
+        "why": "M7 Caught: past the orb web, on the ant road (the rescue is Stage 2)."
       },
       {
         "id": "capstone",
@@ -2362,7 +2372,114 @@
       "radius": 6,
       "max_y": 6
     },
-    "gate_dusk": 1100
+    "gate_dusk": 1100,
+    "leads_note": "Where Opumie leads while an objective is up (keyed by the step's done_on in world/lawn/missions.json): [x, z] points she walks, waiting for Amodu (characters/companion.gd lead_along). Mostly the west ant road.",
+    "leads": {
+      "stage:camp": [
+        [
+          40,
+          -207
+        ],
+        [
+          50,
+          -219
+        ],
+        [
+          57,
+          -231
+        ]
+      ],
+      "stage:orb_web": [
+        [
+          -322,
+          3
+        ],
+        [
+          -290,
+          5
+        ],
+        [
+          -245,
+          15
+        ],
+        [
+          -212,
+          22
+        ]
+      ],
+      "stage:capstone": [
+        [
+          -212,
+          22
+        ],
+        [
+          -200,
+          25
+        ],
+        [
+          -170,
+          40
+        ],
+        [
+          -146,
+          52
+        ]
+      ],
+      "stage:colony_gate": [
+        [
+          -140,
+          55
+        ],
+        [
+          -100,
+          62
+        ],
+        [
+          -40,
+          80
+        ],
+        [
+          28,
+          107
+        ]
+      ],
+      "stage:root_hall": [
+        [
+          40,
+          112
+        ],
+        [
+          -40,
+          80
+        ],
+        [
+          -100,
+          62
+        ],
+        [
+          -140,
+          55
+        ],
+        [
+          -200,
+          25
+        ],
+        [
+          -290,
+          5
+        ],
+        [
+          -318,
+          3
+        ]
+      ],
+      "door_open": [
+        [
+          -318,
+          9
+        ]
+      ]
+    }
   },
   "puffs": {
     "note": "Dandelion seed puffs snagged high up (world/props/seed_puff.gd): grab one and glide down. Each settles on the highest surface below from_height (default 400).",
