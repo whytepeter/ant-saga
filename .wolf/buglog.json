@@ -193,6 +193,25 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-09-26T10:38:53.000Z"
+    },
+    {
+      "id": "bug-015",
+      "timestamp": "2026-09-26T11:34:08.000Z",
+      "error_message": "Footsteps splash (wading) in the hollow and on the Bare Patch, far from the Rut",
+      "file": "player/player_audio.gd",
+      "root_cause": "Wading was decided by height below the Rut's water level; many dry dips in the lawn lie below it (same trap as bug-013).",
+      "fix": "Decide by the bake's surface: WATER, or MUD below level+0.4, wades; everything else by surface type.",
+      "tags": [
+        "audio",
+        "footsteps",
+        "water",
+        "terrain"
+      ],
+      "related_bugs": [
+        "bug-013"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-09-26T11:34:08.000Z"
     }
   ]
 }

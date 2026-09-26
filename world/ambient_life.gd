@@ -47,6 +47,9 @@ const HABITATS := [
 	["aphid", 14, "dandelion"],
 ]
 
+## A ladybird opened its wing cases and took off (GardenAudio gives it a whirr).
+signal took_off(critter: Node3D)
+
 var layout: LawnLayout
 ## Dust sparkles round this node (the player); far-off critters update less often.
 var focus: Node3D
@@ -252,6 +255,8 @@ func _move_on_ground(c: Dictionary, delta: float, center: Vector3) -> void:
 				c["target"] = _ground_near(pos, 2.5, 7.0, home) if kind == "springtail" else _home_point(home, 0.0, true)
 				c["hop_t"] = 0.0
 				c["hop_time"] = 0.4 if kind == "springtail" else maxf(pos.distance_to(c["target"]) / 7.0, 1.0)
+				if flies:
+					took_off.emit(c["node"])
 				c["arc"] = _rng.randf_range(1.0, 2.2) if kind == "springtail" else _rng.randf_range(5.0, 10.0)
 			else:
 				c["target"] = _ground_near(pos, 3.0, float(CRAWL[kind][1]), home)

@@ -44,3 +44,4 @@ budget_tokens: 2000
 ## Decision Log
 
 <!-- Significant technical decisions with rationale. Why X was chosen over Y. -->
+- [2026-09-26] Sound: recorded CC0 field recordings and foley (BigSoundBank), processed by tools/process_sounds.py, instead of synthesis. The user found the synthesised set "off"; the Grounded/Smalland reference is real garden recordings, pitched-down creatures and muffled far-off human sounds, glued with one shared reverb.

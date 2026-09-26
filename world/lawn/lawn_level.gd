@@ -101,7 +101,8 @@ func _setup_adventure() -> void:
 	add_child(life)
 	var audio := GardenAudio.new()
 	audio.name = "GardenAudio"
-	audio.setup(player, clock, weather, layout, life, route_guide)
+	audio.setup(player, clock, weather, layout, life, route_guide,
+		tree_base.cave_factor if tree_base != null else Callable())
 	add_child(audio)
 	hud = GameHud.new()
 	hud.name = "GameHud"

@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-26T10:32:05.448Z
-> Files: 240 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-26T11:30:22.982Z
+> Files: 241 tracked | Anatomy hits: 0 | Misses: 0
 
 > Project structure index. Auto-maintained by OpenWolf hooks and daemon.
 > Run `openwolf scan` to generate, or wait for the first Claude Code session.
@@ -160,7 +160,7 @@
 - `camera_rig.gd` (~1122 tok)
 - `camera_rig.gd.uid` (~6 tok)
 - `hide_head.gd` — Declares ARM_FORWARD (~548 tok)
-- `player_audio.gd` — Declares SOIL (~1255 tok)
+- `player_audio.gd` — Declares SETS (~1805 tok)
 - `player_combat.gd` — Declares CREATURES_LAYER (~3147 tok)
 - `player.gd` — Declares State (~6581 tok)
 - `player.gd.uid` (~6 tok)
@@ -242,6 +242,7 @@
 - `clip_sheet.gd` — Declares COLS (~972 tok)
 - `lawn_layout.py` — Validate and render the Lawn layout (world/lawn/layout.json). (~11232 tok)
 - `make_sounds.py` — Synthesise the game's sound effects into assets/audio/ (16-bit mono WAV). (~5158 tok)
+- `process_sounds.py` — Make the game's sounds (assets/audio/*.ogg) from recorded CC0 sources. (~3133 tok)
 - `prop_sheet.gd` — Declares VIEWS (~787 tok)
 
 ## ui/
@@ -253,7 +254,7 @@
 
 - `ambient_life.gd` — Declares KINDS (~2654 tok)
 - `day_clock.gd` — Declares SUNRISE (~541 tok)
-- `garden_audio.gd` — Declares DIR (~1693 tok)
+- `garden_audio.gd` — Declares DIR (~3183 tok)
 - `grass_meshes.gd` (~620 tok)
 - `grass_meshes.gd.uid` (~6 tok)
 - `route_guide.gd` (~1023 tok)

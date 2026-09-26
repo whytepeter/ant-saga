@@ -44,7 +44,7 @@ budget_tokens: 1500
 ## 📝 User notes to act on (2026-09-26)
 - **Garden tools look too new.** Trowel, brush (and pencil) must be rickety, worn and dirty, not polished. The brush model isn't realistic enough (it reads as a hairbrush); a better Meshy regen needs credit approval.
 - **Insects at the Flower Bed float without animation** (ladybird and others): they need walking/crawling legs, wing flutter, and to sit on surfaces instead of hovering.
-- **Sound** (first pass done 2026-09-26, needs the user's ears): all synthesised by `tools/make_sounds.py` into `assets/audio/`; `world/garden_audio.gd` (ambience, rain, thunder, Rut, birds, bee/dragonfly voices, route chime) and `player/player_audio.gd` (steps by surface, leap, landing, swim, climb, glide). Tune levels by ear; swap in recorded CC0 sounds later if wanted.
+- **Sound** (recorded, 2026-09-26; needs the user's ears): 41 CC0 recordings from BigSoundBank (in `source/bigsoundbank/`, git-ignored) cut, pitched, looped and levelled by `tools/process_sounds.py` into `assets/audio/*.ogg` (credits in `assets/audio/CREDITS.md`). Mixed in `world/garden_audio.gd` (beds by time of day, birds overhead, far mower/dog, Rut, flies at the apple, crickets, chimes by the door, rain/drops/thunder, Root Hall muffle + cave reverb) and `player/player_audio.gd` (steps by surface: soil, leaf, grass, wood, hollow, wade). ffmpeg here has no libvorbis: native Vorbis encoder, stereo only.
 
 ## 🚀 Next quest: world sign-off, then plan Level 1 with the user
 The user said: "later on we will plan the first level of the game once the world is okay".

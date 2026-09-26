@@ -134,3 +134,10 @@ description: chronological action log per session, consolidated weekly
 | 11:32 | Created player/player_audio.gd | — | ~1255 |
 | 11:32 | Created player/player_audio.gd | — | ~1255 |
 | 11:40 | Synthesised sound (31 files) + GardenAudio/PlayerAudio; rain now stops under cover (Root Hall, stair, cap) | make_sounds.py, garden_audio.gd, player_audio.gd, weather.gd, ambient_life.gd, lawn_level.gd | all 3 suites pass | ~40k |
+| 12:04 | Created tools/process_sounds.py | — | ~3133 |
+| 12:04 | Created tools/process_sounds.py | — | ~3133 |
+| 12:29 | Created world/garden_audio.gd | — | ~3183 |
+| 12:29 | Created world/garden_audio.gd | — | ~3183 |
+| 12:30 | Created player/player_audio.gd | — | ~1805 |
+| 12:30 | Created player/player_audio.gd | — | ~1805 |
+| 12:37 | Sound overhaul: 41 CC0 BigSoundBank recordings -> process_sounds.py -> 78 ogg; new mix (buses, reverb, cave muffle, beds by time of day, far sounds, chimes); synth set removed | process_sounds.py, garden_audio.gd, player_audio.gd, ambient_life.gd, lawn_level.gd | all 3 suites pass | ~60k |

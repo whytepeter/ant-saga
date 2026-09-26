@@ -1,13 +1,13 @@
 {
   "version": 1,
   "meta": {
-    "lastScanned": "2026-09-26T10:32:05.448Z",
-    "fileCount": 240,
+    "lastScanned": "2026-09-26T11:30:22.982Z",
+    "fileCount": 241,
     "hits": 0,
     "misses": 0,
-    "renderedHash": "e38e89264ebccd3f23e6f9736b5b627e485dd1bc922f6ac0fd899a911d57bb94",
-    "storeUpdatedAt": "2026-09-26T10:32:05.458Z",
-    "rootHash": "27f188ebcd5f4ae5"
+    "renderedHash": "d8176d3a944cac3c4d83d4831cb5f80f9a45c0e24decc7be4fe15fb82671ba18",
+    "storeUpdatedAt": "2026-09-26T11:30:22.991Z",
+    "rootHash": "5cdfce6dc3535ab7"
   },
   "files": {
     ".gitattributes": {
@@ -2694,21 +2694,109 @@
     },
     "world/garden_audio.gd": {
       "description": "Declares DIR",
-      "tokens": 1693,
-      "hash": "265faf0e6c336655",
-      "size": 6349,
-      "mtimeMs": 1790418725159.0579,
-      "updatedAt": "2026-09-26T10:32:05.272Z",
+      "tokens": 3183,
+      "hash": "5856c35735303ab4",
+      "size": 11934,
+      "mtimeMs": 1790422157755.9514,
+      "updatedAt": "2026-09-26T11:29:17.859Z",
       "source": "hook"
     },
     "player/player_audio.gd": {
-      "description": "Declares SOIL",
-      "tokens": 1255,
-      "hash": "02bc8ec514f3c080",
-      "size": 4706,
-      "mtimeMs": 1790418725348.8625,
-      "updatedAt": "2026-09-26T10:32:05.447Z",
+      "description": "Declares SETS",
+      "tokens": 1805,
+      "hash": "b336890eb7637d50",
+      "size": 6767,
+      "mtimeMs": 1790422222827.0476,
+      "updatedAt": "2026-09-26T11:30:22.981Z",
       "source": "hook"
+    },
+    "tools/process_sounds.py": {
+      "description": "Make the game's sounds (assets/audio/*.ogg) from recorded CC0 sources.",
+      "tokens": 3133,
+      "hash": "33947fa61a6de90f",
+      "size": 11352,
+      "mtimeMs": 1790420679862.0217,
+      "updatedAt": "2026-09-26T11:04:39.955Z",
+      "source": "hook",
+      "symbols": [
+        {
+          "name": "source",
+          "kind": "fn",
+          "startLine": 38,
+          "endLine": 44,
+          "tokens": 44
+        },
+        {
+          "name": "decode",
+          "kind": "fn",
+          "startLine": 45,
+          "endLine": 58,
+          "tokens": 215
+        },
+        {
+          "name": "encode",
+          "kind": "fn",
+          "startLine": 59,
+          "endLine": 75,
+          "tokens": 216
+        },
+        {
+          "name": "rms",
+          "kind": "fn",
+          "startLine": 76,
+          "endLine": 79,
+          "tokens": 22
+        },
+        {
+          "name": "loudest",
+          "kind": "fn",
+          "startLine": 80,
+          "endLine": 89,
+          "tokens": 92
+        },
+        {
+          "name": "gain_to",
+          "kind": "fn",
+          "startLine": 90,
+          "endLine": 97,
+          "tokens": 68
+        },
+        {
+          "name": "fades",
+          "kind": "fn",
+          "startLine": 98,
+          "endLine": 107,
+          "tokens": 67
+        },
+        {
+          "name": "loop",
+          "kind": "fn",
+          "startLine": 108,
+          "endLine": 117,
+          "tokens": 91
+        },
+        {
+          "name": "onsets",
+          "kind": "fn",
+          "startLine": 118,
+          "endLine": 134,
+          "tokens": 181
+        },
+        {
+          "name": "hits",
+          "kind": "fn",
+          "startLine": 135,
+          "endLine": 162,
+          "tokens": 331
+        },
+        {
+          "name": "make_all",
+          "kind": "fn",
+          "startLine": 163,
+          "endLine": 237,
+          "tokens": 1388
+        }
+      ]
     }
   },
   "preamble": [
