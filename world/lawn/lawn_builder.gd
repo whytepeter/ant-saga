@@ -13,6 +13,7 @@ const GRASS_LAYER := 1 << 4
 const CHUNK := 60.0
 const BLADE_HEIGHT := 24.0  # nominal blade mesh; instances scale 0.6–1.7
 const BLADE_WIDTH := 1.9
+const TUFT_SIZE := 3.0  # blades per tuft, on average
 
 const COLORS := {
 	"lawn_soil": Color(0.36, 0.26, 0.17), "bare_soil": Color(0.55, 0.4, 0.27), "mud": Color(0.29, 0.2, 0.13),
@@ -1418,8 +1419,8 @@ func _build_grass(parent: Node3D) -> void:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 2026
 	var blade_meshes: Array[ArrayMesh] = [
-		GrassMeshes.blade(BLADE_HEIGHT, BLADE_WIDTH, 0.08, 8),
-		GrassMeshes.blade(BLADE_HEIGHT, BLADE_WIDTH * 0.8, 0.22, 8),
+		GrassMeshes.blade(BLADE_HEIGHT, BLADE_WIDTH, 0.08, 8, 0.35),
+		GrassMeshes.blade(BLADE_HEIGHT, BLADE_WIDTH * 0.8, 0.22, 8, -0.5),
 	]
 	# per-blade tints around 0.45 grey (the grass shader supplies the greens):
 	# brighter, darker, sun-bleached yellow and cooler blue-green blades
@@ -1428,37 +1429,66 @@ func _build_grass(parent: Node3D) -> void:
 	var hollow: Dictionary = layout.item("areas", "backpack_hollow")
 	var hollow_c := LawnLayout.xz(hollow["center"])
 
-	# chunk key -> {"standing": [[xforms], [xforms]], "colors": [...], "flat": xforms, "clover": xforms}
+	# chunk key -> {"standing": [[xforms], [xforms]], "colors": [...], "flat": xforms, "clover": xforms,
+	#   "collars": xforms, "collar_colors": ground weights}
 	var chunks := {}
 	var n := layout.size
 	for j in n:
 		for i in n:
 			var k := j * n + i
 			var surf := int(layout.surface[k])
-			var expected := layout.density[k] / 100.0 * layout.cell * layout.cell
+			# grass grows in tufts: 2–4 blades fanning out of one crown, with a heap
+			# of soil round its foot (as many blades as before, fewer places)
+			var expected := layout.density[k] / 100.0 * layout.cell * layout.cell / TUFT_SIZE
 			var count := int(expected)
 			if rng.randf() < expected - count:
 				count += 1
 			var cx := layout.origin + i * layout.cell
 			var cz := layout.origin + j * layout.cell
 			for c in count:
-				var x := cx + rng.randf_range(-1.0, 1.0)
-				var z := cz + rng.randf_range(-1.0, 1.0)
+				var crown := Vector2(cx + rng.randf_range(-1.0, 1.0), cz + rng.randf_range(-1.0, 1.0))
 				var hs := rng.randf_range(0.75, 1.2)
-				var tint: Color = greens[rng.randi() % greens.size()]
+				var plant: Color = greens[rng.randi() % greens.size()]
 				if surf == LawnLayout.Surface.TUSSOCK:
 					hs = rng.randf_range(1.3, 1.7)
-					tint = tint.lerp(Color(0.55, 0.55, 0.25), 0.35)
+					plant = plant.lerp(Color(0.55, 0.55, 0.25), 0.35)
 				elif surf == LawnLayout.Surface.LEAF_LITTER:
 					hs = rng.randf_range(0.6, 0.9)
-					tint = tint.darkened(0.2)
-				var basis := Basis(Vector3.UP, rng.randf() * TAU) * Basis(Vector3.RIGHT, rng.randf_range(-0.07, 0.07))
-				basis = basis.scaled_local(Vector3(rng.randf_range(0.8, 1.2), hs, hs))
-				var xf := Transform3D(basis, Vector3(x, layout.height_at(x, z) - 0.2, z))
-				var bucket := _chunk(chunks, x, z)
-				var variant := rng.randi() % 2
-				(bucket["standing"][variant] as Array).append(xf)
-				(bucket["colors"][variant] as Array).append(tint)
+					plant = plant.darkened(0.2)
+				var ground := layout.height_at(crown.x, crown.y)
+				# the slope here (m of rise over 2 m, both ways)
+				var gx := layout.height_at(crown.x + 1.0, crown.y) - layout.height_at(crown.x - 1.0, crown.y)
+				var gz := layout.height_at(crown.x, crown.y + 1.0) - layout.height_at(crown.x, crown.y - 1.0)
+				var slope := absf(gx) + absf(gz)
+				var blades := rng.randi_range(2, 4)
+				var fan := rng.randf() * TAU
+				for b in blades:
+					var yaw := fan + TAU * b / blades + rng.randf_range(-0.5, 0.5)
+					var out := Vector2(sin(yaw), cos(yaw))
+					var p := crown + out * rng.randf_range(0.2, 0.45)
+					var lean := rng.randf_range(0.05, 0.2)  # outward, away from the crown
+					var basis := Basis(Vector3.UP, yaw) * Basis(Vector3.RIGHT, lean)
+					var h := hs * rng.randf_range(0.85, 1.1)
+					basis = basis.scaled_local(Vector3(rng.randf_range(0.8, 1.2), h, h))
+					var tint := plant * rng.randf_range(0.92, 1.08)
+					# about one blade in twelve is dead straw and a few more are drying
+					# (the colour's alpha; a hash, so the scatter's random sequence is untouched)
+					var roll := fposmod(sin(p.x * 12.9898 + p.y * 78.233) * 43758.5453, 1.0)
+					tint.a = 0.0 if roll < 0.08 else (0.55 if roll < 0.14 else 1.0)
+					# sunk deeper on a slope so neither corner of the foot floats
+					var xf := Transform3D(basis, Vector3(p.x, layout.height_at(p.x, p.y) - 0.3 - 0.6 * slope, p.y))
+					var bucket := _chunk(chunks, p.x, p.y)
+					var variant := rng.randi() % 2
+					(bucket["standing"][variant] as Array).append(xf)
+					(bucket["colors"][variant] as Array).append(tint)
+				# the soil heap, tilted to the ground and tinted like the ground here
+				var up := Vector3(-gx, 2.0, -gz).normalized()
+				var side := up.cross(Vector3.FORWARD).normalized()
+				var heap := Basis(side, up, side.cross(up)).rotated(up, rng.randf() * TAU)
+				heap = heap.scaled_local(Vector3.ONE * rng.randf_range(0.8, 1.2) * (0.7 + 0.3 * hs))
+				var collar_bucket := _chunk(chunks, crown.x, crown.y)
+				(collar_bucket["collars"] as Array).append(Transform3D(heap, Vector3(crown.x, ground - 0.05, crown.y)))
+				(collar_bucket["collar_colors"] as Array).append(SURFACE_WEIGHTS[surf])
 			# flattened blades in the hollow Amodu sat in: lying radially outward
 			if surf == LawnLayout.Surface.FLATTENED and rng.randf() < 0.22:
 				var x := cx + rng.randf_range(-1.0, 1.0)
@@ -1477,6 +1507,8 @@ func _build_grass(parent: Node3D) -> void:
 				(_chunk(chunks, x, z)["flat"] as Array).append(Transform3D(basis, Vector3(x, base_h + 0.03, z)))
 
 	var mat := _grass_material()
+	var collar_mesh := GrassMeshes.soil_collar(rng)
+	var collar_mat := _ground_material()
 	var flat_mat := mat.duplicate() as ShaderMaterial  # blades pressed flat where Amodu hid: bruised, drying
 	flat_mat.set_shader_parameter("tint_scale", 1.0)
 	flat_mat.set_shader_parameter("base_color", Color(0.22, 0.3, 0.1))
@@ -1500,6 +1532,9 @@ func _build_grass(parent: Node3D) -> void:
 			_multimesh(parent, blade_meshes[variant], mat, xforms, bucket["colors"][variant])
 		if not (bucket["flat"] as Array).is_empty():
 			_multimesh(parent, blade_meshes[0], flat_mat, bucket["flat"], [], false)
+		if not (bucket["collars"] as Array).is_empty():
+			var heaps := _multimesh(parent, collar_mesh, collar_mat, bucket["collars"], bucket["collar_colors"], false)
+			heaps.visibility_range_end = 160.0
 		if physics:
 			_grass_body(bucket)
 
@@ -1507,11 +1542,11 @@ func _build_grass(parent: Node3D) -> void:
 func _chunk(chunks: Dictionary, x: float, z: float) -> Dictionary:
 	var key := Vector2i(floori(x / CHUNK), floori(z / CHUNK))
 	if not chunks.has(key):
-		chunks[key] = {"standing": [[], []], "colors": [[], []], "flat": [], "clover": []}
+		chunks[key] = {"standing": [[], []], "colors": [[], []], "flat": [], "clover": [], "collars": [], "collar_colors": []}
 	return chunks[key]
 
 
-func _multimesh(parent: Node3D, mesh: Mesh, mat: Material, xforms: Array, colors: Array, shadows := true) -> void:
+func _multimesh(parent: Node3D, mesh: Mesh, mat: Material, xforms: Array, colors: Array, shadows := true) -> MultiMeshInstance3D:
 	var mm := MultiMesh.new()
 	mm.transform_format = MultiMesh.TRANSFORM_3D
 	mm.use_colors = not colors.is_empty()
@@ -1526,6 +1561,7 @@ func _multimesh(parent: Node3D, mesh: Mesh, mat: Material, xforms: Array, colors
 	mmi.material_override = mat
 	mmi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON if shadows else GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	parent.add_child(mmi)
+	return mmi
 
 
 ## One static body per chunk carrying a box for the lower half of every standing blade.

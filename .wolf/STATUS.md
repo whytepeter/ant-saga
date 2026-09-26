@@ -4,12 +4,12 @@ budget_tokens: 1500
 ---
 # STATUS — ant-game
 
-> Read this FIRST when resuming. Last updated: 2026-09-26 (late).
+> Read this FIRST when resuming. Last updated: 2026-09-26 (night).
 
 ## Direction
 **SMALL GIANT**: Amodu (5 mm, full human strength, huge jumps, no fall damage) wakes by his school bag at the far end of an ordinary back garden and must get home under the back door before sunset. The Nigerian compound is dropped. Heroes following him are on hold (`Companion.ENABLED = false`). No weapons yet. Art: no blocky primitives as final visuals; use Meshy + CC0 textures, targeting Grounded and Smalland. Ask before spending Meshy credits (balance **1752**). Keep on-screen text minimal.
 
-## ✅ Done (all uncommitted; all 3 test suites pass)
+## ✅ Done (committed; all 3 test suites pass)
 - **Amodu v2** from the user's T-pose design: `assets/characters/amodu2/` (Meshy image-to-3D, rig, 47 library clips + 7 text-to-motion). `tools/build_amodu_anims.gd --dir=` builds the library: cut jumps, landings, coil pose, lift/throw timing, ARM_FIX idle arms. Old `assets/characters/amodu/` is unused.
 - **player.gd**:
   - Movement: instant jumps; air pose by vertical speed; one landing; running jump held becomes the big leap.
@@ -31,6 +31,14 @@ budget_tokens: 1500
   - Creatures: ladybug, aphid, velvet_mite, springtail.
 - **AmbientLife**: insects live in fixed HABITATS (areas, the dandelion, the Rut, the Rut bank) and never follow the player. Far ones update at 1/6 rate.
 - **Route home without text** (`world/route_guide.gd`, layout `route_home`, 9 stages from the bag's top to the back door). The next stage gets a gold mote column plus a distant light shaft, and a gold diamond on the compass. Later stages skip ahead.
+- **The ground reads at 5 mm** (user playtest, Grounded/Smalland feel):
+  - Soil textures rescaled to grain size (no twigs photo); fine grit near the camera; far blur at 150 m.
+  - Terrain relief baked in `tools/lawn_layout.py` (`relief_mask`, `place_mounds`): 90 bare dirt mounds up to 4.6 m (≤29°) plus rolling ground, all with collision; kept off props, hollow, Bare Patch, runoff, Rut and tree bank.
+  - A scatter of loose grains/clods/straw was tried and REJECTED by the user (see cerebrum Do-Not-Repeat).
+  - Underwater look limited to the Rut (`water_box`); it used to hit ~14k dry lawn points below water level.
+- **Grass**: tufts of 2–4 blades from one crown with a soil heap (ground material) at the foot; sheathed, creased, twisting blades; veins, midrib, browning tips, ~8% dry straw blades.
+- **Root Hall is findable**: clover now keeps off routes and ant roads, so `ant_road_west` reads as a trail from the Capstone through the Flower Bed to the mouth.
+- **Keys**: V only changes the camera (dodge is Alt); controls panel on H (F1 is brightness on a Mac).
 - **Tests added**: swim, Root Hall walk-through, glide, route guide, running jumps. The pill-bug throw test freezes the bug during the wind-up.
 
 ## 🚀 Next quest: world sign-off, then plan Level 1 with the user
@@ -57,7 +65,7 @@ Suggestions not yet done:
 - A rain event that raises the Rut.
 
 ## Context
-- **Git:** everything since `926bab8` is uncommitted: a large diff plus untracked `assets/`, `world/shaders/` and the new scripts. Commit only when the user agrees; never commit `.env`.
+- **Git:** committed on `main` (see `git log`). The old unused `assets/characters/amodu/` (174 MB) and tool caches are git-ignored. Never commit `.env`.
 - **Tools:**
   - Blender 5.2 CLI works (`Blender -b --factory-startup --python ...`).
   - Plain python3 has no numpy.

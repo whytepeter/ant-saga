@@ -3,25 +3,32 @@ class_name GrassMeshes
 ## them with textured, wind-animated versions.
 
 
-## A tapered blade growing up +Y, V-sectioned (midrib slightly behind the edges)
-## and curving toward +Z by `bend` × height at the tip.
+## A grass blade growing up +Y: parallel-sided, narrowing a little into its
+## sheath at the foot and tapering to a point over its top half, creased along
+## the midrib (a keel, shaded apart so one half catches the light and the other
+## doesn't), turning `twist` radians as it rises and curving toward +Z by
+## `bend` × height at the tip.
 ## UV.y runs 0 at the base to 1 at the tip and UV.x across the blade, for the
-## grass shader's colour ramp and wind.
-static func blade(height: float, width: float, bend: float, rows := 6) -> ArrayMesh:
+## grass shader's colour ramp, veins and wind.
+static func blade(height: float, width: float, bend: float, rows := 8, twist := 0.0) -> ArrayMesh:
 	var st := SurfaceTool.new()
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
 	var ring: Array[PackedVector3Array] = []
 	for i in rows + 1:
 		var t := float(i) / rows
-		var w := width * 0.5 * (1.0 - pow(t, 1.6))
-		var z := bend * t * t * height
-		var y := t * height
-		ring.append(PackedVector3Array([Vector3(-w, y, z), Vector3(0, y, z - w * 0.18), Vector3(w, y, z)]))
+		var sheath := 1.0 - smoothstep(0.0, 0.14, t)  # the foot: narrow and folded tight
+		var w := width * 0.5 * (1.0 - 0.55 * sheath) * (1.0 - pow(smoothstep(0.42, 1.0, t), 1.4))
+		var c := Vector3(0.0, t * height, bend * t * t * height)
+		var a := twist * t
+		var side := Vector3(cos(a), 0.0, sin(a))
+		var back := Vector3(-sin(a), 0.0, cos(a)) * -1.0
+		ring.append(PackedVector3Array([c - side * w, c + back * w * (0.42 + 0.6 * sheath), c + side * w]))
 	var across := [0.0, 0.5, 1.0]
-	for i in rows:
-		var t0 := float(i) / rows
-		var t1 := float(i + 1) / rows
-		for side in 2:
+	for side in 2:
+		st.set_smooth_group(side + 1)  # a crisp crease down the midrib
+		for i in rows:
+			var t0 := float(i) / rows
+			var t1 := float(i + 1) / rows
 			var a0 := ring[i][side]
 			var a1 := ring[i][side + 1]
 			var b0 := ring[i + 1][side]
@@ -35,9 +42,39 @@ static func blade(height: float, width: float, bend: float, rows := 6) -> ArrayM
 			st.set_uv(Vector2(u0, t1)); st.add_vertex(b0)
 			st.set_uv(Vector2(u1, t1)); st.add_vertex(b1)
 	st.generate_normals()
+	st.generate_tangents()  # the shader's vein ridges are a normal map
 	return st.commit()
 
 
+## A heap of soil round the foot of a tuft: a lumpy low dome (0.5 m high,
+## 2 m across) whose rim dips below the ground, so it rises out of the terrain
+## with no seam. Drawn with the ground's own material.
+static func soil_collar(rng: RandomNumberGenerator) -> ArrayMesh:
+	var rings := [[0.0, 0.5], [0.4, 0.42], [0.85, 0.24], [1.35, 0.07], [1.9, -0.12]]
+	var segments := 12
+	var pts: Array[PackedVector3Array] = []
+	for r: Array in rings:
+		var ring := PackedVector3Array()
+		for k in segments:
+			var a := TAU * k / segments
+			var radius := float(r[0]) * rng.randf_range(0.85, 1.15)
+			var y := float(r[1]) + (rng.randf_range(-0.07, 0.07) if float(r[1]) > 0.0 else 0.0)
+			ring.append(Vector3(cos(a) * radius, y, sin(a) * radius))
+		pts.append(ring)
+	var st := SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	for i in rings.size() - 1:
+		for k in segments:
+			var k1 := (k + 1) % segments
+			var a := pts[i][k]
+			var b := pts[i][k1]
+			var c := pts[i + 1][k]
+			var d := pts[i + 1][k1]
+			st.add_vertex(a); st.add_vertex(c); st.add_vertex(b)
+			st.add_vertex(b); st.add_vertex(c); st.add_vertex(d)
+	st.index()
+	st.generate_normals()
+	return st.commit()
 
 
 ## Touch-me-not (Mimosa pudica): a stem topped by four feathery pinnae fanned

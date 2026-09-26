@@ -12,7 +12,8 @@ extends RefCounted
 ## Solid pieces get collision (static bodies per chunk): simplified hulls for
 ## pebbles, twigs and leaves, exact shapes for toadstools and roots. Logs,
 ## roots, toadstools and pebbles are climbable too; leaves are ground to walk
-## on. Clover is soft, like the grass, and dissolves in front of the camera.
+## on. Clover is soft, like the grass, and dissolves in front of the camera; it
+## keeps off the routes and ant roads all the same, so trails stay visible.
 
 const CHUNK := 64.0
 const PATH_CLEARANCE := 7.0
@@ -66,7 +67,9 @@ static func build(parent: Node3D, layout: LawnLayout) -> void:
 				var z := cz + rng.randf_range(-1.0, 1.0)
 				var id: String = rule[0]
 				var size := rng.randf_range(float(rule[3][0]), float(rule[3][1]))
-				if COLLISION.has(id) and _near_route(routes, Vector2(x, z), PATH_CLEARANCE + size * 0.5):
+				# solid pieces stay clear of the routes, and so does clover, so a trail
+				# reads as a trail (the ant road through the Flower Bed to Root Hall)
+				if (COLLISION.has(id) or id in SOFT) and _near_route(routes, Vector2(x, z), PATH_CLEARANCE + size * 0.5):
 					continue
 				var tilt := Basis(Vector3.RIGHT, rng.randf_range(-0.08, 0.08)) * Basis(Vector3.FORWARD, rng.randf_range(-0.08, 0.08))
 				var basis := (Basis(Vector3.UP, rng.randf() * TAU) * tilt).scaled(Vector3.ONE * size)

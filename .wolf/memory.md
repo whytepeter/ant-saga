@@ -119,3 +119,4 @@ description: chronological action log per session, consolidated weekly
 | 09:09 | Created world/shaders/grain.gdshader | — | ~728 |
 | 09:09 | Created world/shaders/grain.gdshader | — | ~728 |
 | 09:38 | Ground reads miniature: grain-scale soil textures, terrain relief (90 walkable mounds + rolling ground, baked with collision), macro DoF; scatter tried and removed per user; V/dodge and F1 (H) key fixes; underwater look limited to the Rut | ground.gdshader, lawn_layout.py, lawn_builder.gd, garden_dressing.gd, game_hud.gd, project.godot, lawn.tscn | all 3 test suites pass | ~60k |
+| 09:53 | Committed world build-out (85b4fcb); grass tufts with soil heaps, sheathed/veined/dry blades; clover kept off trails so the ant road leads to Root Hall | grass_meshes.gd, grass.gdshader, lawn_builder.gd, garden_dressing.gd, STATUS.md | all 3 test suites pass | ~40k |
