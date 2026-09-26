@@ -1616,6 +1616,14 @@ func _build_grass(parent: Node3D) -> void:
 		GrassMeshes.blade(BLADE_HEIGHT, BLADE_WIDTH, 0.08, 8, 0.35),
 		GrassMeshes.blade(BLADE_HEIGHT, BLADE_WIDTH * 0.8, 0.22, 8, -0.5),
 	]
+	# shadows are drawn from a coarser blade (3 rows, not 8): a blade's shadow is
+	# a soft shape on the ground, and it's drawn into every cascade
+	blade_meshes[0].shadow_mesh = GrassMeshes.blade(BLADE_HEIGHT, BLADE_WIDTH, 0.08, 3, 0.35)
+	blade_meshes[1].shadow_mesh = GrassMeshes.blade(BLADE_HEIGHT, BLADE_WIDTH * 0.8, 0.22, 3, -0.5)
+	# and only the chunks near the camera cast them (GrassShadows)
+	var shadows := GrassShadows.new()
+	shadows.name = "GrassShadows"
+	parent.add_child(shadows)
 	# per-blade tints around 0.45 grey (the grass shader supplies the greens):
 	# brighter, darker, sun-bleached yellow and cooler blue-green blades
 	var greens := [Color(0.45, 0.45, 0.45), Color(0.52, 0.5, 0.42), Color(0.38, 0.42, 0.4), Color(0.56, 0.52, 0.36),
@@ -1723,7 +1731,7 @@ func _build_grass(parent: Node3D) -> void:
 			var xforms: Array = bucket["standing"][variant]
 			if xforms.is_empty():
 				continue
-			_multimesh(parent, blade_meshes[variant], mat, xforms, bucket["colors"][variant])
+			shadows.add(_multimesh(parent, blade_meshes[variant], mat, xforms, bucket["colors"][variant]))
 		if not (bucket["flat"] as Array).is_empty():
 			_multimesh(parent, blade_meshes[0], flat_mat, bucket["flat"], [], false)
 		if not (bucket["collars"] as Array).is_empty():

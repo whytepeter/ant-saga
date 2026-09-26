@@ -141,3 +141,37 @@ description: chronological action log per session, consolidated weekly
 | 12:30 | Created player/player_audio.gd | — | ~1805 |
 | 12:30 | Created player/player_audio.gd | — | ~1805 |
 | 12:37 | Sound overhaul: 41 CC0 BigSoundBank recordings -> process_sounds.py -> 78 ogg; new mix (buses, reverb, cave muffle, beds by time of day, far sounds, chimes); synth set removed | process_sounds.py, garden_audio.gd, player_audio.gd, ambient_life.gd, lawn_level.gd | all 3 suites pass | ~60k |
+| 12:42 | Edited world/garden_audio.gd | 2→3 lines | ~38 |
+| 12:42 | Edited world/garden_audio.gd | 2→3 lines | ~38 |
+| 12:48 | Created docs/GAMEPLAY.md | — | ~3717 |
+| 12:48 | Created docs/GAMEPLAY.md | — | ~3717 |
+| 13:13 | Created player/weapons.gd | — | ~804 |
+| 13:13 | Created player/weapons.gd | — | ~804 |
+| 13:13 | Created player/inventory.gd | — | ~567 |
+| 13:13 | Created player/inventory.gd | — | ~567 |
+| 13:14 | Created player/held_weapon.gd | — | ~732 |
+| 13:14 | Created player/held_weapon.gd | — | ~732 |
+| 13:28 | Created ui/hud_glyphs.gd | — | ~733 |
+| 13:28 | Created ui/hud_glyphs.gd | — | ~733 |
+| 13:28 | Created ui/weapon_badge.gd | — | ~648 |
+| 13:28 | Created ui/weapon_badge.gd | — | ~648 |
+| 13:29 | Created ui/inventory_panel.gd | — | ~1378 |
+| 13:29 | Created ui/inventory_panel.gd | — | ~1378 |
+| 13:30 | Created world/props/weapon_pickup.gd | — | ~415 |
+| 13:30 | Created world/props/weapon_pickup.gd | — | ~415 |
+| 13:51 | Created tools/add_finger_bones.gd | — | ~3683 |
+| 13:51 | Created tools/add_finger_bones.gd | — | ~3683 |
+| 13:52 | Created player/finger_curl.gd | — | ~675 |
+| 13:52 | Created player/finger_curl.gd | — | ~675 |
+| 13:53 | Edited player/player.gd | 2→3 lines | ~33 |
+| 13:53 | Edited player/player.gd | 2→3 lines | ~33 |
+| 15:33 | Created ui/garden_map.gd | — | ~1868 |
+| 15:33 | Created ui/garden_map.gd | — | ~1868 |
+| 15:34 | Created ui/map.gdshader | — | ~346 |
+| 15:34 | Created ui/map.gdshader | — | ~346 |
+| 15:34 | Created ui/map_panel.gd | — | ~1448 |
+| 15:34 | Created ui/map_panel.gd | — | ~1448 |
+| 15:35 | Created ui/map_hud.gd | — | ~1306 |
+| 15:35 | Created ui/map_hud.gd | — | ~1306 |
+| 15:41 | Edited tests/lawn_graybox_test.gd | modified get_children() | ~45 |
+| 15:41 | Edited tests/lawn_graybox_test.gd | modified get_children() | ~45 |

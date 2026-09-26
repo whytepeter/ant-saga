@@ -3,9 +3,10 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://by4qulqodm44a"
-path="res://.godot/imported/glow_mushroom_2.jpg-2654304ddb6d83f7e76ce8edcae5f993.ctex"
+path.s3tc="res://.godot/imported/glow_mushroom_2.jpg-2654304ddb6d83f7e76ce8edcae5f993.s3tc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 generator_parameters={
 "md5": "596dc9b5c5143f4f7ba3ce41d03d8290"
@@ -14,17 +15,17 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/garden/glow_mushroom/glow_mushroom_2.jpg"
-dest_files=["res://.godot/imported/glow_mushroom_2.jpg-2654304ddb6d83f7e76ce8edcae5f993.ctex"]
+dest_files=["res://.godot/imported/glow_mushroom_2.jpg-2654304ddb6d83f7e76ce8edcae5f993.s3tc.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0
 compress/rdo_quality_loss=0.0
 compress/hdr_compression=1
-compress/normal_map=0
+compress/normal_map=1
 compress/channel_pack=0
 mipmaps/generate=true
 mipmaps/limit=-1
@@ -39,5 +40,5 @@ process/premult_alpha=false
 process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
-process/size_limit=0
+process/size_limit=1024
 detect_3d/compress_to=1

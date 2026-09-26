@@ -135,6 +135,12 @@ func _spawn_props() -> void:
 		var prop := Heavable.make(String(hv["kind"]), float(hv["size"]), String(hv["name"]))
 		holder.add_child(prop)
 		prop.global_position = layout.ground_point(hv["pos"], float(hv["size"]) * 0.5 + 0.2)
+	# weapons lying about (the ant axe by the pencil log)
+	for pick: Dictionary in layout.data.get("pickups", []):
+		var pickup := WeaponPickup.new()
+		pickup.weapon = StringName(String(pick["weapon"]))
+		holder.add_child(pickup)
+		pickup.global_position = layout.ground_point(pick["pos"], 0.0)
 	# dandelion seed puffs snagged up high, to glide down on
 	for spot: Dictionary in layout.data.get("puffs", {}).get("spots", []):
 		var puff := SeedPuff.new()

@@ -131,7 +131,7 @@ def stage_model(c):
 def action_batches(m):
     """[(state key / file stem, [(name, action id), ...])], up to 10 per batch."""
     batches = []
-    for key, prefix in (("actions", "anim_"), ("more_actions", "anim_more_")):
+    for key, prefix in (("actions", "anim_"), ("more_actions", "anim_more_"), ("weapon_actions", "anim_weapon_")):
         items = list(m.get(key, {}).items())
         for i in range(0, len(items), 10):
             batches.append((f"{prefix}{i // 10}", items[i:i + 10]))
@@ -191,7 +191,7 @@ def main():
     if len(sys.argv) < 3:
         sys.exit(__doc__)
     cmd, c = sys.argv[1], Char(sys.argv[2])
-    n_actions = len(c.manifest["actions"]) + len(c.manifest.get("more_actions", {}))
+    n_actions = sum(len(batch) for _, batch in action_batches(c.manifest))
     n_motions = len(c.manifest.get("motions", {}))
     if cmd == "plan":
         made = sum(1 for k in c.manifest.get("motions", {}) if f"motion_{k}" in c.state)

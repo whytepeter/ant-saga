@@ -3,9 +3,10 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cr2ie46bkewim"
-path="res://.godot/imported/springtail_0.jpg-7a0ee06f701269e1762ff7da429cd06f.ctex"
+path.s3tc="res://.godot/imported/springtail_0.jpg-7a0ee06f701269e1762ff7da429cd06f.s3tc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 generator_parameters={
 "md5": "176e6a49dfe875ae25b843a7f4a6a9e2"
@@ -14,17 +15,17 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/garden/springtail/springtail_0.jpg"
-dest_files=["res://.godot/imported/springtail_0.jpg-7a0ee06f701269e1762ff7da429cd06f.ctex"]
+dest_files=["res://.godot/imported/springtail_0.jpg-7a0ee06f701269e1762ff7da429cd06f.s3tc.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0
 compress/rdo_quality_loss=0.0
 compress/hdr_compression=1
-compress/normal_map=0
+compress/normal_map=2
 compress/channel_pack=0
 mipmaps/generate=true
 mipmaps/limit=-1
@@ -39,5 +40,5 @@ process/premult_alpha=false
 process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
-process/size_limit=0
+process/size_limit=1024
 detect_3d/compress_to=1

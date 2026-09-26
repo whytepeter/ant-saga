@@ -7,12 +7,15 @@
     python3 tools/meshy_assets.py make --group creatures
     python3 tools/meshy_assets.py status          # credit balance and each asset's state
 
+An asset with "image" (a reference picture's path) is made by image-to-3D instead.
+
 Each asset is a text-to-3D preview (shape, 20 credits) then a refine with PBR
 textures (10 credits); the GLB lands in assets/garden/<id>/<id>.glb. Task ids
 are saved in assets/garden/state.json, so a rerun resumes instead of paying
 again. The key is read from .env (MESHY_API_KEY) and never printed.
 """
 
+import base64
 import json
 import sys
 import threading
@@ -54,10 +57,10 @@ def save_state(state):
         STATE.write_text(json.dumps(state, indent=2) + "\n")
 
 
-def wait(task_id, label):
+def wait(task_id, label, endpoint="/v2/text-to-3d"):
     last = -1
     while True:
-        t = call("GET", f"/v2/text-to-3d/{task_id}")
+        t = call("GET", f"{endpoint}/{task_id}")
         if t["status"] == "SUCCEEDED":
             return t
         if t["status"] in ("FAILED", "CANCELED"):
@@ -74,9 +77,27 @@ def make_one(asset, manifest, state):
     out = DIR / aid / f"{aid}.glb"
     if out.exists():
         return f"{aid}: already downloaded"
+    if asset.get("image"):
+        # image-to-3D from a reference picture (path relative to the repo): one
+        # task gives the shape and PBR textures together
+        ref = ROOT / asset["image"]
+        mime = "image/png" if ref.suffix.lower() == ".png" else "image/jpeg"
+        uri = f"data:{mime};base64," + base64.b64encode(ref.read_bytes()).decode()
+        if "image" not in s:
+            s["image"] = call("POST", "/v1/image-to-3d", {
+                "image_url": uri, "ai_model": manifest.get("ai_model", "latest"), "enable_pbr": True,
+                "should_remesh": True, "should_texture": True, "topology": "triangle",
+                "target_polycount": asset["polycount"]})["result"]
+            save_state(state)
+        task = wait(s["image"], f"{aid} image to 3D", "/v1/image-to-3d")
+        out.parent.mkdir(parents=True, exist_ok=True)
+        urllib.request.urlretrieve(task["model_urls"]["glb"], out)
+        s["done"] = True
+        save_state(state)
+        return f"{aid}: {out.relative_to(ROOT)} ({out.stat().st_size / 1e6:.1f} MB)"
     if "preview" not in s:
         s["preview"] = call("POST", "/v2/text-to-3d", {
-            "mode": "preview", "prompt": f"{asset['prompt']} {manifest['style']}"[:800],
+            "mode": "preview", "prompt": f"{asset['prompt']} {asset.get('style', manifest['style'])}"[:800],
             "ai_model": manifest.get("ai_model", "latest"), "topology": "triangle",
             "target_polycount": asset["polycount"], "should_remesh": True})["result"]
         save_state(state)
@@ -84,7 +105,7 @@ def make_one(asset, manifest, state):
     if "refine" not in s:
         s["refine"] = call("POST", "/v2/text-to-3d", {
             "mode": "refine", "preview_task_id": s["preview"], "enable_pbr": True,
-            "texture_prompt": f"{asset['prompt']} Hand-painted stylized game textures, vivid natural colours."[:800]})["result"]
+            "texture_prompt": f"{asset['prompt']} {asset.get('texture_style', 'Hand-painted stylized game textures, vivid natural colours.')}"[:800]})["result"]
         save_state(state)
     task = wait(s["refine"], f"{aid} textures")
     out.parent.mkdir(parents=True, exist_ok=True)

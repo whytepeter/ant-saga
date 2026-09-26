@@ -212,6 +212,69 @@
       ],
       "occurrences": 1,
       "last_seen": "2026-09-26T11:34:08.000Z"
+    },
+    {
+      "id": "bug-016",
+      "timestamp": "2026-09-26",
+      "error_message": "No push animation when pushing pebbles/boulders (Amodu walks normally into the rock)",
+      "file": "player/player.gd",
+      "root_cause": "The 'push' library clip (Meshy 261) was never wired into the AnimationTree; _pushing only changed speed.",
+      "fix": "Ground tree gets push_clip -> push_stride (TimeScale) -> push Blend2 after 'puff'; _push_blend follows _pushing; stride scaled by speed / natural_speed['push'] (builder now measures push).",
+      "tags": [
+        "animation",
+        "heave",
+        "push"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-26"
+    },
+    {
+      "id": "bug-017",
+      "timestamp": "2026-09-26",
+      "error_message": "The axe passes through Amodu's leg while he stands or walks",
+      "file": "player/held_weapon.gd",
+      "root_cause": "One hand grip tuned for the swing (handle across the palm) points the handle into the thigh when the arm hangs.",
+      "fix": "Two grips: rest (handle forward along his side, blade down) and swing (across the palm), blended while an axe clip plays or he blocks (player.current_action()).",
+      "tags": [
+        "weapon",
+        "grip",
+        "clipping"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-26"
+    },
+    {
+      "id": "bug-018",
+      "timestamp": "2026-09-26",
+      "error_message": "Controls card cut off at the bottom and on the right",
+      "file": "ui/game_hud.gd",
+      "root_cause": "A fixed-size one-column panel (460 px) with 15 rows and a long label.",
+      "fix": "Two columns in a SoftPanel sized to its content and centred; shorter labels.",
+      "tags": [
+        "ui",
+        "hud"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-26"
+    },
+    {
+      "id": "bug-019",
+      "timestamp": "2026-09-26",
+      "error_message": "Fingers tear into shards / cracks open at the knuckles when the new finger bones bend",
+      "file": "tools/add_finger_bones.gd",
+      "root_cause": "(1) Curling the wrong way (palm-normal sign is ambiguous); (2) k-means split through two joined fingers; (3) smoothing gave the copies of a vertex along a UV seam different weights.",
+      "fix": "Sign per hand checked by eye (FingerCurl.sign Right +1, Left -1); each vertex goes to the finger whose axis is nearest; weights smoothed per position so seam copies match.",
+      "tags": [
+        "rig",
+        "fingers",
+        "skinning"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-26"
     }
   ]
 }

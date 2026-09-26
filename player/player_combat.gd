@@ -2,15 +2,18 @@ class_name PlayerCombat
 extends Node
 ## Amodu's fighting, as a child of the Player.
 ##
-## He fights with his own body: shrunk to 5 mm he keeps full human strength
-## (docs/STORY.md), so his fists and feet hit like a boulder would.
+## He fights with whatever Inventory has in his hands (player/weapons.gd): his
+## bare fists (shrunk to 5 mm he keeps full human strength, docs/STORY.md) or
+## his ant axe, and later crafted weapons.
 ##
-##   Attack (tap)          punch: light, quick
-##   Attack (hold, release) kick: heavy; knocks a pill bug into a ball
-##   Block (hold)          takes a quarter of the damage from the front; blocking
-##                         just before a hit is a perfect block (no damage, and
-##                         a charging pill bug bounces off him and curls up)
-##   Dodge                 a quick dash with a short invulnerable window
+##   Attack (tap)            light: a jab, or a chain of up to three axe chops
+##   Attack (hold, release)  heavy: a kick, or an overhead chop; knocks a pill
+##                           bug into a ball
+##   Attack (hold longer)    charged: the two-handed axe swing (weapons that have one)
+##   Block (hold)            takes a quarter of the damage from the front; blocking
+##                           just before a hit is a perfect block (no damage, and
+##                           a charging pill bug bounces off him and curls up)
+##   Dodge                   a quick dash with a short invulnerable window
 ##
 ## Health regenerates slowly out of combat; at zero Amodu is knocked out.
 ## Attacks turn him toward the nearest enemy in front of the camera.
@@ -22,16 +25,17 @@ signal knocked_out
 signal attack_landed(target: Node3D, kind: StringName)
 
 const CREATURES_LAYER := 1 << 3
-const LIGHT := {"kind": &"light", "clip": "jab_right", "speed": 2.0, "impact": 0.35, "lock": 0.35, "recover": 0.45,
-	"lunge": 3.0, "reach": 1.3, "radius": 1.3, "damage": 1.0}
-const HEAVY := {"kind": &"heavy", "clip": "kick", "speed": 1.3, "impact": 0.45, "lock": 0.7, "recover": 0.8,
-	"lunge": 4.5, "reach": 1.6, "radius": 1.7, "damage": 2.0}
+## Chops link into the next one if attack is pressed within this long of the
+## last one's recovery ending.
+const COMBO_WINDOW := 0.5
 
 @export var max_health := 100.0
 @export var regen_delay := 6.0
 @export var regen_rate := 6.0
 ## Hold attack at least this long for the heavy attack.
 @export var heavy_hold := 0.3
+## Hold attack this long for a weapon's charged swing.
+@export var charged_hold := 0.95
 @export var perfect_block_window := 0.25
 @export var block_damage_factor := 0.25
 @export var dodge_speed := 12.0
@@ -51,6 +55,9 @@ var _pending: Array[Dictionary] = []
 var _invulnerable := 0.0
 var _dodge_left := 0.0
 var _since_damage := 99.0
+## Which light swing of the weapon's chain comes next, and how long since the last.
+var _chain := 0
+var _since_swing := 99.0
 
 var _block_visual: MeshInstance3D
 var _charge_ring: MeshInstance3D
@@ -69,6 +76,7 @@ func _physics_process(delta: float) -> void:
 	_invulnerable = maxf(_invulnerable - delta, 0.0)
 	_dodge_left = maxf(_dodge_left - delta, 0.0)
 	_since_damage += delta
+	_since_swing += delta
 	if not knocked and _since_damage > regen_delay and health < max_health:
 		health = minf(health + regen_rate * delta, max_health)
 		health_changed.emit(health, max_health)
@@ -102,35 +110,61 @@ func _process_attack(delta: float, can_attack: bool) -> void:
 		return
 	if Input.is_action_pressed("attack"):
 		_hold += delta
-		_set_charged(_hold >= heavy_hold)
+		_set_charged(_hold >= heavy_hold, _weapon().has("charged") and _hold >= charged_hold)
 		player.speed_scale = 0.4 if _hold >= heavy_hold else 1.0
 		return
 	# released
-	var heavy := _hold >= heavy_hold
+	var held := _hold
 	_hold = -1.0
 	_set_charged(false)
 	player.speed_scale = 1.0
-	if _recover <= 0.0:
-		attack(HEAVY if heavy else LIGHT)
+	if _recover > 0.0:
+		return
+	var weapon := _weapon()
+	if held >= charged_hold and weapon.has("charged"):
+		attack(weapon["charged"])
+	elif held >= heavy_hold:
+		attack(weapon["heavy"])
+	else:
+		light_attack()
 
 
 ## Swings now: turns toward a target, lunges and schedules the impact.
-func attack(move: Dictionary) -> void:
+func attack(raw: Dictionary) -> void:
+	var move := Weapons.timed(raw, player.animation_times())
+	_since_swing = 0.0
 	_aim()
 	var facing := _facing()
-	player.play_action(String(move["clip"]), float(move["speed"]))
+	if player.first_person:
+		# through his eyes the clip would swing his arm out of view: the guard
+		# plays a short chop or punch in view instead (HideHead)
+		player.start_view_blow(String(move["clip"]), float(move["impact"]) * 2.2)
+	else:
+		player.play_action(String(move["clip"]), float(move["speed"]))
 	player.action_lock = float(move["lock"])
 	player.dash(facing * float(move["lunge"]), float(move["impact"]), float(move["lunge"]) / float(move["impact"]))
 	_recover = float(move["recover"])
 	_pending.append({"left": float(move["impact"]), "move": move})
 
 
+## The next light swing: the weapon's chain carries on if he keeps swinging.
 func light_attack() -> void:
-	attack(LIGHT)
+	var chain: Array = _weapon()["light"]
+	if _since_swing > float(chain[posmod(_chain - 1, chain.size())].get("recover", 0.5)) + COMBO_WINDOW:
+		_chain = 0
+	attack(chain[_chain % chain.size()])
+	_chain = (_chain + 1) % chain.size()
 
 
 func heavy_attack() -> void:
-	attack(HEAVY)
+	_chain = 0
+	attack(_weapon()["heavy"])
+
+
+## What he's holding (Inventory), fists if nothing.
+func _weapon() -> Dictionary:
+	var inventory := player.get_node_or_null("Inventory") as Inventory
+	return Weapons.info(inventory.equipped if inventory != null else Weapons.FISTS)
 
 
 func _resolve_pending(delta: float) -> void:
@@ -206,6 +240,12 @@ func _process_block(delta: float, can_block: bool) -> void:
 		blocking = want
 		player.speed_scale = 0.35 if blocking else 1.0
 		_block_visual.visible = blocking
+		# with a weapon he raises it across himself (held nearly still)
+		var pose := String(_weapon().get("block", ""))
+		if pose != "" and blocking:
+			player.play_action(pose, 0.05, 0.12)
+		elif pose != "" and player.is_action_playing():
+			player.stop_action()
 
 
 func dodge() -> void:
@@ -291,12 +331,18 @@ func revive() -> void:
 
 # ── visuals ───────────────────────────────────────────────────────────────────
 
-func _set_charged(on: bool) -> void:
-	if _charge_ring != null:
-		_charge_ring.visible = on
+## The ring shows while a heavy blow is wound up, wider and brighter once a
+## charged swing is ready.
+func _set_charged(on: bool, full := false) -> void:
+	if _charge_ring == null:
+		return
+	_charge_ring.visible = on
+	_charge_ring.scale = Vector3.ONE * (1.35 if full else 1.0)
+	(_charge_ring.material_override as StandardMaterial3D).albedo_color = \
+		Color(1.0, 0.85, 0.5, 0.8) if full else Color(1.0, 0.6, 0.2, 0.6)
 
 
-## An amber ring at his feet while a heavy kick is wound up.
+## An amber ring at his feet while a heavy blow is wound up.
 func _build_charge_ring() -> void:
 	_charge_ring = MeshInstance3D.new()
 	var torus := TorusMesh.new()

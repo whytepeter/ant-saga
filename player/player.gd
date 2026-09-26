@@ -187,9 +187,13 @@ var _jumped := false
 var _anim_target := ""
 var _action := ""
 var _action_started := 0
+## A first-person blow in progress (start_view_blow): the clip it stands for, and how long it lasts.
+var _view_blow := ""
+var _view_blow_time := 0.5
 var _idle_time := 0.0
 var _next_fidget := 6.0
 var _carry_blend := 0.0
+var _push_blend := 0.0
 ## Holding a seed puff: its stalk gripped in front of him (rope_hang).
 var _puff_blend := 0.0
 ## Climbing sideways: -1 left, 0 up or down, +1 right (the climb blend).
@@ -220,6 +224,7 @@ var _hide_head: HideHead
 ## Seconds of this glide so far (the puff tires).
 var _glide_time := 0.0
 var _explorer: Node3D
+var _fingers: FingerCurl
 var _explorer_base := Vector3.ZERO
 
 @onready var model: Node3D = $Model
@@ -244,6 +249,7 @@ func _ready() -> void:
 	if not skeletons.is_empty():
 		_skeleton = skeletons[0] as Skeleton3D
 		_hands = PackedInt32Array([_skeleton.find_bone("LeftHand"), _skeleton.find_bone("RightHand")])
+		_add_fingers()
 	_explorer = $Model/Explorer as Node3D
 	_explorer_base = _explorer.position
 	_prev_position = global_position
@@ -256,6 +262,15 @@ func _ready() -> void:
 	model.rotation.y = camera_rig.yaw + PI  # face away from the camera
 	_build_animation_tree()
 	_set_state(State.GROUND)
+	# what he carries, and the weapon in his hand or on his back
+	if get_node_or_null("Inventory") == null:
+		var inventory := Inventory.new()
+		inventory.name = "Inventory"
+		add_child(inventory)
+	var held := HeldWeapon.new()
+	held.name = "HeldWeapon"
+	add_child(held)
+	held.setup(self, _skeleton)
 
 
 func _physics_process(delta: float) -> void:
@@ -746,6 +761,12 @@ func _process_heave_input() -> void:
 		if Input.is_action_just_pressed("interact"):
 			let_go_puff()
 		return
+	var pickup := WeaponPickup.in_reach(self)
+	if pickup != null and state == State.GROUND:
+		_set_hint("E · Take the %s" % pickup.title())
+		if Input.is_action_just_pressed("interact"):
+			pickup.take(self)
+		return
 	var seed_puff := puff_in_reach()
 	if seed_puff != null:
 		_set_hint("E · Grab puff")
@@ -1147,6 +1168,50 @@ func _dress_model() -> void:
 	mi.material_override = m
 
 
+## His fingers: Meshy's rig has none, so tools/add_finger_bones.gd made them.
+## Adds those bones to the skeleton, swaps in the mesh and skin weighted to
+## them, and a FingerCurl to bend them (see _update_fingers).
+func _add_fingers() -> void:
+	var path := CHARACTER + "hands.json"
+	if not FileAccess.file_exists(path) or not ResourceLoader.exists(CHARACTER + "hands_mesh.res"):
+		return
+	var data: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(path))
+	for b: Dictionary in data["bones"]:
+		if _skeleton.find_bone(String(b["name"])) >= 0:
+			continue
+		var r: Array = b["rest"]
+		var rest := Transform3D(Basis(Vector3(r[0], r[1], r[2]), Vector3(r[3], r[4], r[5]), Vector3(r[6], r[7], r[8])),
+			Vector3(r[9], r[10], r[11]))
+		var i := _skeleton.add_bone(String(b["name"]))
+		_skeleton.set_bone_parent(i, _skeleton.find_bone(String(b["parent"])))
+		_skeleton.set_bone_rest(i, rest)
+		_skeleton.reset_bone_pose(i)
+	var mi := $Model/Explorer.find_children("*", "MeshInstance3D", true, false)[0] as MeshInstance3D
+	var material := mi.material_override
+	mi.mesh = load(CHARACTER + "hands_mesh.res")
+	mi.skin = load(CHARACTER + "hands_skin.res")
+	mi.material_override = material
+	_fingers = FingerCurl.new()
+	_fingers.name = "FingerCurl"
+	_skeleton.add_child(_fingers)
+
+
+## How closed each hand should be: round the axe's handle, clenched to punch,
+## gripping when he climbs, carries, hauls, pushes or holds a puff, and
+## loosely curled the rest of the time.
+func _update_fingers() -> void:
+	if _fingers == null:
+		return
+	var act := current_action()
+	var punching := act in ["jab_left", "jab_right", "punch_combo", "kick", "roundhouse"]
+	var gripping := state == State.CLIMB or carried != null or hauling != null or _pushing != null or puff != null
+	var held := get_node_or_null("HeldWeapon") as HeldWeapon
+	var axe_in_hand := held != null and held.in_hand and held.id != Weapons.FISTS and held.id != &""
+	var relaxed := 0.42
+	_fingers.target["Right"] = 1.0 if axe_in_hand or punching else (0.8 if gripping else relaxed)
+	_fingers.target["Left"] = 1.0 if punching else (0.8 if gripping else relaxed)
+
+
 func _set_hint(text: String) -> void:
 	if text == _hint:
 		return
@@ -1207,11 +1272,29 @@ func _process(delta: float) -> void:
 	var offset := visual_position() - global_position
 	_explorer.position = _explorer_base + model.global_transform.basis.inverse() * offset
 	_update_puff()
+	_update_fingers()
 	if _hide_head != null:
-		# first person: hands up in view unless his arms are busy
-		var free := first_person and not is_action_playing() and carried == null and puff == null \
+		# first person: hands up in view unless his arms are busy; a blow keeps
+		# them up and swings the right arm through the view instead
+		var act := current_action()
+		if _view_blow != "" and Time.get_ticks_msec() - _action_started < int(_view_blow_time * 1000.0):
+			act = _view_blow
+		else:
+			_view_blow = ""
+		var blow := ""
+		if act.begins_with("axe") or act.begins_with("knife"):
+			blow = "chop"
+		elif act in ["jab_left", "jab_right", "punch_combo"]:
+			blow = "punch"
+		var free := first_person and (not is_action_playing() or blow != "") and carried == null and puff == null \
 			and state in [State.GROUND, State.AIR, State.CRAWL] and not downed
 		_hide_head.arms = move_toward(_hide_head.arms, 1.0 if free else 0.0, delta * 4.0)
+		if blow != "":
+			var slow := _view_blow_time if _view_blow != "" else 0.5
+			_hide_head.blow = blow
+			_hide_head.swing = clampf((Time.get_ticks_msec() - _action_started) / 1000.0 / slow, 0.0, 1.0)
+		else:
+			_hide_head.swing = -1.0
 	if _anim_target != "air" or _air_pose == null:
 		return
 	var vy := _leap_velocity.y if _leap_velocity != Vector3.ZERO else velocity.y  # a leap's first frame
@@ -1229,6 +1312,12 @@ func _update_locomotion_animation(speed: float) -> void:
 	_carry_blend = move_toward(_carry_blend, 1.0 if carried != null else 0.0, dt * 5.0)
 	_puff_blend = move_toward(_puff_blend, 1.0 if puff != null else 0.0, dt * 5.0)
 	anim_tree.set("parameters/sm/ground/puff/blend_amount", _puff_blend)
+	_push_blend = move_toward(_push_blend, 1.0 if _pushing != null else 0.0, dt * 6.0)
+	anim_tree.set("parameters/sm/ground/push/blend_amount", _push_blend)
+	if _push_blend > 0.0:
+		# a slow strain when the boulder hasn't moved yet, a steady shove once it rolls
+		var push_natural := float(_natural_speed.get("push", 1.0))
+		anim_tree.set("parameters/sm/ground/push_stride/scale", clampf(speed / maxf(push_natural, 0.1), 0.35, 2.0))
 	_fidget(speed, dt)
 	if state == State.CRAWL:
 		var rate := speed / float(_natural_speed["crawl"])
@@ -1331,6 +1420,11 @@ func play_action(clip: String, speed := 1.0, fade := 0.08) -> void:
 	_action_started = Time.get_ticks_msec()
 
 
+## When things happen inside clips (tools/build_amodu_anims.gd "times" meta).
+func animation_times() -> Dictionary:
+	return _times
+
+
 func stop_action() -> void:
 	anim_tree.set("parameters/action/request", AnimationNodeOneShot.ONE_SHOT_REQUEST_FADE_OUT)
 	_action = ""
@@ -1341,6 +1435,19 @@ func wake_up() -> void:
 	play_action("get_up", 1.0, 0.0)
 	anim_tree.advance(0.0)
 	action_lock = ANIMATIONS.get_animation("get_up").length * 0.8 if ANIMATIONS.has_animation("get_up") else 0.0
+
+
+## A blow seen in first person: no clip (it would swing his arm out of view),
+## just the guard's chop or punch (HideHead) lasting `seconds`.
+func start_view_blow(clip: String, seconds: float) -> void:
+	_view_blow = clip
+	_view_blow_time = maxf(seconds, 0.35)
+	_action_started = Time.get_ticks_msec()
+
+
+## The one-shot clip playing (see play_action), "" when none.
+func current_action() -> String:
+	return _action if is_action_playing() else ""
 
 
 func is_action_playing() -> bool:
@@ -1384,7 +1491,14 @@ func _build_animation_tree() -> void:
 	ground.add_node("puff", _arms_blend())
 	ground.connect_node("puff", 0, "coil")
 	ground.connect_node("puff", 1, "puff_pose")
-	ground.connect_node("output", 0, "puff")
+	# leaning into a boulder, shoving it along (or straining against it)
+	ground.add_node("push_clip", _clip(_pick("push", "walk")))
+	ground.add_node("push_stride", AnimationNodeTimeScale.new())
+	ground.add_node("push", AnimationNodeBlend2.new())
+	ground.connect_node("push_stride", 0, "push_clip")
+	ground.connect_node("push", 0, "puff")
+	ground.connect_node("push", 1, "push_stride")
+	ground.connect_node("output", 0, "push")
 
 	# in the air: a jump's pose picked by vertical speed (see _process)
 	var air := AnimationNodeBlendTree.new()

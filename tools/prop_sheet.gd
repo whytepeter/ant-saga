@@ -64,10 +64,13 @@ func _run() -> void:
 		var mi := GardenProps.instance(prop, Transform3D.IDENTITY)
 		root.add_child(mi)
 		var sheet := Image.create(PANEL * VIEWS.size(), PANEL, false, Image.FORMAT_RGBA8)
+		var box := prop.fix * prop.mesh.get_aabb()
+		var lift := Vector3(0.0, box.get_center().y - 0.25, 0.0)  # frame tall props too
 		for v in VIEWS.size():
 			var view: Array = VIEWS[v]
-			cam.position = view[1]
-			cam.look_at(view[2], Vector3.FORWARD if String(view[0]) == "top" else Vector3.UP)
+			var shift := lift if String(view[0]) != "top" else Vector3.ZERO
+			cam.position = (view[1] as Vector3) + shift
+			cam.look_at((view[2] as Vector3) + shift, Vector3.FORWARD if String(view[0]) == "top" else Vector3.UP)
 			for k in 4:
 				await process_frame
 			await RenderingServer.frame_post_draw

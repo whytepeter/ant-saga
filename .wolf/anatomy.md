@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-26T11:30:22.982Z
-> Files: 241 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-26T14:41:21.428Z
+> Files: 255 tracked | Anatomy hits: 0 | Misses: 0
 
 > Project structure index. Auto-maintained by OpenWolf hooks and daemon.
 > Run `openwolf scan` to generate, or wait for the first Claude Code session.
@@ -150,6 +150,7 @@
 
 ## docs/
 
+- `GAMEPLAY.md` — Gameplay: Ant Kingdom Saga (~3485 tok)
 - `lawn_map.svg.import` (~275 tok)
 - `PLAN.md` — Plan: Level 1, The Compound Grass (~2578 tok)
 - `STORY.md` — Story: Ant Kingdom Saga (~3048 tok)
@@ -159,12 +160,16 @@
 
 - `camera_rig.gd` (~1122 tok)
 - `camera_rig.gd.uid` (~6 tok)
+- `finger_curl.gd` — Declares SIDES (~675 tok)
+- `held_weapon.gd` — Declares HAND_EULER (~732 tok)
 - `hide_head.gd` — Declares ARM_FORWARD (~548 tok)
+- `inventory.gd` (~567 tok)
 - `player_audio.gd` — Declares SETS (~1805 tok)
 - `player_combat.gd` — Declares CREATURES_LAYER (~3147 tok)
-- `player.gd` — Declares State (~6581 tok)
+- `player.gd` — Declares State (~16052 tok)
 - `player.gd.uid` (~6 tok)
 - `player.tscn` (~732 tok)
+- `weapons.gd` — Declares FISTS (~804 tok)
 
 ## player/explorer/
 
@@ -223,7 +228,7 @@
 
 - `_anim_shots.gd` (~635 tok)
 - `expedition_test.gd` (~3386 tok)
-- `lawn_graybox_test.gd` (~1910 tok)
+- `lawn_graybox_test.gd` (~4160 tok)
 - `lawn_graybox_test.gd.uid` (~6 tok)
 - `lawn_tour.gd` (~1087 tok)
 - `lawn_tour.gd.uid` (~6 tok)
@@ -235,6 +240,7 @@
 
 ## tools/
 
+- `add_finger_bones.gd` — Declares HANDS (~3683 tok)
 - `bake_tree_base.py` — Bake the apple tree's base (world/lawn/layout.json "tree_base") into (~3132 tok)
 - `build_amodu_anims.gd` — Declares HIPS (~4455 tok)
 - `build_explorer_anims.gd` — Declares SRC (~2578 tok)
@@ -249,12 +255,19 @@
 
 - `compass.gd` — Declares SPAN (~844 tok)
 - `game_hud.gd` — Declares CREAM (~3227 tok)
+- `garden_map.gd` — Declares RECT (~1868 tok)
+- `hud_glyphs.gd` — Declares CREAM (~733 tok)
+- `inventory_panel.gd` — Declares CREAM (~1378 tok)
+- `map_hud.gd` — Declares MINI (~1306 tok)
+- `map_panel.gd` — Declares CREAM (~1448 tok)
+- `map.gdshader` — Declares canvas_item (~346 tok)
+- `weapon_badge.gd` — Declares CREAM (~648 tok)
 
 ## world/
 
 - `ambient_life.gd` — Declares KINDS (~2654 tok)
 - `day_clock.gd` — Declares SUNRISE (~541 tok)
-- `garden_audio.gd` — Declares DIR (~3183 tok)
+- `garden_audio.gd` — Declares DIR (~3204 tok)
 - `grass_meshes.gd` (~620 tok)
 - `grass_meshes.gd.uid` (~6 tok)
 - `route_guide.gd` (~1023 tok)
@@ -305,6 +318,7 @@
 - `heavable.gd` — Declares Weight (~730 tok)
 - `heavable.gd.uid` (~6 tok)
 - `seed_puff.gd` — Declares GROUP (~547 tok)
+- `weapon_pickup.gd` — Declares GROUP (~415 tok)
 
 ## world/shaders/
 

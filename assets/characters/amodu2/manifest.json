@@ -89,5 +89,15 @@
     "climb_right": 440,
     "rope_hang": 477,
     "bar_hang": 478
+  },
+  "weapon_actions": {
+    "axe_stance": 85,
+    "axe_slash_right": 219,
+    "axe_slash_left": 97,
+    "axe_combo": 199,
+    "axe_overhead": 128,
+    "axe_charged": 237,
+    "axe_spin": 238,
+    "axe_parry": 147
   }
 }

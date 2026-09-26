@@ -2,6 +2,8 @@
 
 **Target:** a 720 m × 720 m walkable patch of compound grass (a Nigerian family compound, see docs/WORLD.md) that looks and feels like Grounded, with Amodu at 1.8 m in-game (5 mm real, world scale ×360), built in Godot 4.7 (Forward+) on an M2 Pro / 16 GB Mac.
 
+> **2026-09-26:** the direction is now SMALL GIANT (the back garden, get home before sunset) and the game design is in [`docs/GAMEPLAY.md`](GAMEPLAY.md). The current phase is **Level 1: The Garden** (its beats and build list are there). Phase 3c below is parked; the Nigerian-compound setting and the thorn spear are superseded.
+
 Each phase ends with a **gate**, a check that must pass before the next phase starts.
 
 ## Direction (decided 2026-09-25)

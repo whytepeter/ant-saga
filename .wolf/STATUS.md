@@ -7,7 +7,7 @@ budget_tokens: 1500
 > Read this FIRST when resuming. Last updated: 2026-09-26 (night).
 
 ## Direction
-**SMALL GIANT**: Amodu (5 mm, full human strength, huge jumps, no fall damage) wakes by his school bag at the far end of an ordinary back garden and must get home under the back door before sunset. The Nigerian compound is dropped. Heroes following him are on hold (`Companion.ENABLED = false`). No weapons yet. Art: no blocky primitives as final visuals; use Meshy + CC0 textures, targeting Grounded and Smalland. Ask before spending Meshy credits (balance **1752**). Keep on-screen text minimal.
+**SMALL GIANT**: Amodu (5 mm, full human strength, huge jumps, no fall damage) wakes by his school bag at the far end of an ordinary back garden and must get home under the back door before sunset. The Nigerian compound is dropped. Heroes following him are on hold (`Companion.ENABLED = false`). Weapons: the axe is his signature weapon plus crafted ones (docs/GAMEPLAY.md). Art: no blocky primitives as final visuals; use Meshy + CC0 textures, targeting Grounded and Smalland. Ask before spending Meshy credits (balance **1752**). Keep on-screen text minimal.
 
 ## ✅ Done (committed; all 3 test suites pass)
 - **Amodu v2** from the user's T-pose design: `assets/characters/amodu2/` (Meshy image-to-3D, rig, 47 library clips + 7 text-to-motion). `tools/build_amodu_anims.gd --dir=` builds the library: cut jumps, landings, coil pose, lift/throw timing, ARM_FIX idle arms. Old `assets/characters/amodu/` is unused.
@@ -40,6 +40,25 @@ budget_tokens: 1500
 - **Root Hall is findable**: clover now keeps off routes and ant roads, so `ant_road_west` reads as a trail from the Capstone through the Flower Bed to the mouth.
 - **Keys**: V only changes the camera (dodge is Alt); controls panel on H (F1 is brightness on a Mac).
 - **Tests added**: swim, Root Hall walk-through, glide, route guide, running jumps. The pill-bug throw test freezes the bug during the wind-up.
+
+## ✅ Weapons and inventory (2026-09-26, uncommitted)
+- Design: `docs/GAMEPLAY.md` (whole-game vision + Level 1 plan). The axe is Amodu's signature weapon; crafted weapons later.
+- `player/weapons.gd` (move sets: fists, ant axe 3-chop chain / overhead heavy / charged), `player/inventory.gd` (1–4, wheel, X fists↔weapon), `player/held_weapon.gd` (right hand or slung on his back), `world/props/weapon_pickup.gd` (layout `pickups`: the ant axe by the pencil log).
+- UI in the compass style: `ui/hud_glyphs.gd`, `ui/weapon_badge.gd` (bottom right), `ui/inventory_panel.gd` (Tab/I). Number keys stay on the debug viewpoints (1–5, 0 start); weapons are wheel / X (1–4 only inside the inventory panel).
+- Clips: Meshy `weapon_actions` (anim_weapon_0.glb, 24 credits); builder cuts axe_chop_1..3, axe_heavy, axe_charged_swing, axe_spin_cut (SWINGS, hit times in "times" meta).
+- Push animation now plays when pushing (bug-016).
+- Fingers: `tools/add_finger_bones.gd` (bones + reweighted mesh/skin) and `player/finger_curl.gd` (relaxed 0.3, fist round the axe or to punch, 0.8 grip to climb/carry). The axe has a rest grip and a swing grip (bug-017). Controls card is two columns on a SoftPanel (bug-018).
+- Axe model `assets/garden/ant_axe` (stone head, leaf/fibre binding; mound trimmed in Blender). The user's reference (stylized pale stone head, green vine lashing, fresh leaf) is closer: remake by image-to-3D once the picture is in the repo.
+- Meshy balance after this: 1446.
+
+- Stone axe + stone knife: the user's own Meshy image-to-3D models (raw in source/meshy/user_*.glb), decimated to 12k tris / 1024 px in Blender; pickups by the pencil log (axe) and at the Capstone (knife). First person holds the weapon upright and plays an in-view chop/punch (HideHead.swing) instead of the clip. Idle arms: soft elbows (ARM_FIX third value) and fingers curled 0.42.
+- Map: `ui/garden_map.gd` (painted from the bake + patio, fog of war), `ui/map.gdshader`, `ui/map_panel.gd`, `ui/map_hud.gd`: round minimap top right, M (or click it) for the full map with every area and place named.
+- Performance (paused by the user): GrassShadows (grass casts shadows within 100 m only) + 3-row shadow blades. Measured the Dressing multimeshes (424 batches of ~3 Meshy props each) as the main cost (~25 fps at the Flower Bed); SSAO + volumetric fog ~18%.
+
+## 📝 Open from the user (2026-09-26)
+- Opigo and Opumie must not be identical (they share the ant scout model). Needs two Meshy characters (~35 credits each: model + rig; they can reuse Amodu's library).
+- Pebbles, crumbs (cake/cheese/biscuit) and grains are primitive boxes/spheres (`world/props/heavable.gd`): need Meshy models.
+- Chopping (roots, straw, silk) not built yet: `chop` values exist on moves.
 
 ## 📝 User notes to act on (2026-09-26)
 - **Garden tools look too new.** Trowel, brush (and pencil) must be rickety, worn and dirty, not polished. The brush model isn't realistic enough (it reads as a hairbrush); a better Meshy regen needs credit approval.

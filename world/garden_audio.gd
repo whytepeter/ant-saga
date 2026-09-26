@@ -88,6 +88,7 @@ static func ensure_buses() -> void:
 	muffle.cutoff_hz = 20000.0
 	AudioServer.add_bus_effect(AudioServer.get_bus_index("Beds"), muffle)
 	var master := AudioServer.get_bus_index("Master")
+	AudioServer.set_bus_volume_db(master, -4.0)  # the whole garden a touch quieter
 	var glue := AudioEffectCompressor.new()
 	glue.threshold = -14.0
 	glue.ratio = 2.5

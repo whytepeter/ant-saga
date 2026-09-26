@@ -72,7 +72,8 @@ func _report_build(ms: int) -> void:
 	var grass: Node = level.get_node("Graybox/Generated/Grass")
 	var blades := 0
 	for mmi in grass.get_children():
-		blades += (mmi as MultiMeshInstance3D).multimesh.instance_count
+		if mmi is MultiMeshInstance3D:  # (GrassShadows lives here too)
+			blades += (mmi as MultiMeshInstance3D).multimesh.instance_count
 	var bodies: int = (level.get_node("Graybox").get("_grass_bodies") as Array).size()
 	print("  info  built in %d ms · %d grass instances in %d batches · %d grass collision bodies · %d nodes" % [
 		ms, blades, grass.get_child_count(), bodies, _count(level, "Node")])

@@ -10,7 +10,8 @@ For the full operating protocol (session handoff, memory discipline, bug logging
 Third-person 3D game in Godot 4.7 (Forward+, Jolt). **SMALL GIANT** (direction since 2026-09-26): Amodu, shrunk to 5 mm with full human strength, wakes by his school bag at the far end of an ordinary back garden and must get home under the back door before sunset. Everything is ×360: Amodu is 1.8 m in game. `.wolf/STATUS.md` has the current state.
 
 ## Read first
-- `docs/PLAN.md`: direction, phases, the **current phase (3c, the expedition slice)** and the deferred list.
+- `docs/GAMEPLAY.md`: how the game plays, and the **Level 1 plan (current work)**.
+- `docs/PLAN.md`: phases and the deferred list (parts predate SMALL GIANT).
 - `docs/WORLD.md`: world bible (setting, scale table, areas, hazards).
 - `docs/ant_kingdom_saga_backyard_edition.pdf`: the design source (heroes, colony building, stages). `docs/STORY.md` is parked reference only.
 
@@ -18,6 +19,7 @@ Third-person 3D game in Godot 4.7 (Forward+, Jolt). **SMALL GIANT** (direction s
 - The adventure (SMALL GIANT) is the default mode. The "Pikmin meets Grounded" expedition slice is parked (`expedition_mode`), and heroes following Amodu are on hold (`Companion.ENABLED = false`).
 - The setting is an ordinary back garden; the Nigerian compound was dropped. Content is family-friendly: no sexual content.
 - Art: no blocky primitives as final visuals; Meshy models and CC0 textures (targets: Grounded, Smalland).
+- Amodu's signature weapon is the **axe** (also a chopping tool); he can use crafted weapons too. The gameplay design is `docs/GAMEPLAY.md` (Level 1 is planned there).
 - Companion dialogue was removed for now (it's in git history at e1ec4c4); don't re-add it unless asked.
 
 ## How the project works
@@ -29,6 +31,7 @@ Third-person 3D game in Godot 4.7 (Forward+, Jolt). **SMALL GIANT** (direction s
   `Godot --headless --path . -s tools/build_amodu_anims.gd -- --dir=res://assets/characters/amodu2/`; look at clips with `tools/clip_sheet.gd`.
 - The apple tree's base and Root Hall's caves are baked from layout "tree_base" with Blender:
   `/Applications/Blender.app/Contents/MacOS/Blender -b --factory-startup --python tools/bake_tree_base.py`, then reimport. `world/lawn/tree_base.gd` places it.
+- Amodu's fingers: Meshy's rig has none; `tools/add_finger_bones.gd` adds two bones per finger and thumb and writes `hands_mesh.res`, `hands_skin.res`, `hands.json` (re-run it if `rigged.glb` changes). `player/finger_curl.gd` bends them.
 - Companions and ants: `characters/ant_model.gd` runs on the older library `player/explorer/amodu_animations.res` (`tools/build_explorer_anims.gd`).
 
 ## Verify every change

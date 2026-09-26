@@ -2405,5 +2405,23 @@
         "note": "on the Great Root's crest"
       }
     ]
-  }
+  },
+  "pickups": [
+    {
+      "weapon": "stone_axe",
+      "pos": [
+        60,
+        -238
+      ],
+      "note": "Beat 2 (docs/GAMEPLAY.md): an abandoned ant forage camp by the pencil log; the stone axe leans on a stone. world/props/weapon_pickup.gd"
+    },
+    {
+      "weapon": "stone_knife",
+      "pos": [
+        -134,
+        62
+      ],
+      "note": "Beat 6: the ants' watch post under the Capstone; a stone knife left on the bead shrine's step."
+    }
+  ]
 }

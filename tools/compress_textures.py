@@ -55,9 +55,10 @@ def main():
         for imp in glob.glob(str(glb.parent / f"{glb.stem}_*.*.import")):
             imp = Path(imp)
             idx = imp.name[len(glb.stem) + 1:].split(".")[0]
-            if not idx.isdigit():
+            m = re.fullmatch(r"(?:Image_)?(\d+)", idx)  # Blender exports name them Image_<n>
+            if m is None:
                 continue
-            role = roles.get(int(idx), "color")
+            role = roles.get(int(m.group(1)), "color")
             set_params(imp, {"compress/mode": 2, "compress/normal_map": 1 if role == "normal" else 2,
                              "process/size_limit": 1024 if small else 0})
             done += 1

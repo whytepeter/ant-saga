@@ -5,6 +5,9 @@ extends CanvasLayer
 ##   top      a compass strip with home and the sun on it; a thin daylight line
 ##   bottom   key-cap prompts, only when Amodu is next to something
 ##   left     health, only after he's been hurt
+##   right    the weapon in his hands (WeaponBadge), once he has one; Tab opens
+##            the inventory (InventoryPanel)
+##   top right  a round minimap; M opens the full map (MapHud)
 ##   centre   a place-name banner the first time he enters an area; end cards
 ##
 ## Controls live on a card behind F1. Debug text (the level's Info) is behind F3.
@@ -14,8 +17,9 @@ const AMBER := Color(1.0, 0.76, 0.32)
 const INK := Color(0.12, 0.1, 0.08)
 const CONTROLS := [
 	["WASD", "Move"], ["Shift", "Sprint"], ["Space", "Jump · hold to leap"], ["C", "Crawl"],
-	["E", "Lift · carry · flip"], ["F", "Throw"], ["Click", "Punch · hold to kick"],
-	["Right-click", "Block"], ["Alt", "Dodge"], ["Q", "Call ants"], ["V", "Camera: wide · close · eyes"],
+	["E", "Lift · carry · flip"], ["F", "Throw"], ["Click", "Attack · hold for heavy"],
+	["Right-click", "Block"], ["Alt", "Dodge"], ["Wheel", "Weapons"], ["X", "Fists ↔ weapon"],
+	["Tab", "Inventory"], ["M", "Map"], ["Q", "Call ants"], ["V", "Camera: wide · close · eyes"],
 	["Esc", "Free the mouse"],
 ]
 
@@ -68,6 +72,7 @@ func _ready() -> void:
 		var combat := player.get_node_or_null("Combat") as PlayerCombat
 		if combat != null:
 			combat.health_changed.connect(_on_health)
+		_build_weapons.call_deferred()  # the player makes his Inventory in _ready
 
 
 ## A rounded, friendly system font if the machine has one, else Godot's default.
@@ -208,6 +213,34 @@ func _build_health() -> void:
 	_health_box.add_child(_health_fill)
 
 
+func _build_weapons() -> void:
+	if layout != null:
+		var maps := MapHud.new()
+		maps.name = "MapHud"
+		maps.player = player
+		maps.layout = layout
+		maps.font = font
+		add_child(maps)
+	var inventory := player.get_node_or_null("Inventory") as Inventory
+	if inventory == null:
+		return
+	var badge := WeaponBadge.new()
+	badge.inventory = inventory
+	badge.font = font
+	badge.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
+	badge.offset_left = -230.0
+	badge.offset_right = -30.0
+	badge.offset_top = -190.0
+	badge.offset_bottom = -90.0  # above the H · Controls hint
+	add_child(badge)
+	var panel := InventoryPanel.new()
+	panel.inventory = inventory
+	panel.player = player
+	panel.font = font
+	panel.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	add_child(panel)
+
+
 func _build_banner() -> void:
 	_banner = VBoxContainer.new()
 	_banner.set_anchors_and_offsets_preset(Control.PRESET_CENTER_TOP)
@@ -249,23 +282,34 @@ func _build_card() -> void:
 
 
 func _build_controls() -> void:
-	_controls = PanelContainer.new()
-	_controls.add_theme_stylebox_override("panel", _round(Color(0.06, 0.05, 0.04, 0.78), 12, 22))
-	_controls.set_anchors_and_offsets_preset(Control.PRESET_CENTER_RIGHT)
-	_controls.offset_left = -420.0
-	_controls.offset_right = -40.0
-	_controls.offset_top = -230.0
-	_controls.offset_bottom = 230.0
+	# two columns of key caps on a soft band, centred (fits a 720p screen)
+	var center := CenterContainer.new()
+	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	center.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(center)
+	_controls = SoftPanel.new()
 	_controls.visible = false
-	add_child(_controls)
+	center.add_child(_controls)
 	var grid := GridContainer.new()
-	grid.columns = 2
-	grid.add_theme_constant_override("h_separation", 16)
+	grid.columns = 5
+	grid.add_theme_constant_override("h_separation", 14)
 	grid.add_theme_constant_override("v_separation", 10)
 	_controls.add_child(grid)
-	for row: Array in CONTROLS:
-		grid.add_child(_keycap(String(row[0])))
-		grid.add_child(_label(null, 19, CREAM, 4, String(row[1])))
+	var half := (CONTROLS.size() + 1) / 2
+	for i in half:
+		for col in 2:
+			var k := i + col * half
+			if k < CONTROLS.size():
+				var row: Array = CONTROLS[k]
+				grid.add_child(_keycap(String(row[0])))
+				grid.add_child(_label(null, 18, CREAM, 4, String(row[1])))
+			else:
+				grid.add_child(Control.new())
+				grid.add_child(Control.new())
+			if col == 0:
+				var gap := Control.new()
+				gap.custom_minimum_size.x = 26.0
+				grid.add_child(gap)
 	_f1_hint = HBoxContainer.new()
 	_f1_hint.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
 	_f1_hint.offset_left = -200.0

@@ -1,13 +1,13 @@
 {
   "version": 1,
   "meta": {
-    "lastScanned": "2026-09-26T11:30:22.982Z",
-    "fileCount": 241,
+    "lastScanned": "2026-09-26T14:41:21.428Z",
+    "fileCount": 255,
     "hits": 0,
     "misses": 0,
-    "renderedHash": "d8176d3a944cac3c4d83d4831cb5f80f9a45c0e24decc7be4fe15fb82671ba18",
-    "storeUpdatedAt": "2026-09-26T11:30:22.991Z",
-    "rootHash": "5cdfce6dc3535ab7"
+    "renderedHash": "5f92e2c9c79e2efa0da78e6695339caddb1eefd282175406bb8385b56fc38560",
+    "storeUpdatedAt": "2026-09-26T14:41:21.436Z",
+    "rootHash": "d5436bac7be40eda"
   },
   "files": {
     ".gitattributes": {
@@ -1461,11 +1461,11 @@
     },
     "player/player.gd": {
       "description": "Declares State",
-      "tokens": 6581,
-      "hash": "80ecc6631dc618b8",
-      "size": 25464,
-      "mtimeMs": 1790376027141.7097,
-      "updatedAt": "2026-09-25T22:40:27.241Z",
+      "tokens": 16052,
+      "hash": "edcdebd01c0d5d55",
+      "size": 61118,
+      "mtimeMs": 1790427228064.1099,
+      "updatedAt": "2026-09-26T12:53:48.167Z",
       "source": "hook"
     },
     "player/player.gd.uid": {
@@ -1515,12 +1515,12 @@
     },
     "tests/lawn_graybox_test.gd": {
       "description": "",
-      "tokens": 1910,
-      "hash": "3b45cbe78e68b444",
-      "size": 7445,
-      "mtimeMs": 1790373270542.1028,
-      "updatedAt": "2026-09-25T22:20:40.437Z",
-      "source": "scan"
+      "tokens": 4160,
+      "hash": "a5c9a204fcbc6aec",
+      "size": 15881,
+      "mtimeMs": 1790433681329.9465,
+      "updatedAt": "2026-09-26T14:41:21.427Z",
+      "source": "hook"
     },
     "tests/lawn_graybox_test.gd.uid": {
       "description": "",
@@ -2694,11 +2694,11 @@
     },
     "world/garden_audio.gd": {
       "description": "Declares DIR",
-      "tokens": 3183,
-      "hash": "5856c35735303ab4",
-      "size": 11934,
-      "mtimeMs": 1790422157755.9514,
-      "updatedAt": "2026-09-26T11:29:17.859Z",
+      "tokens": 3204,
+      "hash": "2f12f17ea54a39ed",
+      "size": 12015,
+      "mtimeMs": 1790422930712.241,
+      "updatedAt": "2026-09-26T11:42:10.812Z",
       "source": "hook"
     },
     "player/player_audio.gd": {
@@ -2797,6 +2797,132 @@
           "tokens": 1388
         }
       ]
+    },
+    "docs/GAMEPLAY.md": {
+      "description": "Gameplay: Ant Kingdom Saga",
+      "tokens": 3485,
+      "hash": "c605a08b5a6177db",
+      "size": 14024,
+      "mtimeMs": 1790423306563.0247,
+      "updatedAt": "2026-09-26T11:48:26.668Z",
+      "source": "hook"
+    },
+    "player/weapons.gd": {
+      "description": "Declares FISTS",
+      "tokens": 804,
+      "hash": "2a4b278901a1412e",
+      "size": 3016,
+      "mtimeMs": 1790424822225.8264,
+      "updatedAt": "2026-09-26T12:13:42.347Z",
+      "source": "hook"
+    },
+    "player/inventory.gd": {
+      "description": "",
+      "tokens": 567,
+      "hash": "4ec05356dc50ea6f",
+      "size": 2130,
+      "mtimeMs": 1790424822430.9888,
+      "updatedAt": "2026-09-26T12:13:42.513Z",
+      "source": "hook"
+    },
+    "player/held_weapon.gd": {
+      "description": "Declares HAND_EULER",
+      "tokens": 732,
+      "hash": "5b15dbbdacc63334",
+      "size": 2744,
+      "mtimeMs": 1790424880190.6409,
+      "updatedAt": "2026-09-26T12:14:40.301Z",
+      "source": "hook"
+    },
+    "ui/hud_glyphs.gd": {
+      "description": "Declares CREAM",
+      "tokens": 733,
+      "hash": "32c697ef97a57775",
+      "size": 2748,
+      "mtimeMs": 1790425726500.4912,
+      "updatedAt": "2026-09-26T12:28:46.787Z",
+      "source": "hook"
+    },
+    "ui/weapon_badge.gd": {
+      "description": "Declares CREAM",
+      "tokens": 648,
+      "hash": "3522a459bd4f5c72",
+      "size": 2429,
+      "mtimeMs": 1790425726869.0894,
+      "updatedAt": "2026-09-26T12:28:46.963Z",
+      "source": "hook"
+    },
+    "ui/inventory_panel.gd": {
+      "description": "Declares CREAM",
+      "tokens": 1378,
+      "hash": "df0b5f1259bce93f",
+      "size": 5175,
+      "mtimeMs": 1790425765346.7603,
+      "updatedAt": "2026-09-26T12:29:25.457Z",
+      "source": "hook"
+    },
+    "world/props/weapon_pickup.gd": {
+      "description": "Declares GROUP",
+      "tokens": 415,
+      "hash": "881d609dc0e51377",
+      "size": 1553,
+      "mtimeMs": 1790425855865.144,
+      "updatedAt": "2026-09-26T12:30:55.997Z",
+      "source": "hook"
+    },
+    "tools/add_finger_bones.gd": {
+      "description": "Declares HANDS",
+      "tokens": 3683,
+      "hash": "e1af0976ea088074",
+      "size": 13809,
+      "mtimeMs": 1790427061878.1355,
+      "updatedAt": "2026-09-26T12:51:01.988Z",
+      "source": "hook"
+    },
+    "player/finger_curl.gd": {
+      "description": "Declares SIDES",
+      "tokens": 675,
+      "hash": "3cb7220923d83775",
+      "size": 2533,
+      "mtimeMs": 1790427154584.5688,
+      "updatedAt": "2026-09-26T12:52:34.683Z",
+      "source": "hook"
+    },
+    "ui/garden_map.gd": {
+      "description": "Declares RECT",
+      "tokens": 1868,
+      "hash": "8a37fadf692aa278",
+      "size": 7005,
+      "mtimeMs": 1790433194540.6248,
+      "updatedAt": "2026-09-26T14:33:14.636Z",
+      "source": "hook"
+    },
+    "ui/map.gdshader": {
+      "description": "Declares canvas_item",
+      "tokens": 346,
+      "hash": "0781793b6781bfa2",
+      "size": 1296,
+      "mtimeMs": 1790433261275.1777,
+      "updatedAt": "2026-09-26T14:34:21.577Z",
+      "source": "hook"
+    },
+    "ui/map_panel.gd": {
+      "description": "Declares CREAM",
+      "tokens": 1448,
+      "hash": "05acbf9c1e28cb00",
+      "size": 5430,
+      "mtimeMs": 1790433261655.548,
+      "updatedAt": "2026-09-26T14:34:21.743Z",
+      "source": "hook"
+    },
+    "ui/map_hud.gd": {
+      "description": "Declares MINI",
+      "tokens": 1306,
+      "hash": "3562a8117ddbf156",
+      "size": 4897,
+      "mtimeMs": 1790433354650.5212,
+      "updatedAt": "2026-09-26T14:35:54.758Z",
+      "source": "hook"
     }
   },
   "preamble": [

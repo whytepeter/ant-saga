@@ -2,7 +2,8 @@ extends SceneTree
 ## Builds <dir>/amodu_animations.res from the Meshy animation files
 ## (tools/meshy_character.py): anim_<batch>.glb holds up to 10 library actions
 ## in manifest order ("actions"), anim_more_<batch>.glb the same for the later
-## "more_actions"; motion_<name>.glb holds one custom clip.
+## "more_actions" and anim_weapon_<batch>.glb for "weapon_actions"; motion_<name>.glb
+## holds one custom clip.
 ##
 ##   Godot --headless --path . -s tools/build_amodu_anims.gd [-- --dir=res://assets/characters/amodu2/]
 ##
@@ -29,7 +30,7 @@ const FPS := 30.0
 const LOOPS := ["idle", "idle_look", "alert", "walk", "run", "sprint", "crouch_walk", "fall", "climb_up",
 	"climb_down", "climb_rope", "swim_idle", "swim", "block", "carry_walk", "push", "torch_crouch_walk",
 	"lamp_walk", "belly_crawl", "ride_insect", "carry_overhead_walk", "carry_overhead_idle", "jump_run", "coil",
-	"climb_left", "climb_right", "rope_hang", "bar_hang"]
+	"climb_left", "climb_right", "rope_hang", "bar_hang", "axe_stance"]
 ## Clips whose baked travel is removed on these axes (x, y, z).
 const IN_PLACE := {
 	"walk": [true, false, true], "run": [true, false, true], "sprint": [true, false, true],
@@ -41,6 +42,10 @@ const IN_PLACE := {
 	"throw_overhead": [true, false, true], "throw": [true, false, true], "get_up": [true, false, true],
 	"jump_run": [true, false, true], "climb_left": [true, true, true], "climb_right": [true, true, true],
 	"rope_hang": [true, true, true], "bar_hang": [true, true, true],
+	# the axe swings stay on the spot: PlayerCombat moves him with its own lunge
+	"axe_stance": [true, false, true], "axe_slash_right": [true, false, true], "axe_slash_left": [true, false, true],
+	"axe_combo": [true, false, true], "axe_overhead": [true, false, true], "axe_charged": [true, false, true],
+	"axe_spin": [true, false, true], "axe_parry": [true, false, true],
 }
 ## Airborne pieces: the new clip and the jumps to cut it from, best first.
 const AIR := {
@@ -50,10 +55,23 @@ const AIR := {
 }
 ## Landings: the new clip and the clips whose touch-down to cut from.
 const LANDINGS := {"land_hop": ["jump"], "land_heavy": ["jump_down", "jump"]}
+## Weapon swings cut from the longer library clips, without their slow wind-ups:
+## [source, from, to, the hit (source time)]. The hit lands in times[<name>]
+## (seconds into the cut clip) for PlayerCombat.
+const SWINGS := {
+	"axe_chop_1": ["axe_slash_right", 0.15, 1.2, 0.50],
+	"axe_chop_2": ["axe_slash_left", 0.4, 1.75, 0.83],
+	"axe_chop_3": ["axe_combo", 0.85, 1.9, 1.27],
+	"axe_heavy": ["axe_overhead", 0.55, 1.83, 1.5],
+	"axe_charged_swing": ["axe_charged", 3.9, 5.6, 4.4],
+	"axe_spin_cut": ["axe_spin", 0.45, 1.7, 0.87],
+	"knife_thrust": ["thrust", 0.3, 1.4, 0.73],
+}
 ## Standing clips whose arms hang out from the body with bent-back wrists (open
-## hands read as claws): arms swung in toward the body by this many degrees, and
-## wrists eased this far back toward straight.
-const ARM_FIX := {"idle": [12.0, 0.6], "idle_look": [12.0, 0.6], "carry_overhead_idle": [0.0, 0.4]}
+## hands read as claws) and locked-straight elbows: [degrees the arms swing in
+## toward the body, how far the wrists ease back toward straight, degrees the
+## elbows bend so the forearms hang a little forward].
+const ARM_FIX := {"idle": [12.0, 0.6, 20.0], "idle_look": [12.0, 0.6, 20.0], "carry_overhead_idle": [0.0, 0.4, 0.0]}
 const FEET := ["LeftFoot", "RightFoot"]
 const SOLES := ["LeftFoot", "RightFoot", "LeftToeBase", "RightToeBase"]
 const CONTACTS := ["LeftFoot", "RightFoot", "LeftHand", "RightHand", "LeftToeBase", "RightToeBase"]
@@ -83,7 +101,8 @@ func _run() -> void:
 
 	var lib := AnimationLibrary.new()
 	var raw_drift := {}
-	for set: Array in [["anim_%d.glb", keys], ["anim_more_%d.glb", (manifest.get("more_actions", {}) as Dictionary).keys()]]:
+	for set: Array in [["anim_%d.glb", keys], ["anim_more_%d.glb", (manifest.get("more_actions", {}) as Dictionary).keys()],
+			["anim_weapon_%d.glb", (manifest.get("weapon_actions", {}) as Dictionary).keys()]]:
 		var batch := 0
 		var set_keys: Array = set[1]
 		while FileAccess.file_exists(dir + String(set[0]) % batch):
@@ -120,15 +139,23 @@ func _run() -> void:
 
 	for key: String in ARM_FIX:
 		if lib.has_animation(key):
-			_relax_arms(lib.get_animation(key), float(ARM_FIX[key][0]), float(ARM_FIX[key][1]))
+			_relax_arms(lib.get_animation(key), float(ARM_FIX[key][0]), float(ARM_FIX[key][1]), float(ARM_FIX[key][2]))
 	_ground = _lowest(lib.get_animation("idle"), 0.0, SOLES)
 	var model_scale := HEIGHT / _rest_height()
 	var meta_times := {}
 	_cut_jumps(lib, meta_times)
+	for key: String in SWINGS:
+		var spec: Array = SWINGS[key]
+		if not lib.has_animation(String(spec[0])):
+			continue
+		var clip := _slice(lib.get_animation(String(spec[0])), float(spec[1]), float(spec[2]), "flat_xz")
+		clip.loop_mode = Animation.LOOP_NONE
+		lib.add_animation(key, clip)
+		meta_times[key] = float(spec[3]) - float(spec[1])
 	_mark_hands(lib, meta_times)
 
 	var speeds := {}
-	for key: String in ["walk", "run", "sprint", "crouch_walk", "carry_walk", "lamp_walk", "carry_overhead_walk"]:
+	for key: String in ["walk", "run", "sprint", "crouch_walk", "carry_walk", "lamp_walk", "carry_overhead_walk", "push"]:
 		if lib.has_animation(key):
 			speeds[key] = _stance_speed(lib.get_animation(key), FEET) * model_scale
 	if lib.has_animation("belly_crawl"):
@@ -278,7 +305,7 @@ func _lowest(anim: Animation, t: float, bones: Array) -> float:
 ## Swings each upper arm in toward the body (about the body's forward axis, so it
 ## works whatever the bone axes are), leaving at least 6° of gap, and eases the
 ## wrists toward straight.
-func _relax_arms(anim: Animation, adduct_deg: float, wrist: float) -> void:
+func _relax_arms(anim: Animation, adduct_deg: float, wrist: float, elbow_deg := 0.0) -> void:
 	var edits := {}  # track -> Array of [key, Quaternion]
 	for side in ["Left", "Right"]:
 		var arm := _skeleton.find_bone(side + "Arm")
@@ -301,6 +328,18 @@ func _relax_arms(anim: Animation, adduct_deg: float, wrist: float) -> void:
 			var local: Quaternion = anim.track_get_key_value(arm_track, k)
 			arm_keys.append([k, (p.inverse() * turn * p * local).normalized()])
 		edits[arm_track] = arm_keys
+		# a soft elbow: the forearm turns forward about the body's side-to-side
+		# axis (he faces +Z), whatever the bone's own axes are
+		var fore_track := _rotation_track(anim, side + "ForeArm")
+		if fore_track >= 0 and elbow_deg > 0.0:
+			var fore_keys: Array = []
+			for k in anim.track_get_key_count(fore_track):
+				_pose_at(anim, anim.track_get_key_time(fore_track, k))
+				var p := _skeleton.get_bone_global_pose(arm).basis.get_rotation_quaternion()
+				var turn := Quaternion(Vector3(1, 0, 0), -deg_to_rad(elbow_deg))
+				var local: Quaternion = anim.track_get_key_value(fore_track, k)
+				fore_keys.append([k, (p.inverse() * turn * p * local).normalized()])
+			edits[fore_track] = fore_keys
 		if hand_track >= 0 and wrist > 0.0:
 			var rest := _skeleton.get_bone_rest(hand).basis.get_rotation_quaternion()
 			var hand_keys: Array = []

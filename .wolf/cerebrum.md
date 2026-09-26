@@ -11,6 +11,9 @@ budget_tokens: 2000
 ## User Preferences
 
 <!-- How the user likes things done. Code style, tools, patterns, communication. -->
+- [2026-09-26] Weapons look ant-crafted from garden scraps: knapped pale stone, sticks, green vine/leaf lashing, a fresh leaf (user's reference: stylized stone hatchet with green vine binding). Never metal/forged. Meshy text-to-3D keeps making steel axes; use image-to-3D from the user's reference (tools/meshy_assets.py "image").
+- [2026-09-26] Loose props (pebbles, crumbs, grains) must be real models, not primitive blocks/spheres.
+- [2026-09-26] UI: every UI element must be as sleek as the route compass (ui/ compass: thin, translucent, minimal, no boxy panels). New HUD/inventory/menus copy its style.
 - World art must look good: no blocky primitive shapes as final visuals. Use Meshy-generated models (API key in .env) and proper textures; primitives are only collision/layout proxies. Visual targets: Grounded and Smalland (reference shots shared 2026-09-26).
 - Amodu fights with his own human strength (fists, kicks, throws), not weapons. His story powers are the design source: full human strength at 5 mm (square-cube law), falls don't hurt him, and he jumps very high and far.
 
@@ -37,11 +40,13 @@ budget_tokens: 2000
 
 <!-- Mistakes made and corrected. Each entry prevents the same mistake recurring. -->
 <!-- Format: [YYYY-MM-DD] Description of what went wrong and what to do instead. -->
-- [2026-09-26] Gave Amodu a thorn spear (PLAN.md/STORY.md mention one). The user removed it: no spear or weapons for Amodu; use his human powers from the story.
+- [2026-09-26] Took the number keys for weapon slots; the user relies on 1–5/0 to jump between viewpoints while playtesting. Leave the number keys on the viewpoints; weapons are wheel / X.
+- [2026-09-26] Don't round-trip Amodu's skeleton through Blender (re-export re-orients bones and breaks all 78 clips). Rig changes go through Godot tools that only add bones (tools/add_finger_bones.gd).
 - [2026-09-26] Tried to sell the miniature ground by scattering thousands of non-colliding 3D grains, clods and straw. The user rejected it ("too many pebbles"; the references have uneven ground, not loose clutter you walk through). Make the ground itself uneven (terrain relief with collision); anything that sticks up must collide.
 - [2026-09-26] A child node's _ready runs before the parent's @onready vars are set (player.model was null in Combat._ready). From children, use get_node() or defer.
 
 ## Decision Log
 
 <!-- Significant technical decisions with rationale. Why X was chosen over Y. -->
+- [2026-09-26] Weapons: the AXE is Amodu's signature weapon (always on him, also a chopping tool); he can also wield crafted weapons (hammer, spear, blade, bow, daggers...). This reverses the earlier 'no weapons' rule. Gameplay design lives in docs/GAMEPLAY.md: gameplay tells the story, strength is a world-changing system, Level 1 = the garden route home.
 - [2026-09-26] Sound: recorded CC0 field recordings and foley (BigSoundBank), processed by tools/process_sounds.py, instead of synthesis. The user found the synthesised set "off"; the Grounded/Smalland reference is real garden recordings, pitched-down creatures and muffled far-off human sounds, glued with one shared reverb.
