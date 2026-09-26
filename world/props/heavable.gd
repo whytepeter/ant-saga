@@ -86,7 +86,7 @@ static func make(kind: String, prop_size: float, prop_name: String) -> Heavable:
 		var marker := PickupMarker.new()  # food is worth pointing out, close up
 		marker.height = prop_size * 0.5 + 1.4
 		marker.reach = 18.0
-		marker.screen_size = 0.032
+		marker.screen_size = 0.04
 		h.add_child(marker)
 	return h
 

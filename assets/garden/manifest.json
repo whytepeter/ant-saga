@@ -275,6 +275,32 @@
    "size": 1.0,
    "prompt": "A small crumbly broken chunk of yellow cheddar cheese with irregular edges, a few tiny holes and cracks.",
    "note": "A loose prop Amodu lifts, carries and throws (world/props/heavable.gd); scaled to each placement's size."
+  },
+  {
+   "id": "stone_hammer",
+   "group": "weapons",
+   "source": "user",
+   "polycount": 12000,
+   "size": 0.7,
+   "bone": "RightHand",
+   "note": "Made by the user with Meshy (source/meshy/user/hammer.glb, 895k tris); decimated to 12k, 1024 px, stood upright (butt at the origin)."
+  },
+  {
+   "id": "thorn_spear",
+   "group": "weapons",
+   "source": "user",
+   "polycount": 12000,
+   "size": 1.9,
+   "bone": "RightHand",
+   "note": "Made by the user with Meshy (source/meshy/user/spear.glb, 392k tris); decimated to 8k, 1024 px, stood upright (butt at the origin)."
+  },
+  {
+   "id": "pill_bug",
+   "group": "creatures",
+   "source": "user",
+   "polycount": 16000,
+   "size": 4.3,
+   "note": "The user's Meshy pill bug (source/meshy/user/pill_bug.glb: UniRig rig, no animations, plus a stray icosphere). Rig and sphere removed, decimated to 16k tris, 1024 px. creatures/pill_bug/pill_bug.gd uses it for the upright bug."
   }
  ]
 }

@@ -195,6 +195,13 @@ func _strike(move: Dictionary) -> void:
 		hit_any[target] = true
 		target.call("take_hit", float(move["damage"]), player.global_position, kind, player)
 		attack_landed.emit(target, kind)
+	# a blade also cuts what it meets (Choppable: twigs, silk); fists glance off
+	query.collision_mask = Choppable.CHOP_LAYER
+	for hit: Dictionary in player.get_world_3d().direct_space_state.intersect_shape(query, 8):
+		var thing := hit["collider"] as Choppable
+		if thing != null and not hit_any.has(thing):
+			hit_any[thing] = true
+			thing.chop(float(move.get("chop", 0.0)), player.global_position, player)
 
 
 ## Turns to the nearest enemy near the camera's aim, else to the move input or the aim.

@@ -58,6 +58,8 @@ var _scan_left := 0.0
 var _last_attacker: Node3D
 var _eating: Haul
 var _hit_this_charge := {}
+## Amodu has been told the shell turns light blows (once per game).
+static var _taught := false
 var _wander_to := Vector3.ZERO
 var _pause := 0.0
 var _engaged := false
@@ -70,6 +72,8 @@ var _body: Node3D
 var _shell: Node3D
 var _legs: Node3D
 var _ball: Node3D
+## The model's own material (it glows red in the wind-up, flashes when hit).
+var _glow_mats: Array[StandardMaterial3D] = []
 var _shell_mat: StandardMaterial3D
 var _label: Label3D
 var _alert: Label3D
@@ -129,7 +133,8 @@ func take_hit(damage: float, from: Vector3, kind: StringName, attacker: Node3D) 
 	var hard := kind == &"heavy" or kind == &"throw"
 	match state:
 		State.FLIPPED:
-			hp -= 2 if kind == &"heavy" else 1
+			# the soft belly: a fist or a knife 1, the axe 2, its overhead chop 4
+			hp -= maxi(1, roundi(damage)) if attacker is Player else (2 if kind == &"heavy" else 1)
 			_flash(Color(1, 1, 1))
 			_update_label()
 			if hp <= 0:
@@ -146,6 +151,9 @@ func take_hit(damage: float, from: Vector3, kind: StringName, attacker: Node3D) 
 				_taunt(attacker, 5.0)
 			else:  # a punch thuds off the shell: no harm, but it shoves the bug back
 				_flash(Color(0.7, 0.7, 0.7))
+				if attacker is Player and not _taught:
+					_taught = true
+					(attacker as Player).flash_hint("The shell is too hard: knock it into a ball first (hold attack, or throw a stone)", 3.0)
 				_shove = _away(from) * (5.0 if young else 3.5)
 				if state != State.EAT:
 					_taunt(attacker, 3.0)
@@ -505,6 +513,28 @@ func _build() -> void:
 	add_child(_body)
 	_shell = Node3D.new()
 	_body.add_child(_shell)
+	_legs = Node3D.new()
+	_legs.position.y = -h * 0.3
+	_body.add_child(_legs)
+	var model := GardenProps.get_prop("pill_bug")
+	if model != null:
+		_build_model(model, h)
+	else:
+		_build_primitives(h, band_mat, belly_mat, leg_mat)
+	_build_ball_and_rest(h, band_mat)
+
+
+## The user's Meshy pill bug, head along +Z, feet on the ground, `length` long.
+func _build_model(model: GardenProps.Prop, h: float) -> void:
+	var mi := GardenProps.instance(model, Transform3D(Basis().scaled(Vector3.ONE * length), Vector3(0.0, -h * 0.5, 0.0)))
+	var mat := (model.material as StandardMaterial3D).duplicate() as StandardMaterial3D if model.material is StandardMaterial3D else null
+	if mat != null:
+		mi.material_override = mat
+		_glow_mats.append(mat)
+	_shell.add_child(mi)
+
+
+func _build_primitives(h: float, band_mat: StandardMaterial3D, belly_mat: StandardMaterial3D, leg_mat: StandardMaterial3D) -> void:
 	var shell := CapsuleMesh.new()
 	shell.radius = radius
 	shell.height = length
@@ -535,9 +565,6 @@ func _build() -> void:
 		ant.height = length * 0.3
 		_part(_shell, ant, band_mat, Vector3(s * width * 0.18, -h * 0.05, length * 0.5 + length * 0.12),
 			Vector3(PI / 2.0 - 0.5, s * 0.5, 0), Vector3.ONE)
-	_legs = Node3D.new()
-	_legs.position.y = -h * 0.3
-	_body.add_child(_legs)
 	for i in 7:
 		for s: float in [-1.0, 1.0]:
 			var pivot := Node3D.new()
@@ -549,6 +576,8 @@ func _build() -> void:
 			leg.height = h * 0.55
 			_part(pivot, leg, leg_mat, Vector3(s * h * 0.12, -h * 0.2, 0), Vector3(0, 0, s * 0.5), Vector3.ONE)
 
+
+func _build_ball_and_rest(h: float, band_mat: StandardMaterial3D) -> void:
 	_ball = Node3D.new()
 	_ball.position.y = radius * 1.05
 	add_child(_ball)
@@ -644,15 +673,23 @@ func _show_upright(on: bool) -> void:
 
 
 func _set_glow(amount: float) -> void:
-	_shell_mat.emission_enabled = amount > 0.0
-	_shell_mat.emission = Color(1.0, 0.15, 0.05)
-	_shell_mat.emission_energy_multiplier = amount * 2.5
+	for m: StandardMaterial3D in _all_glow_mats():
+		m.emission_enabled = amount > 0.0
+		m.emission = Color(1.0, 0.15, 0.05)
+		m.emission_energy_multiplier = amount * 2.5
+
+
+func _all_glow_mats() -> Array[StandardMaterial3D]:
+	var out: Array[StandardMaterial3D] = [_shell_mat]
+	out.append_array(_glow_mats)
+	return out
 
 
 func _flash(color: Color) -> void:
-	_shell_mat.emission_enabled = true
-	_shell_mat.emission = color
-	_shell_mat.emission_energy_multiplier = 1.5
+	for m: StandardMaterial3D in _all_glow_mats():
+		m.emission_enabled = true
+		m.emission = color
+		m.emission_energy_multiplier = 1.5
 	get_tree().create_timer(0.1).timeout.connect(func() -> void:
 		if state != State.WINDUP:
 			_set_glow(0.0))

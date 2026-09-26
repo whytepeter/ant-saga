@@ -26,7 +26,7 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	_bright = maxf(_bright - delta, 0.0)
-	var want := 1.0 if inventory != null and inventory.weapons.size() > 1 else 0.0
+	var want := 1.0 if inventory != null and inventory.combat_cycle().size() > 1 else 0.0
 	_shown = move_toward(_shown, want, delta * 3.0)
 	queue_redraw()
 
@@ -44,10 +44,11 @@ func _draw() -> void:
 	var info := Weapons.info(id)
 	HudGlyphs.draw(self, String(info["glyph"]), c, 30.0, Color(CREAM, alpha))
 	# the neighbours, only while it's bright after a switch
-	if lit > 0.0 and inventory.weapons.size() > 1:
-		var i := inventory.weapons.find(id)
+	var order := inventory.combat_cycle()
+	if lit > 0.0 and order.size() > 1:
+		var i := order.find(id)
 		for side: int in [-1, 1]:
-			var other: StringName = inventory.weapons[posmod(i + side, inventory.weapons.size())]
+			var other: StringName = order[posmod(i + side, order.size())]
 			if other == id:
 				continue
 			HudGlyphs.draw(self, String(Weapons.info(other)["glyph"]), c + Vector2(side * 46.0, 2.0), 18.0,

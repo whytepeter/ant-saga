@@ -57,6 +57,7 @@ func _ready() -> void:
 	cs.position.y = 0.85
 	add_child(cs)
 	_body = AntModel.new()
+	_body.hero = display_name
 	add_child(_body)
 	var label := Label3D.new()
 	label.text = display_name

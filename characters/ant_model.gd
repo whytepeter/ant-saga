@@ -1,13 +1,22 @@
 class_name AntModel
 extends Node3D
-## The ant scout model, shared by the hero companions and the worker ants. It
-## has Amodu's Mixamo rig, so it runs on his animation library (minus the toe
-## bones the ant doesn't have).
+## An ant character: the ant scout model for the workers, and the heroes' own
+## models (Opigo, Opumie: the user's Meshy characters, assets/characters/). All
+## have the Mixamo rig, so they run on Amodu's old animation library (minus the
+## bones a model doesn't have).
 
 const SCENE := preload("res://creatures/ant_scout/Meshy_AI_Amber_Ant_Scout_biped_Animation_Walking_withSkin.glb")
+## The heroes' own models, by name.
+const HEROES := {
+	"Opigo": "res://assets/characters/opigo/opigo.glb",
+	"Opumie": "res://assets/characters/opumie/opumie.glb",
+}
+
+## Set before adding to the tree: a hero's name picks their own model.
+var hero := ""
 const ANIMATIONS: AnimationLibrary = preload("res://player/explorer/amodu_animations.res")
 
-static var _library: AnimationLibrary
+static var _libraries := {}  # the skeleton's bone names -> Amodu's clips fitted to it
 
 var _anim: AnimationPlayer
 var _playing := ""
@@ -18,7 +27,10 @@ var _run_natural := 4.1
 
 
 func _ready() -> void:
-	var model := SCENE.instantiate() as Node3D
+	var scene: PackedScene = SCENE
+	if HEROES.has(hero) and ResourceLoader.exists(HEROES[hero]):
+		scene = load(HEROES[hero]) as PackedScene
+	var model := scene.instantiate() as Node3D
 	add_child(model)
 	_anim = model.find_children("*", "AnimationPlayer", true, false)[0]
 	for lib_name in _anim.get_animation_library_list():
@@ -36,17 +48,48 @@ func _process(delta: float) -> void:
 
 ## Amodu's clips with the tracks this rig can't use removed.
 static func _library_for(skeleton: Skeleton3D) -> AnimationLibrary:
-	if _library != null:
-		return _library
-	_library = AnimationLibrary.new()
+	var bones := PackedStringArray()
+	for i in skeleton.get_bone_count():
+		bones.append(skeleton.get_bone_name(i))
+	# the clips move the hips in the old rig's units (centimetres); a rig in
+	# metres (the heroes' models) needs those positions scaled to fit
+	var factor := _position_scale(skeleton)
+	var key := ",".join(bones) + "@%.4f" % factor
+	if _libraries.has(key):
+		return _libraries[key]
+	var _library := AnimationLibrary.new()
+	_libraries[key] = _library
 	for anim_name in ANIMATIONS.get_animation_list():
 		var anim := ANIMATIONS.get_animation(anim_name).duplicate() as Animation
 		for t in range(anim.get_track_count() - 1, -1, -1):
 			var bone := str(anim.track_get_path(t)).get_slice(":", 1)
 			if bone != "" and skeleton.find_bone(bone) < 0:
 				anim.remove_track(t)
+			elif absf(factor - 1.0) > 0.01 and anim.track_get_type(t) == Animation.TYPE_POSITION_3D:
+				for k in anim.track_get_key_count(t):
+					anim.track_set_key_value(t, k, (anim.track_get_key_value(t, k) as Vector3) * factor)
 		_library.add_animation(anim_name, anim)
 	return _library
+
+
+## How the clips' bone positions compare to this rig's: its hips' rest height
+## over the idle clip's first hips key.
+static func _position_scale(skeleton: Skeleton3D) -> float:
+	var hips := -1
+	for i in skeleton.get_bone_count():
+		if skeleton.get_bone_name(i).ends_with("Hips"):
+			hips = i
+			break
+	if hips < 0 or not ANIMATIONS.has_animation("idle"):
+		return 1.0
+	var idle := ANIMATIONS.get_animation("idle")
+	for t in idle.get_track_count():
+		if idle.track_get_type(t) == Animation.TYPE_POSITION_3D and str(idle.track_get_path(t)).ends_with(":" + skeleton.get_bone_name(hips)):
+			var clip_y := absf((idle.track_get_key_value(t, 0) as Vector3).y)
+			var rest_y := absf(skeleton.get_bone_rest(hips).origin.y)
+			if clip_y > 0.0001 and rest_y > 0.0001:
+				return rest_y / clip_y
+	return 1.0
 
 
 ## Multiplies the body texture by `color` (tells workers from heroes).

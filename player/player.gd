@@ -157,6 +157,9 @@ var carried: Heavable
 var _pushing: Heavable
 var _push_active := false
 var _hint := ""
+## A brief note shown instead of the usual prompt (flash_hint), until this time (ms).
+var _flash_until := 0
+var _flash_text := ""
 ## The haul Amodu is holding up with the ants, if any.
 var hauling: Haul
 ## Seconds during which movement input is ignored (attacks, staggers).
@@ -785,7 +788,7 @@ func _process_heave_input() -> void:
 		return
 	var prop := prop_in_reach()
 	if prop == null:
-		_set_hint("")
+		_set_hint(_chop_prompt())
 		return
 	if prop is Haul:
 		var haul := prop as Haul
@@ -1168,6 +1171,82 @@ func _dress_model() -> void:
 	mi.material_override = m
 
 
+## The nearest thing he could cut, within reach and not behind him.
+func _choppable_in_reach() -> Choppable:
+	var facing := Vector3(sin(model.rotation.y), 0.0, cos(model.rotation.y))
+	var best: Choppable = null
+	var best_d := 3.5
+	for c: Choppable in get_tree().get_nodes_in_group(&"choppables"):
+		if c.collision_layer == 0:
+			continue  # already cut
+		# near its line, not only its middle: a twig or a trip line is long
+		var nearest := _nearest_on(c)
+		var d := Vector2(nearest.x - global_position.x, nearest.z - global_position.z)
+		if d.length() < best_d and (d.length() < 1.0 or d.normalized().dot(Vector2(facing.x, facing.z)) > -0.3):
+			best_d = d.length()
+			best = c
+	return best
+
+
+func _nearest_on(c: Choppable) -> Vector3:
+	var local := c.global_transform.affine_inverse() * global_position
+	return c.global_transform * Vector3(0.0, 0.0, clampf(local.z, -c.length * 0.5, c.length * 0.5))
+
+
+## "E · Cut the silk" (his knife) or "Click · Chop the twig" (a blade in hand
+## strong enough), next to something he can cut; E cuts with the knife.
+func _chop_prompt() -> String:
+	var c := _choppable_in_reach()
+	var inventory := get_node_or_null("Inventory") as Inventory
+	if c == null or inventory == null:
+		return ""
+	var knife := float(Weapons.info(Weapons.KNIFE)["light"][0].get("chop", 0.5))
+	if inventory.has_knife and knife >= c.needs:
+		if Input.is_action_just_pressed("interact"):
+			cut_with_knife(c)
+		return "E · Cut the %s" % c.display_name
+	if _chop_power(inventory.equipped) >= c.needs:
+		return "Click · Chop the %s" % c.display_name
+	if inventory.main != &"" and _chop_power(inventory.main) >= c.needs:
+		return "X · Take out the %s" % Weapons.display_name(inventory.main).to_lower()
+	return ""
+
+
+func _chop_power(weapon: StringName) -> float:
+	var power := 0.0
+	for move: Dictionary in Weapons.info(weapon).get("light", []):
+		power = maxf(power, float(move.get("chop", 0.0)))
+	return power
+
+
+## A quick slash with his knife (it comes to his hand and goes back).
+func cut_with_knife(c: Choppable) -> void:
+	var inventory := get_node_or_null("Inventory") as Inventory
+	if inventory == null or not inventory.has_knife or action_lock > 0.0:
+		return
+	var to := _nearest_on(c) - global_position
+	if Vector2(to.x, to.z).length() > 0.1:
+		model.rotation.y = atan2(to.x, to.z)
+	inventory.draw_knife(0.75)
+	play_action("axe_chop_1", 1.9)
+	action_lock = 0.4
+	var hit_at := float(_times.get("axe_chop_1", 0.35)) / 1.9
+	get_tree().create_timer(hit_at).timeout.connect(func() -> void:
+		if is_instance_valid(c):
+			c.chop(float(Weapons.info(Weapons.KNIFE)["light"][0].get("chop", 0.5)), global_position, self))
+
+
+## Shows `text` in the prompt line for `seconds` ("Too tough for the knife").
+func flash_hint(text: String, seconds := 1.5) -> void:
+	_flash_text = text
+	_flash_until = Time.get_ticks_msec() + int(seconds * 1000.0)
+	_set_hint(text)
+	get_tree().create_timer(seconds).timeout.connect(func() -> void:
+		if _hint == text:
+			_flash_until = 0
+			_set_hint(""))
+
+
 ## His fingers: Meshy's rig has none, so tools/add_finger_bones.gd made them.
 ## Adds those bones to the skeleton, swaps in the mesh and skin weighted to
 ## them, and a FingerCurl to bend them (see _update_fingers).
@@ -1213,6 +1292,8 @@ func _update_fingers() -> void:
 
 
 func _set_hint(text: String) -> void:
+	if _flash_until > Time.get_ticks_msec() and text != _flash_text:
+		return  # a brief note (flash_hint) is showing
 	if text == _hint:
 		return
 	_hint = text

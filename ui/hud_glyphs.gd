@@ -16,6 +16,10 @@ static func draw(ci: CanvasItem, glyph: String, c: Vector2, s: float, col: Color
 			_axe(ci, c, s, col)
 		"knife":
 			_knife(ci, c, s, col)
+		"hammer":
+			_hammer(ci, c, s, col)
+		"spear":
+			_spear(ci, c, s, col)
 		_:
 			var d := PackedVector2Array([c + Vector2(0, -s * 0.5), c + Vector2(s * 0.35, 0), c + Vector2(0, s * 0.5), c + Vector2(-s * 0.35, 0)])
 			_shape(ci, d, col)
@@ -75,6 +79,38 @@ static func _knife(ci: CanvasItem, c: Vector2, s: float, col: Color) -> void:
 	_shape(ci, blade, col)
 	# the vine wrap
 	ci.draw_line(hilt - d * 1.2 * u + side * 1.1 * u, hilt - d * 1.2 * u - side * 1.1 * u, Color(AMBER, col.a), maxf(1.0, 0.8 * u))
+
+
+## A stone hammer: a slanted handle and a round, lashed head.
+static func _hammer(ci: CanvasItem, c: Vector2, s: float, col: Color) -> void:
+	var u := s / 10.0
+	var d := Vector2(0.55, -0.83)
+	var side := Vector2(-d.y, d.x)
+	var butt := c - d * 4.6 * u
+	var neck := c + d * 2.2 * u
+	ci.draw_line(butt, neck, Color(0, 0, 0, 0.6 * col.a), 1.8 * u + 3.0)
+	ci.draw_line(butt, neck, col, 1.8 * u)
+	var head := c + d * 3.4 * u
+	var pts := PackedVector2Array()
+	for k in 12:
+		var a := k * TAU / 12.0
+		pts.append(head + side * cos(a) * 3.6 * u + d * sin(a) * 2.1 * u)
+	_shape(ci, pts, col)
+	ci.draw_line(head - side * 0.6 * u + d * 2.0 * u, head - side * 0.6 * u - d * 2.0 * u, Color(AMBER, col.a), maxf(1.0, 0.8 * u))
+
+
+## A spear: a long thin shaft and a leaf-shaped stone point.
+static func _spear(ci: CanvasItem, c: Vector2, s: float, col: Color) -> void:
+	var u := s / 10.0
+	var d := Vector2(0.62, -0.78)
+	var side := Vector2(-d.y, d.x)
+	var butt := c - d * 6.2 * u
+	var socket := c + d * 2.6 * u
+	ci.draw_line(butt, socket, Color(0, 0, 0, 0.6 * col.a), 1.2 * u + 3.0)
+	ci.draw_line(butt, socket, col, 1.2 * u)
+	_shape(ci, PackedVector2Array([socket + side * 1.1 * u, socket + d * 2.0 * u + side * 1.4 * u, socket + d * 4.6 * u,
+		socket + d * 2.0 * u - side * 1.4 * u, socket - side * 1.1 * u]), col)
+	ci.draw_line(socket - d * 0.4 * u + side * 1.0 * u, socket - d * 0.4 * u - side * 1.0 * u, Color(AMBER, col.a), maxf(1.0, 0.8 * u))
 
 
 ## Home: a little house, as on the compass.

@@ -1,6 +1,6 @@
 class_name PickupMarker
 extends MeshInstance3D
-## The floating amber chevron over something Amodu can pick up (world/shaders/
+## The thin cream diamond over something Amodu can pick up (world/shaders/
 ## pickup_marker.gdshader): weapons from far off, food crumbs only nearby.
 ## Add it as a child of the thing, `height` metres above its origin.
 
@@ -8,7 +8,7 @@ const SHADER := preload("res://world/shaders/pickup_marker.gdshader")
 
 @export var height := 2.0
 @export var reach := 45.0
-@export var screen_size := 0.045
+@export var screen_size := 0.05
 
 
 func _ready() -> void:

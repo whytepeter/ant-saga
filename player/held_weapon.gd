@@ -1,9 +1,11 @@
 class_name HeldWeapon
 extends Node3D
-## Every weapon Amodu owns, where it belongs: the one he fights with in his
-## right hand, the rest stowed (the axe slung flat across his back, the knife
-## blade-down at his right hip; Weapons "holster"). Whatever he's holding goes
-## back to its place while he climbs, swims, carries or glides. A child of the
+## The three weapons Amodu carries (Inventory), where they belong: the one he
+## fights with in his right hand, the others stowed (the axe slung flat across
+## his back, the secondary on the other side, the knife blade-down at his right
+## hip; Weapons "holster"). The knife comes to his hand for a quick cut.
+## Whatever he's holding goes back to its place while he climbs, swims, carries
+## or glides. Weapons he owns but doesn't carry aren't shown. A child of the
 ## Player, placed from his bones every frame once the pose is final.
 ## Models come from GardenProps (assets/garden/): longest side 1 with the pivot
 ## at the handle's butt, the handle along +Y.
@@ -28,6 +30,10 @@ const GRIP_TURN := 10.0
 const HOLSTERS := {
 	"back": ["Spine", Vector3(0.0, 0.0, 25.0), 180.0, Vector3(0.12, -0.28, -0.16)],
 	"hip": ["Hips", Vector3(15.0, 0.0, 180.0), 90.0, Vector3(-0.17, 0.06, -0.03)],
+	# the hammer crosses the axe, head over his left shoulder
+	"back_left": ["Spine", Vector3(0.0, 0.0, -25.0), 180.0, Vector3(-0.12, -0.28, -0.2)],
+	# the spear slung diagonally, butt by his right hip, point above his left shoulder
+	"back_long": ["Spine", Vector3(0.0, 0.0, -16.0), 180.0, Vector3(-0.12, -0.7, -0.23)],
 }
 
 ## Seen through his eyes his arms are up in a guard (HideHead), so the weapon
@@ -64,15 +70,26 @@ func _process(delta: float) -> void:
 		return
 	var combat := player.get_node_or_null("Combat") as PlayerCombat
 	var act := player.current_action()
-	var swinging := act.begins_with("axe") or act.begins_with("knife") or (combat != null and combat.blocking)
+	var swinging := (act.begins_with("axe") or act.begins_with("knife")) and id != Weapons.SPEAR \
+		or (combat != null and combat.blocking)
 	_swing = move_toward(_swing, 1.0 if swinging else 0.0, delta * GRIP_TURN)
 	var inventory := player.get_node_or_null("Inventory") as Inventory
 	if inventory == null:
 		return
-	for w: StringName in inventory.weapons:
-		if w != Weapons.FISTS and not _meshes.has(w):
+	var carried: Array[StringName] = []
+	if inventory.has_knife:
+		carried.append(Weapons.KNIFE)
+	for w: StringName in [inventory.main, inventory.secondary]:
+		if w != &"":
+			carried.append(w)
+	for w: StringName in carried:
+		if not _meshes.has(w):
 			_add(w)
+	for w: StringName in _meshes:
+		(_meshes[w] as Node3D).visible = w in carried
 	id = inventory.equipped if inventory.equipped != Weapons.FISTS else &""
+	if inventory.knife_out():
+		id = Weapons.KNIFE
 	# in hand only when his hands are free to fight
 	in_hand = id != &"" and player.state in [Player.State.GROUND, Player.State.AIR] \
 		and player.carried == null and player.puff == null and player.hauling == null

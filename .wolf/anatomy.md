@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-26T15:11:45.356Z
-> Files: 257 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-26T16:37:20.930Z
+> Files: 259 tracked | Anatomy hits: 0 | Misses: 0
 
 > Project structure index. Auto-maintained by OpenWolf hooks and daemon.
 > Run `openwolf scan` to generate, or wait for the first Claude Code session.
@@ -163,7 +163,7 @@
 - `finger_curl.gd` — Declares SIDES (~675 tok)
 - `held_weapon.gd` — Declares HAND_EULER (~1661 tok)
 - `hide_head.gd` — Declares ARM_FORWARD (~548 tok)
-- `inventory.gd` (~567 tok)
+- `inventory.gd` (~896 tok)
 - `player_audio.gd` — Declares SETS (~1805 tok)
 - `player_combat.gd` — Declares CREATURES_LAYER (~3147 tok)
 - `player.gd` — Declares State (~16052 tok)
@@ -228,6 +228,7 @@
 
 - `_anim_shots.gd` (~635 tok)
 - `expedition_test.gd` (~3386 tok)
+- `fight_test.gd` (~970 tok)
 - `lawn_graybox_test.gd` (~4160 tok)
 - `lawn_graybox_test.gd.uid` (~6 tok)
 - `lawn_tour.gd` (~1087 tok)
@@ -314,6 +315,7 @@
 
 ## world/props/
 
+- `choppable.gd` — Declares CHOP_LAYER (~1806 tok)
 - `haul.gd` — Declares AMODU_STRENGTH (~2366 tok)
 - `heavable.gd` — Declares Weight (~730 tok)
 - `heavable.gd.uid` (~6 tok)
@@ -326,7 +328,7 @@
 - `creature.gdshader` — Declares spatial (~566 tok)
 - `grain.gdshader` — Declares spatial (~728 tok)
 - `ground.gdshader` — Declares spatial (~1636 tok)
-- `pickup_marker.gdshader` — Declares spatial (~568 tok)
+- `pickup_marker.gdshader` — Declares spatial (~713 tok)
 - `rain_splash.gdshader` — Declares spatial (~483 tok)
 - `thatch.gdshader` — Declares spatial (~488 tok)
 - `tree_base.gdshader` — Declares spatial (~1085 tok)

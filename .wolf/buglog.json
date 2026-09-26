@@ -308,6 +308,22 @@
       ],
       "occurrences": 1,
       "last_seen": "2026-09-26"
+    },
+    {
+      "id": "bug-022",
+      "timestamp": "2026-09-26",
+      "error_message": "Opigo shows tiny and Opumie vanishes when given Amodu's old (Mixamo) clips",
+      "file": "characters/ant_model.gd",
+      "root_cause": "The ant scout rig is in centimetres (Armature scale 0.01); the user's hero rigs are in metres, so the clips' hips position keys (cm) threw the body ~100x off.",
+      "fix": "_library_for scales position tracks by the rig's hips rest height / the idle clip's hips height, and caches per bone set AND scale.",
+      "tags": [
+        "animation",
+        "rig",
+        "scale"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-26"
     }
   ]
 }

@@ -188,6 +188,7 @@ map={
 3d_physics/layer_4="creatures"
 3d_physics/layer_5="grass"
 3d_physics/layer_6="props"
+3d_physics/layer_7="choppable"
 
 [physics]
 

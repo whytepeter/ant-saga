@@ -22,6 +22,7 @@ func _run() -> void:
 	var t0 := Time.get_ticks_msec()
 	level = load("res://world/lawn/lawn.tscn").instantiate()
 	level.set("expedition_mode", false)  # the Phase 3 free-roam graybox
+	level.set("live_creatures", false)  # no pill bugs charging the autopilot
 	root.add_child(level)
 	await _frames(3)
 	player = level.get_node("Player")
@@ -31,6 +32,7 @@ func _run() -> void:
 	_report_build(built_ms)
 
 	await _test_spawn()
+	await _test_chopping()
 	await _test_ground_matches_terrain()
 	await _test_viewpoints()
 	await _test_swim()
@@ -388,6 +390,55 @@ func _test_way_home() -> void:
 	Input.action_release("move_forward")
 	_check("the door gap: too low to walk, crawl under it", blocked_standing and bool(level.get("day_over")),
 		"standing stopped at z=%.1f; home reached: %s" % [player.global_position.z, level.get("day_over")])
+
+
+## Fists glance off the fallen twig, the axe cuts it in three chops and it
+## stops blocking the way; his knife (E) cuts a spider's trip line in one.
+func _test_chopping() -> void:
+	var twig: Choppable = null
+	var silk: Choppable = null
+	for c: Choppable in level.get_tree().get_nodes_in_group(&"choppables"):
+		if c.kind == "twig" and twig == null:
+			twig = c
+		elif c.kind == "silk" and silk == null:
+			silk = c
+	_check("a twig and trip lines to chop", twig != null and silk != null, "")
+	if twig == null or silk == null:
+		return
+	var inv := player.get_node("Inventory") as Inventory
+	var combat := player.get_node("Combat") as PlayerCombat
+	inv.add_weapon(Weapons.AXE, false)
+	inv.add_weapon(Weapons.KNIFE, false)
+	# stand beside the twig's middle; teleport's yaw is the camera's: looking at it
+	var side := twig.global_transform.basis.x.normalized()
+	var at := twig.global_position + side * 2.4
+	player.teleport(layout.ground_point([at.x, at.z], 0.3), atan2(side.x, side.z))
+	await _frames(20)
+	var fist_prompt := String(player.get("_hint"))
+	combat.attack(Weapons.info(Weapons.FISTS)["light"][0])
+	await _frames(_seconds(0.8))
+	_check("fists glance off the twig", is_instance_valid(twig) and twig.health >= 3.0,
+		"prompt '%s', note '%s'" % [fist_prompt, String(player.get("_hint"))])
+	inv.equip(Weapons.AXE)
+	await _frames(5)
+	var axe_prompt := String(player.get("_hint"))
+	for i in 3:
+		combat.attack(Weapons.info(Weapons.AXE)["light"][i])
+		await _frames(_seconds(0.9))
+	await _frames(_seconds(1.0))
+	var cut := not is_instance_valid(twig) or twig.collision_layer == 0
+	_check("three axe chops cut the twig", cut, "prompts '%s' then '%s'" % [fist_prompt, axe_prompt])
+	# silk: E cuts it with his knife
+	inv.equip(Weapons.FISTS)
+	var sside := silk.global_transform.basis.x.normalized()
+	var sat := silk.global_position + sside * 1.2
+	player.teleport(layout.ground_point([sat.x, sat.z], 0.3), atan2(sside.x, sside.z))
+	await _frames(10)
+	var silk_prompt := String(player.get("_hint"))
+	player.cut_with_knife(silk)
+	await _frames(_seconds(0.8))
+	_check("his knife cuts a trip line", not is_instance_valid(silk) or silk.collision_layer == 0, "prompt '%s'" % silk_prompt)
+	await _frames(5)
 
 
 func _seconds(s: float) -> int:

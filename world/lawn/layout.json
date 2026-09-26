@@ -2422,6 +2422,36 @@
         62
       ],
       "note": "Beat 6: the ants' watch post under the Capstone; a stone knife left on the bead shrine's step."
+    },
+    {
+      "weapon": "thorn_spear",
+      "pos": [
+        62,
+        96
+      ],
+      "note": "Beat 6: left by the gate guards at the Colony Gate, where the pill bugs roam (reach helps against them)."
+    },
+    {
+      "weapon": "stone_hammer",
+      "pos": [
+        222,
+        -236
+      ],
+      "note": "Off the route (east): the abandoned ant rest stop in the crisp packet. A reward for exploring."
+    }
+  ],
+  "choppables": [
+    {
+      "kind": "twig",
+      "from": [
+        22,
+        -176
+      ],
+      "to": [
+        70,
+        -170
+      ],
+      "note": "Beat 2 (docs/GAMEPLAY.md): a fallen twig across the ant road north of the hollow, the first thing to chop with the axe. Off the route home. The Spider's Edge trip lines are choppable silk too (landmark trip_lines)."
     }
   ]
 }

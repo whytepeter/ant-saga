@@ -11,6 +11,8 @@ budget_tokens: 2000
 ## User Preferences
 
 <!-- How the user likes things done. Code style, tools, patterns, communication. -->
+- [2026-09-26] Loadout (user's decision): the knife is Amodu's permanent tool at his hip (E cuts silk/vines, never a combat slot); the axe is the main weapon on his back; one secondary (hammer/spear/...) chosen in the inventory, on the other side. Unlimited owned weapons, 3 carried, no backpack. X/wheel swap axe -> secondary -> fists.
+- [2026-09-26] The user makes character/weapon models themselves in Meshy and drops them in ~/Downloads; I import, decimate (Blender) and fit them. Don't generate characters for them unasked.
 - [2026-09-26] Weapons look ant-crafted from garden scraps: knapped pale stone, sticks, green vine/leaf lashing, a fresh leaf (user's reference: stylized stone hatchet with green vine binding). Never metal/forged. Meshy text-to-3D keeps making steel axes; use image-to-3D from the user's reference (tools/meshy_assets.py "image").
 - [2026-09-26] Loose props (pebbles, crumbs, grains) must be real models, not primitive blocks/spheres.
 - [2026-09-26] UI: every UI element must be as sleek as the route compass (ui/ compass: thin, translucent, minimal, no boxy panels). New HUD/inventory/menus copy its style.

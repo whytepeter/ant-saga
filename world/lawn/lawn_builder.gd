@@ -782,8 +782,7 @@ func _build_landmarks(parent: Node3D) -> void:
 				ring.outer_radius = 5.3
 				_add(parent, ring, _mat("silk"), Transform3D(Basis(), g + Vector3.UP * 0.6))
 			"trip_lines":
-				for k in 4:
-					_box(parent, g + Vector3(0, 0.6 + k * 0.45, k * 1.5 - 2.0), Vector3(55, 0.08, 0.08), "silk", false, 0.35)
+				pass  # silk you can cut: Choppable, placed by lawn_level.gd
 			_:
 				var w: float = size[0]
 				var h: float = size[1]
@@ -1147,8 +1146,9 @@ func _fallen_leaf(parent: Node3D, g: Vector3, width: float, length: float, seed_
 # ── creatures, signs ──────────────────────────────────────────────────────────
 
 func _build_standins(parent: Node3D) -> void:
-	# on an expedition the pill bugs are live creatures (world/expedition/expedition.gd)
-	var live_bugs: bool = get_parent() != null and get_parent().get("expedition_mode") == true
+	# the pill bugs are live creatures (lawn_level.gd, or world/expedition/
+	# expedition.gd), unless the level turns them off (the route autopilot)
+	var live_bugs: bool = get_parent() == null or get_parent().get("live_creatures") != false
 	for sd: Dictionary in layout.items("standins"):
 		var g := _gp(sd["pos"])
 		var kind := String(sd["kind"])
@@ -1156,6 +1156,8 @@ func _build_standins(parent: Node3D) -> void:
 			continue
 		var label_color := Color(0.55, 1.0, 0.55)
 		var label_height := 3.0
+		if kind == "ant" and live_bugs:
+			continue  # real ants stand here (lawn_level.gd)
 		match kind:
 			"ant":
 				var m := CapsuleMesh.new()

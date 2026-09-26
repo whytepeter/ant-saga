@@ -4,6 +4,10 @@ shader_type spatial;
 //           the body line, so the wings beat (butterfly, dragonfly)
 //   mode 2  tail: the body bends in a travelling wave that grows toward the
 //           tail end of `span_axis` (tadpole)
+//   mode 3  legs: below `hip` (a fraction of the model's height from `foot_y`)
+//           the legs step in a tripod gait along `fwd_axis`, each foot lifting
+//           as it swings forward; the body bobs. `walk` (per instance, 0..1)
+//           scales it, so a standing bug stands still (ladybird, mite)
 // `phase` is per instance, so a swarm doesn't beat in lockstep.
 
 render_mode diffuse_burley, specular_schlick_ggx, cull_disabled;
@@ -24,7 +28,15 @@ uniform float beat_speed = 4.0;
 uniform float tail_amp = 0.12;
 uniform float tail_waves = 1.4;
 uniform float tail_sign = 1.0;
+uniform vec3 fwd_axis = vec3(0.0, 0.0, 1.0);
+uniform float foot_y = -0.6;
+uniform float height = 1.2;
+uniform float hip = 0.36;
+uniform float body_length = 1.9;
+uniform float stride = 0.12;
 instance uniform float phase = 0.0;
+instance uniform float walk = 0.0;
+instance uniform float step_rate = 3.0;
 
 void vertex() {
 	vec3 d = VERTEX - center;
@@ -34,6 +46,20 @@ void vertex() {
 		float a = sin(TIME * beat_speed * 6.2831 + phase) * beat_angle;
 		// rotate the wing part about the body line, lifting both wings together
 		VERTEX += span_axis * sign(s) * (out_dist * (cos(a) - 1.0)) + lift_axis * out_dist * sin(a);
+	} else if (mode == 3) {
+		float h = clamp((VERTEX.y - foot_y) / height, 0.0, 1.0);
+		float leg = 1.0 - smoothstep(hip * 0.5, hip, h);  // 1 at the feet, 0 at the hips
+		vec3 side_axis = normalize(cross(vec3(0.0, 1.0, 0.0), fwd_axis));
+		float along = dot(d, fwd_axis) / (body_length * 0.5);  // -1 back .. 1 front
+		float zone = along > 0.3 ? 0.0 : (along < -0.3 ? 2.0 : 1.0);
+		float right = dot(d, side_axis) > 0.0 ? 1.0 : 0.0;
+		float group = mod(zone + right, 2.0);  // two tripods, stepping in turn
+		float t = TIME * step_rate * 6.2831 + phase + group * 3.14159;
+		float lift = max(0.0, cos(t));
+		VERTEX += fwd_axis * sin(t) * stride * leg * walk;
+		VERTEX.y += lift * stride * 0.6 * leg * walk;
+		// the body rides a little up and down with each step
+		VERTEX.y += (1.0 - leg) * abs(sin(t)) * stride * 0.12 * walk;
 	} else if (mode == 2) {
 		float t = clamp((s * tail_sign / half_span + 1.0) * 0.5, 0.0, 1.0);  // 0 head .. 1 tail tip
 		float bend = sin(t * tail_waves * 6.2831 - TIME * beat_speed * 6.2831 + phase) * tail_amp * t * t;

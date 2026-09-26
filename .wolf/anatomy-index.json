@@ -1,13 +1,13 @@
 {
   "version": 1,
   "meta": {
-    "lastScanned": "2026-09-26T15:11:45.356Z",
-    "fileCount": 257,
+    "lastScanned": "2026-09-26T16:37:20.930Z",
+    "fileCount": 259,
     "hits": 0,
     "misses": 0,
-    "renderedHash": "fd34e15bece1dada218089f22031cafdda4b06c18a82d47c6b9720bd9c90ea01",
-    "storeUpdatedAt": "2026-09-26T15:11:45.365Z",
-    "rootHash": "b2ec9cb2a96470d8"
+    "renderedHash": "6998f6b600c96c13210ef4e21d6fe30c568eecb2f474d38a923fe51f9e66c427",
+    "storeUpdatedAt": "2026-09-26T16:37:20.938Z",
+    "rootHash": "7c14491d7626cf2d"
   },
   "files": {
     ".gitattributes": {
@@ -2818,11 +2818,11 @@
     },
     "player/inventory.gd": {
       "description": "",
-      "tokens": 567,
-      "hash": "4ec05356dc50ea6f",
-      "size": 2130,
-      "mtimeMs": 1790424822430.9888,
-      "updatedAt": "2026-09-26T12:13:42.513Z",
+      "tokens": 896,
+      "hash": "ee3176f80e8b4180",
+      "size": 3366,
+      "mtimeMs": 1790440640818.8828,
+      "updatedAt": "2026-09-26T16:37:20.929Z",
       "source": "hook"
     },
     "player/held_weapon.gd": {
@@ -2926,11 +2926,11 @@
     },
     "world/shaders/pickup_marker.gdshader": {
       "description": "Declares spatial",
-      "tokens": 568,
-      "hash": "17dc1338a24819db",
-      "size": 2128,
-      "mtimeMs": 1790435505090.4978,
-      "updatedAt": "2026-09-26T15:11:45.198Z",
+      "tokens": 713,
+      "hash": "301c05f9052f58f3",
+      "size": 2671,
+      "mtimeMs": 1790439603654.465,
+      "updatedAt": "2026-09-26T16:20:03.768Z",
       "source": "hook"
     },
     "world/props/pickup_marker.gd": {
@@ -2940,6 +2940,24 @@
       "size": 1234,
       "mtimeMs": 1790435505271.9448,
       "updatedAt": "2026-09-26T15:11:45.356Z",
+      "source": "hook"
+    },
+    "world/props/choppable.gd": {
+      "description": "Declares CHOP_LAYER",
+      "tokens": 1806,
+      "hash": "450dadb80ff717a3",
+      "size": 6772,
+      "mtimeMs": 1790437173839.0457,
+      "updatedAt": "2026-09-26T15:39:33.948Z",
+      "source": "hook"
+    },
+    "tests/fight_test.gd": {
+      "description": "",
+      "tokens": 970,
+      "hash": "8d2c8db1abe58970",
+      "size": 3635,
+      "mtimeMs": 1790438586766.6704,
+      "updatedAt": "2026-09-26T16:03:06.881Z",
       "source": "hook"
     }
   },

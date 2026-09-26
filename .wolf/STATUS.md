@@ -58,8 +58,15 @@ budget_tokens: 1500
 - Loose props are Meshy models (pebble, cake_crumb, cheese_crumb) with convex hulls (world/props/heavable.gd); the maize grains became crumbs (Meshy kept making whole cobs; unused models in source/meshy). Floating amber pickup markers (world/props/pickup_marker.gd): weapons from 70 m, food within 18 m.
 - Opigo/Opumie: the user is generating their own models (my attempts are in source/meshy/ants_attempt). Characters need a rig: Meshy auto-rig (their bones match Amodu's, so his animation library fits).
 
+- Loadout (Inventory): knife = permanent tool (E cuts silk), axe = main, one secondary picked in the Tab panel; X/wheel swap axe/secondary/fists. Weapons: stone axe, knife, stone hammer (every blow curls a pill bug, no cutting), thorn spear (reach). Pickups: axe by the pencil log, knife at the Capstone, spear at the Colony Gate, hammer at the crisp packet (off route).
+- Choppables (world/props/choppable.gd, layout "choppables"): a fallen twig across the ant road north of the hollow (axe, 3 chops), the Spider's Edge trip lines (knife/E or any blade).
+- Live pill bugs at the Bare Patch in the adventure (the user's model, assets/garden/pill_bug), first fight (tests/fight_test.gd). Knocked out -> back at the checkpoint.
+- Opigo and Opumie: the user's Meshy models (assets/characters/opigo|opumie, Mixamo rig in metres), standing at the Capstone (lawn_level._spawn_ants); other ants use the ant scout.
+- Insects: ladybirds and mites walk with leg motion (creature.gdshader mode 3), bees beat their wings.
+- Pickup marker: thin cream diamond with a glow and hairline (compass style).
+- Edi (a Meshy character in ~/Downloads/Edi.zip) not imported: ask the user who Edi is.
+
 ## 📝 Open from the user (2026-09-26)
-- Opigo and Opumie must not be identical: waiting for the user's own models.
 - Chopping (roots, straw, silk) not built yet: `chop` values exist on moves.
 
 ## 📝 User notes to act on (2026-09-26)

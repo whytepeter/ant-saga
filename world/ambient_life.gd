@@ -12,22 +12,26 @@ extends Node3D
 ## bees about the flowers, ladybirds where the aphids are, mites on bare soil,
 ## springtails in damp litter, skaters on the puddle. Nothing follows Amodu.
 ##
-## Decoration only: no collision, simple steering. Wings and tails move in the
-## creature shader (world/shaders/creature.gdshader). Speeds are staged, not
+## Decoration only: no collision, simple steering. Wings, tails and legs move
+## in the creature shader (world/shaders/creature.gdshader): ladybirds and mites
+## step with alternating legs while they walk and stand still when they stop. Speeds are staged, not
 ## scaled (a real butterfly at ×360 would cross the level in a second).
 
 ## kind: model, (unused), motion params, yaw offset so the head leads (radians)
 const KINDS := {
 	"butterfly": ["butterfly", 0, {"mode": 1, "span_axis": Vector3(1, 0, 0), "lift_axis": Vector3(0, 0, 1),
 		"half_span": 0.95, "body_half": 0.07, "beat_angle": 0.85, "beat_speed": 3.2}, PI],
-	"bee": ["bee", 4, {"mode": 0}, PI / 2.0],
+	"bee": ["bee", 4, {"mode": 1, "span_axis": Vector3(1, 0, 0), "lift_axis": Vector3(0, 1, 0),
+		"half_span": 0.95, "body_half": 0.36, "beat_angle": 0.55, "beat_speed": 14.0}, PI / 2.0],
 	"dragonfly": ["dragonfly", 2, {"mode": 1, "span_axis": Vector3(1, 0, 0), "lift_axis": Vector3(0, 0, 1),
 		"half_span": 0.95, "body_half": 0.06, "beat_angle": 0.35, "beat_speed": 11.0}, PI],
 	"water_strider": ["water_strider", 5, {"mode": 0}, 0.0],
 	"tadpole": ["tadpole", 9, {"mode": 2, "span_axis": Vector3(0, 0, 1), "lift_axis": Vector3(0, 1, 0),
 		"half_span": 0.95, "tail_sign": -1.0, "tail_amp": 0.2, "tail_waves": 1.1, "beat_speed": 2.4}, 0.0],
-	"ladybug": ["ladybug", 8, {"mode": 0}, 0.0],
-	"velvet_mite": ["velvet_mite", 6, {"mode": 0}, 0.0],
+	"ladybug": ["ladybug", 8, {"mode": 3, "fwd_axis": Vector3(0, 0, 1), "foot_y": -0.63, "height": 1.26,
+		"hip": 0.42, "body_length": 1.9, "stride": 0.1}, 0.0],
+	"velvet_mite": ["velvet_mite", 6, {"mode": 3, "fwd_axis": Vector3(0, 0, 1), "foot_y": -0.58, "height": 1.15,
+		"hip": 0.45, "body_length": 1.7, "stride": 0.09}, 0.0],
 	"springtail": ["springtail", 16, {"mode": 0}, -PI / 2.0],
 	"aphid": ["aphid", 14, {"mode": 0}, 0.0],
 }
@@ -272,6 +276,12 @@ func _move_on_ground(c: Dictionary, delta: float, center: Vector3) -> void:
 	node.global_position = pos
 	if heading.length() > 0.01:
 		node.rotation.y = lerp_angle(node.rotation.y, atan2(heading.x, heading.z) + float(c["yaw_offset"]), clampf(6.0 * delta, 0.0, 1.0))
+	# legs: stepping while it walks on the ground, still when it stops or flies
+	var walking := float(c["hop_t"]) < 0.0 and heading.length() > 0.01
+	var w := move_toward(float(c.get("walk", 0.0)), 1.0 if walking else 0.0, delta * 5.0)
+	if w != float(c.get("walk", 0.0)):
+		c["walk"] = w
+		(node.get_child(0) as GeometryInstance3D).set_instance_shader_parameter("walk", w)
 
 
 ## A point on dry ground `rmin`..`rmax` from `center`, inside `home`.

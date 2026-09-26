@@ -19,6 +19,8 @@ const FALL_LIMIT := -40.0
 
 ## Run the parked Phase 3c colony expedition instead of the adventure.
 @export var expedition_mode := false
+## Live pill bugs at the Bare Patch (off for the route autopilot in tests).
+@export var live_creatures := true
 ## Real minutes from the morning to sunset in the adventure.
 @export var day_minutes := 20.0
 
@@ -69,8 +71,18 @@ func _ready() -> void:
 		$HUD/Help.text = "Click punch (hold: kick) · Right-click block · Alt dodge · Hold Space: leap · Q call workers · E lift/carry/flip · F throw · R respawn · Esc mouse"
 	else:
 		_setup_adventure()
+		if live_creatures:
+			_spawn_pill_bugs()
+			_spawn_ants()
 		if Companion.ENABLED:
 			_spawn_companions()
+	# knocked out: he comes round back at the last checkpoint
+	var combat := player.get_node_or_null("Combat") as PlayerCombat
+	if combat != null and not expedition_mode:
+		combat.knocked_out.connect(func() -> void:
+			get_tree().create_timer(2.5).timeout.connect(func() -> void:
+				combat.revive()
+				respawn("Knocked out")))
 
 
 func _setup_adventure() -> void:
@@ -141,12 +153,70 @@ func _spawn_props() -> void:
 		pickup.weapon = StringName(String(pick["weapon"]))
 		holder.add_child(pickup)
 		pickup.global_position = layout.ground_point(pick["pos"], 0.0)
+	# things to cut: a fallen twig by the hollow, the spider's trip lines
+	for ch: Dictionary in layout.data.get("choppables", []):
+		if String(ch["kind"]) == "twig" and not expedition_mode:  # it'd block the haul
+			holder.add_child(Choppable.twig(layout.ground_point(ch["from"]), layout.ground_point(ch["to"])))
+	var trip := layout.item("landmarks", "trip_lines")
+	if not trip.is_empty():
+		var c := layout.ground_point(trip["pos"])
+		var along := Vector3(cos(0.35), 0.0, -sin(0.35))
+		var half := float(trip["size"][0]) * 0.5
+		for k in 4:
+			var mid := c + Vector3(0.0, 0.6 + k * 0.45, k * 1.5 - 2.0)
+			holder.add_child(Choppable.silk(mid - along * half, mid + along * half))
 	# dandelion seed puffs snagged up high, to glide down on
 	for spot: Dictionary in layout.data.get("puffs", {}).get("spots", []):
 		var puff := SeedPuff.new()
 		puff.from_height = float(spot.get("from_height", 400.0))
 		holder.add_child(puff)
 		puff.global_position = Vector3(float(spot["at"][0]), 0.0, float(spot["at"][1]))
+
+
+## The ants who live here (layout stand-ins): Opigo and Opumie at their watch
+## post under the Capstone, guards at the Colony Gate, carriers at the water
+## station. They stand their ground, looking about (Companion.ENABLED is off:
+## nobody follows Amodu yet).
+func _spawn_ants() -> void:
+	var capstone := layout.ground_point(layout.item("landmarks", "crown_cap")["pos"])
+	for sd: Dictionary in layout.items("standins"):
+		if String(sd["kind"]) != "ant":
+			continue
+		var body := StaticBody3D.new()
+		body.name = String(sd["name"]).replace(" ", "")
+		body.collision_layer = 1 << 3  # creatures
+		var shape := CollisionShape3D.new()
+		var capsule := CapsuleShape3D.new()
+		capsule.radius = 0.45
+		capsule.height = 1.7
+		shape.shape = capsule
+		shape.position.y = 0.85
+		body.add_child(shape)
+		var ant := AntModel.new()
+		ant.hero = String(sd["name"])
+		body.add_child(ant)
+		add_child(body)
+		body.global_position = layout.ground_point(sd["pos"])
+		# the heroes face out from their post; the rest face a little aside
+		var look := capstone if ant.hero in AntModel.HEROES else body.global_position + Vector3(randf_range(-1, 1), 0, randf_range(-1, 1))
+		var away := body.global_position - look
+		if away.length() > 0.5:
+			body.rotation.y = atan2(away.x, away.z)
+
+
+## The pill bugs at the Bare Patch (layout stand-ins): the first real fight.
+func _spawn_pill_bugs() -> void:
+	for sd: Dictionary in layout.items("standins"):
+		if String(sd["kind"]) != "pill_bug":
+			continue
+		var bug := PillBug.new()
+		bug.display_name = String(sd["name"])
+		bug.young = String(sd["name"]).begins_with("Young")
+		bug.player = player
+		bug.position = layout.ground_point(sd["pos"], 0.4)
+		bug.home = bug.position
+		bug.rotation.y = randf() * TAU
+		add_child(bug)
 
 
 func _spawn_companions() -> void:
