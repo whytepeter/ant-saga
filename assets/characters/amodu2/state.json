@@ -33,5 +33,11 @@
   "motion_anim_carry_overhead_idle": "01a0db68-be2d-7389-8bcc-a4080b0af46b",
   "motion_anim_throw_overhead": "01a0db68-c2fe-7501-886c-473a4661e5cb",
   "anim_more_0": "01a0dcff-bf15-74ed-8f7c-f19c9f66fe05",
-  "anim_weapon_0": "01a0dd9b-1610-771d-9d87-43de825db398"
+  "anim_weapon_0": "01a0dd9b-1610-771d-9d87-43de825db398",
+  "motion_spear_lunge": "01a0e306-c3b8-73ba-be72-ac785c3b238a",
+  "motion_anim_spear_lunge": "01a0e307-142b-7423-bdeb-0233d766e9d7",
+  "motion_spear_thrust": "01a0e30a-1b13-762d-87da-0f1b67b1d33f",
+  "motion_spear_jab": "01a0e30a-1f89-7438-bbef-2f8896c16b95",
+  "motion_anim_spear_thrust": "01a0e30a-6c08-7339-a4e4-9cec82cffe90",
+  "motion_anim_spear_jab": "01a0e30a-943b-76d2-84ed-2a452bbc07ff"
 }

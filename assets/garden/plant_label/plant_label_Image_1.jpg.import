@@ -3,9 +3,10 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cvdub3qw7561s"
-path="res://.godot/imported/plant_label_Image_1.jpg-84788624391a539cca7e26e56cb1cbf2.ctex"
+path.s3tc="res://.godot/imported/plant_label_Image_1.jpg-84788624391a539cca7e26e56cb1cbf2.s3tc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 generator_parameters={
 "md5": "655bc66177d1be97f6e524a61a74b65a"
@@ -14,17 +15,17 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/garden/plant_label/plant_label_Image_1.jpg"
-dest_files=["res://.godot/imported/plant_label_Image_1.jpg-84788624391a539cca7e26e56cb1cbf2.ctex"]
+dest_files=["res://.godot/imported/plant_label_Image_1.jpg-84788624391a539cca7e26e56cb1cbf2.s3tc.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0
 compress/rdo_quality_loss=0.0
 compress/hdr_compression=1
-compress/normal_map=0
+compress/normal_map=2
 compress/channel_pack=0
 mipmaps/generate=true
 mipmaps/limit=-1

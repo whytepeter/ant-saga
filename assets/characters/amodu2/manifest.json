@@ -82,6 +82,18 @@
     "throw_overhead": {
       "prompt": "A strong person holding a heavy boulder above their head with both hands steps forward and hurls it far forward with both arms, then recovers to a relaxed standing pose.",
       "duration": 2.5
+    },
+    "spear_thrust": {
+      "prompt": "A person holding a long spear with both hands at waist height, point forward, steps forward and thrusts the spear straight ahead, then pulls it back to a ready guard.",
+      "duration": 2.0
+    },
+    "spear_jab": {
+      "prompt": "A person in a ready stance holding a long spear with both hands, point forward, makes a quick short jab straight forward and pulls back.",
+      "duration": 2.0
+    },
+    "spear_lunge": {
+      "prompt": "A person holding a long spear with both hands takes a big lunging step forward and drives the spear forward hard with the whole body, then recovers to a ready guard.",
+      "duration": 2.0
     }
   },
   "more_actions": {

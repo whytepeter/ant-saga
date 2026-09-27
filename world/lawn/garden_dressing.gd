@@ -8,6 +8,11 @@ extends RefCounted
 ##            lanes, and anything solid stays clear of the routes
 ##   heroes   gnarled roots and bracket fungi around the apple tree and along
 ##            the root near the Flower Bed, toadstool clusters in the shade
+##   biomes   each area's own plants and things lying about (layout "biomes":
+##            marigolds and strawberries in the Flower Bed, seed-head grass in
+##            the Blade Forest, nettles and moss by the hose, clods and pot
+##            shards on the Bare Patch...), and big lost things set by hand
+##            (a homework sheet, a glove, a toy dinosaur), solid and climbable
 ##
 ## Solid pieces get collision (static bodies per chunk): simplified hulls for
 ## pebbles, twigs and leaves, exact shapes for toadstools and roots. Logs,
@@ -20,7 +25,15 @@ const PATH_CLEARANCE := 7.0
 const WORLD_LAYER := 1
 const CLIMBABLE_LAYER := 1 << 2
 ## What you can climb as well as bump into.
-const CLIMBABLE := ["pebbles", "twig", "toadstools", "tree_root", "bracket_fungus"]
+const CLIMBABLE := ["pebbles", "twig", "toadstools", "tree_root", "bracket_fungus", "soil_clods", "snail_shell",
+	"pot_shard", "eraser", "homework_sheet", "garden_glove", "toy_dinosaur", "bendy_straw", "tennis_ball", "lego_brick"]
+## Tall plants you bump into at the stem (a cylinder: radius and height as a
+## share of the plant's size); their leaves are soft.
+const STEMS := {"marigold": [0.03, 0.9], "nettle": [0.02, 0.95], "thistle": [0.022, 0.9], "grass_seedhead": [0.012, 0.85]}
+## Plants Amodu can eat from (Survival reads `forage`): model -> what it's called.
+const FORAGE := {"wild_strawberry": "strawberries", "grass_seedhead": "grass seeds"}
+## Where the edible plants ended up: [{pos: Vector3, radius: float, name: String}].
+static var forage: Array[Dictionary] = []
 ## Foliage that fades out near the camera instead of filling the screen.
 const SOFT := ["clover"]
 
@@ -38,9 +51,14 @@ const RULES := [
 ]
 ## How each model collides (missing = no collision).
 ## Small ground clutter doesn't cast shadows (cheap; its own contact shading is enough).
-const NO_SHADOW := ["clover", "pebbles", "fallen_leaf"]
+const NO_SHADOW := ["clover", "pebbles", "fallen_leaf", "sprout", "paperclip", "button", "sweet_wrapper", "moss_clump",
+	"bark_chips", "soil_clods"]
 const COLLISION := {"pebbles": "convex", "twig": "convex", "fallen_leaf": "convex",
-	"toadstools": "trimesh", "tree_root": "trimesh", "bracket_fungus": "trimesh"}
+	"toadstools": "trimesh", "tree_root": "trimesh", "bracket_fungus": "trimesh",
+	"soil_clods": "convex", "snail_shell": "convex", "pot_shard": "convex", "eraser": "convex", "button": "convex",
+	"cone_mushrooms": "convex", "inky_cap": "convex", "rotten_apple": "convex", "plant_label": "convex",
+	"homework_sheet": "trimesh", "garden_glove": "trimesh", "toy_dinosaur": "trimesh", "bendy_straw": "trimesh",
+	"tennis_ball": "convex", "lego_brick": "convex"}
 const TOADSTOOL_SPOTS := [[-300, -112], [-331, -62], [-228, 24], [-318, 42], [-292, -152], [-210, -95]]
 
 
@@ -87,6 +105,8 @@ static func build(parent: Node3D, layout: LawnLayout) -> void:
 				continue
 			(placed["toadstools"] as Array[Transform3D]).append(Transform3D(
 				Basis(Vector3.UP, rng.randf() * TAU).scaled(Vector3.ONE * size), Vector3(p.x, layout.height_at(p.x, p.y) - 0.3, p.y)))
+	forage.clear()
+	_biomes(layout, rng, routes, placed, vis)
 	var bodies := {}  # chunk -> StaticBody3D
 	for id: String in placed:
 		var prop := GardenProps.get_prop(id)
@@ -114,7 +134,65 @@ static func build(parent: Node3D, layout: LawnLayout) -> void:
 				var body := _chunk_body(parent, bodies, key, id in CLIMBABLE)
 				for xf: Transform3D in chunks[key]:
 					_add_shape(body, prop.shape(String(COLLISION[id])), xf * prop.fix)
+			elif STEMS.has(id):
+				var body := _chunk_body(parent, bodies, key, true)
+				for xf: Transform3D in chunks[key]:
+					var size := xf.basis.get_scale().x
+					var stem := CylinderShape3D.new()
+					stem.radius = maxf(float(STEMS[id][0]) * size, 0.4)
+					stem.height = float(STEMS[id][1]) * size
+					_add_shape(body, stem, Transform3D(Basis(), xf.origin + Vector3.UP * stem.height * 0.5))
 	_tree_heroes(parent, layout, rng)
+
+
+## Each area's own plants and things lying about (layout "biomes"): scattered
+## inside the area's ellipse, thicker toward the middle, off the water and the
+## tussock; solid ones keep clear of the routes. Then the big lost things.
+static func _biomes(layout: LawnLayout, rng: RandomNumberGenerator, routes: Array[PackedVector2Array],
+		placed: Dictionary, vis: Dictionary) -> void:
+	var biomes: Dictionary = layout.data.get("biomes", {})
+	for area_id: String in biomes:
+		if not biomes[area_id] is Dictionary:
+			continue
+		var area := layout.item("areas", area_id)
+		if area.is_empty():
+			continue
+		var c := LawnLayout.xz(area["center"])
+		var r := LawnLayout.xz(area["radii"])
+		for e: Array in (biomes[area_id] as Dictionary).get("scatter", []):
+			var id := String(e[0])
+			if GardenProps.get_prop(id) == null:
+				continue
+			var made := 0
+			for attempt in int(e[1]) * 6:
+				if made >= int(e[1]):
+					break
+				var a := rng.randf() * TAU
+				var p := c + Vector2(cos(a) * r.x, sin(a) * r.y) * sqrt(rng.randf()) * 0.95
+				if layout.surface_at(p.x, p.y) in [LawnLayout.Surface.WATER, LawnLayout.Surface.TUSSOCK]:
+					continue
+				var size := rng.randf_range(float(e[2][0]), float(e[2][1]))
+				if (COLLISION.has(id) or STEMS.has(id)) and _near_route(routes, p, PATH_CLEARANCE + size * 0.3):
+					continue
+				if not placed.has(id):
+					placed[id] = [] as Array[Transform3D]
+					vis[id] = float(e[4])
+				var ground := Vector3(p.x, layout.height_at(p.x, p.y) - float(e[3]), p.y)
+				(placed[id] as Array[Transform3D]).append(Transform3D(Basis(Vector3.UP, rng.randf() * TAU).scaled(Vector3.ONE * size), ground))
+				if FORAGE.has(id):
+					forage.append({"pos": ground, "radius": size * 0.45, "name": String(FORAGE[id])})
+				made += 1
+		for lm: Array in (biomes[area_id] as Dictionary).get("landmarks", []):
+			var id := String(lm[0])
+			if GardenProps.get_prop(id) == null:
+				continue
+			var at := LawnLayout.xz(lm[1])
+			if not placed.has(id):
+				placed[id] = [] as Array[Transform3D]
+				vis[id] = 900.0
+			var xf := Transform3D(Basis(Vector3.UP, float(lm[3])).scaled(Vector3.ONE * float(lm[2])),
+				Vector3(at.x, layout.height_at(at.x, at.y) - 0.3, at.y))
+			(placed[id] as Array[Transform3D]).append(xf)
 
 
 ## Main routes, the shortcut, ant roads, the haul path and the trowel as segments.

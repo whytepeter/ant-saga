@@ -3,9 +3,10 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cmbq6ld85bs7j"
-path="res://.godot/imported/woodpile_normal.png-c8b82aedf18ac2080b5735b1c26f1d87.ctex"
+path.s3tc="res://.godot/imported/woodpile_normal.png-c8b82aedf18ac2080b5735b1c26f1d87.s3tc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 generator_parameters={
 "md5": "a89ee8fdcd47dace94773879595fa59d"
@@ -14,17 +15,17 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/garden/woodpile/woodpile_normal.png"
-dest_files=["res://.godot/imported/woodpile_normal.png-c8b82aedf18ac2080b5735b1c26f1d87.ctex"]
+dest_files=["res://.godot/imported/woodpile_normal.png-c8b82aedf18ac2080b5735b1c26f1d87.s3tc.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0
 compress/rdo_quality_loss=0.0
 compress/hdr_compression=1
-compress/normal_map=0
+compress/normal_map=1
 compress/channel_pack=0
 mipmaps/generate=true
 mipmaps/limit=-1

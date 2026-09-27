@@ -661,8 +661,9 @@
       "via": "nano",
       "polycount": 8000,
       "size": 40,
-      "prompt": "A flat dandelion leaf rosette, a star of long jagged green leaves spreading out from the middle, with a short thick taproot under it. Just the plant, no ground, no stones.",
-      "note": "Weeds in the patio joints."
+      "prompt": "A flat dandelion leaf rosette: long deeply toothed green leaves spreading out in a star from one centre, lying close to the ground.",
+      "note": "Weeds in the patio joints.",
+      "style": "Realistic botanical detail like a close-up in a nature documentary, the look of the game Grounded: natural proportions, fine leaf veins, serrated and curled edges, natural varied greens, subtle translucency where the light comes through. No cartoon shapes, no chunky simplification. Only the plant itself, cut off cleanly at the soil line: no soil, no stones, no dirt mound, no pot, no base, no ground."
     },
     {
       "id": "pill_bug_ball",
@@ -730,8 +731,9 @@
       "via": "nano",
       "polycount": 8000,
       "size": 40,
-      "prompt": "A broadleaf plantain weed: a flat rosette of broad ribbed oval green leaves, with two tall thin flower spikes of tiny brown flowers.",
-      "note": "Blade Forest and lawn weeds."
+      "prompt": "A broadleaf plantain weed (Plantago major): a low flat rosette of broad oval ribbed leaves with long stalks, and two tall thin brown flower spikes rising from the middle.",
+      "note": "Blade Forest and lawn weeds.",
+      "style": "Realistic botanical detail like a close-up in a nature documentary, the look of the game Grounded: natural proportions, fine leaf veins, serrated and curled edges, natural varied greens, subtle translucency where the light comes through. No cartoon shapes, no chunky simplification. Only the plant itself, cut off cleanly at the soil line: no soil, no stones, no dirt mound, no pot, no base, no ground."
     },
     {
       "id": "grass_seedhead",
@@ -739,8 +741,9 @@
       "via": "nano",
       "polycount": 8000,
       "size": 120,
-      "prompt": "A single tall grass stem gone to seed: a thin green-gold stalk with a drooping feathery seed head full of pale seeds.",
-      "note": "Blade Forest: seeds to gather and eat."
+      "prompt": "A single tall wild grass stem gone to seed: a thin green-gold stalk with one long leaf blade, and a loose drooping panicle of pale seeds at the top.",
+      "note": "Blade Forest: seeds to gather and eat.",
+      "style": "Realistic botanical detail like a close-up in a nature documentary, the look of the game Grounded: natural proportions, fine leaf veins, serrated and curled edges, natural varied greens, subtle translucency where the light comes through. No cartoon shapes, no chunky simplification. Only the plant itself, cut off cleanly at the soil line: no soil, no stones, no dirt mound, no pot, no base, no ground."
     },
     {
       "id": "moss_clump",
@@ -748,8 +751,9 @@
       "via": "nano",
       "polycount": 8000,
       "size": 20,
-      "prompt": "A soft round cushion of bright green moss with tiny brown spore stalks sticking up.",
-      "note": "Hose Run, the patio joints, damp shade."
+      "prompt": "A small cushion of real garden moss: dense tiny green leafy stems packed together, with fine red-brown spore stalks topped by tiny capsules.",
+      "note": "Hose Run, the patio joints, damp shade.",
+      "style": "Realistic botanical detail like a close-up in a nature documentary, the look of the game Grounded: natural proportions, fine leaf veins, serrated and curled edges, natural varied greens, subtle translucency where the light comes through. No cartoon shapes, no chunky simplification. Only the plant itself, cut off cleanly at the soil line: no soil, no stones, no dirt mound, no pot, no base, no ground."
     },
     {
       "id": "marigold",
@@ -757,8 +761,9 @@
       "via": "nano",
       "polycount": 10000,
       "size": 110,
-      "prompt": "A French marigold plant: a small bushy clump of feathery dark green leaves with three round frilly orange and gold flowers.",
-      "note": "The Flower Bed."
+      "prompt": "A French marigold plant: a bushy clump of finely divided feathery dark green leaves, with three double orange and gold ruffled flowers on short stems.",
+      "note": "The Flower Bed.",
+      "style": "Realistic botanical detail like a close-up in a nature documentary, the look of the game Grounded: natural proportions, fine leaf veins, serrated and curled edges, natural varied greens, subtle translucency where the light comes through. No cartoon shapes, no chunky simplification. Only the plant itself, cut off cleanly at the soil line: no soil, no stones, no dirt mound, no pot, no base, no ground."
     },
     {
       "id": "wild_strawberry",
@@ -766,8 +771,9 @@
       "via": "nano",
       "polycount": 10000,
       "size": 60,
-      "prompt": "A low wild strawberry plant: three-part toothed green leaves on thin stems, two small white flowers and three ripe glossy red strawberries hanging down.",
-      "note": "The Flower Bed: food."
+      "prompt": "A low wild strawberry plant: several three-part toothed leaves on thin hairy stems, two small white five-petal flowers and three small ripe red strawberries dotted with seeds hanging on thin stalks.",
+      "note": "The Flower Bed: food.",
+      "style": "Realistic botanical detail like a close-up in a nature documentary, the look of the game Grounded: natural proportions, fine leaf veins, serrated and curled edges, natural varied greens, subtle translucency where the light comes through. No cartoon shapes, no chunky simplification. Only the plant itself, cut off cleanly at the soil line: no soil, no stones, no dirt mound, no pot, no base, no ground."
     },
     {
       "id": "nettle",
@@ -775,8 +781,9 @@
       "via": "nano",
       "polycount": 10000,
       "size": 150,
-      "prompt": "A stinging nettle stem: an upright square stalk with pairs of jagged heart-shaped leaves, covered in fine stinging hairs.",
-      "note": "Hose Run: a stinging danger."
+      "prompt": "A single stinging nettle stem: an upright square hairy stalk with opposite pairs of coarsely toothed heart-shaped leaves getting smaller toward the top, fine stinging hairs, drooping green flower strings.",
+      "note": "Hose Run: a stinging danger.",
+      "style": "Realistic botanical detail like a close-up in a nature documentary, the look of the game Grounded: natural proportions, fine leaf veins, serrated and curled edges, natural varied greens, subtle translucency where the light comes through. No cartoon shapes, no chunky simplification. Only the plant itself, cut off cleanly at the soil line: no soil, no stones, no dirt mound, no pot, no base, no ground."
     },
     {
       "id": "thistle",
@@ -784,8 +791,9 @@
       "via": "nano",
       "polycount": 10000,
       "size": 140,
-      "prompt": "A spiky thistle plant: a stiff stalk with prickly jagged grey-green leaves and one round purple spiky flower head.",
-      "note": "Bare Patch edges."
+      "prompt": "A spear thistle plant: a stiff winged spiny stalk with deeply lobed prickly grey-green leaves, and one purple spiky flower head on a spiny green bulb.",
+      "note": "Bare Patch edges.",
+      "style": "Realistic botanical detail like a close-up in a nature documentary, the look of the game Grounded: natural proportions, fine leaf veins, serrated and curled edges, natural varied greens, subtle translucency where the light comes through. No cartoon shapes, no chunky simplification. Only the plant itself, cut off cleanly at the soil line: no soil, no stones, no dirt mound, no pot, no base, no ground."
     },
     {
       "id": "bark_chips",
@@ -910,8 +918,9 @@
       "via": "nano",
       "polycount": 6000,
       "size": 4,
-      "prompt": "A tiny seedling sprouting from the soil: a short pale green stem with two round fresh green seed leaves opening at the top, a little dirt at the base.",
-      "note": "Sprigs to gather, dotted over the soil."
+      "prompt": "A tiny seedling just sprouted: a thin pale green stem slightly bent, two small oval seed leaves opening at the top, a fresh third leaf starting between them.",
+      "note": "Sprigs to gather, dotted over the soil.",
+      "style": "Realistic botanical detail like a close-up in a nature documentary, the look of the game Grounded: natural proportions, fine leaf veins, serrated and curled edges, natural varied greens, subtle translucency where the light comes through. No cartoon shapes, no chunky simplification. Only the plant itself, cut off cleanly at the soil line: no soil, no stones, no dirt mound, no pot, no base, no ground."
     },
     {
       "id": "cone_mushrooms",

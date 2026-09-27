@@ -1,13 +1,13 @@
 {
   "version": 1,
   "meta": {
-    "lastScanned": "2026-09-27T11:55:14.723Z",
-    "fileCount": 291,
+    "lastScanned": "2026-09-27T13:49:29.564Z",
+    "fileCount": 298,
     "hits": 0,
     "misses": 0,
-    "renderedHash": "e0479cbaee3217a8b30184385c334e8e40b37872fd4bc09a3970149696619df9",
-    "storeUpdatedAt": "2026-09-27T11:55:14.732Z",
-    "rootHash": "2915b0b0c41801aa"
+    "renderedHash": "44edc7dfc7a88c95c3211577eeca4b60648b8d33763756bfdf425b21d3dbce82",
+    "storeUpdatedAt": "2026-09-27T13:49:29.574Z",
+    "rootHash": "ffb36681a6c88fa1"
   },
   "files": {
     ".gitattributes": {
@@ -3390,6 +3390,113 @@
       "size": 1105,
       "mtimeMs": 1790510114618.3171,
       "updatedAt": "2026-09-27T11:55:14.723Z",
+      "source": "hook"
+    },
+    "tests/_tmp_biomes.gd": {
+      "description": "",
+      "tokens": 379,
+      "hash": "7a9202ba120a29b2",
+      "size": 1419,
+      "mtimeMs": 1790510592426.9102,
+      "updatedAt": "2026-09-27T12:03:12.534Z",
+      "source": "hook"
+    },
+    "tests/_tmp_spear_times.gd": {
+      "description": "",
+      "tokens": 316,
+      "hash": "a1f9c66f593c0d65",
+      "size": 1184,
+      "mtimeMs": 1790515815014.3796,
+      "updatedAt": "2026-09-27T13:30:15.108Z",
+      "source": "hook"
+    },
+    "tests/_tmp_env.gd": {
+      "description": "",
+      "tokens": 982,
+      "hash": "0662d315eabaf3da",
+      "size": 3680,
+      "mtimeMs": 1790515832878.0144,
+      "updatedAt": "2026-09-27T13:30:32.987Z",
+      "source": "hook"
+    },
+    "tools/polyhaven.py": {
+      "description": "Download CC0 models and textures from Poly Haven (polyhaven.com).",
+      "tokens": 892,
+      "hash": "e1a8993804cb4805",
+      "size": 3119,
+      "mtimeMs": 1790516593026.7146,
+      "updatedAt": "2026-09-27T13:43:13.131Z",
+      "source": "hook",
+      "symbols": [
+        {
+          "name": "get_json",
+          "kind": "fn",
+          "startLine": 27,
+          "endLine": 30,
+          "tokens": 31
+        },
+        {
+          "name": "fetch",
+          "kind": "fn",
+          "startLine": 31,
+          "endLine": 39,
+          "tokens": 78
+        },
+        {
+          "name": "credit",
+          "kind": "fn",
+          "startLine": 40,
+          "endLine": 48,
+          "tokens": 105
+        },
+        {
+          "name": "texture",
+          "kind": "fn",
+          "startLine": 49,
+          "endLine": 62,
+          "tokens": 153
+        },
+        {
+          "name": "model",
+          "kind": "fn",
+          "startLine": 63,
+          "endLine": 73,
+          "tokens": 123
+        },
+        {
+          "name": "main",
+          "kind": "fn",
+          "startLine": 74,
+          "endLine": 90,
+          "tokens": 121
+        }
+      ]
+    },
+    "tests/_tmp_weapons.gd": {
+      "description": "",
+      "tokens": 632,
+      "hash": "d86ca5c5bdee3252",
+      "size": 2370,
+      "mtimeMs": 1790516678246.5627,
+      "updatedAt": "2026-09-27T13:44:38.342Z",
+      "source": "hook"
+    },
+    "world/shaders/silk_deform.gdshaderinc": {
+      "description": "Shared by silk.gdshader and dew.gdshader: how an orb web's sheet moves, in",
+      "tokens": 349,
+      "hash": "51d77f478c8752fb",
+      "size": 1307,
+      "mtimeMs": 1790516932057.5977,
+      "updatedAt": "2026-09-27T13:48:52.169Z",
+      "source": "hook"
+    },
+    "world/shaders/silk.gdshader": {
+      "description": "Declares spatial",
+      "tokens": 854,
+      "hash": "86bc29734f112c5f",
+      "size": 3199,
+      "mtimeMs": 1790516969443.7683,
+      "updatedAt": "2026-09-27T13:49:29.563Z",
       "source": "hook"
     }
   },

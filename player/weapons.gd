@@ -106,17 +106,21 @@ const ALL := {
 		"holster": "back_long",
 		# a knapped stone point on a long straight stem: reach, so he can fight
 		# big things from outside their bite; held a third of the way up
-		"length": 1.9,
+		"length": 1.4,  # a little shorter than he is tall
 		"grip": 0.34,
 		"rest_euler": Vector3(180.0, 0.0, 0.0),  # upright like a staff, point up
+		# attacking, it points forward out of his fists, along his arms
+		"swing_euler": Vector3(0.0, 0.0, 0.0),
+		# two-handed spear moves (Meshy text-to-motion): each drives the point
+		# fully forward about 0.87 s into the clip
 		"light": [
-			{"kind": &"light", "clip": "knife_thrust", "speed": 1.7, "lock": 0.35, "recover": 0.38,
-				"lunge": 2.0, "reach": 2.8, "radius": 1.0, "damage": 1.4, "chop": 0.5},
-			{"kind": &"light", "clip": "knife_thrust", "speed": 1.9, "lock": 0.33, "recover": 0.36,
-				"lunge": 2.0, "reach": 2.8, "radius": 1.0, "damage": 1.4, "chop": 0.5},
+			{"kind": &"light", "clip": "spear_jab", "speed": 1.8, "impact": 0.87 / 1.8, "lock": 0.5, "recover": 0.62,
+				"lunge": 2.0, "reach": 2.6, "radius": 1.0, "damage": 1.4, "chop": 0.5},
+			{"kind": &"light", "clip": "spear_thrust", "speed": 1.5, "impact": 0.87 / 1.5, "lock": 0.6, "recover": 0.75,
+				"lunge": 2.6, "reach": 2.8, "radius": 1.0, "damage": 1.8, "chop": 0.5},
 		],
-		"heavy": {"kind": &"heavy", "clip": "knife_thrust", "speed": 1.0, "lock": 0.65, "recover": 0.75,
-			"lunge": 5.5, "reach": 3.2, "radius": 1.2, "damage": 3.2, "chop": 0.5},
+		"heavy": {"kind": &"heavy", "clip": "spear_lunge", "speed": 1.25, "impact": 0.87 / 1.25, "lock": 0.9, "recover": 1.1,
+			"lunge": 5.5, "reach": 3.2, "radius": 1.2, "damage": 3.4, "chop": 0.5},
 		"block": "axe_parry",
 	},
 }

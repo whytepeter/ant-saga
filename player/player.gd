@@ -1398,8 +1398,9 @@ func _process(delta: float) -> void:
 	_update_puff()
 	_update_fingers()
 	if _hide_head != null:
-		# first person: hands up in view unless his arms are busy; a blow keeps
-		# them up and swings the right arm through the view instead
+		# first person: his hands hang down out of view, as they would; they come
+		# up into a guard only when he fights (a blow, and a moment after it),
+		# and a blow swings the right arm through the view
 		var act := current_action()
 		if _view_blow != "" and Time.get_ticks_msec() - _action_started < int(_view_blow_time * 1000.0):
 			act = _view_blow
@@ -1410,7 +1411,10 @@ func _process(delta: float) -> void:
 			blow = "chop"
 		elif act in ["jab_left", "jab_right", "punch_combo"]:
 			blow = "punch"
-		var free := first_person and (not is_action_playing() or blow != "") and carried == null and puff == null \
+		if blow != "":
+			_fight_until = Time.get_ticks_msec() + 3000
+		var fighting := blow != "" or Time.get_ticks_msec() < _fight_until
+		var free := first_person and fighting and carried == null and puff == null \
 			and state in [State.GROUND, State.AIR, State.CRAWL] and not downed
 		_hide_head.arms = move_toward(_hide_head.arms, 1.0 if free else 0.0, delta * 4.0)
 		if blow != "":
@@ -1486,6 +1490,10 @@ func set_first_person(on: bool) -> void:
 ## First person: his own body is invisible nearer the camera than the first
 ## distance (m) and solid past the second.
 const NEAR_FADE := [0.1, 0.24]
+
+
+## First person: the guard stays up until this time (ms) after a blow.
+var _fight_until := 0
 
 
 ## Where his eyes are this frame (the camera's spot in first person).

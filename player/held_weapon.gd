@@ -33,7 +33,7 @@ const HOLSTERS := {
 	# the hammer crosses the axe, head over his left shoulder
 	"back_left": ["Spine", Vector3(0.0, 0.0, -25.0), 180.0, Vector3(-0.12, -0.28, -0.2)],
 	# the spear slung diagonally, butt by his right hip, point above his left shoulder
-	"back_long": ["Spine", Vector3(0.0, 0.0, -16.0), 180.0, Vector3(-0.12, -0.7, -0.23)],
+	"back_long": ["Spine", Vector3(0.0, 0.0, -16.0), 180.0, Vector3(-0.12, -0.5, -0.23)],
 }
 
 ## Seen through his eyes his arms are up in a guard (HideHead), so the weapon
@@ -71,7 +71,7 @@ func _process(delta: float) -> void:
 	var combat := player.get_node_or_null("Combat") as PlayerCombat
 	var act := player.current_action()
 	var swinging := (act.begins_with("axe") or act.begins_with("knife")) and id != Weapons.SPEAR \
-		or (combat != null and combat.blocking)
+		or act.begins_with("spear") or (combat != null and combat.blocking)
 	_swing = move_toward(_swing, 1.0 if swinging else 0.0, delta * GRIP_TURN)
 	var inventory := player.get_node_or_null("Inventory") as Inventory
 	if inventory == null:
@@ -102,7 +102,9 @@ func _add(weapon: StringName) -> void:
 		return
 	var holder := Node3D.new()
 	holder.top_level = true
-	var mesh := GardenProps.instance(prop, Transform3D.IDENTITY)
+	# centre the handle, not the whole outline, on the grip: a hammer's stone or
+	# an axe's head sticks out to one side and would push the handle off the palm
+	var mesh := GardenProps.instance(prop, Transform3D(Basis(), -handle_centre(prop)))
 	mesh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
 	holder.add_child(mesh)
 	add_child(holder)
@@ -126,11 +128,29 @@ func _place() -> void:
 				rest = first_person_euler
 			var local := hand_transform(length, rest, grip, spin)
 			if _swing > 0.0:
-				local = local.interpolate_with(hand_transform(length, SWING_EULER, grip, spin), _swing)
+				var swing: Vector3 = info.get("swing_euler", SWING_EULER)
+				local = local.interpolate_with(hand_transform(length, swing, grip, spin), _swing)
 			holder.global_transform = pose * local
 		else:
 			var spec: Array = HOLSTERS[String(info.get("holster", "back"))]
 			holder.global_transform = _body_frame(String(spec[0])) * _stowed(spec, length)
+
+
+## Where the handle is across a weapon model (unit space, pivot at the butt):
+## the middle of the bottom tenth of its height, which is all handle.
+static func handle_centre(prop: GardenProps.Prop) -> Vector3:
+	var faces := prop.mesh.get_faces()
+	var top := 0.0
+	for v in faces:
+		top = maxf(top, (prop.fix * v).y)
+	var sum := Vector3.ZERO
+	var n := 0
+	for v in faces:
+		var u := prop.fix * v
+		if u.y < top * 0.1:
+			sum += u
+			n += 1
+	return Vector3(sum.x / n, 0.0, sum.z / n) if n > 0 else Vector3.ZERO
 
 
 ## The weapon's pivot in the hand bone's (unscaled) frame. `grip` is how far up

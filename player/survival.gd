@@ -14,8 +14,9 @@ extends Node
 ## His strength never drops (decisions.md): hunger doesn't touch the heave limits.
 ##
 ## G eats or drinks whatever is in reach, one bite or sip a press:
-##   food    a crumb or grain (Heavable.food, a few bites each), or a fallen
-##           apple or core (layout landmarks, never runs out)
+##   food    a crumb or grain (Heavable.food, a few bites each), a fallen
+##           apple or core (layout landmarks), or wild strawberries and grass
+##           seeds in the biomes (GardenDressing.forage); those never run out
 ##   water   a dew drop (DewDrops), or the Rut: standing in it or at its edge
 ## Standing in the leaking coupling's mist slowly quenches him too.
 ##
@@ -81,6 +82,9 @@ func setup(p: Player, layout: LawnLayout) -> void:
 			_mist = layout.ground_point(lm["pos"])
 	for sh: Dictionary in layout.data.get("survival", {}).get("shelters", []):
 		_shelters.append(sh)
+	# wild strawberries and seed-head grass in the biomes (GardenDressing, built first)
+	for f: Dictionary in GardenDressing.forage:
+		_fruit.append(f)
 
 
 func _ready() -> void:

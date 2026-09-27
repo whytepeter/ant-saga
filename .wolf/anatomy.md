@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-27T11:55:14.723Z
-> Files: 291 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-27T13:49:29.564Z
+> Files: 298 tracked | Anatomy hits: 0 | Misses: 0
 
 > Project structure index. Auto-maintained by OpenWolf hooks and daemon.
 > Run `openwolf scan` to generate, or wait for the first Claude Code session.
@@ -257,10 +257,14 @@
 
 - `_anim_shots.gd` (~635 tok)
 - `_tmp_backdrop.gd` (~295 tok)
+- `_tmp_biomes.gd` (~379 tok)
+- `_tmp_env.gd` (~982 tok)
 - `_tmp_fp.gd` (~469 tok)
 - `_tmp_props.gd` (~537 tok)
+- `_tmp_spear_times.gd` (~316 tok)
 - `_tmp_survival_shot.gd` (~313 tok)
 - `_tmp_trowel.gd` (~325 tok)
+- `_tmp_weapons.gd` (~632 tok)
 - `expedition_test.gd` (~3386 tok)
 - `fight_test.gd` (~970 tok)
 - `lawn_graybox_test.gd` (~4160 tok)
@@ -285,6 +289,7 @@
 - `lawn_layout.py` — Validate and render the Lawn layout (world/lawn/layout.json). (~11232 tok)
 - `make_sounds.py` — Synthesise the game's sound effects into assets/audio/ (16-bit mono WAV). (~5158 tok)
 - `narrative_map.py` — Draws docs/narrative/map-proposal.html: the garden as it is today (world/lawn/layout.json) (~5097 tok)
+- `polyhaven.py` — Download CC0 models and textures from Poly Haven (polyhaven.com). (~892 tok)
 - `process_sounds.py` — Make the game's sounds (assets/audio/*.ogg) from recorded CC0 sources. (~3133 tok)
 - `prop_sheet.gd` — Declares VIEWS (~787 tok)
 - `render_portraits.gd` — Declares OUT (~960 tok)
@@ -377,6 +382,8 @@
 - `ground.gdshader` — Declares spatial (~1636 tok)
 - `pickup_marker.gdshader` — Declares spatial (~713 tok)
 - `rain_splash.gdshader` — Declares spatial (~483 tok)
+- `silk_deform.gdshaderinc` — Shared by silk.gdshader and dew.gdshader: how an orb web's sheet moves, in (~349 tok)
+- `silk.gdshader` — Declares spatial (~854 tok)
 - `thatch.gdshader` — Declares spatial (~488 tok)
 - `tree_base.gdshader` — Declares spatial (~1085 tok)
 - `water.gdshader` — Declares spatial (~1543 tok)

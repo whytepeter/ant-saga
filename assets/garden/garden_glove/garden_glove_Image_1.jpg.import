@@ -3,9 +3,10 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dd2d501sf6dd6"
-path="res://.godot/imported/garden_glove_Image_1.jpg-1f0d3d49b90ec4ed3ba2422dddf04b64.ctex"
+path.s3tc="res://.godot/imported/garden_glove_Image_1.jpg-1f0d3d49b90ec4ed3ba2422dddf04b64.s3tc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 generator_parameters={
 "md5": "8b34aa2bbf3de68489277b33f24104c0"
@@ -14,17 +15,17 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/garden/garden_glove/garden_glove_Image_1.jpg"
-dest_files=["res://.godot/imported/garden_glove_Image_1.jpg-1f0d3d49b90ec4ed3ba2422dddf04b64.ctex"]
+dest_files=["res://.godot/imported/garden_glove_Image_1.jpg-1f0d3d49b90ec4ed3ba2422dddf04b64.s3tc.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0
 compress/rdo_quality_loss=0.0
 compress/hdr_compression=1
-compress/normal_map=0
+compress/normal_map=2
 compress/channel_pack=0
 mipmaps/generate=true
 mipmaps/limit=-1

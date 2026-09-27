@@ -3,9 +3,10 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dgqejwyik1jvf"
-path="res://.godot/imported/tennis_ball_Image_1.jpg-1d1069306f7800fdc675f9431ff07464.ctex"
+path.s3tc="res://.godot/imported/tennis_ball_Image_1.jpg-1d1069306f7800fdc675f9431ff07464.s3tc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 generator_parameters={
 "md5": "6d3ba9a24a276021b000840253f61d33"
@@ -14,17 +15,17 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/garden/tennis_ball/tennis_ball_Image_1.jpg"
-dest_files=["res://.godot/imported/tennis_ball_Image_1.jpg-1d1069306f7800fdc675f9431ff07464.ctex"]
+dest_files=["res://.godot/imported/tennis_ball_Image_1.jpg-1d1069306f7800fdc675f9431ff07464.s3tc.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0
 compress/rdo_quality_loss=0.0
 compress/hdr_compression=1
-compress/normal_map=0
+compress/normal_map=2
 compress/channel_pack=0
 mipmaps/generate=true
 mipmaps/limit=-1

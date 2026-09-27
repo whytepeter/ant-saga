@@ -312,3 +312,30 @@ description: chronological action log per session, consolidated weekly
 | 12:55 | Created tests/_tmp_backdrop.gd | — | ~295 |
 | 12:55 | Created tests/_tmp_backdrop.gd | — | ~295 |
 | 12:59 | World models via Nano Banana -> Meshy (51: backdrop, tree, rootway, kingdom, south, patio, biome plants/litter/landmarks/ground); characters Queen/Akpuru/raider (rigged, retargeted); pill bug ball; lively ant arms; first-person near fade; skyline models replace blocks | tools/meshy_assets.py, retarget_ant_heroes.gd, ant_model.gd, lively_arms.gd, pill_bug.gd, lawn_builder.gd, player.gd | movement, survival, graybox PASS | ~150k |
+| 13:03 | Created tests/_tmp_biomes.gd | — | ~379 |
+| 13:03 | Created tests/_tmp_biomes.gd | — | ~379 |
+
+## Session: 2026-09-27 14:26
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-09-27 14:26
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 14:30 | Created tests/_tmp_spear_times.gd | — | ~316 |
+| 14:30 | Created tests/_tmp_spear_times.gd | — | ~316 |
+| 14:30 | Created tests/_tmp_env.gd | — | ~952 |
+| 14:30 | Created tests/_tmp_env.gd | — | ~952 |
+| 14:30 | Edited tests/_tmp_env.gd | 1→2 lines | ~42 |
+| 14:30 | Edited tests/_tmp_env.gd | 1→2 lines | ~42 |
+| 14:43 | Created tools/polyhaven.py | — | ~892 |
+| 14:43 | Created tools/polyhaven.py | — | ~892 |
+| 14:44 | Created tests/_tmp_weapons.gd | — | ~632 |
+| 14:44 | Created tests/_tmp_weapons.gd | — | ~632 |
+| 14:48 | Created world/shaders/silk_deform.gdshaderinc | — | ~349 |
+| 14:48 | Created world/shaders/silk_deform.gdshaderinc | — | ~349 |
+| 14:49 | Created world/shaders/silk.gdshader | — | ~854 |
+| 14:49 | Created world/shaders/silk.gdshader | — | ~854 |
+| 14:49 | Biomes per area (garden_dressing _biomes + layout biomes; clods removed), strawberries/seeds as food, realistic plant remakes, weapon handle centring (hammer grip), spear 1.4 m + Meshy spear jab/thrust/lunge clips, first-person hands down unless fighting, ants retargeted to 82 clips | garden_dressing.gd, layout.json, survival.gd, held_weapon.gd, weapons.gd, player.gd | movement, survival, fight PASS | ~90k |

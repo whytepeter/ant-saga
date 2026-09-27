@@ -3,9 +3,10 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://db8epqq1ar8p2"
-path="res://.godot/imported/bendy_straw_normal.png-0552f46b215f23bc3317f02509b7e71d.ctex"
+path.s3tc="res://.godot/imported/bendy_straw_normal.png-0552f46b215f23bc3317f02509b7e71d.s3tc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 generator_parameters={
 "md5": "adfa4f7010177eb83ce34b5cccb1e44d"
@@ -14,17 +15,17 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/garden/bendy_straw/bendy_straw_normal.png"
-dest_files=["res://.godot/imported/bendy_straw_normal.png-0552f46b215f23bc3317f02509b7e71d.ctex"]
+dest_files=["res://.godot/imported/bendy_straw_normal.png-0552f46b215f23bc3317f02509b7e71d.s3tc.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0
 compress/rdo_quality_loss=0.0
 compress/hdr_compression=1
-compress/normal_map=0
+compress/normal_map=1
 compress/channel_pack=0
 mipmaps/generate=true
 mipmaps/limit=-1
