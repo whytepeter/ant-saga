@@ -262,7 +262,7 @@ func _test_sleep() -> void:
 	_check("G sleeps in a shelter till morning", prompt == "G · Sleep till morning" and clock.day == day + 1
 		and not clock.is_night_time() and player.input_enabled,
 		"prompt '%s', day %d -> %d at %s" % [prompt, day, clock.day, clock.clock_text()])
-	_check("sleep costs food and water, and heals", survival.hunger < 65.0 and survival.thirst < 60.0 and combat.health == combat.max_health,
+	_check("sleep costs food and water, and heals", survival.hunger < 75.0 and survival.thirst < 70.0 and combat.health == combat.max_health,
 		"hunger %.0f, thirst %.0f, health %.0f" % [survival.hunger, survival.thirst, combat.health])
 	_check("he'll wake there from now on", String(cp.get("name", "")) == "Under the Capstone", "checkpoint '%s'" % String(cp.get("name", "")))
 	clock.running = true

@@ -38,11 +38,11 @@ const SAFE_RADIUS := 30.0
 ## Landmarks you can take a bite out of, and what each is called in the prompt.
 const FRUIT := {"fallen_apple": "apple", "windfall_apple": "apple", "apple_core": "apple core"}
 
-## Real minutes from full to empty at rest.
-@export var hunger_minutes := 16.0
-@export var thirst_minutes := 12.0
+## Real minutes from full to empty at rest (a whole day and night is 28).
+@export var hunger_minutes := 40.0
+@export var thirst_minutes := 30.0
 ## Drain multiplier while he's working hard.
-@export var effort := 1.7
+@export var effort := 1.4
 ## Health lost per second while a meter is empty.
 @export var empty_damage := 0.6
 ## How much a bite or sip gives.
@@ -54,8 +54,8 @@ const FRUIT := {"fallen_apple": "apple", "windfall_apple": "apple", "apple_core"
 @export var mist_rate := 2.5
 @export var mist_radius := 35.0
 ## What a night's sleep costs.
-@export var sleep_hunger := 20.0
-@export var sleep_thirst := 25.0
+@export var sleep_hunger := 12.0
+@export var sleep_thirst := 15.0
 
 var hunger := FULL
 var thirst := FULL
