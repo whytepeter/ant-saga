@@ -10,13 +10,15 @@ For the full operating protocol (session handoff, memory discipline, bug logging
 Third-person 3D game in Godot 4.7 (Forward+, Jolt). **The trio adventure** (direction since 2026-09-26): two warrior ants, Opigo and Opumie, shrink Amodu (a boy everyone mocks) to 5 mm with full human strength so he'll help end the insect war. Level 1 is their journey through the back garden toward the kingdom. Everything is ×360: Amodu is 1.8 m in game. `.wolf/STATUS.md` has the current state.
 
 ## Read first
+- **`docs/SURVIVAL.md`: the active design** (survival first): the goal (be big again), the bosses across the areas, the systems and the build order.
 - `docs/GAMEPLAY.md`: how the game plays (trio, survival, crafting and building, combat), **Levels 1–3 mission by mission**, and the build order (section 11, with what's done). The Levels 1–3 story plan is note 4 in `docs/design/gameplay_vision_chatgpt.md`; the user's own chapters are `docs/story/original_draft.md`.
 - `docs/PLAN.md`: phases and the deferred list (parts predate SMALL GIANT).
 - `docs/narrative/world-facts.md`: the current world (generated from the layout). The old world bible is archived in `docs/archive/WORLD.md` (compound setting superseded; the scale table and sound notes are still useful).
 - `docs/ant_kingdom_saga_backyard_edition.pdf`: the design source (heroes, colony building, stages). `docs/STORY.md` is the user's own story: mine it for gameplay, don't edit or re-canonise it.
 
 ## Decisions (don't relitigate)
-- The trio adventure is the default mode (not SMALL GIANT's "get home before sunset"). The "Pikmin meets Grounded" expedition slice stays parked (`expedition_mode`).
+- **Survival first (2026-09-27):** the whole game and the whole world are built as a survival game (Amodu alone in the garden, `survival_mode` on). **Story mode is paused**: its code stays, parked behind the flag, and the user may add it back once everything is built. Aim: a fun game. Where the story-era decisions below conflict with survival, survival wins.
+- (Paused with the story) The trio adventure was the default mode (not SMALL GIANT's "get home before sunset"). The "Pikmin meets Grounded" expedition slice stays parked (`expedition_mode`).
 - **Opigo and Opumie are companions** who travel with Amodu (`Companion.ENABLED` goes back on), with short subtitled lines; no voice acting yet.
 - **Survival is in:** hunger, thirst, real darkness, dangerous nights, and a data-driven craft/build system (weapons, lamps, shelters, camps, defences). Every recipe exists to get the player further.
 - The setting is an ordinary back garden; the Nigerian compound was dropped. Content is family-friendly: no sexual content.

@@ -1,13 +1,13 @@
 {
   "version": 1,
   "meta": {
-    "lastScanned": "2026-09-27T09:13:04.168Z",
-    "fileCount": 285,
+    "lastScanned": "2026-09-27T09:45:47.219Z",
+    "fileCount": 286,
     "hits": 0,
     "misses": 0,
-    "renderedHash": "9759b3d16190e65fc5901476420f3c69ec61cc25686fa570c20232eb584f0d87",
-    "storeUpdatedAt": "2026-09-27T09:13:04.176Z",
-    "rootHash": "b6d02048206bb989"
+    "renderedHash": "4e733a62df616c7fe166643bef87548cccf8030bf9679b33491dc76ae2cc92f2",
+    "storeUpdatedAt": "2026-09-27T09:45:47.228Z",
+    "rootHash": "210baab650eb52d8"
   },
   "files": {
     ".gitattributes": {
@@ -3336,6 +3336,15 @@
       "size": 1173,
       "mtimeMs": 1790500384072.0876,
       "updatedAt": "2026-09-27T09:13:04.167Z",
+      "source": "hook"
+    },
+    "docs/SURVIVAL.md": {
+      "description": "Survival: the game (design, 2026-09-27)",
+      "tokens": 2253,
+      "hash": "ea6e028f81716d8b",
+      "size": 9028,
+      "mtimeMs": 1790502347118.3115,
+      "updatedAt": "2026-09-27T09:45:47.219Z",
       "source": "hook"
     }
   },

@@ -293,3 +293,8 @@ description: chronological action log per session, consolidated weekly
 | 10:13 | Created tests/_tmp_survival_shot.gd | — | ~313 |
 | 10:13 | Created tests/_tmp_survival_shot.gd | — | ~313 |
 | 10:14 | Survival step 1: survival mode default (no companions/story), hunger+thirst (player/survival.gd), dew drops, crumbs on the route, G eat/drink, HUD meters, tests/survival_test.gd | survival.gd, dew_drops.gd, lawn_level.gd, game_hud.gd, player.gd, player_combat.gd, heavable.gd, layout.json, project.godot | all 4 suites PASS | ~60k |
+| 10:31 | Created docs/SURVIVAL.md | — | ~2255 |
+| 10:31 | Created docs/SURVIVAL.md | — | ~2255 |
+| 10:45 | Created docs/SURVIVAL.md | — | ~2403 |
+| 10:45 | Created docs/SURVIVAL.md | — | ~2403 |
+| 10:46 | Survival-first direction: story paused; docs/SURVIVAL.md design (be big again; 3 great beasts any order; termite front; knife start; drop pack on death); CLAUDE.md, GAMEPLAY banner, decisions.md | docs | design agreed | ~30k |

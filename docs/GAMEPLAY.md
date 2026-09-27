@@ -1,5 +1,7 @@
 # Gameplay: Ant Kingdom Saga
 
+> **Story mode is paused (2026-09-27).** The active design is [`SURVIVAL.md`](SURVIVAL.md). The system sections here (strength, survival, crafting and building, combat, traversal) still apply; the Levels 1–3 mission plans wait for story mode.
+
 How the game plays, from the whole game down to each mission. `docs/PLAN.md` says what we build and when; `docs/archive/WORLD.md` and `world/lawn/layout.json` hold the world itself. The user's story (`docs/STORY.md` and the original chapters) is the source we mine for gameplay: we take what makes good play, not every scene.
 
 Decided 2026-09-26 (replaces SMALL GIANT's "get home before sunset"): **two warrior ants shrink a boy so he'll help them end the insect war, and the game is the trio's adventure.** Level 1 is their journey back through the backyard toward the kingdom.

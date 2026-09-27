@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-27T09:13:04.168Z
-> Files: 285 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-27T09:45:47.219Z
+> Files: 286 tracked | Anatomy hits: 0 | Misses: 0
 
 > Project structure index. Auto-maintained by OpenWolf hooks and daemon.
 > Run `openwolf scan` to generate, or wait for the first Claude Code session.
@@ -158,6 +158,7 @@
 - `lawn_map.svg.import` (~275 tok)
 - `PLAN.md` — Plan: Level 1, The Compound Grass (~2578 tok)
 - `STORY.md` — Story: Ant Kingdom Saga (~3048 tok)
+- `SURVIVAL.md` — Survival: the game (design, 2026-09-27) (~2253 tok)
 - `WORLD.md` — World Bible: Level 1, The Compound Grass (~3783 tok)
 
 ## docs/design/

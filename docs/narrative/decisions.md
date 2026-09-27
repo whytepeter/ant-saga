@@ -76,6 +76,19 @@ Read this first. Everything here was decided by the user; don't re-raise it as a
 
 **Step B, deferred to when Level 2 is built:** the tree grounds (bounds, silk ladder, West Root Door, Leaf-Litter Moor, Windfall Orchard, Sap Falls, drip-line puddles) and the Rootway re-bake.
 
+## Survival first, decided 2026-09-27
+- **The game is a survival game.** The whole world and every system are built for survival; **story mode is paused** (its code stays behind `survival_mode` off) and may come back once everything is built. The aim is a fun game. Story decisions in this file stay on record for then; where one blocks survival, survival wins.
+
+## The survival design, decided 2026-09-27 (`docs/SURVIVAL.md`)
+- **Goal:** find a way to be big again, as a light story found in the world, plus bosses across the areas and a real ending (then keep playing small).
+- **Great beasts are puzzles, in any order:** the orb weaver (high, the canopy), the Maw (deep, the Rootway), the wolf spider (far, across the Rut); each guards one ingredient of the Queen's growth draught. Then the termite Citadel ends the war and the game.
+- **The termite front moves:** mud tubes spread across the garden over the days, eat wood, raid camps; push them back.
+- **Death:** drop your pack where you fell, wake at your bed, go back for it.
+- **Start:** with a stone knife (found beside him with the vial) to gather materials; the stone axe is the first craft.
+- **Amodu's thoughts:** short, rare subtitles at discoveries and first-time moments.
+- Not taken: "the humans are the weather" (mower, watering, sprinkler events) and "growing is the progression".
+- The build order in SURVIVAL.md §7 replaces the world order below (the kingdom becomes the Act 1 hub).
+
 ## Work order, decided 2026-09-27
 - **Survival before story, inside the story mode** (not a separate sandbox). Story beats (cold open, First Night, web rescue, beetle, the other Meshy models) wait.
 - **Survival mode is the default for now** (`survival_mode` in `world/lawn/lawn_level.gd`): Amodu alone, no companions following, no story beats or objectives, Root Hall open. Story mode is the same flag off (the tests keep it covered).
