@@ -38,7 +38,7 @@ Third-person 3D game in Godot 4.7 (Forward+, Jolt). **The trio adventure** (dire
   `/Applications/Blender.app/Contents/MacOS/Blender -b --factory-startup --python tools/bake_tree_base.py`, then reimport. `world/lawn/tree_base.gd` places it.
 - Amodu's fingers: Meshy's rig has none; `tools/add_finger_bones.gd` adds two bones per finger and thumb and writes `hands_mesh.res`, `hands_skin.res`, `hands.json` (re-run it if `rigged.glb` changes). `player/finger_curl.gd` bends them.
 - Opigo and Opumie (the user's Meshy models, Mixamo-named rig in metres) run on Amodu's current clips retargeted by `Godot --headless --path . -s tools/retarget_ant_heroes.gd` (re-run after rebuilding Amodu's library).
-- Companions and ants: `characters/ant_model.gd` runs on the older library `player/explorer/amodu_animations.res` (`tools/build_explorer_anims.gd`).
+- Ants: `characters/ant_model.gd`. Heroes and worker ants (the amber ant scout, `creatures/ant_scout/`) run on Amodu's current clips retargeted to their rigs by `tools/retarget_ant_heroes.gd` (re-run it after rebuilding Amodu's library); the old library `player/explorer/amodu_animations.res` is only a fallback. Copying clips bone to bone between different rigs twists the pose.
 
 ## Verify every change
 ```bash

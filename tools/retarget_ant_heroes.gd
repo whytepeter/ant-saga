@@ -1,6 +1,7 @@
 extends SceneTree
-## Gives the ant heroes (the user's Opigo and Opumie: Meshy characters with a
-## Mixamo-named rig in metres) Amodu's animation library. Their bones point
+## Gives the ants Amodu's animation library: the heroes (the user's Opigo and
+## Opumie: Meshy characters with a Mixamo-named rig in metres) and the worker
+## ants' amber ant scout (a Mixamo-named rig in centimetres, no toe bones). Their bones point
 ## differently from Amodu's at rest, so clips can't be copied bone to bone:
 ## each frame, every Amodu bone's turn away from its rest pose, in skeleton
 ## space, is applied to the matching ant bone's rest pose. The hips' travel is
@@ -8,10 +9,10 @@ extends SceneTree
 ## the ground as Amodu's (scaled): an ant's legs are shorter for its size, so
 ## the same bend would otherwise leave it hovering. Both rigs rest in an A-pose.
 ##
-##   Godot --headless --path . -s tools/retarget_ant_heroes.gd [-- opigo opumie]
+##   Godot --headless --path . -s tools/retarget_ant_heroes.gd [-- opigo opumie ant_scout]
 ##
-## Writes assets/characters/<hero>/<hero>_animations.res (natural speeds scaled
-## to the hero's size in its "natural_speed" meta).
+## Writes each model's library (MODELS; natural speeds in the rig's own units,
+## in its "natural_speed" meta: AntModel scales them by the model's fit).
 
 const SOURCE_DIR := "res://assets/characters/amodu2/"
 const FPS := 30.0
@@ -25,7 +26,15 @@ const MAP := {
 	"RightUpLeg": "RightUpLeg", "RightLeg": "RightLeg", "RightFoot": "RightFoot", "RightToeBase": "RightToeBase",
 }
 
-var heroes: Array[String] = ["opigo", "opumie"]
+## name -> [model, where its library goes]
+const MODELS := {
+	"opigo": ["res://assets/characters/opigo/opigo.glb", "res://assets/characters/opigo/opigo_animations.res"],
+	"opumie": ["res://assets/characters/opumie/opumie.glb", "res://assets/characters/opumie/opumie_animations.res"],
+	"ant_scout": ["res://creatures/ant_scout/Meshy_AI_Amber_Ant_Scout_biped_Animation_Walking_withSkin.glb",
+		"res://creatures/ant_scout/ant_scout_animations.res"],
+}
+
+var heroes: Array[String] = ["opigo", "opumie", "ant_scout"]
 var _dst_rest_low := 0.0
 
 
@@ -46,7 +55,7 @@ func _run() -> void:
 	var src_rest_g := _global_rests(src)
 	var src_hips := src.find_bone("Hips")
 	for hero in heroes:
-		var path := "res://assets/characters/%s/%s.glb" % [hero, hero]
+		var path := String(MODELS[hero][0])
 		var model := (load(path) as PackedScene).instantiate() as Node3D
 		root.add_child(model)
 		var dst := model.find_children("*", "Skeleton3D", true, false)[0] as Skeleton3D
@@ -65,7 +74,7 @@ func _run() -> void:
 			speeds[k] = float(speeds[k]) * height
 		out.set_meta("natural_speed", speeds)
 		out.set_meta("times", lib.get_meta("times", {}))
-		var save_to := "res://assets/characters/%s/%s_animations.res" % [hero, hero]
+		var save_to := String(MODELS[hero][1])
 		var err := ResourceSaver.save(out, save_to, ResourceSaver.FLAG_COMPRESS)
 		print("%s: %d clips, hips ×%.4f, size ×%.2f -> %s (%s)" % [hero, out.get_animation_list().size(), hip_scale, height,
 			save_to, "OK" if err == OK else "FAILED"])

@@ -384,6 +384,20 @@
         "is_on_floor",
         "player"
       ]
+    },
+    {
+      "id": "bug-027",
+      "timestamp": "2026-09-27",
+      "error_message": "Worker ants (gate guards, water carriers) stood in a broken, twisted pose",
+      "file": "characters/ant_model.gd",
+      "root_cause": "The ant scout (Mixamo-named rig in cm) ran Amodu's old clips copied bone to bone; the names matched but the bones' rest orientations differ, so the rotations twisted the limbs",
+      "fix": "tools/retarget_ant_heroes.gd now also retargets Amodu's current library onto the ant scout (creatures/ant_scout/ant_scout_animations.res); AntModel loads it for workers",
+      "tags": [
+        "animation",
+        "retarget",
+        "ants",
+        "rig"
+      ]
     }
   ]
 }
