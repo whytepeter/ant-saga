@@ -1,0 +1,8 @@
+{
+  "note": "Akpuru, the termite general: the final boss. Drawn by Nano Banana from the user's Opigo and Opumie (docs/WORLD_ASSETS.md), made with Meshy image-to-3D in an A-pose and auto-rigged; Amodu's clips are retargeted onto it, so no Meshy actions. In game about 2.8 m tall.",
+  "reference_image": "reference.png",
+  "prompt": "Edit this picture: remove the second, inner pair of small arms (the ones under the big outer arms), so the termite general has only ONE pair of arms (the big outer ones from the shoulders) and his two legs. Keep everything else exactly the same: the head, mandibles, bark shoulder plates, mud belt, sash, colours and pose.",
+  "texture_prompt": "Hand-painted stylized game textures: pale cream segmented termite body, dark reddish-brown armoured head with black mandibles, weathered bark plates, dried mud belt and sash.",
+  "polycount": 30000,
+  "height_meters": 1.7
+}

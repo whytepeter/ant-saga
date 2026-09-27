@@ -1227,6 +1227,8 @@ func _build_skyline(parent: Node3D) -> void:
 		var w: float = size[0]
 		var h: float = size[1]
 		var d: float = size[2]
+		if _skyline_model(parent, id, p, w, h, d):
+			continue
 		match id:
 			"apple_tree": _apple_tree(parent, p, w, h)
 			"house": _house(parent, p, w, h, d)
@@ -1304,6 +1306,62 @@ func _build_skyline(parent: Node3D) -> void:
 	var top: float = far["height"]
 	for r: Array in far["rects"]:
 		_slab(parent, [r[0], r[1], r[2], r[3], top], "far_lawn", false, top - 2.0)
+
+
+## Skyline pieces with a Meshy model (docs/WORLD_ASSETS.md): layout id -> model.
+const SKYLINE_MODELS := {"garden_shed": "garden_shed", "water_butt": "water_butt", "clothesline": "washing_line",
+	"family_car": "family_car", "wheelie_bin": "wheelie_bin", "compost_heap": "compost_bin",
+	"sweetcorn": "sweetcorn", "tomatoes": "tomato_plant"}
+
+
+## Puts the Meshy model in for a skyline piece, sized to its layout box (true),
+## or leaves it to the old stand-in shapes (false: no model for it yet).
+func _skyline_model(parent: Node3D, id: String, p: Vector2, w: float, h: float, d: float) -> bool:
+	if not SKYLINE_MODELS.has(id):
+		return false
+	var prop := GardenProps.get_prop(String(SKYLINE_MODELS[id]))
+	if prop == null:
+		return false
+	var unit := prop.fix * prop.mesh.get_aabb()
+	var ground := Vector3(p.x, 0.0, p.y)
+	match id:
+		"sweetcorn":  # a row of plants in the veg bed, not all the same height
+			var bed_top := float(layout.data["veg_bed"]["box"][4])
+			for k in 7:
+				var at := Vector3(p.x - 240.0 + k * 80.0, bed_top, p.y + float([0.0, 40.0, -30.0, 35.0, -10.0, 25.0, -20.0][k]))
+				var tall := h - float([0.0, 60.0, 20.0, 90.0, 40.0, 70.0, 10.0][k])
+				_place_model(parent, prop, at, tall / unit.size.y, 1.7 * k)
+		"tomatoes":  # three staked plants
+			var bed_top := float(layout.data["veg_bed"]["box"][4])
+			for k in 3:
+				_place_model(parent, prop, Vector3(p.x - 100.0 + k * 100.0, bed_top, p.y), (h + 60.0) / unit.size.y, 2.1 * k)
+		"clothesline":  # the line runs east-west, post to post
+			_place_model(parent, prop, ground, w / unit.size.x, 0.0)
+		"family_car":  # its length along the driveway (north-south)
+			var long := maxf(unit.size.x, unit.size.z)
+			_place_model(parent, prop, ground, d / long, PI / 2.0 if unit.size.x > unit.size.z else 0.0)
+		"compost_heap":
+			_place_model(parent, prop, ground, w / maxf(unit.size.x, unit.size.z), 0.6)
+			var steam := StandardMaterial3D.new()  # it steams in the morning sun
+			steam.albedo_color = Color(0.92, 0.92, 0.9, 0.16)
+			steam.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+			steam.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+			steam.cull_mode = BaseMaterial3D.CULL_DISABLED
+			var cone := CylinderMesh.new()
+			cone.bottom_radius = 180.0
+			cone.top_radius = 520.0
+			cone.height = 1200.0
+			_add(parent, cone, steam, Transform3D(Basis(Vector3.FORWARD, -0.1), Vector3(p.x, h + 600.0, p.y)))
+		_:
+			_place_model(parent, prop, ground, h / unit.size.y, 0.0)
+	return true
+
+
+## A Meshy model standing on `ground`, `k` times its unit size, turned `yaw`.
+func _place_model(parent: Node3D, prop: GardenProps.Prop, ground: Vector3, k: float, yaw: float) -> void:
+	var mi := GardenProps.instance(prop, Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * k), ground))
+	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF  # far beyond the shadow distance
+	parent.add_child(mi)
 
 
 ## The apple tree: a leaning trunk, a broad crown of overlapping leaf masses

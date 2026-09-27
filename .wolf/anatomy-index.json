@@ -1,13 +1,13 @@
 {
   "version": 1,
   "meta": {
-    "lastScanned": "2026-09-27T10:09:44.477Z",
-    "fileCount": 287,
+    "lastScanned": "2026-09-27T11:55:14.723Z",
+    "fileCount": 291,
     "hits": 0,
     "misses": 0,
-    "renderedHash": "553c1c3acea10ac7f83c6e39060d51d1c6d6608d89d75f263a84865f2c5e33a8",
-    "storeUpdatedAt": "2026-09-27T10:09:44.486Z",
-    "rootHash": "9c05f2da916595c0"
+    "renderedHash": "e0479cbaee3217a8b30184385c334e8e40b37872fd4bc09a3970149696619df9",
+    "storeUpdatedAt": "2026-09-27T11:55:14.732Z",
+    "rootHash": "2915b0b0c41801aa"
   },
   "files": {
     ".gitattributes": {
@@ -3354,6 +3354,42 @@
       "size": 8938,
       "mtimeMs": 1790503784353.257,
       "updatedAt": "2026-09-27T10:09:44.476Z",
+      "source": "hook"
+    },
+    "docs/WORLD_ASSETS.md": {
+      "description": "World assets: the models the new map needs (2026-09-27)",
+      "tokens": 1299,
+      "hash": "1302938e7758fa0d",
+      "size": 5196,
+      "mtimeMs": 1790505982574.4036,
+      "updatedAt": "2026-09-27T10:46:22.676Z",
+      "source": "hook"
+    },
+    "characters/lively_arms.gd": {
+      "description": "",
+      "tokens": 810,
+      "hash": "3d6be58dad2cf52c",
+      "size": 3035,
+      "mtimeMs": 1790508816954.91,
+      "updatedAt": "2026-09-27T11:33:37.049Z",
+      "source": "hook"
+    },
+    "tests/_tmp_fp.gd": {
+      "description": "",
+      "tokens": 469,
+      "hash": "512dcbaadfc8b2d2",
+      "size": 1757,
+      "mtimeMs": 1790509930041.8394,
+      "updatedAt": "2026-09-27T11:52:10.180Z",
+      "source": "hook"
+    },
+    "tests/_tmp_backdrop.gd": {
+      "description": "",
+      "tokens": 295,
+      "hash": "0f823e085a9854b1",
+      "size": 1105,
+      "mtimeMs": 1790510114618.3171,
+      "updatedAt": "2026-09-27T11:55:14.723Z",
       "source": "hook"
     }
   },

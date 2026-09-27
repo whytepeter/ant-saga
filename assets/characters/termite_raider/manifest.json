@@ -1,0 +1,8 @@
+{
+  "note": "The termites who raid your camp. Drawn by Nano Banana from the user's Opigo and Opumie (docs/WORLD_ASSETS.md), made with Meshy image-to-3D in an A-pose and auto-rigged; Amodu's clips are retargeted onto it, so no Meshy actions. In game about 2.1 m tall.",
+  "reference_image": "reference.png",
+  "prompt": "A termite raider soldier with an insect body built like the ants in the reference pictures: a segmented pale cream abdomen and thorax, exactly two thin jointed arms and two legs, like the ants in the reference pictures (no extra limbs), an orange-brown armoured head with strong short mandibles. NO eyes at all (termites are blind): smooth armour where eyes would be. A small round bark shield strapped to one arm, a mud-caked sling across the chest. Wiry and quick, one of many.",
+  "texture_prompt": "Hand-painted stylized game textures: pale cream segmented termite body, orange-brown armoured head, bark shield, mud-caked rope sling.",
+  "polycount": 20000,
+  "height_meters": 1.7
+}

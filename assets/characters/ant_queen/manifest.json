@@ -1,0 +1,8 @@
+{
+  "note": "The Queen of the ant kingdom (the hub). Drawn by Nano Banana from the user's Opigo and Opumie (docs/WORLD_ASSETS.md), made with Meshy image-to-3D in an A-pose and auto-rigged; Amodu's clips are retargeted onto it, so no Meshy actions. In game about 2.6 m tall.",
+  "reference_image": "reference.png",
+  "prompt": "An ant queen character: tall and dignified, a glossy amber-brown ant body, a long rounded abdomen behind her, big kind dark eyes, curved antennae, a headband woven from a golden dandelion petal like a small crown, a cloak made from a dried pink rose petal, a sash of braided grass.",
+  "texture_prompt": "Hand-painted stylized game textures: glossy amber-brown ant body, golden dandelion-petal crown, soft pink rose-petal cloak, green braided grass sash.",
+  "polycount": 30000,
+  "height_meters": 1.7
+}

@@ -1471,6 +1471,21 @@ func set_first_person(on: bool) -> void:
 		_hide_head = HideHead.new()
 		_skeleton.add_child(_hide_head)
 	_hide_head.active = on
+	# "true first person": anything of his own body right by the camera (his
+	# shoulders and collar in a jump or a swing) dithers away, so the view never
+	# ends up inside him; his hands, further out, stay solid
+	for mi: MeshInstance3D in $Model/Explorer.find_children("*", "MeshInstance3D", true, false):
+		var m := mi.material_override as BaseMaterial3D
+		if m == null:
+			continue
+		m.distance_fade_mode = BaseMaterial3D.DISTANCE_FADE_PIXEL_DITHER if on else BaseMaterial3D.DISTANCE_FADE_DISABLED
+		m.distance_fade_min_distance = NEAR_FADE[0]
+		m.distance_fade_max_distance = NEAR_FADE[1]
+
+
+## First person: his own body is invisible nearer the camera than the first
+## distance (m) and solid past the second.
+const NEAR_FADE := [0.1, 0.24]
 
 
 ## Where his eyes are this frame (the camera's spot in first person).
@@ -1480,7 +1495,7 @@ func eye_position() -> Vector3:
 	if head < 0:
 		return visual_position() + Vector3.UP * 1.62 + forward * 0.15
 	var at := (_skeleton.global_transform * _skeleton.get_bone_global_pose(head)).origin
-	return at + Vector3.UP * 0.02 + forward * 0.14
+	return at + Vector3.UP * 0.02 + forward * 0.18  # a touch in front of his face
 
 
 ## Where Amodu is drawn this frame: between the last two physics positions.

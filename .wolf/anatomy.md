@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-27T10:09:44.477Z
-> Files: 287 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-27T11:55:14.723Z
+> Files: 291 tracked | Anatomy hits: 0 | Misses: 0
 
 > Project structure index. Auto-maintained by OpenWolf hooks and daemon.
 > Run `openwolf scan` to generate, or wait for the first Claude Code session.
@@ -135,6 +135,7 @@
 - `ant_model.gd` — Declares SCENE (~836 tok)
 - `companion.gd` — Declares TRAIL_SPACING (~2530 tok)
 - `companion.gd.uid` (~6 tok)
+- `lively_arms.gd` (~810 tok)
 - `worker_ant.gd` — Declares Mode (~1731 tok)
 
 ## creatures/ant_scout/
@@ -163,6 +164,7 @@
 - `PLAN.md` — Plan: Level 1, The Compound Grass (~2578 tok)
 - `STORY.md` — Story: Ant Kingdom Saga (~3048 tok)
 - `SURVIVAL.md` — Survival: the game (design, 2026-09-27) (~2253 tok)
+- `WORLD_ASSETS.md` — World assets: the models the new map needs (2026-09-27) (~1299 tok)
 - `WORLD.md` — World Bible: Level 1, The Compound Grass (~3783 tok)
 
 ## docs/design/
@@ -254,6 +256,8 @@
 ## tests/
 
 - `_anim_shots.gd` (~635 tok)
+- `_tmp_backdrop.gd` (~295 tok)
+- `_tmp_fp.gd` (~469 tok)
 - `_tmp_props.gd` (~537 tok)
 - `_tmp_survival_shot.gd` (~313 tok)
 - `_tmp_trowel.gd` (~325 tok)

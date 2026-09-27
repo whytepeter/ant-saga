@@ -303,3 +303,12 @@ description: chronological action log per session, consolidated weekly
 | 11:09 | Created creatures/ground_beetle/night_beetle.gd | — | ~2384 |
 | 11:09 | Created creatures/ground_beetle/night_beetle.gd | — | ~2384 |
 | 11:25 | Survival step 2: looping day clock (moon, stars, real darkness), ground beetle night hunters, sleep at shelters (wake point), dew forms at dawn and dries by noon; tests split (story_test parked) | day_clock.gd, weather.gd, night_beetle.gd, survival.gd, dew_drops.gd, lawn_level.gd, layout.json, survival_test.gd | survival, movement, graybox PASS | ~80k |
+| 11:46 | Created docs/WORLD_ASSETS.md | — | ~1386 |
+| 11:46 | Created docs/WORLD_ASSETS.md | — | ~1386 |
+| 12:33 | Created characters/lively_arms.gd | — | ~810 |
+| 12:33 | Created characters/lively_arms.gd | — | ~810 |
+| 12:52 | Created tests/_tmp_fp.gd | — | ~469 |
+| 12:52 | Created tests/_tmp_fp.gd | — | ~469 |
+| 12:55 | Created tests/_tmp_backdrop.gd | — | ~295 |
+| 12:55 | Created tests/_tmp_backdrop.gd | — | ~295 |
+| 12:59 | World models via Nano Banana -> Meshy (51: backdrop, tree, rootway, kingdom, south, patio, biome plants/litter/landmarks/ground); characters Queen/Akpuru/raider (rigged, retargeted); pill bug ball; lively ant arms; first-person near fade; skyline models replace blocks | tools/meshy_assets.py, retarget_ant_heroes.gd, ant_model.gd, lively_arms.gd, pill_bug.gd, lawn_builder.gd, player.gd | movement, survival, graybox PASS | ~150k |

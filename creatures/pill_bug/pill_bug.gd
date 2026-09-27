@@ -583,15 +583,27 @@ func _build_ball_and_rest(h: float, band_mat: StandardMaterial3D) -> void:
 	_ball = Node3D.new()
 	_ball.position.y = radius * 1.05
 	add_child(_ball)
-	var ball := SphereMesh.new()
-	ball.radius = radius * 1.05
-	ball.height = radius * 2.1
-	_part(_ball, ball, _shell_mat, Vector3.ZERO, Vector3.ZERO, Vector3.ONE)
-	for i in 3:
-		var band := TorusMesh.new()
-		band.inner_radius = radius * 1.03 * cos((i - 1) * 0.5)
-		band.outer_radius = band.inner_radius + 0.12
-		_part(_ball, band, band_mat, Vector3(0, sin((i - 1) * 0.5) * radius, 0), Vector3.ZERO, Vector3.ONE)
+	var curled := GardenProps.get_prop("pill_bug_ball")
+	if curled != null:
+		# the same bug rolled up (Meshy, drawn from the user's model), centred on the ball
+		var unit := curled.fix * curled.mesh.get_aabb()
+		var k := radius * 2.1 / maxf(unit.size.x, maxf(unit.size.y, unit.size.z))
+		var mi := GardenProps.instance(curled, Transform3D(Basis().scaled(Vector3.ONE * k), Vector3(0.0, -unit.size.y * k * 0.5, 0.0)))
+		var mat := (curled.material as StandardMaterial3D).duplicate() as StandardMaterial3D if curled.material is StandardMaterial3D else null
+		if mat != null:
+			mi.material_override = mat
+			_glow_mats.append(mat)
+		_ball.add_child(mi)
+	else:
+		var ball := SphereMesh.new()
+		ball.radius = radius * 1.05
+		ball.height = radius * 2.1
+		_part(_ball, ball, _shell_mat, Vector3.ZERO, Vector3.ZERO, Vector3.ONE)
+		for i in 3:
+			var band := TorusMesh.new()
+			band.inner_radius = radius * 1.03 * cos((i - 1) * 0.5)
+			band.outer_radius = band.inner_radius + 0.12
+			_part(_ball, band, band_mat, Vector3(0, sin((i - 1) * 0.5) * radius, 0), Vector3.ZERO, Vector3.ONE)
 
 	var capsule := CapsuleShape3D.new()
 	capsule.radius = minf(radius * 0.8, h * 0.5)

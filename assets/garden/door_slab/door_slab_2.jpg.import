@@ -3,9 +3,10 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dmg5kib78krib"
-path="res://.godot/imported/door_slab_2.jpg-611d23f2b9420bf22040957613c2d5a2.ctex"
+path.s3tc="res://.godot/imported/door_slab_2.jpg-611d23f2b9420bf22040957613c2d5a2.s3tc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 generator_parameters={
 "md5": "dcd23767d3b8404740cc60db53988654"
@@ -14,17 +15,17 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/garden/door_slab/door_slab_2.jpg"
-dest_files=["res://.godot/imported/door_slab_2.jpg-611d23f2b9420bf22040957613c2d5a2.ctex"]
+dest_files=["res://.godot/imported/door_slab_2.jpg-611d23f2b9420bf22040957613c2d5a2.s3tc.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0
 compress/rdo_quality_loss=0.0
 compress/hdr_compression=1
-compress/normal_map=0
+compress/normal_map=1
 compress/channel_pack=0
 mipmaps/generate=true
 mipmaps/limit=-1
@@ -39,5 +40,5 @@ process/premult_alpha=false
 process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
-process/size_limit=0
+process/size_limit=1024
 detect_3d/compress_to=1

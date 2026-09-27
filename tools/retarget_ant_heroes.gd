@@ -32,9 +32,19 @@ const MODELS := {
 	"opumie": ["res://assets/characters/opumie/opumie.glb", "res://assets/characters/opumie/opumie_animations.res"],
 	"ant_scout": ["res://creatures/ant_scout/Meshy_AI_Amber_Ant_Scout_biped_Animation_Walking_withSkin.glb",
 		"res://creatures/ant_scout/ant_scout_animations.res"],
+	# Meshy-rigged (docs/WORLD_ASSETS.md): Amodu's bone names, their own shapes
+	"ant_queen": ["res://assets/characters/ant_queen/rigged.glb", "res://assets/characters/ant_queen/ant_queen_animations.res"],
+	"akpuru": ["res://assets/characters/akpuru/rigged.glb", "res://assets/characters/akpuru/akpuru_animations.res"],
+	"termite_raider": ["res://assets/characters/termite_raider/rigged.glb",
+		"res://assets/characters/termite_raider/termite_raider_animations.res"],
 }
 
-var heroes: Array[String] = ["opigo", "opumie", "ant_scout"]
+var heroes: Array[String] = ["opigo", "opumie", "ant_scout", "ant_queen", "akpuru", "termite_raider"]
+## The model being done: its bones' prefix ("mixamorig_" or none) and its bone
+## (without the prefix) -> Amodu bone map (MAP, or the same names for a rig
+## Meshy made the way it made Amodu's).
+var _prefix := "mixamorig_"
+var _map: Dictionary = MAP
 var _dst_rest_low := 0.0
 
 
@@ -62,7 +72,13 @@ func _run() -> void:
 		var player := model.find_children("*", "AnimationPlayer", true, false)[0] as AnimationPlayer
 		var skel_path := str(player.get_node(player.root_node).get_path_to(dst))
 		var dst_rest_g := _global_rests(dst)
-		var dst_hips := dst.find_bone("mixamorig_Hips")
+		_prefix = "mixamorig_" if dst.find_bone("mixamorig_Hips") >= 0 else ""
+		_map = MAP
+		if _prefix == "":
+			_map = {}
+			for k: String in MAP:
+				_map[String(MAP[k])] = String(MAP[k])
+		var dst_hips := dst.find_bone(_prefix + "Hips")
 		var hip_scale := dst.get_bone_rest(dst_hips).origin.y / src.get_bone_rest(src_hips).origin.y
 		var out := AnimationLibrary.new()
 		for clip in lib.get_animation_list():
@@ -121,12 +137,12 @@ func _retarget(anim: Animation, src: Skeleton3D, src_rest_g: Array[Quaternion], 
 	out.loop_mode = anim.loop_mode
 	var dst_tracks := {}
 	for i in dst.get_bone_count():
-		var name := dst.get_bone_name(i).trim_prefix("mixamorig_")
-		if MAP.has(name) and src.find_bone(String(MAP[name])) >= 0:
+		var name := dst.get_bone_name(i).trim_prefix(_prefix)
+		if _map.has(name) and src.find_bone(String(_map[name])) >= 0:
 			var t := out.add_track(Animation.TYPE_ROTATION_3D)
 			out.track_set_path(t, "%s:%s" % [skel_path, dst.get_bone_name(i)])
 			dst_tracks[i] = t
-	var dst_hips := dst.find_bone("mixamorig_Hips")
+	var dst_hips := dst.find_bone(_prefix + "Hips")
 	var src_hips := src.find_bone("Hips")
 	var hips_t := -1
 	if hips_pos >= 0:
@@ -135,7 +151,7 @@ func _retarget(anim: Animation, src: Skeleton3D, src_rest_g: Array[Quaternion], 
 	var frames := maxi(int(ceil(anim.length * FPS)), 1)
 	var src_rest_hips := src.get_bone_rest(src_hips).origin
 	var dst_rest_hips := dst.get_bone_rest(dst_hips).origin
-	_dst_rest_low = _lowest_foot(dst, dst_rest_g, dst_rest_hips, "mixamorig_")
+	_dst_rest_low = _lowest_foot(dst, dst_rest_g, dst_rest_hips, _prefix)
 	for f in frames + 1:
 		var time := minf(f / FPS, anim.length)
 		# the source pose in skeleton space
@@ -161,7 +177,7 @@ func _retarget(anim: Animation, src: Skeleton3D, src_rest_g: Array[Quaternion], 
 			var src_low := _lowest_foot(src, src_g, pos, "")
 			var src_rest_low := _lowest_foot(src, src_rest_g, src_rest_hips, "")
 			var want := _dst_rest_low + (src_low - src_rest_low) * hip_scale
-			var now := _lowest_foot(dst, dst_g, hips, "mixamorig_")
+			var now := _lowest_foot(dst, dst_g, hips, _prefix)
 			hips.y += want - now
 			out.position_track_insert_key(hips_t, time, hips)
 	return out
@@ -204,8 +220,8 @@ func _target_g(dst: Skeleton3D, i: int, src: Skeleton3D, src_g: Array[Quaternion
 		dst_rest_g: Array[Quaternion], out: Array[Quaternion], done: Dictionary) -> Quaternion:
 	if done.has(i):
 		return out[i]
-	var name := dst.get_bone_name(i).trim_prefix("mixamorig_")
-	var s := src.find_bone(String(MAP.get(name, "")))
+	var name := dst.get_bone_name(i).trim_prefix(_prefix)
+	var s := src.find_bone(String(_map.get(name, "")))
 	if s >= 0:
 		out[i] = (src_g[s] * src_rest_g[s].inverse() * dst_rest_g[i]).normalized()
 	else:

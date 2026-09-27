@@ -13,9 +13,17 @@ const HEROES := {
 	"Opumie": "res://assets/characters/opumie/opumie.glb",
 }
 
+## The other characters (Meshy-made from the heroes' style, docs/WORLD_ASSETS.md):
+## name -> [rigged model, its retargeted clips].
+const CAST := {
+	"Ant Queen": ["res://assets/characters/ant_queen/rigged.glb", "res://assets/characters/ant_queen/ant_queen_animations.res"],
+	"Akpuru": ["res://assets/characters/akpuru/rigged.glb", "res://assets/characters/akpuru/akpuru_animations.res"],
+	"Termite raider": ["res://assets/characters/termite_raider/rigged.glb",
+		"res://assets/characters/termite_raider/termite_raider_animations.res"],
+}
 ## How tall each stands (m, to the top of the head): a little bigger than
-## Amodu (1.8 m), the burly Opigo most of all.
-const HEIGHTS := {"Opigo": 2.15, "Opumie": 2.05}
+## Amodu (1.8 m), the burly Opigo most of all; the Queen and Akpuru tower.
+const HEIGHTS := {"Opigo": 2.15, "Opumie": 2.05, "Ant Queen": 2.6, "Akpuru": 2.8, "Termite raider": 2.1}
 const WORKER_HEIGHT := 2.0
 ## The workers' clips, retargeted to the ant scout's rig.
 const WORKER_ANIMATIONS := "res://creatures/ant_scout/ant_scout_animations.res"
@@ -27,6 +35,8 @@ const ANIMATIONS: AnimationLibrary = preload("res://player/explorer/amodu_animat
 static var _libraries := {}  # the skeleton's bone names -> Amodu's clips fitted to it
 
 var _anim: AnimationPlayer
+## Bent elbows and curled wrists over the clips (LivelyArms).
+var _arms: LivelyArms
 var _playing := ""
 var _busy_left := 0.0
 var _holding := false
@@ -38,6 +48,8 @@ func _ready() -> void:
 	var scene: PackedScene = SCENE
 	if HEROES.has(hero) and ResourceLoader.exists(HEROES[hero]):
 		scene = load(HEROES[hero]) as PackedScene
+	elif CAST.has(hero) and ResourceLoader.exists(CAST[hero][0]):
+		scene = load(CAST[hero][0]) as PackedScene
 	var model := scene.instantiate() as Node3D
 	add_child(model)
 	var size := _fit_height(model, float(HEIGHTS.get(hero, WORKER_HEIGHT)))
@@ -46,13 +58,16 @@ func _ready() -> void:
 		_anim.remove_animation_library(lib_name)
 	# Amodu's current clips, retargeted to this rig (tools/retarget_ant_heroes.gd)
 	var own := "res://assets/characters/%s/%s_animations.res" % [hero.to_lower(), hero.to_lower()] \
-		if HEROES.has(hero) else WORKER_ANIMATIONS
+		if HEROES.has(hero) else (String(CAST[hero][1]) if CAST.has(hero) else WORKER_ANIMATIONS)
 	var lib: AnimationLibrary = load(own) if ResourceLoader.exists(own) \
 		else _library_for(model.find_children("*", "Skeleton3D", true, false)[0])
 	_anim.add_animation_library("", lib)
 	var speeds: Dictionary = lib.get_meta("natural_speed", ANIMATIONS.get_meta("natural_speed"))
 	_walk_natural = float(speeds["walk"]) * size
 	_run_natural = float(speeds["run"]) * size
+	_arms = LivelyArms.new()
+	_arms.name = "LivelyArms"
+	model.find_children("*", "Skeleton3D", true, false)[0].add_child(_arms)
 	play("idle", 1.0)
 
 
@@ -146,6 +161,8 @@ func play(clip: String, rate: float) -> void:
 	if clip != _playing:
 		_anim.play(clip, 0.2)
 		_playing = clip
+		if _arms != null:
+			_arms.target = 1.0 if clip.begins_with("idle") else 0.5
 	_anim.speed_scale = clampf(rate, 0.3, 2.0)
 
 

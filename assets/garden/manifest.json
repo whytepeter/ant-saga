@@ -429,6 +429,526 @@
       "size": 18,
       "prompt": "A green plastic garden hose connector coupling with a short stub of hose, dirty, faded and scratched. Weathered and used, never new or shiny.",
       "note": "The Hose Run's coupling."
+    },
+    {
+      "id": "sweetcorn",
+      "group": "world_backdrop",
+      "via": "nano",
+      "polycount": 15000,
+      "size": 720,
+      "prompt": "A single tall sweetcorn (maize) plant: one straight green stalk, long arching ribbon leaves, two green-husked cobs with pale silk tufts, a feathery tassel at the top.",
+      "note": "The vegetable patch behind the north edging: planted in a row."
+    },
+    {
+      "id": "tomato_plant",
+      "group": "world_backdrop",
+      "via": "nano",
+      "polycount": 15000,
+      "size": 430,
+      "prompt": "A bushy tomato plant tied to a bamboo cane with garden twine: jagged green leaves, trusses of ripe red and half-green tomatoes, a few small yellow flowers.",
+      "note": "The vegetable patch, beside the sweetcorn."
+    },
+    {
+      "id": "wheelie_bin",
+      "group": "world_backdrop",
+      "via": "nano",
+      "polycount": 8000,
+      "size": 360,
+      "prompt": "A dark green plastic wheelie bin with the lid shut: a hinged lid with a handle, two black wheels at the back, scuffs and a faded white house number.",
+      "note": "Beside the driveway, east."
+    },
+    {
+      "id": "water_butt",
+      "group": "world_backdrop",
+      "via": "nano",
+      "polycount": 8000,
+      "size": 360,
+      "prompt": "A dark green plastic garden water butt (rain barrel) with a round lid, a small brass tap near the bottom and a short grey downpipe into the top.",
+      "note": "North-west, where the hose starts."
+    },
+    {
+      "id": "garden_shed",
+      "group": "world_backdrop",
+      "via": "nano",
+      "polycount": 15000,
+      "size": 1100,
+      "prompt": "A small weathered wooden garden shed: overlapping pale timber boards, a pitched black felt roof, a plank door with a latch, one small four-pane window.",
+      "note": "Far north-west (Ugo's cave is under it)."
+    },
+    {
+      "id": "compost_bin",
+      "group": "world_backdrop",
+      "via": "nano",
+      "polycount": 12000,
+      "size": 720,
+      "prompt": "An open-fronted wooden compost bay made of slatted boards, heaped with grass clippings, vegetable peelings, dead leaves and dark crumbly compost.",
+      "note": "Far north-east: rot and fungus."
+    },
+    {
+      "id": "washing_line",
+      "group": "world_backdrop",
+      "via": "nano",
+      "polycount": 10000,
+      "size": 1700,
+      "prompt": "A garden washing line: two wooden T-shaped posts with a sagging rope line between them, wooden clothes pegs, a child's striped T-shirt and two socks hanging.",
+      "note": "North-west, over the lawn beyond the veg patch."
+    },
+    {
+      "id": "family_car",
+      "group": "world_backdrop",
+      "via": "nano",
+      "polycount": 15000,
+      "size": 1730,
+      "prompt": "A small family hatchback car, faded sky-blue paint, clean and well kept, parked, simple clean shapes, four doors, round headlights.",
+      "note": "On the driveway, east."
+    },
+    {
+      "id": "apple_branch",
+      "group": "world_tree",
+      "via": "nano",
+      "polycount": 15000,
+      "size": 300,
+      "prompt": "A thick crooked apple tree branch: rough grey-brown bark with pale green lichen patches, a few thin twigs carrying glossy green apple leaves and one small red apple.",
+      "note": "Canopy walkways (the orb weaver's tree)."
+    },
+    {
+      "id": "rotten_apple",
+      "group": "world_tree",
+      "via": "nano",
+      "polycount": 10000,
+      "size": 29,
+      "prompt": "A windfall apple lying on its side, half rotten: bruised brown soft patches, a pecked hole showing pale flesh, wrinkled skin, a stalk.",
+      "note": "The Windfall Orchard: food and wasps."
+    },
+    {
+      "id": "sap_wound",
+      "group": "world_tree",
+      "via": "nano",
+      "polycount": 12000,
+      "size": 60,
+      "prompt": "A section of apple tree bark with a wound in it oozing thick golden amber resin in shiny drips and runs.",
+      "note": "Sap Falls: resin for torches."
+    },
+    {
+      "id": "amber_lump",
+      "group": "world_tree",
+      "via": "nano",
+      "polycount": 4000,
+      "size": 2.0,
+      "prompt": "A small lump of translucent golden amber resin, glossy, with a tiny air bubble inside.",
+      "note": "A pickup: resin and amber finds."
+    },
+    {
+      "id": "wasp",
+      "group": "world_tree",
+      "via": "nano",
+      "polycount": 10000,
+      "size": 5,
+      "prompt": "A common wasp in flight: yellow and black striped body, narrow waist, four clear wings spread out flat to the sides.",
+      "note": "The orchard: a flying danger."
+    },
+    {
+      "id": "blackbird",
+      "group": "world_tree",
+      "via": "nano",
+      "polycount": 15000,
+      "size": 90,
+      "prompt": "A common blackbird standing: glossy black feathers, bright orange-yellow beak and eye ring, head cocked to one side, looking down at the ground.",
+      "note": "The Leaf-Litter Moor: noise brings it."
+    },
+    {
+      "id": "centipede",
+      "group": "world_rootway",
+      "via": "nano",
+      "polycount": 20000,
+      "size": 55,
+      "prompt": "A giant garden centipede lying straight: a long flattened body of many reddish-brown armoured segments, a pair of long legs on every segment, big curved venom claws at the head, long antennae.",
+      "note": "The Maw, in the dark Rootway."
+    },
+    {
+      "id": "seed_basket",
+      "group": "world_kingdom",
+      "via": "nano",
+      "polycount": 8000,
+      "size": 3,
+      "prompt": "A basket woven from dried grass, full of seeds: striped sunflower seeds and small round grass seeds.",
+      "note": "The kingdom's stores; trading."
+    },
+    {
+      "id": "fungus_lamp",
+      "group": "world_kingdom",
+      "via": "nano",
+      "polycount": 8000,
+      "size": 2,
+      "prompt": "An ant-made lamp: a hollow seed husk hanging from a braided grass cord, holding a cluster of softly glowing blue-green mushrooms.",
+      "note": "Light in the kingdom and the Rootway."
+    },
+    {
+      "id": "wolf_spider",
+      "group": "world_south",
+      "via": "nano",
+      "polycount": 15000,
+      "size": 25,
+      "prompt": "A wolf spider crouched low, ready to pounce: eight long strong banded legs spread wide, a long hairy brown and grey body with a dark stripe down the back, two large glossy black eyes on top of the head and a row of smaller eyes below. Fierce and alert, a real wolf spider's proportions (not a jumping spider), not gory.",
+      "note": "Spider's Edge, on the trowel."
+    },
+    {
+      "id": "mud_tube",
+      "group": "world_south",
+      "via": "nano",
+      "polycount": 8000,
+      "size": 20,
+      "prompt": "A termite mud tube: a curving tunnel of knobbly dried brown mud about as thick as a pencil, open at one end.",
+      "note": "The termite front: tubes spread across the garden."
+    },
+    {
+      "id": "mud_tower",
+      "group": "world_south",
+      "via": "nano",
+      "polycount": 12000,
+      "size": 40,
+      "prompt": "A tall narrow termite mound tower made of lumpy, knobbly, organic dried reddish-brown mud, rough and irregular like natural clay built up grain by grain, small vent holes, a ragged uneven top. No bricks, no blocks.",
+      "note": "The mud-tube tower (their lookout)."
+    },
+    {
+      "id": "matchstick",
+      "group": "world_south",
+      "via": "nano",
+      "polycount": 3000,
+      "size": 15,
+      "prompt": "A single used wooden matchstick standing straight on end: very long and slender like a real match (about twenty times longer than it is wide), plain pale wood, the small rounded head at the top burnt black and cracked. No flame, no glow.",
+      "note": "The Silent Post's palisade."
+    },
+    {
+      "id": "leaf_raft",
+      "group": "world_south",
+      "via": "nano",
+      "polycount": 8000,
+      "size": 6,
+      "prompt": "A small raft made of a dry curled leaf lashed to three twigs with grass rope, a twig mast with a small leaf sail.",
+      "note": "Crossing the Rut (the ants teach it)."
+    },
+    {
+      "id": "woodpile",
+      "group": "world_patio",
+      "via": "nano",
+      "polycount": 20000,
+      "size": 700,
+      "prompt": "A tidy freestanding stack of split firewood logs: bark on the round sides, pale split faces with rings, a few gaps between the logs. Just the logs, no wall, no ground.",
+      "note": "The termite Citadel."
+    },
+    {
+      "id": "sugar_crystal",
+      "group": "world_patio",
+      "via": "nano",
+      "polycount": 4000,
+      "size": 2.0,
+      "prompt": "A single large sugar crystal: a chunky clear-white cube with sparkling facets.",
+      "note": "Sky-Salt, the third ingredient."
+    },
+    {
+      "id": "termite_queen",
+      "group": "world_patio",
+      "via": "nano",
+      "polycount": 15000,
+      "size": 40,
+      "prompt": "A termite queen: a huge pale swollen cream-coloured abdomen with faint brown bands, a small brown head and six short legs at the front.",
+      "note": "The heart of the Citadel."
+    },
+    {
+      "id": "weed_rosette",
+      "group": "world_patio",
+      "via": "nano",
+      "polycount": 8000,
+      "size": 40,
+      "prompt": "A flat dandelion leaf rosette, a star of long jagged green leaves spreading out from the middle, with a short thick taproot under it. Just the plant, no ground, no stones.",
+      "note": "Weeds in the patio joints."
+    },
+    {
+      "id": "pill_bug_ball",
+      "group": "creatures_fix",
+      "via": "nano",
+      "polycount": 10000,
+      "size": 4.3,
+      "references": [
+        "source/references/pill_bug.png"
+      ],
+      "prompt": "The same pill bug as in the reference picture, rolled up tight into a ball: its grey armoured shell plates wrap all the way round in overlapping bands, head, legs and antennae tucked away inside, a near-perfect sphere. Same colours, markings and texture as the reference.",
+      "style": "Same art style as the reference.",
+      "note": "The pill bug curled into a ball (creatures/pill_bug/pill_bug.gd)."
+    },
+    {
+      "id": "ant_queen",
+      "group": "characters",
+      "via": "nano",
+      "concept_only": true,
+      "polycount": 30000,
+      "size": 2.6,
+      "references": [
+        "source/references/opigo_full.png",
+        "source/references/opumie_full.png"
+      ],
+      "style": "Hand-sculpted stylized game character in exactly the same art style as the two ant characters in the reference pictures: big glossy eyes, chunky readable shapes, hand-painted textures, clothes made from garden things. Family-friendly.",
+      "view": "Full body, front view, standing upright on two legs in an A-pose with the arms held a little away from the body, plain white background, soft even light.",
+      "prompt": "An ant queen character: tall and dignified, a glossy amber-brown ant body, a long rounded abdomen behind her, big kind dark eyes, curved antennae, a headband woven from a golden dandelion petal like a small crown, a cloak made from a dried pink rose petal, a sash of braided grass.",
+      "note": "The Queen of the ant kingdom (the hub)."
+    },
+    {
+      "id": "akpuru",
+      "group": "characters",
+      "via": "nano",
+      "concept_only": true,
+      "polycount": 30000,
+      "size": 2.8,
+      "references": [
+        "source/references/akpuru_four_arms.png"
+      ],
+      "style": "Same art style as the reference.",
+      "view": "Full body, front view, standing upright on two legs in an A-pose with the arms held a little away from the body, plain white background, soft even light.",
+      "prompt": "Edit this picture: remove the second, inner pair of small arms (the ones under the big outer arms), so the termite general has only ONE pair of arms (the big outer ones from the shoulders) and his two legs. Keep everything else exactly the same: the head, mandibles, bark shoulder plates, mud belt, sash, colours and pose.",
+      "note": "Akpuru, the termite general: the final boss."
+    },
+    {
+      "id": "termite_raider",
+      "group": "characters",
+      "via": "nano",
+      "concept_only": true,
+      "polycount": 20000,
+      "size": 2.1,
+      "references": [
+        "source/references/opigo_full.png",
+        "source/references/opumie_full.png"
+      ],
+      "style": "Hand-sculpted stylized game character in exactly the same art style as the two ant characters in the reference pictures: big glossy eyes, chunky readable shapes, hand-painted textures, clothes made from garden things. Family-friendly.",
+      "view": "Full body, front view, standing upright on two legs in an A-pose with the arms held a little away from the body, plain white background, soft even light.",
+      "prompt": "A termite raider soldier with an insect body built like the ants in the reference pictures: a segmented pale cream abdomen and thorax, exactly two thin jointed arms and two legs, like the ants in the reference pictures (no extra limbs), an orange-brown armoured head with strong short mandibles. NO eyes at all (termites are blind): smooth armour where eyes would be. A small round bark shield strapped to one arm, a mud-caked sling across the chest. Wiry and quick, one of many.",
+      "note": "The termites who raid your camp."
+    },
+    {
+      "id": "plantain",
+      "group": "biome_plants",
+      "via": "nano",
+      "polycount": 8000,
+      "size": 40,
+      "prompt": "A broadleaf plantain weed: a flat rosette of broad ribbed oval green leaves, with two tall thin flower spikes of tiny brown flowers.",
+      "note": "Blade Forest and lawn weeds."
+    },
+    {
+      "id": "grass_seedhead",
+      "group": "biome_plants",
+      "via": "nano",
+      "polycount": 8000,
+      "size": 120,
+      "prompt": "A single tall grass stem gone to seed: a thin green-gold stalk with a drooping feathery seed head full of pale seeds.",
+      "note": "Blade Forest: seeds to gather and eat."
+    },
+    {
+      "id": "moss_clump",
+      "group": "biome_plants",
+      "via": "nano",
+      "polycount": 8000,
+      "size": 20,
+      "prompt": "A soft round cushion of bright green moss with tiny brown spore stalks sticking up.",
+      "note": "Hose Run, the patio joints, damp shade."
+    },
+    {
+      "id": "marigold",
+      "group": "biome_plants",
+      "via": "nano",
+      "polycount": 10000,
+      "size": 110,
+      "prompt": "A French marigold plant: a small bushy clump of feathery dark green leaves with three round frilly orange and gold flowers.",
+      "note": "The Flower Bed."
+    },
+    {
+      "id": "wild_strawberry",
+      "group": "biome_plants",
+      "via": "nano",
+      "polycount": 10000,
+      "size": 60,
+      "prompt": "A low wild strawberry plant: three-part toothed green leaves on thin stems, two small white flowers and three ripe glossy red strawberries hanging down.",
+      "note": "The Flower Bed: food."
+    },
+    {
+      "id": "nettle",
+      "group": "biome_plants",
+      "via": "nano",
+      "polycount": 10000,
+      "size": 150,
+      "prompt": "A stinging nettle stem: an upright square stalk with pairs of jagged heart-shaped leaves, covered in fine stinging hairs.",
+      "note": "Hose Run: a stinging danger."
+    },
+    {
+      "id": "thistle",
+      "group": "biome_plants",
+      "via": "nano",
+      "polycount": 10000,
+      "size": 140,
+      "prompt": "A spiky thistle plant: a stiff stalk with prickly jagged grey-green leaves and one round purple spiky flower head.",
+      "note": "Bare Patch edges."
+    },
+    {
+      "id": "bark_chips",
+      "group": "biome_plants",
+      "via": "nano",
+      "polycount": 8000,
+      "size": 30,
+      "prompt": "A small pile of reddish-brown bark mulch chips, flat curved pieces with rough bark on one side.",
+      "note": "The Flower Bed's mulch."
+    },
+    {
+      "id": "eraser",
+      "group": "biome_litter",
+      "via": "nano",
+      "polycount": 4000,
+      "size": 18,
+      "prompt": "A worn rectangular pink pencil eraser with rounded rubbed-down corners and a few pencil smudges.",
+      "note": "Backpack Hollow: dropped school things."
+    },
+    {
+      "id": "paperclip",
+      "group": "biome_litter",
+      "via": "nano",
+      "polycount": 4000,
+      "size": 11,
+      "prompt": "One single silver metal paperclip, slightly bent open, lying flat on its side. Just one clip.",
+      "note": "Backpack Hollow, Bare Patch."
+    },
+    {
+      "id": "button",
+      "group": "biome_litter",
+      "via": "nano",
+      "polycount": 4000,
+      "size": 7,
+      "prompt": "A single round four-hole shirt button, pale blue plastic, a little scratched.",
+      "note": "Bare Patch: a find."
+    },
+    {
+      "id": "sweet_wrapper",
+      "group": "biome_litter",
+      "via": "nano",
+      "polycount": 5000,
+      "size": 25,
+      "prompt": "A crumpled shiny sweet wrapper, twisted at both ends, bright red and gold foil.",
+      "note": "Backpack Hollow."
+    },
+    {
+      "id": "pot_shard",
+      "group": "biome_litter",
+      "via": "nano",
+      "polycount": 5000,
+      "size": 30,
+      "prompt": "A single broken curved shard of a terracotta flower pot: one jagged triangular piece of curved orange clay wall with part of the rim, rough broken edges. Not a whole pot.",
+      "note": "Bare Patch, near the pot ring."
+    },
+    {
+      "id": "snail_shell",
+      "group": "biome_litter",
+      "via": "nano",
+      "polycount": 6000,
+      "size": 10,
+      "prompt": "An empty garden snail shell, a brown and cream spiral with dark bands, lying on its side.",
+      "note": "Blade Forest, Hose Run: a shelter or a cup."
+    },
+    {
+      "id": "plant_label",
+      "group": "biome_litter",
+      "via": "nano",
+      "polycount": 4000,
+      "size": 40,
+      "prompt": "A white plastic plant label stake stuck in the soil, a pointed end, a faded handwritten word 'MARIGOLD' on it.",
+      "note": "The Flower Bed."
+    },
+    {
+      "id": "tennis_ball",
+      "group": "biome_landmarks",
+      "via": "nano",
+      "polycount": 8000,
+      "size": 24,
+      "prompt": "A worn tennis ball, fuzzy yellow-green felt with the white curving seam, a little dirty.",
+      "note": "Patio edge: a landmark you can climb."
+    },
+    {
+      "id": "toy_dinosaur",
+      "group": "biome_landmarks",
+      "via": "nano",
+      "polycount": 15000,
+      "size": 36,
+      "prompt": "A child's plastic toy dinosaur, a green long-necked sauropod standing, a little faded with scuffed paint.",
+      "note": "Windfall Roots: a landmark."
+    },
+    {
+      "id": "lego_brick",
+      "group": "biome_landmarks",
+      "via": "nano",
+      "polycount": 6000,
+      "size": 11,
+      "prompt": "A single red plastic toy building brick with eight round studs on top, a little scratched.",
+      "note": "Patio edge: a landmark."
+    },
+    {
+      "id": "garden_glove",
+      "group": "biome_landmarks",
+      "via": "nano",
+      "polycount": 12000,
+      "size": 90,
+      "prompt": "A dropped gardening glove lying flat, green and grey fabric with a rubber-coated palm, fingers a little curled, dirty at the fingertips.",
+      "note": "Hose Run: a landmark (Mum's)."
+    },
+    {
+      "id": "soil_clods",
+      "group": "biome_ground",
+      "via": "nano",
+      "polycount": 10000,
+      "size": 6,
+      "prompt": "A small cluster of lumpy dry soil clods and crumbly dirt lumps of different sizes, reddish-brown earth with tiny grains and pits.",
+      "note": "The ground everywhere: clods and lumps (Grounded's busy soil)."
+    },
+    {
+      "id": "sprout",
+      "group": "biome_ground",
+      "via": "nano",
+      "polycount": 6000,
+      "size": 4,
+      "prompt": "A tiny seedling sprouting from the soil: a short pale green stem with two round fresh green seed leaves opening at the top, a little dirt at the base.",
+      "note": "Sprigs to gather, dotted over the soil."
+    },
+    {
+      "id": "cone_mushrooms",
+      "group": "biome_ground",
+      "via": "nano",
+      "polycount": 10000,
+      "size": 12,
+      "prompt": "A cluster of three small mushrooms with tall cone-shaped orange-brown caps with fine ridges under the rim, slender pale stems.",
+      "note": "Damp shade under things."
+    },
+    {
+      "id": "inky_cap",
+      "group": "biome_ground",
+      "via": "nano",
+      "polycount": 10000,
+      "size": 10,
+      "prompt": "A single shaggy inky cap mushroom: a tall bell-shaped cap in orange and cream with wavy dark brown stripes, standing on a pale fibrous base.",
+      "note": "Damp shade, the Windfall Roots."
+    },
+    {
+      "id": "homework_sheet",
+      "group": "biome_ground",
+      "via": "nano",
+      "polycount": 8000,
+      "size": 100,
+      "prompt": "A child's school worksheet, a sheet of paper folded once and lying half-open like a tent, a little crumpled, with printed maths sums, a pencil drawing of a dinosaur and a gold star sticker.",
+      "note": "Backpack Hollow: a big leaning sheet to shelter under."
+    },
+    {
+      "id": "bendy_straw",
+      "group": "biome_ground",
+      "via": "nano",
+      "polycount": 6000,
+      "size": 70,
+      "prompt": "A plastic bendy drinking straw with red and white stripes, bent at the ribbed elbow, lying on its side.",
+      "note": "The lawn near the patio: a tunnel to crawl through."
     }
-  ]
+  ],
+  "image_model": "nano-banana-pro"
 }
