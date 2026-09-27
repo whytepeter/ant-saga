@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-27T09:45:47.219Z
-> Files: 286 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-27T10:09:44.477Z
+> Files: 287 tracked | Anatomy hits: 0 | Misses: 0
 
 > Project structure index. Auto-maintained by OpenWolf hooks and daemon.
 > Run `openwolf scan` to generate, or wait for the first Claude Code session.
@@ -147,6 +147,10 @@
 - `Meshy_AI_Amber_Ant_Scout_biped_Animation_Running_withSkin.glb.import` (~349 tok)
 - `Meshy_AI_Amber_Ant_Scout_biped_Animation_Walking_withSkin_texture_0.png.import` (~331 tok)
 - `Meshy_AI_Amber_Ant_Scout_biped_Animation_Walking_withSkin.glb.import` (~349 tok)
+
+## creatures/ground_beetle/
+
+- `night_beetle.gd` — Declares State (~2384 tok)
 
 ## creatures/pill_bug/
 
@@ -300,7 +304,7 @@
 ## world/
 
 - `ambient_life.gd` — Declares KINDS (~2654 tok)
-- `day_clock.gd` — Declares SUNRISE (~541 tok)
+- `day_clock.gd` — Declares SUNRISE (~1957 tok)
 - `dialogue.gd` (~845 tok)
 - `garden_audio.gd` — Declares DIR (~3204 tok)
 - `grass_meshes.gd` (~620 tok)

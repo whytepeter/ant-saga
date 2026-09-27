@@ -39,6 +39,10 @@ var raining := false
 ## 0 under open sky, 1 with something solid overhead (a cave roof, the cap).
 var shelter := 0.0
 
+## How much of the day's fill light and sky is left at full night.
+const NIGHT_AMBIENT := 0.45
+const NIGHT_SKY := 0.45
+
 var _drops: GPUParticles3D
 var _crowns: MultiMesh
 var _rings: MultiMesh
@@ -50,7 +54,11 @@ var _spawn_debt := 0.0
 var _sun_energy := 1.0
 var _shadow_opacity := 1.0
 var _ambient := 1.0
+var _ambient_color := Color.WHITE
+var _fog_color := Color.WHITE
+var _vol_albedo := Color.WHITE
 var _saturation := 1.0
+var _exposure := 1.0
 var _fog_base := 0.0
 var _vol_base := 0.0
 var _shower_done := false
@@ -69,7 +77,11 @@ func _ready() -> void:
 		_fog_base = env.fog_density
 		_vol_base = env.volumetric_fog_density
 		_ambient = env.ambient_light_energy
+		_ambient_color = env.ambient_light_color
+		_fog_color = env.fog_light_color
+		_vol_albedo = env.volumetric_fog_albedo
 		_saturation = env.adjustment_saturation
+		_exposure = env.tonemap_exposure
 	if sun != null:
 		_sun_energy = sun.light_energy
 		_shadow_opacity = sun.shadow_opacity
@@ -132,10 +144,16 @@ func _overcast() -> void:
 	if env != null:
 		env.fog_density = _fog_base * (1.0 + 2.5 * intensity)
 		env.volumetric_fog_density = _vol_base * (1.0 + 1.5 * intensity)
+		# night: a cool, dim fill (the moon does the rest), a dark sky that still
+		# shows the stars, and fog that no longer glows warm
 		var dark := clock.night() if clock != null else 0.0
-		env.ambient_light_energy = _ambient * (1.0 + 0.35 * intensity) * lerpf(1.0, 0.3, dark)
-		env.background_energy_multiplier = lerpf(1.0, 0.12, dark)
-		env.adjustment_saturation = _saturation * lerpf(1.0, 0.82, intensity)
+		env.ambient_light_energy = _ambient * (1.0 + 0.35 * intensity) * lerpf(1.0, NIGHT_AMBIENT, dark)
+		env.ambient_light_color = _ambient_color.lerp(Color(0.42, 0.5, 0.72), dark)
+		env.background_energy_multiplier = lerpf(1.0, NIGHT_SKY, dark)
+		env.fog_light_color = _fog_color.lerp(Color(0.1, 0.13, 0.2), dark)
+		env.volumetric_fog_albedo = _vol_albedo.lerp(Color(0.35, 0.4, 0.55), dark)
+		env.adjustment_saturation = _saturation * lerpf(1.0, 0.82, intensity) * lerpf(1.0, 0.7, dark)
+		env.tonemap_exposure = _exposure * lerpf(1.0, 1.3, dark)  # eyes used to the dark
 
 
 # ── drops ─────────────────────────────────────────────────────────────────────

@@ -1,13 +1,13 @@
 {
   "version": 1,
   "meta": {
-    "lastScanned": "2026-09-27T09:45:47.219Z",
-    "fileCount": 286,
+    "lastScanned": "2026-09-27T10:09:44.477Z",
+    "fileCount": 287,
     "hits": 0,
     "misses": 0,
-    "renderedHash": "4e733a62df616c7fe166643bef87548cccf8030bf9679b33491dc76ae2cc92f2",
-    "storeUpdatedAt": "2026-09-27T09:45:47.228Z",
-    "rootHash": "210baab650eb52d8"
+    "renderedHash": "553c1c3acea10ac7f83c6e39060d51d1c6d6608d89d75f263a84865f2c5e33a8",
+    "storeUpdatedAt": "2026-09-27T10:09:44.486Z",
+    "rootHash": "9c05f2da916595c0"
   },
   "files": {
     ".gitattributes": {
@@ -2116,11 +2116,11 @@
     },
     "world/day_clock.gd": {
       "description": "Declares SUNRISE",
-      "tokens": 541,
-      "hash": "5f8c18eed254589c",
-      "size": 2028,
-      "mtimeMs": 1790381568804.7754,
-      "updatedAt": "2026-09-26T00:12:48.903Z",
+      "tokens": 1957,
+      "hash": "e0dbe531a507270e",
+      "size": 7338,
+      "mtimeMs": 1790502998655.6929,
+      "updatedAt": "2026-09-27T09:56:38.759Z",
       "source": "hook"
     },
     "ui/compass.gd": {
@@ -3345,6 +3345,15 @@
       "size": 9028,
       "mtimeMs": 1790502347118.3115,
       "updatedAt": "2026-09-27T09:45:47.219Z",
+      "source": "hook"
+    },
+    "creatures/ground_beetle/night_beetle.gd": {
+      "description": "Declares State",
+      "tokens": 2384,
+      "hash": "75ed48137be2a355",
+      "size": 8938,
+      "mtimeMs": 1790503784353.257,
+      "updatedAt": "2026-09-27T10:09:44.476Z",
       "source": "hook"
     }
   },

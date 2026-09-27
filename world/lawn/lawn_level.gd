@@ -35,6 +35,10 @@ const FALL_LIMIT := -40.0
 ## Real minutes from the morning (07:30) to sunset (18:30) in the adventure: a
 ## first play of Level 1 takes about 60-90 minutes.
 @export var day_minutes := 75.0
+## Survival: real minutes for the day (07:30 to 18:30) and for the night
+## (sunset to sunrise); the clock runs round and round.
+@export var survival_day_minutes := 20.0
+@export var survival_night_minutes := 8.0
 
 var layout: LawnLayout
 var checkpoint := {}
@@ -88,6 +92,8 @@ func _ready() -> void:
 		if live_creatures:
 			_spawn_pill_bugs()
 			_spawn_ants()
+			if survival_mode:
+				_spawn_night_hunters()
 		if _companions_on():
 			_spawn_companions()
 	# swam too far: worn out, back on the bank he swam from
@@ -108,8 +114,13 @@ func _setup_adventure() -> void:
 	clock = DayClock.new()
 	clock.name = "DayClock"
 	add_child(clock)
-	clock.setup($Sun as SunLight, 450.0, 1110.0, day_minutes)  # 07:30 to 18:30, then dusk to 20:00
+	clock.setup($Sun as SunLight, 450.0, 1110.0, survival_day_minutes if survival_mode else day_minutes)  # 07:30 to 18:30
+	if survival_mode:
+		clock.loops = true
+		clock.night_real_minutes = survival_night_minutes
+		clock.add_night(self, ($WorldEnvironment as WorldEnvironment).environment)
 	clock.sunset_reached.connect(_on_sunset)
+	clock.dawn.connect(_on_dawn)
 	var weather := Weather.new()
 	weather.name = "Weather"
 	weather.setup(player, $Sun as DirectionalLight3D, ($WorldEnvironment as WorldEnvironment).environment, clock)
@@ -127,11 +138,15 @@ func _setup_adventure() -> void:
 	survival = Survival.new()
 	survival.name = "Survival"
 	survival.setup(player, layout)
+	survival.clock = clock
 	player.add_child(survival)
+	survival.sleep_requested.connect(_sleep)
 	var dew := DewDrops.new()
 	dew.name = "DewDrops"
+	dew.clock = clock
 	dew.setup(layout)
 	add_child(dew)
+	clock.dawn.connect(dew.regrow)
 	var water_fx := WaterFx.new()
 	water_fx.name = "WaterFx"
 	water_fx.setup(player)
@@ -245,6 +260,27 @@ func _on_sunset() -> void:
 	hud.show_banner("Dusk")
 
 
+## Survival: he lies down in a shelter; the night passes in a fade, and he
+## wakes there at sunrise (and wakes there from now on after a knock-out).
+func _sleep(shelter: Dictionary) -> void:
+	player.input_enabled = false
+	var here := player.global_position
+	var yaw := player.camera_rig.yaw
+	hud.fade_through("Morning", func() -> void:
+		clock.advance(clock.until(DayClock.SUNRISE))
+		survival.slept()
+		checkpoint = {"name": String(shelter["name"]), "pos": here + Vector3.UP * 0.3, "yaw": yaw})
+	get_tree().create_timer(3.2).timeout.connect(func() -> void:
+		player.input_enabled = true
+		show_toast("You'll wake here · %s" % String(shelter["name"])))
+
+
+## Survival: the sun is up on a new day; the creatures settle down again.
+func _on_dawn(day: int) -> void:
+	PillBug.night_boost = 1.0
+	hud.show_banner("Day %d" % day)
+
+
 ## Into Root Hall, the stone rolled back behind them: the end of Level 1.
 func _finish_level() -> void:
 	day_over = true
@@ -335,6 +371,21 @@ func _spawn_pill_bugs() -> void:
 		add_child(bug)
 
 
+## Survival: the ground beetles that come out at night (layout survival.night_hunters).
+func _spawn_night_hunters() -> void:
+	var shelters: Array = layout.data.get("survival", {}).get("shelters", [])
+	for spec: Dictionary in layout.data.get("survival", {}).get("night_hunters", []):
+		var beetle := NightBeetle.new()
+		beetle.name = "GroundBeetle"
+		beetle.player = player
+		beetle.clock = clock
+		beetle.layout = layout
+		beetle.shelters = shelters
+		beetle.home = layout.ground_point(spec["home"])
+		beetle.home_radius = float(spec.get("radius", 55.0))
+		add_child(beetle)
+
+
 func _spawn_companions() -> void:
 	var cast := [["Opigo", 3.5, 0.8], ["Opumie", 6.0, -0.8]]
 	for c: Array in cast:
@@ -353,7 +404,8 @@ func _physics_process(delta: float) -> void:
 	_toast_left = maxf(_toast_left - delta, 0.0)
 	var p := player.global_position
 
-	for area: Dictionary in layout.items("areas"):
+	# (survival: no walk-through checkpoints; he wakes where he last slept)
+	for area: Dictionary in layout.items("areas") if not survival_mode else []:
 		var at: Array = area.get("checkpoint", area["center"])
 		if checkpoint["name"] != area["name"] and Vector2(p.x, p.z).distance_to(LawnLayout.xz(at)) < CHECKPOINT_RADIUS:
 			checkpoint = _checkpoint(String(area["name"]), at, player.camera_rig.yaw)

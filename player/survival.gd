@@ -18,13 +18,23 @@ extends Node
 ##           apple or core (layout landmarks, never runs out)
 ##   water   a dew drop (DewDrops), or the Rut: standing in it or at its edge
 ## Standing in the leaking coupling's mist slowly quenches him too.
+##
+## Sleep (G at a shelter, from 18:00 until sunrise, with nothing hunting close
+## by): the level skips to morning, where he'll wake from now on; it costs some
+## food and water and heals him.
 
 signal changed(hunger: float, thirst: float)
 ## He ate or drank: "crumb", "apple", "dew", "water".
 signal consumed(what: String)
+## G at a shelter in the evening or night: the level puts him to bed.
+signal sleep_requested(shelter: Dictionary)
 
 const FULL := 100.0
 const LOW := 25.0
+## He can sleep from this time (18:00) until sunrise.
+const SLEEP_FROM := 1080.0
+## Nothing hunting this close, or he won't settle.
+const SAFE_RADIUS := 30.0
 ## Landmarks you can take a bite out of, and what each is called in the prompt.
 const FRUIT := {"fallen_apple": "apple", "windfall_apple": "apple", "apple_core": "apple core"}
 
@@ -43,11 +53,17 @@ const FRUIT := {"fallen_apple": "apple", "windfall_apple": "apple", "apple_core"
 ## Quenched per second standing in the coupling's mist.
 @export var mist_rate := 2.5
 @export var mist_radius := 35.0
+## What a night's sleep costs.
+@export var sleep_hunger := 20.0
+@export var sleep_thirst := 25.0
 
 var hunger := FULL
 var thirst := FULL
 var player: Player
 var combat: PlayerCombat
+## For when he may sleep (set by the level; no sleeping without it).
+var clock: DayClock
+var _shelters: Array[Dictionary] = []
 var _fruit: Array[Dictionary] = []  # {pos: Vector3, radius: float, name: String}
 var _mist := Vector3.INF
 var _target := {}  # what G would eat or drink now: {kind, node/at, name}
@@ -63,6 +79,8 @@ func setup(p: Player, layout: LawnLayout) -> void:
 				"radius": maxf(float(size[0]), float(size[2])) * 0.5 + 2.0, "name": FRUIT[id]})
 		elif id == "hose_coupling":
 			_mist = layout.ground_point(lm["pos"])
+	for sh: Dictionary in layout.data.get("survival", {}).get("shelters", []):
+		_shelters.append(sh)
 
 
 func _ready() -> void:
@@ -119,6 +137,13 @@ func consume() -> bool:
 		"water":
 			thirst = minf(thirst + water_sip, FULL)
 			consumed.emit("water")
+		"sleep":
+			if danger_near():
+				player.flash_hint("Not safe to sleep: something's hunting close by", 2.5)
+				return false
+			sleep_requested.emit(t["shelter"])
+			_target = {}
+			return true
 	if player.state == Player.State.GROUND and player.carried == null:
 		player.play_action("pick_up", 1.6)
 	_target = {}
@@ -178,11 +203,50 @@ func _find_target() -> Dictionary:
 			drink = {"kind": "dew", "node": n, "name": "dew drop"}
 	if drink.is_empty() and _at_water(p):
 		drink = {"kind": "water", "name": "water"}
+	if food.is_empty() and drink.is_empty():
+		var here := shelter_here()
+		if not here.is_empty() and can_sleep_now():
+			return {"kind": "sleep", "shelter": here, "name": String(here["name"])}
 	if food.is_empty():
 		return drink
 	if drink.is_empty():
 		return food
 	return food if hunger <= thirst else drink
+
+
+## The shelter he's in, or {}.
+func shelter_here() -> Dictionary:
+	var p := player.global_position
+	for sh: Dictionary in _shelters:
+		var at: Array = sh["pos"]
+		if Vector2(p.x - float(at[0]), p.z - float(at[1])).length() < float(sh["radius"]) \
+				and p.y < float(sh.get("max_y", INF)):
+			return sh
+	return {}
+
+
+## Evening or night (from 18:00 until sunrise).
+func can_sleep_now() -> bool:
+	return clock != null and (clock.minutes >= SLEEP_FROM or clock.minutes < DayClock.SUNRISE)
+
+
+## Something hunting within SAFE_RADIUS (group "night_hunters", is_hunting()).
+func danger_near() -> bool:
+	for n: Node in get_tree().get_nodes_in_group(&"night_hunters"):
+		var h := n as Node3D
+		if h != null and h.call("is_hunting") and h.global_position.distance_to(player.global_position) < SAFE_RADIUS:
+			return true
+	return false
+
+
+## A night's sleep: hungrier and thirstier, but healed.
+func slept() -> void:
+	hunger = maxf(hunger - sleep_hunger, 10.0)
+	thirst = maxf(thirst - sleep_thirst, 10.0)
+	if combat != null and not combat.knocked:
+		combat.health = combat.max_health
+		combat.health_changed.emit(combat.health, combat.max_health)
+	changed.emit(hunger, thirst)
 
 
 ## Standing in the Rut, swimming in it, or right at its edge.
@@ -209,6 +273,8 @@ func _prompt() -> String:
 			return "G · Eat the %s" % String(_target["name"])
 		"dew":
 			return "G · Drink the dew"
+		"sleep":
+			return "G · Sleep till morning"
 	return "G · Drink"
 
 

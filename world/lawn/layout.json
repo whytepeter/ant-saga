@@ -2753,11 +2753,79 @@
     }
   ],
   "survival": {
-    "note": "Survival (player/survival.gd, world/lawn/dew_drops.gd): dew clusters beside the main routes and ant roads every route_spacing metres, plus scatter more anywhere dry; seeded. Food is the crumbs in heavables (kind crumb) and the fallen apples and core (landmarks).",
+    "note": "Survival (player/survival.gd, world/lawn/dew_drops.gd): dew clusters beside the main routes and ant roads every route_spacing metres, plus scatter more anywhere dry; seeded. Food is the crumbs in heavables (kind crumb) and the fallen apples and core (landmarks). Shelters are where he can sleep (from 18:00 to sunrise): it skips the night and sets where he wakes. Night hunters come out at dusk from their homes and go back at dawn.",
     "dew": {
       "seed": 7,
       "route_spacing": 28,
-      "scatter": 60
-    }
+      "scatter": 60,
+      "dries": [
+        600,
+        720
+      ]
+    },
+    "shelters": [
+      {
+        "id": "capstone",
+        "name": "Under the Capstone",
+        "pos": [
+          -140,
+          55
+        ],
+        "radius": 7
+      },
+      {
+        "id": "crisp_packet",
+        "name": "The crisp packet",
+        "pos": [
+          255,
+          -240
+        ],
+        "radius": 24
+      },
+      {
+        "id": "root_hall",
+        "name": "Root Hall",
+        "pos": [
+          -356,
+          1
+        ],
+        "radius": 8,
+        "max_y": 6
+      }
+    ],
+    "night_hunters": [
+      {
+        "kind": "ground_beetle",
+        "home": [
+          -150,
+          -190
+        ],
+        "radius": 55
+      },
+      {
+        "kind": "ground_beetle",
+        "home": [
+          -230,
+          -60
+        ],
+        "radius": 50
+      },
+      {
+        "kind": "ground_beetle",
+        "home": [
+          75,
+          15
+        ],
+        "radius": 50
+      },
+      {
+        "kind": "ground_beetle",
+        "home": [
+          205,
+          -120
+        ],
+        "radius": 55
+      }
+    ]
   }
 }

@@ -298,3 +298,8 @@ description: chronological action log per session, consolidated weekly
 | 10:45 | Created docs/SURVIVAL.md | — | ~2403 |
 | 10:45 | Created docs/SURVIVAL.md | — | ~2403 |
 | 10:46 | Survival-first direction: story paused; docs/SURVIVAL.md design (be big again; 3 great beasts any order; termite front; knife start; drop pack on death); CLAUDE.md, GAMEPLAY banner, decisions.md | docs | design agreed | ~30k |
+| 10:56 | Created world/day_clock.gd | — | ~1957 |
+| 10:56 | Created world/day_clock.gd | — | ~1957 |
+| 11:09 | Created creatures/ground_beetle/night_beetle.gd | — | ~2384 |
+| 11:09 | Created creatures/ground_beetle/night_beetle.gd | — | ~2384 |
+| 11:25 | Survival step 2: looping day clock (moon, stars, real darkness), ground beetle night hunters, sleep at shelters (wake point), dew forms at dawn and dries by noon; tests split (story_test parked) | day_clock.gd, weather.gd, night_beetle.gd, survival.gd, dew_drops.gd, lawn_level.gd, layout.json, survival_test.gd | survival, movement, graybox PASS | ~80k |

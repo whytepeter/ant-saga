@@ -60,7 +60,7 @@ With the three ingredients, the final push: **up the trowel onto the patio slabs
 ## 5. The systems
 In build order; each step playable and tested before the next.
 1. ✅ **Hunger and thirst** (`player/survival.gd`): meters, food (crumbs, apples), water (dew, the Rut, the mist), G to eat or drink.
-2. **Day and night:** real darkness; hunters come out at night; **sleep** in a bed or shelter to skip the night and set where you wake; the dew comes back each morning.
+2. ✅ **Day and night** (`world/day_clock.gd` loops in survival: 20 real minutes of day, 8 of night): real darkness under a moon and stars; **ground beetles** hunt at night (`creatures/ground_beetle/night_beetle.gd`: out at dusk, run you down and bite, won't enter a shelter, beaten they stay under till the next night); **sleep** with G in a shelter (under the Capstone, the crisp packet, Root Hall) from 18:00: it skips to morning, costs food and water, heals, and sets where you wake; the dew forms at dawn and dries off by noon.
 3. **Items and crafting:** materials (fibre, leaves, pebbles, twigs, silk, resin, foil...); a pack with limited room; recipes as data (`GAMEPLAY.md` §7); a crafting menu by hand and at a workbench. **He starts with the knife** (a gathering tool and a weak weapon); the axe, hammer and spear are recipes. Cooking at a fire; the water flask.
 4. **Building and saving:** fire pit, shelter, bed, storage, workbench; walls and traps. **Saving** the world, your camp, your pack and the termite front.
 5. **Creatures:** night hunters, the great beasts' behaviours, termite raids.
@@ -76,7 +76,7 @@ In build order; each step playable and tested before the next.
 ## 7. Build order
 0. **Housekeeping:** the everyday tests run in survival mode for the world checks; the story checks move to a parked story test.
 1. ✅ Hunger and thirst.
-2. Day, night and sleep.
+2. ✅ Day, night and sleep.
 3. Items, gathering and crafting (the knife start, the stone axe first).
 4. Building and saving.
 5. Act 1: the vial, the coin, the first raid at the gate, the kingdom hub and the Queen.
