@@ -6,7 +6,8 @@ extends CanvasLayer
 ##            it; a thin daylight line; under it, the current objective
 ##            (ObjectiveLine)
 ##   bottom   key-cap prompts, only when Amodu is next to something
-##   left     health, only after he's been hurt
+##   left     health, only after he's been hurt; above it, small hunger and
+##            thirst meters (Survival), which pulse when low
 ##   right    the weapon in his hands (WeaponBadge), once he has one; Tab opens
 ##            the inventory (InventoryPanel)
 ##   top right  a round minimap; M opens the full map (MapHud)
@@ -20,7 +21,7 @@ const AMBER := Color(1.0, 0.76, 0.32)
 const INK := Color(0.12, 0.1, 0.08)
 const CONTROLS := [
 	["WASD", "Move"], ["Shift", "Sprint"], ["Space", "Jump · hold to leap"], ["C", "Crawl"],
-	["E", "Lift · carry · flip"], ["F", "Throw"], ["Click", "Attack · hold for heavy"],
+	["E", "Lift · carry · flip"], ["G", "Eat · drink"], ["F", "Throw"], ["Click", "Attack · hold for heavy"],
 	["Right-click", "Block"], ["Alt", "Dodge"], ["Wheel", "Weapons"], ["X", "Next weapon"],
 	["Tab", "Inventory"], ["M", "Map"], ["Q", "Call ants"], ["V", "Camera: wide · close · eyes"],
 	["Esc", "Free the mouse"],
@@ -41,6 +42,10 @@ var _prompt_row: HBoxContainer
 var _health_box: Control
 var _health_fill: ColorRect
 var _health_shown := 0.0
+## Hunger and thirst (set before the HUD is added; null for none).
+var survival: Survival
+var _food_fill: ColorRect
+var _water_fill: ColorRect
 var _banner: VBoxContainer
 var _banner_title: Label
 var _banner_tween: Tween
@@ -70,6 +75,8 @@ func _ready() -> void:
 	_build_top()
 	_build_prompt()
 	_build_health()
+	if survival != null:
+		_build_survival()
 	_build_banner()
 	_build_card()
 	_build_subtitles()
@@ -109,6 +116,9 @@ func _process(delta: float) -> void:
 	_compass.markers = markers
 	if _maps != null and _maps.map != null:
 		_maps.map.destination = Vector2(home.x, home.z)
+	if survival != null:
+		_meter(_food_fill, survival.hunger, Color(0.95, 0.66, 0.25))
+		_meter(_water_fill, survival.thirst, Color(0.4, 0.72, 1.0))
 	# health fades out a while after it's full again
 	_health_shown = maxf(_health_shown - delta, 0.0)
 	_health_box.modulate.a = move_toward(_health_box.modulate.a, 1.0 if _health_shown > 0.0 else 0.0, delta * 3.0)
@@ -270,6 +280,47 @@ func _build_health() -> void:
 	_health_fill.size = Vector2(216, 8)
 	_health_fill.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_health_box.add_child(_health_fill)
+
+
+func _build_survival() -> void:
+	var box := Control.new()
+	box.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_LEFT)
+	box.offset_left = 32.0
+	box.offset_top = -122.0
+	box.offset_right = 250.0
+	box.offset_bottom = -70.0
+	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(box)
+	var rows := [[_Crumb.new(), "_food_fill"], [_Drop.new(), "_water_fill"]]
+	for i in rows.size():
+		var y := 24.0 * i
+		var icon := rows[i][0] as Control
+		icon.position = Vector2(2, y)
+		icon.size = Vector2(18, 18)
+		icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		box.add_child(icon)
+		var back := Panel.new()
+		back.position = Vector2(28, y + 5)
+		back.size = Vector2(150, 9)
+		back.add_theme_stylebox_override("panel", _round(Color(0, 0, 0, 0.45), 5))
+		back.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		box.add_child(back)
+		var fill := ColorRect.new()
+		fill.position = Vector2(30, y + 7)
+		fill.size = Vector2(146, 5)
+		fill.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		box.add_child(fill)
+		set(String(rows[i][1]), fill)
+
+
+## A meter's fill: its share of 146 px, pulsing red-ward when low.
+func _meter(fill: ColorRect, value: float, color: Color) -> void:
+	fill.size.x = 146.0 * clampf(value / Survival.FULL, 0.0, 1.0)
+	if value < Survival.LOW:
+		var pulse := 0.5 + 0.5 * sin(Time.get_ticks_msec() * 0.008)
+		fill.color = color.lerp(Color(0.95, 0.3, 0.25), pulse)
+	else:
+		fill.color = color
 
 
 func _build_weapons() -> void:
@@ -483,3 +534,23 @@ class _Heart extends Control:
 		draw_circle(Vector2(size.x * 0.7, size.y * 0.35), r, c)
 		draw_colored_polygon(PackedVector2Array([Vector2(size.x * 0.05, size.y * 0.45), Vector2(size.x * 0.95, size.y * 0.45),
 			Vector2(size.x * 0.5, size.y * 0.98)]), c)
+
+
+## A small drawn crumb (hunger meter).
+class _Crumb extends Control:
+	func _draw() -> void:
+		var c := Color(0.95, 0.66, 0.25)
+		draw_colored_polygon(PackedVector2Array([Vector2(size.x * 0.1, size.y * 0.55), Vector2(size.x * 0.35, size.y * 0.15),
+			Vector2(size.x * 0.8, size.y * 0.2), Vector2(size.x * 0.95, size.y * 0.6), Vector2(size.x * 0.6, size.y * 0.92),
+			Vector2(size.x * 0.2, size.y * 0.85)]), c)
+		draw_circle(Vector2(size.x * 0.45, size.y * 0.5), size.x * 0.08, c.darkened(0.35))
+		draw_circle(Vector2(size.x * 0.68, size.y * 0.42), size.x * 0.06, c.darkened(0.35))
+
+
+## A small drawn water drop (thirst meter).
+class _Drop extends Control:
+	func _draw() -> void:
+		var c := Color(0.4, 0.72, 1.0)
+		draw_circle(Vector2(size.x * 0.5, size.y * 0.64), size.x * 0.3, c)
+		draw_colored_polygon(PackedVector2Array([Vector2(size.x * 0.5, size.y * 0.02), Vector2(size.x * 0.78, size.y * 0.55),
+			Vector2(size.x * 0.22, size.y * 0.55)]), c)

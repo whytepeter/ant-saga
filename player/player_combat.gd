@@ -45,6 +45,8 @@ const COMBO_WINDOW := 0.5
 @export var soft_target_range := 7.0
 
 var health := 100.0
+## Health regeneration scale (Survival: none while he's hungry).
+var regen_scale := 1.0
 var blocking := false
 var knocked := false
 var _block_time := 0.0
@@ -78,7 +80,7 @@ func _physics_process(delta: float) -> void:
 	_since_damage += delta
 	_since_swing += delta
 	if not knocked and _since_damage > regen_delay and health < max_health:
-		health = minf(health + regen_rate * delta, max_health)
+		health = minf(health + regen_rate * regen_scale * delta, max_health)
 		health_changed.emit(health, max_health)
 	_resolve_pending(delta)
 
@@ -316,6 +318,16 @@ func take_hit(damage: float, from: Vector3, kind: StringName, attacker: Node3D) 
 	if health <= 0.0:
 		knock_out()
 	return damage
+
+
+## Health lost with no blow (Survival: starving or parched); knocks him out at 0.
+func lose_health(amount: float) -> void:
+	if knocked or amount <= 0.0:
+		return
+	health = maxf(health - amount, 0.0)
+	health_changed.emit(health, max_health)
+	if health <= 0.0:
+		knock_out()
 
 
 func knock_out() -> void:

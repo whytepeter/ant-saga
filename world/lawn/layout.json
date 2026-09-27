@@ -1765,6 +1765,86 @@
         -60,
         262
       ]
+    },
+    {
+      "kind": "crumb",
+      "size": 1.6,
+      "name": "Cake crumb",
+      "pos": [
+        -95,
+        -160
+      ],
+      "note": "Survival: food on the way."
+    },
+    {
+      "kind": "crumb",
+      "size": 1.4,
+      "name": "Cheese crumb",
+      "pos": [
+        -230,
+        -60
+      ],
+      "note": "Survival: food on the way."
+    },
+    {
+      "kind": "crumb",
+      "size": 1.8,
+      "name": "Cake crumb",
+      "pos": [
+        -150,
+        40
+      ],
+      "note": "Survival: food on the way."
+    },
+    {
+      "kind": "crumb",
+      "size": 1.5,
+      "name": "Cheese crumb",
+      "pos": [
+        0,
+        40
+      ],
+      "note": "Survival: food on the way."
+    },
+    {
+      "kind": "crumb",
+      "size": 2.0,
+      "name": "Cake crumb",
+      "pos": [
+        150,
+        -150
+      ],
+      "note": "Survival: food on the way."
+    },
+    {
+      "kind": "crumb",
+      "size": 1.3,
+      "name": "Cake crumb",
+      "pos": [
+        -280,
+        20
+      ],
+      "note": "Survival: food on the way."
+    },
+    {
+      "kind": "crumb",
+      "size": 1.7,
+      "name": "Cheese crumb",
+      "pos": [
+        120,
+        95
+      ],
+      "note": "Survival: food on the way."
+    },
+    {
+      "kind": "crumb",
+      "size": 1.6,
+      "name": "Cake crumb",
+      "pos": [
+        -120,
+        230
+      ],
+      "note": "Survival: food on the way."
     }
   ],
   "heavables_note": "Loose props Amodu can lift (<= 2.6 m) or push (<= 5.5 m); see world/props/heavable.gd.",
@@ -2671,5 +2751,13 @@
       ],
       "note": "Beat 2 (docs/GAMEPLAY.md): a fallen twig across the ant road north of the hollow, the first thing to chop with the axe. Off the route home. The Spider's Edge trip lines are choppable silk too (landmark trip_lines)."
     }
-  ]
+  ],
+  "survival": {
+    "note": "Survival (player/survival.gd, world/lawn/dew_drops.gd): dew clusters beside the main routes and ant roads every route_spacing metres, plus scatter more anywhere dry; seeded. Food is the crumbs in heavables (kind crumb) and the fallen apples and core (landmarks).",
+    "dew": {
+      "seed": 7,
+      "route_spacing": 28,
+      "scatter": 60
+    }
+  }
 }

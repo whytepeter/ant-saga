@@ -18,6 +18,7 @@ func _initialize() -> void:
 func _run() -> void:
 	level = load("res://world/lawn/lawn.tscn").instantiate()
 	level.set("opening", false)
+	level.set("survival_mode", false)  # Level 1's story (the default is survival)
 	root.add_child(level)
 	player = level.get_node("Player")
 	(level.get_node("HUD") as CanvasLayer).visible = false

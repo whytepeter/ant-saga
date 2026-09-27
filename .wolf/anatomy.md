@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-27T08:53:18.411Z
-> Files: 281 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-27T09:13:04.168Z
+> Files: 285 tracked | Anatomy hits: 0 | Misses: 0
 
 > Project structure index. Auto-maintained by OpenWolf hooks and daemon.
 > Run `openwolf scan` to generate, or wait for the first Claude Code session.
@@ -190,6 +190,7 @@
 - `player.gd` — Declares State (~17513 tok)
 - `player.gd.uid` (~6 tok)
 - `player.tscn` (~732 tok)
+- `survival.gd` — Declares FULL (~1962 tok)
 - `weapons.gd` — Declares FISTS (~804 tok)
 
 ## player/explorer/
@@ -249,6 +250,7 @@
 
 - `_anim_shots.gd` (~635 tok)
 - `_tmp_props.gd` (~537 tok)
+- `_tmp_survival_shot.gd` (~313 tok)
 - `_tmp_trowel.gd` (~325 tok)
 - `expedition_test.gd` (~3386 tok)
 - `fight_test.gd` (~970 tok)
@@ -259,6 +261,7 @@
 - `lookdev_tour.gd` — Declares SHOTS (~588 tok)
 - `player_movement_test.gd` — Declares PlaygroundScript (~2118 tok)
 - `player_movement_test.gd.uid` (~6 tok)
+- `survival_test.gd` (~1547 tok)
 - `visual_tour.gd` (~759 tok)
 - `visual_tour.gd.uid` (~6 tok)
 
@@ -319,6 +322,7 @@
 
 ## world/lawn/
 
+- `dew_drops.gd` — Declares GROUP (~700 tok)
 - `dialogue.json` (~1408 tok)
 - `garden_dressing.gd` — CHUNK: collision (~3168 tok)
 - `lawn_builder.gd` — Declares WORLD_LAYER (~17893 tok)

@@ -284,3 +284,12 @@ description: chronological action log per session, consolidated weekly
 | 09:53 | Created tests/_tmp_props.gd | — | ~537 |
 | 09:53 | Created tests/_tmp_props.gd | — | ~537 |
 | 09:56 | Placed 6 Meshy models in Level 1: crisp packet (on its side, 9 m, open end west), marble (twist toward path), coin (flat in the plaza), hose coupling (sleeves the hose, port up), door slab (Root Hall door on its edge, rolls aside like a wheel), kit bundle under the camp stone | lawn_builder.gd, heavable.gd, level_story.gd, layout.json | all 3 checks PASS | ~40k |
+| 10:09 | Created player/survival.gd | — | ~1962 |
+| 10:09 | Created player/survival.gd | — | ~1962 |
+| 10:09 | Created world/lawn/dew_drops.gd | — | ~700 |
+| 10:09 | Created world/lawn/dew_drops.gd | — | ~700 |
+| 10:12 | Created tests/survival_test.gd | — | ~1547 |
+| 10:12 | Created tests/survival_test.gd | — | ~1547 |
+| 10:13 | Created tests/_tmp_survival_shot.gd | — | ~313 |
+| 10:13 | Created tests/_tmp_survival_shot.gd | — | ~313 |
+| 10:14 | Survival step 1: survival mode default (no companions/story), hunger+thirst (player/survival.gd), dew drops, crumbs on the route, G eat/drink, HUD meters, tests/survival_test.gd | survival.gd, dew_drops.gd, lawn_level.gd, game_hud.gd, player.gd, player_combat.gd, heavable.gd, layout.json, project.godot | all 4 suites PASS | ~60k |

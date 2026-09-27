@@ -76,6 +76,12 @@ Read this first. Everything here was decided by the user; don't re-raise it as a
 
 **Step B, deferred to when Level 2 is built:** the tree grounds (bounds, silk ladder, West Root Door, Leaf-Litter Moor, Windfall Orchard, Sap Falls, drip-line puddles) and the Rootway re-bake.
 
+## Work order, decided 2026-09-27
+- **Survival before story, inside the story mode** (not a separate sandbox). Story beats (cold open, First Night, web rescue, beetle, the other Meshy models) wait.
+- **Survival mode is the default for now** (`survival_mode` in `world/lawn/lawn_level.gd`): Amodu alone, no companions following, no story beats or objectives, Root Hall open. Story mode is the same flag off (the tests keep it covered).
+- **Survival in four steps**, each playable and tested before the next: (1) hunger and thirst, with food and water in the world; (2) day and night: real darkness, dangerous nights, sleep; (3) gather and craft (weapons, lamp, flask); (4) build (fire pit, shelter, base).
+- **Then the world, nearest first:** (1) the tree grounds; (2) the Rootway; (3) the kingdom and arena under the Bare Patch; (4) the south (Silent Post, termite camp and tower, Spider's Edge); (5) the patio slabs and the woodpile Citadel.
+
 ## Accepted 2026-09-27 from an outside review
 - **Vertical slice first (N125):** build the cold open through the First Night camp until it feels finished and surprising, before widening to the rest of Level 1 and beyond.
 - **Hunger never lowers his strength (N126):** keep both meters (hunger and thirst), tuned gentle; running low slows stamina, and an empty meter only drains health slowly. The heave limits stay fixed: full human strength is the core rule.

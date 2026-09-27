@@ -164,6 +164,12 @@ var carried: Heavable
 var _pushing: Heavable
 var _push_active := false
 var _hint := ""
+## The hint his own actions ask for (lift, flip...), before survival_prompt joins it.
+var _base_hint := ""
+## A second prompt shown beside the others (Survival: "G · Eat", "G · Drink").
+var survival_prompt := ""
+## Sprint speed scale (Survival: slower when he's thirsty).
+var sprint_scale := 1.0
 ## A brief note shown instead of the usual prompt (flash_hint), until this time (ms).
 var _flash_until := 0
 var _flash_text := ""
@@ -354,7 +360,7 @@ func _process_walking(delta: float) -> void:
 		elif speed_scale < 1.0:
 			target_speed = jog_speed * speed_scale
 		elif input_enabled and Input.is_action_pressed("sprint"):
-			target_speed = sprint_speed
+			target_speed = sprint_speed * sprint_scale
 		elif input.length() < 0.6:
 			target_speed = walk_speed
 		else:
@@ -1315,6 +1321,22 @@ func _update_fingers() -> void:
 func _set_hint(text: String) -> void:
 	if _flash_until > Time.get_ticks_msec() and text != _flash_text:
 		return  # a brief note (flash_hint) is showing
+	_base_hint = text
+	_show_hint()
+
+
+## Sets the survival prompt (empty for none); it joins whatever else is shown.
+func set_survival_prompt(text: String) -> void:
+	if text == survival_prompt:
+		return
+	survival_prompt = text
+	_show_hint()
+
+
+func _show_hint() -> void:
+	var text := _base_hint
+	if survival_prompt != "" and not downed and _flash_until <= Time.get_ticks_msec():
+		text = survival_prompt if text == "" else "%s    %s" % [text, survival_prompt]
 	if text == _hint:
 		return
 	_hint = text

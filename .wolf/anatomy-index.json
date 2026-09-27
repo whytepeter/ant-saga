@@ -1,13 +1,13 @@
 {
   "version": 1,
   "meta": {
-    "lastScanned": "2026-09-27T08:53:18.411Z",
-    "fileCount": 281,
+    "lastScanned": "2026-09-27T09:13:04.168Z",
+    "fileCount": 285,
     "hits": 0,
     "misses": 0,
-    "renderedHash": "05250200f4a40b88a96ba34291b34bafd8fa1f92286aec725572a98b5a90a92d",
-    "storeUpdatedAt": "2026-09-27T08:53:18.420Z",
-    "rootHash": "b20957ea82f38f65"
+    "renderedHash": "9759b3d16190e65fc5901476420f3c69ec61cc25686fa570c20232eb584f0d87",
+    "storeUpdatedAt": "2026-09-27T09:13:04.176Z",
+    "rootHash": "b6d02048206bb989"
   },
   "files": {
     ".gitattributes": {
@@ -3300,6 +3300,42 @@
       "size": 2013,
       "mtimeMs": 1790499198303.3105,
       "updatedAt": "2026-09-27T08:53:18.410Z",
+      "source": "hook"
+    },
+    "player/survival.gd": {
+      "description": "Declares FULL",
+      "tokens": 1962,
+      "hash": "ea3c66466d443c0e",
+      "size": 7358,
+      "mtimeMs": 1790500157721.72,
+      "updatedAt": "2026-09-27T09:09:17.825Z",
+      "source": "hook"
+    },
+    "world/lawn/dew_drops.gd": {
+      "description": "Declares GROUP",
+      "tokens": 700,
+      "hash": "007cab98094965a6",
+      "size": 2625,
+      "mtimeMs": 1790500189710.743,
+      "updatedAt": "2026-09-27T09:09:49.799Z",
+      "source": "hook"
+    },
+    "tests/survival_test.gd": {
+      "description": "",
+      "tokens": 1547,
+      "hash": "3e3ddba08bed7d88",
+      "size": 5804,
+      "mtimeMs": 1790500334251.7854,
+      "updatedAt": "2026-09-27T09:12:14.364Z",
+      "source": "hook"
+    },
+    "tests/_tmp_survival_shot.gd": {
+      "description": "",
+      "tokens": 313,
+      "hash": "7cde5c79fae9c65e",
+      "size": 1173,
+      "mtimeMs": 1790500384072.0876,
+      "updatedAt": "2026-09-27T09:13:04.167Z",
       "source": "hook"
     }
   },

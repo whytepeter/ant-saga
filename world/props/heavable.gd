@@ -25,6 +25,9 @@ const HIT_SPEED := 5.0
 @export var size := 1.5
 ## Food value when delivered to the colony (0 = not food).
 @export var food := 0
+## Bites of food left in it (Survival eats one per G); set from its size.
+var bites := 0
+var _bites_at_start := 0
 ## Won't budge whatever its size (a door stone before the story frees it).
 @export var locked := false
 ## He can push it whatever its size (a door stone only he can shift).
@@ -94,6 +97,7 @@ static func make(kind: String, prop_size: float, prop_name: String) -> Heavable:
 	else:
 		_plain_shape(h, kind, prop_size)
 	if h.food > 0:
+		h.bites = maxi(1, roundi(prop_size * 2.0))
 		h.add_to_group("food")
 		var marker := PickupMarker.new()  # food is worth pointing out, close up
 		marker.height = prop_size * 0.5 + 1.4
@@ -101,6 +105,23 @@ static func make(kind: String, prop_size: float, prop_name: String) -> Heavable:
 		marker.screen_size = 0.04
 		h.add_child(marker)
 	return h
+
+
+## Eats one bite: it shrinks, and it's gone after the last. False if nothing left.
+func take_bite() -> bool:
+	if bites <= 0:
+		return false
+	if _bites_at_start == 0:
+		_bites_at_start = bites
+	bites -= 1
+	if bites == 0:
+		queue_free()
+		return true
+	var s := pow(float(bites) / float(_bites_at_start), 1.0 / 3.0)
+	for c: Node in get_children():
+		if c is MeshInstance3D or c is CollisionShape3D:
+			(c as Node3D).scale = Vector3.ONE * s
+	return true
 
 
 static var _hulls := {}  # model id -> the convex hull's points at unit size

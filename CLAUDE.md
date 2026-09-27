@@ -43,7 +43,9 @@ Third-person 3D game in Godot 4.7 (Forward+, Jolt). **The trio adventure** (dire
 python3 tools/lawn_layout.py check
 /Applications/Godot.app/Contents/MacOS/Godot --headless --path . --fixed-fps 60 -s tests/player_movement_test.gd
 /Applications/Godot.app/Contents/MacOS/Godot --headless --path . --fixed-fps 60 -s tests/lawn_graybox_test.gd
+/Applications/Godot.app/Contents/MacOS/Godot --headless --path . --fixed-fps 60 -s tests/survival_test.gd
 ```
+The game starts in **survival mode** (`survival_mode` on the level: Amodu alone, hunger and thirst, no story). The graybox test runs the story with it off.
 For visuals, run `tests/lawn_tour.gd` without `--headless`, passing `-- --out=<dir>`, and look at the screenshots.
 
 ## Conventions

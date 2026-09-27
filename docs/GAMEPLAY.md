@@ -254,7 +254,7 @@ No markers. You find them by noticing things.
 **The build system first** (section 7), because every level leans on it:
 1. Item, recipe and buildable data; the inventory moved onto it; weapons from recipes.
 2. Gathering: chop, pick up, loot drops.
-3. Hunger and thirst (`survival.gd`), food and water in the world, eating and drinking.
+3. ✅ Hunger and thirst (`player/survival.gd`), food and water in the world (crumbs a bite at a time, the fallen apples, dew drops `world/lawn/dew_drops.gd`, the Rut, the coupling's mist), G to eat or drink, meters on the HUD. Hungry: no health regen; thirsty: slower sprint; empty: health drains. (Cooking and the flask come with crafting.)
 4. Crafting menu (by hand and at the fire); cooking.
 5. Real darkness; lamps and torches as `LightSource`.
 6. Build mode, camps, shelters, night rest, saving what's built.

@@ -19,6 +19,7 @@ func _run() -> void:
 	level = load("res://world/lawn/lawn.tscn").instantiate()
 	level.set("expedition_mode", false)
 	level.set("opening", false)
+	level.set("survival_mode", false)  # Level 1's story (the default is survival)
 	root.add_child(level)
 	await _frames(3)
 	player = level.get_node("Player")

@@ -24,6 +24,7 @@ func _run() -> void:
 	level.set("expedition_mode", false)  # the Phase 3 free-roam graybox
 	level.set("live_creatures", false)  # no pill bugs charging the autopilot
 	level.set("opening", false)
+	level.set("survival_mode", false)  # Level 1's story (the default is survival)
 	root.add_child(level)
 	await _frames(3)
 	player = level.get_node("Player")

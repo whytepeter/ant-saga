@@ -3,7 +3,10 @@ extends Node3D
 ## checkpoint, respawns him after the Rut or a fall out of the world, and drives
 ## the HUD.
 ##
-## Adventure mode (the default): Level 1, The Road to the Kingdom. Amodu wakes
+## Survival mode (the default for now): Amodu alone in the garden, no story:
+## no ants travelling with him, no objectives or route guide, Root Hall open.
+## He has to eat and drink (Survival) and the day runs on.
+## Story mode (survival_mode off): Level 1, The Road to the Kingdom. Amodu wakes
 ## by his school bag, shrunk by mistake, with Opigo and Opumie standing over
 ## him; they cross the garden to the Colony Gate, find it shut, and escape at
 ## dusk into Root Hall (LevelStory). The sun is the clock (DayClock) and the
@@ -19,6 +22,9 @@ signal respawned(reason: String)
 const CHECKPOINT_RADIUS := 25.0
 const FALL_LIMIT := -40.0
 
+## Amodu alone in the garden, surviving, with no story (see above). Off, it's
+## Level 1's story with Opigo and Opumie.
+@export var survival_mode := true
 ## Run the parked Phase 3c colony expedition instead of the adventure.
 @export var expedition_mode := false
 ## The opening: waking, the garden and the kingdom's gate far off, then the
@@ -43,6 +49,8 @@ var tree_base: TreeBase
 var route_guide: RouteGuide
 var story: LevelStory
 var hud: GameHud
+## Hunger and thirst (a child of the Player; in both modes).
+var survival: Survival
 ## The level is over (Root Hall reached); R plays again.
 var day_over := false
 
@@ -80,7 +88,7 @@ func _ready() -> void:
 		if live_creatures:
 			_spawn_pill_bugs()
 			_spawn_ants()
-		if Companion.ENABLED:
+		if _companions_on():
 			_spawn_companions()
 	# swam too far: worn out, back on the bank he swam from
 	player.swim_exhausted.connect(func(bank: Vector3) -> void:
@@ -106,15 +114,24 @@ func _setup_adventure() -> void:
 	weather.name = "Weather"
 	weather.setup(player, $Sun as DirectionalLight3D, ($WorldEnvironment as WorldEnvironment).environment, clock)
 	weather.water_level = layout.water_level
-	route_guide = RouteGuide.new()
-	route_guide.name = "RouteGuide"
-	route_guide.setup(layout, player)
-	add_child(route_guide)
-	story = LevelStory.new()
-	story.name = "LevelStory"
-	story.setup(self, player, layout, route_guide, clock)
-	add_child(story)
-	story.level_finished.connect(_finish_level)
+	if not survival_mode:
+		route_guide = RouteGuide.new()
+		route_guide.name = "RouteGuide"
+		route_guide.setup(layout, player)
+		add_child(route_guide)
+		story = LevelStory.new()
+		story.name = "LevelStory"
+		story.setup(self, player, layout, route_guide, clock)
+		add_child(story)
+		story.level_finished.connect(_finish_level)
+	survival = Survival.new()
+	survival.name = "Survival"
+	survival.setup(player, layout)
+	player.add_child(survival)
+	var dew := DewDrops.new()
+	dew.name = "DewDrops"
+	dew.setup(layout)
+	add_child(dew)
 	var water_fx := WaterFx.new()
 	water_fx.name = "WaterFx"
 	water_fx.setup(player)
@@ -131,19 +148,31 @@ func _setup_adventure() -> void:
 	add_child(audio)
 	hud = GameHud.new()
 	hud.name = "GameHud"
-	hud.setup(player, layout, clock, story.destination())
+	hud.setup(player, layout, clock, story.destination() if story != null else _colony_gate())
+	hud.survival = survival
 	add_child(hud)
+	info.visible = false
+	$HUD/Help.visible = false
+	player.wake_up()
+	if story == null:
+		return
 	story.dialogue.line_shown.connect(hud.show_line)
 	story.missions.changed.connect(hud.show_objective)
 	story.time_skip.connect(func(to_minutes: float, caption: String) -> void:
 		hud.fade_through(caption, func() -> void: clock.minutes = maxf(clock.minutes, to_minutes)))
-	info.visible = false
-	$HUD/Help.visible = false
-	player.wake_up()
 	if opening:
 		_opening.call_deferred()
 	else:
 		story.start.call_deferred()
+
+
+## Opigo and Opumie travel with him (story mode only).
+func _companions_on() -> bool:
+	return Companion.ENABLED and not survival_mode
+
+
+func _colony_gate() -> Vector3:
+	return layout.ground_point(layout.item("landmarks", "colony_gate")["pos"])
 
 
 ## He gets up while a camera high above the grass looks across the garden
@@ -267,7 +296,7 @@ func _spawn_props() -> void:
 func _spawn_ants() -> void:
 	var capstone := layout.ground_point(layout.item("landmarks", "crown_cap")["pos"])
 	for sd: Dictionary in layout.items("standins"):
-		if String(sd["kind"]) != "ant" or (Companion.ENABLED and String(sd["name"]) in AntModel.HEROES):
+		if String(sd["kind"]) != "ant" or (_companions_on() and String(sd["name"]) in AntModel.HEROES):
 			continue
 		var body := StaticBody3D.new()
 		body.name = String(sd["name"]).replace(" ", "")
