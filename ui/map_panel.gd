@@ -1,9 +1,12 @@
 class_name MapPanel
 extends Control
 ## One view of the garden map (GardenMap): the painted ground through
-## ui/map.gdshader, with markers drawn on top. The minimap is a small round
-## MapPanel that follows Amodu; the full map is a big one showing everything
-## with names.
+## ui/map.gdshader, with markers drawn on top in the HUD's style: places as
+## cream dots, shelters as small tents (his bed in amber), the pins he's
+## dropped as amber diamonds, home and the next stage, and his amber arrow.
+## The minimap is a small round MapPanel that follows Amodu, on a soft dark
+## disc with a faint rim and an amber N; the full map (MapScreen) is a big one
+## with names, fading out at its edges.
 
 const CREAM := HudGlyphs.CREAM
 const AMBER := HudGlyphs.AMBER
@@ -20,6 +23,12 @@ var circle := false
 var labels := false
 ## The next stage on the way (RouteGuide), INF when none.
 var next_stage := Vector2.INF
+## Where he wakes (the level's checkpoint), INF when not known.
+var bed := Vector2.INF
+## Pins he's dropped on the full map (world x, z).
+var pins: Array[Vector2] = []
+## The full map fades out over this share of its edges (0: a hard edge).
+var soft_edge := 0.0
 
 var _tex: TextureRect
 var _marks: Control
@@ -32,6 +41,7 @@ func _ready() -> void:
 	_mat.set_shader_parameter("map_tex", map.texture)
 	_mat.set_shader_parameter("fog_tex", map.fog)
 	_mat.set_shader_parameter("circle", circle)
+	_mat.set_shader_parameter("soft_edge", soft_edge)
 	_tex = TextureRect.new()
 	_tex.texture = map.texture
 	_tex.material = _mat
@@ -59,6 +69,17 @@ func _process(_delta: float) -> void:
 ## Where a world point (x, z) lands in the panel.
 func to_panel(p: Vector2) -> Vector2:
 	return size * 0.5 + (p - view_centre) / (view_half * 2.0) * size
+
+
+## The world point (x, z) under a point in the panel.
+func to_world(at: Vector2) -> Vector2:
+	return view_centre + (at - size * 0.5) / size * (view_half * 2.0)
+
+
+## The minimap sits on a soft dark disc (drawn under the map).
+func _draw() -> void:
+	if circle:
+		Sleek.spot(self, size * 0.5, size.x * 0.62, 0.55)
 
 
 func _inside(at: Vector2, margin := 0.0) -> bool:
@@ -117,6 +138,21 @@ func _draw_marks() -> void:
 			if _inside(at, 6.0):
 				ci.draw_circle(at, 3.2, Color(0, 0, 0, 0.5))
 				ci.draw_circle(at, 2.0, Color(CREAM, 0.8))
+	# shelters, his bed among them in amber
+	for sh: Dictionary in map.shelters():
+		var at := to_panel(sh["at"])
+		if not _inside(at, 8.0):
+			continue
+		var mine := bed != Vector2.INF and bed.distance_to(sh["at"]) < 30.0
+		tent(ci, at, 7.0 if not labels else 9.0, AMBER if mine else Color(CREAM, 0.9))
+		if labels and mine:
+			_text(ci, "YOUR BED", at + Vector2(0, 22), 11, AMBER, true)  # (places already name the rest)
+	# his pins
+	for pin: Vector2 in pins:
+		var at := to_panel(pin)
+		if _inside(at, 4.0):
+			HudGlyphs.diamond(ci, at + Vector2(0, -6), 6.0 if not labels else 7.5, Color(1.0, 0.85, 0.45))
+			ci.draw_line(at + Vector2(0, -1), at + Vector2(0, 3), Color(1.0, 0.85, 0.45), 2.0)
 	# weapons still lying where they were left
 	for pick: WeaponPickup in get_tree().get_nodes_in_group(WeaponPickup.GROUP):
 		if not is_instance_valid(pick) or pick.is_queued_for_deletion():
@@ -140,6 +176,26 @@ func _draw_marks() -> void:
 		outline.append(tri[0])
 		ci.draw_polyline(outline, Color(0, 0, 0, 0.7), 3.0)
 		ci.draw_colored_polygon(tri, AMBER)
+	if circle:
+		# a faint cream rim and north, in amber, at the top of it
+		var c := size * 0.5
+		var r := size.x * 0.5 - 3.0
+		ci.draw_arc(c, r, 0.0, TAU, 72, Color(0, 0, 0, 0.35), 3.0, true)
+		ci.draw_arc(c, r, 0.0, TAU, 72, Color(CREAM, 0.38), 1.5, true)
+		var n := c + Vector2(0, -r)
+		ci.draw_circle(n, 10.0, Color(0.05, 0.05, 0.04, 0.7))
+		_text(ci, "N", n + Vector2(0, 5), 13, AMBER, true)
+
+
+## A small tent: a shelter he can sleep in.
+static func tent(ci: CanvasItem, c: Vector2, s: float, col: Color) -> void:
+	var pts := PackedVector2Array([c + Vector2(0, -s), c + Vector2(s * 1.1, s * 0.75), c + Vector2(-s * 1.1, s * 0.75)])
+	var outline := PackedVector2Array(pts)
+	outline.append(pts[0])
+	ci.draw_polyline(outline, Color(0, 0, 0, 0.6 * col.a), 3.0)
+	ci.draw_colored_polygon(pts, col)
+	ci.draw_colored_polygon(PackedVector2Array([c + Vector2(0, -s * 0.15), c + Vector2(s * 0.35, s * 0.75),
+		c + Vector2(-s * 0.35, s * 0.75)]), Color(0.1, 0.07, 0.05, col.a))
 
 
 func _pin(ci: CanvasItem, world: Vector2, kind: String) -> void:

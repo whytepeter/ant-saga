@@ -105,6 +105,14 @@ func places() -> Array[Dictionary]:
 	return out
 
 
+## The shelters he can sleep in (layout survival.shelters): [{"name", "at"}].
+func shelters() -> Array[Dictionary]:
+	var out: Array[Dictionary] = []
+	for sh: Dictionary in layout.data.get("survival", {}).get("shelters", []):
+		out.append({"name": String(sh["name"]), "at": LawnLayout.xz(sh["pos"])})
+	return out
+
+
 ## Where the anthill marker goes: the story's goal (destination), else the back door.
 func home() -> Vector2:
 	if destination != Vector2.INF:

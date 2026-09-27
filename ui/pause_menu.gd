@@ -151,7 +151,8 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _can_pause() -> bool:
-	return player == null or not player.downed
+	# not while he's knocked out, or before the game has started (the title)
+	return player == null or (not player.downed and (player.input_enabled or player.get_parent().get_node_or_null("TitleScreen") == null))
 
 
 func _open_settings() -> void:

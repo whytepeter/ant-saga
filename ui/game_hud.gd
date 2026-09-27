@@ -108,6 +108,10 @@ func _process(delta: float) -> void:
 	if guide != null and guide.goal() != Vector3.INF:
 		var to_next := guide.goal() - player.global_position
 		markers.append({"bearing": rad_to_deg(atan2(to_next.x, -to_next.z)), "kind": "next"})
+	if _maps != null:
+		for pin: Vector2 in _maps.pins():
+			var to_pin := Vector3(pin.x, 0.0, pin.y) - player.global_position
+			markers.append({"bearing": rad_to_deg(atan2(to_pin.x, -to_pin.z)), "kind": "pin"})
 	if clock != null:
 		markers.append({"bearing": clock.sun_bearing(), "kind": "sun"})
 		_daylight.size.x = _daylight_back.size.x * clock.daylight()
@@ -330,6 +334,7 @@ func _build_weapons() -> void:
 		_maps.player = player
 		_maps.layout = layout
 		_maps.font = font
+		_maps.menu_layer = get_node("MenuLayer")  # the full map goes over the HUD
 		add_child(_maps)
 	var inventory := player.get_node_or_null("Inventory") as Inventory
 	if inventory == null:

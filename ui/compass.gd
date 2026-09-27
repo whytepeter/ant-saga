@@ -11,7 +11,7 @@ const AMBER := Color(1.0, 0.76, 0.32)
 
 ## Bearing the camera faces.
 var heading := 0.0
-## [{"bearing": float, "kind": "home" | "next" | "sun", "near": bool}]
+## [{"bearing": float, "kind": "home" | "next" | "pin" | "sun", "near": bool}]
 var markers: Array[Dictionary] = []
 var font: Font
 
@@ -61,6 +61,10 @@ func _draw() -> void:
 			"home": HudGlyphs.anthill(self, Vector2(x, h * 0.5), 9.0, AMBER if not edge else Color(AMBER, 0.6))
 			"sun": _draw_sun(Vector2(x, h * 0.5), 6.0, Color(1.0, 0.9, 0.5, 0.9 if not edge else 0.4))
 			"next": _draw_diamond(Vector2(x, h * 0.5), 7.0, Color(1.0, 0.85, 0.45, 1.0 if not edge else 0.55))
+			"pin":
+				# one of his map pins: a small amber diamond on a stalk
+				draw_line(Vector2(x, h * 0.5 + 2.0), Vector2(x, h * 0.5 + 8.0), Color(AMBER, 0.9 if not edge else 0.5), 2.0)
+				_draw_diamond(Vector2(x, h * 0.5 - 2.0), 5.0, Color(AMBER, 1.0 if not edge else 0.5))
 	# the notch marking straight ahead
 	draw_colored_polygon(PackedVector2Array([Vector2(cx - 5, 0), Vector2(cx + 5, 0), Vector2(cx, 6)]), CREAM)
 

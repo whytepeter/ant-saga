@@ -25,6 +25,9 @@ const FALL_LIMIT := -40.0
 ## Amodu alone in the garden, surviving, with no story (see above). Off, it's
 ## Level 1's story with Opigo and Opumie.
 @export var survival_mode := true
+## The title screen over the garden when the game starts (once a launch; not
+## in tests). Untick it to go straight in while working on the level.
+@export var show_title := true
 ## Run the parked Phase 3c colony expedition instead of the adventure.
 @export var expedition_mode := false
 ## The opening: waking, the garden and the kingdom's gate far off, then the
@@ -171,7 +174,22 @@ func _setup_adventure() -> void:
 	add_child(hud)
 	info.visible = false
 	$HUD/Help.visible = false
-	player.wake_up()
+	if show_title and survival_mode and not GameSettings.title_seen and not GameSettings.testing():
+		# the title over the live garden first; he gets up when you start
+		GameSettings.title_seen = true
+		var title := TitleScreen.new()
+		title.name = "TitleScreen"
+		title.level = self
+		title.player = player
+		title.hud = hud
+		title.clock = clock
+		# low in the grass beside where he wakes: the dandelion, a butterfly, the sky
+		title.from = layout.ground_point([20, -170], 18.0)
+		title.look = layout.ground_point([-110, -170], 40.0)
+		title.started.connect(player.wake_up)
+		add_child(title)
+	else:
+		player.wake_up()
 	if story == null:
 		return
 	story.dialogue.line_shown.connect(hud.show_line)
@@ -269,9 +287,12 @@ func _sleep(shelter: Dictionary) -> void:
 	player.input_enabled = false
 	var here := player.global_position
 	var yaw := player.camera_rig.yaw
+	# he lies down as it goes dark, and gets up (face down, as he lay) at dawn
+	player.play_action("lie_down", 2.2, 0.3)
 	hud.fade_through("Morning", func() -> void:
 		clock.advance(clock.until(DayClock.SUNRISE))
 		survival.slept()
+		player.wake_up()
 		checkpoint = {"name": String(shelter["name"]), "pos": here + Vector3.UP * 0.3, "yaw": yaw})
 	get_tree().create_timer(3.2).timeout.connect(func() -> void:
 		player.input_enabled = true

@@ -53,6 +53,8 @@ static var prompts := true
 static var pace := 1.0
 ## Added to the ambience bus, which GardenAudio also muffles in caves.
 static var ambience_db := 0.0
+## The title screen has been shown this launch (Restart goes straight in).
+static var title_seen := false
 
 static var _cfg: ConfigFile
 static var _defaults_actions := {}
@@ -141,6 +143,11 @@ static func _matching_preset() -> int:
 		if ok:
 			return p
 	return CUSTOM
+
+
+## True while a test script (under res://tests/) runs the game.
+static func testing() -> bool:
+	return _testing()
 
 
 static func _testing() -> bool:

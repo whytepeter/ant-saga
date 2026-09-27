@@ -3,11 +3,13 @@ extends Control
 ## The minimap and the full map (GameHud adds this over the whole screen).
 ##
 ##   top right  a round minimap, north up, following Amodu: his arrow, home and
-##              the next stage (pinned to the rim when they're off it)
-##   M          the full map (or click the minimap when the mouse is free): the
-##              whole garden with every area and place named. Ground he hasn't
-##              been near is dimmed; outside the garden (the vegetable beds, the
-##              fence, the house) is dark. M, Esc or a click closes it.
+##              the next stage (pinned to the rim when they're off it), the
+##              shelters (his bed in amber) and his pins
+##   M          the full map (MapScreen, on the menu layer; or click the
+##              minimap when the mouse is free): the whole garden with every
+##              area and place named, zoom, pan and pins. Ground he hasn't been
+##              near is dimmed; outside the garden (the vegetable beds, the
+##              fence, the house) is dark. M or Esc closes it.
 ##
 ## Seen ground is revealed as he walks (GardenMap.reveal).
 
@@ -18,14 +20,16 @@ const REVEAL_EVERY := 0.4
 var player: Player
 var layout: LawnLayout
 var font: Font
-var is_open := false
+## Where the full map goes (GameHud's menu layer, over the rest of the HUD).
+var menu_layer: Node
+var is_open: bool:
+	get:
+		return screen != null and screen.is_open
 
 var map: GardenMap
+var screen: MapScreen
 var _mini: MapPanel
-var _full: MapPanel
-var _full_back: Control
 var _reveal_wait := 0.0
-var _took_input := false
 
 
 func _ready() -> void:
@@ -44,48 +48,16 @@ func _ready() -> void:
 	_mini.offset_top = 70.0
 	_mini.offset_bottom = 70.0 + MINI
 	_mini.mouse_filter = Control.MOUSE_FILTER_STOP
-	_mini.tooltip_text = ""
 	_mini.gui_input.connect(func(e: InputEvent) -> void:
 		if e is InputEventMouseButton and (e as InputEventMouseButton).pressed and (e as InputEventMouseButton).button_index == MOUSE_BUTTON_LEFT:
 			open())
 	add_child(_mini)
-	# the full map: a soft dark band behind a big map, the garden's shape
-	_full_back = Control.new()
-	_full_back.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	_full_back.mouse_filter = Control.MOUSE_FILTER_STOP
-	_full_back.visible = false
-	_full_back.draw.connect(func() -> void:
-		_full_back.draw_rect(Rect2(Vector2.ZERO, _full_back.size), Color(0.03, 0.03, 0.025, 0.55)))
-	_full_back.gui_input.connect(func(e: InputEvent) -> void:
-		if e is InputEventMouseButton and (e as InputEventMouseButton).pressed:
-			close())
-	add_child(_full_back)
-	_full = MapPanel.new()
-	_full.map = map
-	_full.player = player
-	_full.font = font
-	_full.labels = true
-	_full.view_centre = GardenMap.RECT.get_center()
-	_full.view_half = GardenMap.RECT.size * 0.5
-	_full.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_full_back.add_child(_full)
-	_full_back.resized.connect(_fit_full)
-	_fit_full()
-	var hint := Label.new()
-	var ls := LabelSettings.new()
-	ls.font = font
-	ls.font_size = 14
-	ls.font_color = Color(HudGlyphs.CREAM, 0.7)
-	ls.outline_size = 4
-	ls.outline_color = Color(0, 0, 0, 0.6)
-	hint.label_settings = ls
-	hint.text = "M · Close"
-	hint.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM)
-	hint.offset_top = -46.0
-	hint.offset_left = -60.0
-	hint.offset_right = 60.0
-	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_full_back.add_child(hint)
+	screen = MapScreen.new()
+	screen.name = "MapScreen"
+	screen.map = map
+	screen.player = player
+	screen.pins_changed.connect(func() -> void: _mini.pins = screen.pins)
+	(menu_layer if menu_layer != null else self).add_child(screen)
 
 
 ## Shows or hides the round minimap (the Settings screen); M still opens the map.
@@ -94,37 +66,18 @@ func set_minimap(on: bool) -> void:
 		_mini.visible = on
 
 
-## The full map as big as the screen allows, keeping the garden's proportions.
-func _fit_full() -> void:
-	var avail := _full_back.size - Vector2(80, 120)
-	var aspect := GardenMap.RECT.size.x / GardenMap.RECT.size.y
-	var h := minf(avail.y, avail.x / aspect)
-	var s := Vector2(h * aspect, h)
-	_full.position = (_full_back.size - s) * 0.5 + Vector2(0, -10)
-	_full.size = s
+## Pins he's dropped on the full map (the compass shows them too).
+func pins() -> Array[Vector2]:
+	var none: Array[Vector2] = []
+	return screen.pins if screen != null else none
 
 
 func open() -> void:
-	if is_open:
-		return
-	is_open = true
-	_full_back.visible = true
-	_fit_full()
-	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-	if player != null and player.input_enabled:
-		player.input_enabled = false
-		_took_input = true
+	screen.open()
 
 
 func close() -> void:
-	if not is_open:
-		return
-	is_open = false
-	_full_back.visible = false
-	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-	if _took_input and player != null:
-		player.input_enabled = true
-	_took_input = false
+	screen.close()
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -133,9 +86,6 @@ func _unhandled_input(event: InputEvent) -> void:
 			close()
 		elif player == null or player.input_enabled:
 			open()
-		get_viewport().set_input_as_handled()
-	elif is_open and event.is_action_pressed("ui_cancel"):
-		close()
 		get_viewport().set_input_as_handled()
 
 
@@ -148,9 +98,18 @@ func _process(delta: float) -> void:
 		_reveal_wait = REVEAL_EVERY
 		map.reveal(at)
 	_mini.view_centre = at
+	var level := player.get_parent()
 	var next := Vector2.INF
-	var guide := get_parent().get_parent().get("route_guide") as RouteGuide if get_parent() != null and get_parent().get_parent() != null else null
+	var guide := level.get("route_guide") as RouteGuide if level != null else null
 	if guide != null and guide.goal() != Vector3.INF:
 		next = Vector2(guide.goal().x, guide.goal().z)
 	_mini.next_stage = next
-	_full.next_stage = next
+	screen.panel.next_stage = next
+	# his bed: where he'll wake (the level's checkpoint, once he's slept)
+	var bed := Vector2.INF
+	var cp: Variant = level.get("checkpoint") if level != null else null
+	if cp is Dictionary and (cp as Dictionary).has("pos") and String((cp as Dictionary).get("name", "")) != "Start":
+		var p: Vector3 = (cp as Dictionary)["pos"]
+		bed = Vector2(p.x, p.z)
+	_mini.bed = bed
+	screen.panel.bed = bed
