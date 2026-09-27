@@ -14,7 +14,7 @@ const OUT := "res://player/explorer/amodu_animations.res"
 const HIPS := "mixamorig_Hips"
 const BONE_SCALE := 0.01  # target_character node scale in the GLB
 const MODEL_HEIGHT := 1.7  # rest-pose mesh height in the GLB
-const AMODU_HEIGHT := 1.8  # docs/WORLD.md scale rule
+const AMODU_HEIGHT := 1.8  # docs/archive/WORLD.md scale rule
 const MODEL_SCALE := AMODU_HEIGHT / MODEL_HEIGHT
 
 # name -> [source clip, loop, fix]

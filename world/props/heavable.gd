@@ -3,7 +3,7 @@ extends RigidBody3D
 ## A loose object Amodu can move. Shrunk to 5 mm, a human is ~360× stronger for
 ## his weight (the square-cube law), so crumbs, grains and pebbles an ant would
 ## drag are things he lifts overhead and throws, and boulders he can shove
-## (docs/WORLD.md §3). Size decides which: up to LIFT_LIMIT metres across he
+## (docs/archive/WORLD.md §3). Size decides which: up to LIFT_LIMIT metres across he
 ## carries it, up to PUSH_LIMIT he pushes it, beyond that it doesn't budge.
 ##
 ## Food (crumbs, grains) counts toward the colony's store when it goes through

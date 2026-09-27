@@ -25,7 +25,7 @@ extends SceneTree
 
 const HIPS := "Hips"
 const BONE_SCALE := 0.01  # the Armature node's scale in the GLB
-const HEIGHT := 1.8  # Amodu in game (docs/WORLD.md)
+const HEIGHT := 1.8  # Amodu in game (docs/archive/WORLD.md)
 const FPS := 30.0
 const LOOPS := ["idle", "idle_look", "alert", "walk", "run", "sprint", "crouch_walk", "fall", "climb_up",
 	"climb_down", "climb_rope", "swim_idle", "swim", "block", "carry_walk", "push", "torch_crouch_walk",

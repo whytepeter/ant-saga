@@ -1,6 +1,6 @@
 class_name PillBug
 extends CharacterBody3D
-## An armoured pill bug (docs/WORLD.md: an "armoured boar", 2.9–4.3 m). It
+## An armoured pill bug (docs/archive/WORLD.md: an "armoured boar", 2.9–4.3 m). It
 ## roams near home, smells food from far off and goes for the haul, and it
 ## charges Amodu and the ants after a clear wind-up (it rears, flashes red and
 ## marks its line on the ground).

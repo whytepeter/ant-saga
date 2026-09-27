@@ -1,7 +1,7 @@
 @tool
 class_name SunLight
 extends DirectionalLight3D
-## A sun aimed by compass bearing and elevation (docs/WORLD.md §9, layout.json
+## A sun aimed by compass bearing and elevation (docs/archive/WORLD.md §9, layout.json
 ## meta.sun) instead of a hand-typed rotation. North is -Z, east is +X.
 
 @export_range(0.0, 360.0, 0.5, "suffix:°") var azimuth_deg := 75.0:

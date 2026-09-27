@@ -12,7 +12,7 @@ Third-person 3D game in Godot 4.7 (Forward+, Jolt). **The trio adventure** (dire
 ## Read first
 - `docs/GAMEPLAY.md`: how the game plays (trio, survival, crafting and building, combat), **Levels 1–3 mission by mission**, and the build order (section 11, with what's done). The Levels 1–3 story plan is note 4 in `docs/design/gameplay_vision_chatgpt.md`; the user's own chapters are `docs/story/original_draft.md`.
 - `docs/PLAN.md`: phases and the deferred list (parts predate SMALL GIANT).
-- `docs/WORLD.md`: world bible (setting, scale table, areas, hazards).
+- `docs/narrative/world-facts.md`: the current world (generated from the layout). The old world bible is archived in `docs/archive/WORLD.md` (compound setting superseded; the scale table and sound notes are still useful).
 - `docs/ant_kingdom_saga_backyard_edition.pdf`: the design source (heroes, colony building, stages). `docs/STORY.md` is the user's own story: mine it for gameplay, don't edit or re-canonise it.
 
 ## Decisions (don't relitigate)

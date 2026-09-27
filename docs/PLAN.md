@@ -1,6 +1,6 @@
 # Plan: Level 1, The Compound Grass
 
-**Target:** a 720 m × 720 m walkable patch of compound grass (a Nigerian family compound, see docs/WORLD.md) that looks and feels like Grounded, with Amodu at 1.8 m in-game (5 mm real, world scale ×360), built in Godot 4.7 (Forward+) on an M2 Pro / 16 GB Mac.
+**Target:** a 720 m × 720 m walkable patch of compound grass (a Nigerian family compound, see docs/archive/WORLD.md) that looks and feels like Grounded, with Amodu at 1.8 m in-game (5 mm real, world scale ×360), built in Godot 4.7 (Forward+) on an M2 Pro / 16 GB Mac.
 
 > **2026-09-26 (later):** the direction is now **the trio adventure**: two warrior ants shrink Amodu to help end the insect war, with survival (hunger, thirst, night) and a build system. The game design, Levels 1–3 with missions, and the build order are in [`docs/GAMEPLAY.md`](GAMEPLAY.md). SMALL GIANT's "get home before sunset" goal is replaced. Phase 3c below is parked; the Nigerian-compound setting is superseded.
 
@@ -8,7 +8,7 @@ Each phase ends with a **gate**, a check that must pass before the next phase st
 
 ## Direction (decided 2026-09-25)
 
-- **Design source:** the PDF game sheet (`docs/ant_kingdom_saga_backyard_edition.pdf`): heroes, colony building, stages, exploration. The long story draft (`docs/STORY.md`) is parked as reference. The setting is the Nigerian compound (`docs/WORLD.md`).
+- **Design source:** the PDF game sheet (`docs/ant_kingdom_saga_backyard_edition.pdf`): heroes, colony building, stages, exploration. The long story draft (`docs/STORY.md`) is parked as reference. The setting is the Nigerian compound (`docs/archive/WORLD.md`).
 - **Genre:** "Pikmin meets Grounded". Short expeditions from the colony into a 3D compound; bring loot home; build up the colony; unlock heroes and places.
 - **Combat:** real-time squad (Amodu + two heroes), not auto-battle. Scale-aware: weak spots, environmental kills, calling the swarm.
 - **Heroes:** earned through story or by defeating them, not gacha pulls. Each one changes how you play or where you can go (Ladybug glides, Grasshopper jumps, Earthworm digs, Firefly lights, Pill Bug rolls, Honeybee heals, Scout Ant maps).
@@ -24,7 +24,7 @@ Each phase ends with a **gate**, a check that must pass before the next phase st
 **Gate:** passed. The editor scene tree was read, the game was run, and a screenshot was captured through the bridge.
 
 ## Phase 1: World bible and map ✅
-- `docs/WORLD.md`: scale table, landmarks, the nine areas, the civilization layer, lighting and sound direction.
+- `docs/archive/WORLD.md`: scale table, landmarks, the nine areas, the civilization layer, lighting and sound direction.
 - `world/lawn/layout.json`: every coordinate, the single source of truth; the graybox is built from it.
 - `tools/lawn_layout.py`: `check` proves the gating and routes; `render` draws `docs/lawn_map.svg`.
 

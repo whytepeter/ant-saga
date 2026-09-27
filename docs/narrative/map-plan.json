@@ -1,0 +1,110 @@
+{
+  "about": "The narrative map plan: what the garden should become for the game design (docs/GAMEPLAY.md, docs/narrative/bible.md). Drawn over today's layout by tools/narrative_map.py into docs/narrative/map-proposal.html. Nothing here changes the game until the user approves and it is applied to world/lawn/layout.json. Coordinates are [x, z] in game metres: +x east, +z south (north is -z). Windows are [x0, x1, z0, z1]. Levels: 1 the backyard, 2 the apple tree, 3 the kingdom and the pond, 4 the Frontier (the south), 5 the Slabs (the patio, to the Citadel), 6+ later (loose; the ending is not decided). Full reasoning: docs/narrative/map-plan.md.",
+  "window": [-700, 460, -400, 690],
+  "summary": [
+    "L1 unchanged in shape; First Night moves 80 m south so the route stops doubling back.",
+    "L1 raiders march along the top of the driveway kerb, then drop to the lawn north of the pond: visible from the Capstone, no new geometry.",
+    "L2: the tree grounds get a loop that works: canopy, the weavers' silk ladder down the west face, the Leaf-Litter Moor (blackbird), the West Root Door into the Rootway.",
+    "L3: the kingdom under the Bare Patch; the war plan on the north shore; the raft rides the hose runoff into the pond; the Silent Post is a raft side trip.",
+    "The south opens in L4 across the captured causeway (and the Maw's hole from the Rootway): the Frontier, using everything already built there.",
+    "L4 ends at Spider's Edge: the wolf spider guards the trowel, the only way up onto the patio.",
+    "L5 crosses the patio slabs to the woodpile Citadel; the back door is a side beat, not the goal.",
+    "Later: follow the hose upstream to the water butt and the shed (Ugo's cave); the compost heap becomes a rot-and-fungus place, not the termites' side.",
+    "Removed: the lolly stick, the Beetle Stump, the outdoor Moss Wall and Glow-Fungus Ring pins."
+  ],
+  "zooms": [
+    {"title": "The apple tree grounds (Level 2)", "window": [-690, -300, -140, 250], "scale": 1.6},
+    {"title": "The pond and the east end (Levels 1 and 3)", "window": [-20, 380, 60, 330], "scale": 2.0},
+    {"title": "The south: the Frontier and the Slabs (Levels 4 and 5)", "window": [-380, 460, 170, 660], "scale": 1.1}
+  ],
+  "remove": [
+    {"id": "lolly_stick", "why": "The pond has no bridge in any level."}
+  ],
+  "playable": [
+    {"name": "playable area today (±360 m)", "rect": [-360, -360, 360, 345], "today": true},
+    {"name": "NEW: the tree grounds (Level 2)", "rect": [-680, -120, -360, 230], "level": 2},
+    {"name": "LATER: the Slabs, to the Citadel (Level 5)", "rect": [-360, 345, 440, 640], "level": 5}
+  ],
+  "water": [
+    {"name": "THE RUT: the colony's moat", "sub": "bigger, no bridge, swimmable", "level": 3,
+     "polygon": [[70, 150], [100, 132], [160, 128], [220, 130], [270, 140], [295, 170], [292, 215], [265, 252], [205, 262], [140, 262], [115, 240], [90, 236], [66, 215], [60, 180]]}
+  ],
+  "regions": [
+    {"name": "the drip line", "level": 2, "circle": [-470, 0, 250], "note": "rain drips off the canopy edge: a ring of puddles to drink from"},
+    {"name": "Leaf-Litter Moor", "level": 2, "circle": [-600, 140, 60], "note": "dry leaves crunch: noise brings the blackbird"},
+    {"name": "Windfall Orchard", "level": 2, "circle": [-480, 175, 55], "note": "rotting apples, fruit flies, wasps: food"},
+    {"name": "the war-plan shore", "level": 3, "rect": [55, 105, 160, 140], "note": "L3 M4: the ground you build on"},
+    {"name": "the Frontier", "level": 4, "polygon": [[-340, 200], [-60, 215], [60, 250], [150, 268], [300, 268], [340, 300], [340, 345], [-340, 345]], "note": "the lost land between the pond and the patio"}
+  ],
+  "features": [
+    {"name": "Weavers' silk ladder", "at": [-545, 30], "level": 2, "note": "the dry way down the west face (end of M5)"},
+    {"name": "West Root Door", "at": [-600, 60], "level": 2, "note": "the way into the Rootway from the far side, above the flood"},
+    {"name": "Sap Falls", "at": [-525, -45], "level": 2, "note": "resin for torches (M6) and the L3 pit; amber finds"},
+    {"name": "Knot-hole ledge (60 m up)", "at": [-402, -18], "level": 2, "note": "Camp 3: the kitchen light, the first 'kid'"},
+    {"name": "Water Station raft slip", "at": [215, -45], "level": 3, "note": "build the raft here; ride the runoff into the pond"},
+    {"name": "Kerb stair", "at": [350, 120], "level": 1, "note": "where the raiders drop off the kerb to the lawn"},
+    {"name": "The Silent Post", "at": [95, 245], "level": 3, "note": "on the south shore: raft side trip (L3), bridgehead camp (L4)"},
+    {"name": "The Maw's hole", "at": [-200, 215], "level": 4, "note": "the Rootway's south fork comes up in Windfall Roots"},
+    {"name": "Back door", "at": [-185, 632], "level": 5, "note": "light under the door: home, and too small to go in"},
+    {"name": "WOODPILE: the Termite Citadel", "at": [345, 596], "level": 5, "kind": "citadel", "note": "against the house, south-east, on the patio"}
+  ],
+  "routes": [
+    {"name": "Level 1 route", "level": 1, "style": "route", "points": [[60, -238], [68, -250], [240, -236], [115, -298], [-60, -125], [-130, -120], [-262, -12], [-205, -15], [-140, 55], [40, 112], [-346, 0]]},
+    {"name": "L1 raiders: along the kerb top", "level": 1, "style": "raid", "points": [[120, 280], [200, 285], [290, 300], [340, 330], [352, 250], [352, 150], [350, 120], [300, 112], [200, 108], [100, 108], [46, 112]]},
+    {"name": "L2 up the trunk (inside)", "level": 2, "style": "climb", "points": [[-428, 10], [-458, -15], [-402, -18]]},
+    {"name": "L2 canopy and down", "level": 2, "style": "route", "points": [[-402, -18], [-500, -40], [-520, 20], [-545, 30], [-600, 60]]},
+    {"name": "the Rootway (underground, L2)", "level": 2, "style": "underground", "points": [[-600, 60], [-520, 95], [-430, 100], [-350, 110], [-250, 125], [-150, 128], [-50, 122], [20, 112]]},
+    {"name": "Rootway south fork (L4)", "level": 4, "style": "underground", "points": [[-250, 125], [-230, 170], [-200, 215]]},
+    {"name": "L3 raft: down the runoff", "level": 3, "style": "route", "points": [[215, -45], [220, 40], [205, 110], [200, 145]]},
+    {"name": "L3 causeway", "level": 3, "style": "causeway", "points": [[150, 262], [130, 215], [110, 170], [95, 138]]},
+    {"name": "L4 across the captured causeway", "level": 4, "style": "route", "points": [[95, 125], [110, 170], [130, 215], [150, 262], [120, 280], [262, 305], [-60, 262], [-255, 250], [-290, 290], [-265, 246]]},
+    {"name": "L5 up the trowel, over the slabs", "level": 5, "style": "climb", "points": [[-265, 246], [-265, 349], [-185, 520], [100, 560], [345, 580]]},
+    {"name": "termite trail to the Citadel", "level": 5, "style": "raid", "points": [[340, 330], [345, 420], [345, 555]]}
+  ],
+  "missions": [
+    {"level": 1, "label": "1", "at": [60, -238], "note": "M1 The Wrong Boy: the can rolls past; the shock of being tiny"},
+    {"level": 1, "label": "2", "at": [68, -250], "note": "M2 The Stakeout Camp: the wedged stone"},
+    {"level": 1, "label": "3", "at": [240, -236], "note": "M3 The Cut Road: mud tubes, the spare axe"},
+    {"level": 1, "label": "4", "at": [115, -298], "note": "M4 Over the Top: up the bag, glide"},
+    {"level": 1, "label": "5", "at": [-80, -150], "note": "M5 Hold Your Breath: the ground beetle"},
+    {"level": 1, "label": "⛺", "at": [-130, -120], "note": "First Night (moved 80 m south, on the way)"},
+    {"level": 1, "label": "6", "at": [-262, -12], "note": "M6 Mum and the watering can; the daisies; Root Hall's door"},
+    {"level": 1, "label": "7", "at": [-205, -15], "note": "M7 Caught: the orb web"},
+    {"level": 1, "label": "8", "at": [-140, 55], "note": "M8 The Shut Gate: lookout, gate, run to Root Hall"},
+    {"level": 2, "label": "⛺", "at": [-346, 0], "note": "Camp 1: Root Hall mouth"},
+    {"level": 2, "label": "1", "at": [-428, 10], "note": "M1 The Carved Wall"},
+    {"level": 2, "label": "2", "at": [-378, 50], "note": "M2 The Sleepers: the grub nest"},
+    {"level": 2, "label": "3", "at": [-458, -15], "note": "M3 The Heartwood Stair (Camp 2 below it)"},
+    {"level": 2, "label": "4", "at": [-500, -40], "note": "M4 Prisoners of the Canopy (above)"},
+    {"level": 2, "label": "5", "at": [-520, 20], "note": "M5 Apple Fall, then the silk ladder"},
+    {"level": 2, "label": "6", "at": [-600, 100], "note": "M6 across the Moor, into the Rootway"},
+    {"level": 2, "label": "7", "at": [-250, 125], "note": "M7 The Maw, under the Great Root", "boss": true},
+    {"level": 3, "label": "1", "at": [20, 90], "note": "M1 The Whispers (the kingdom, below)"},
+    {"level": 3, "label": "2", "at": [-15, 60], "note": "M2 The Trials (the arena, below the planter ring)"},
+    {"level": 3, "label": "3", "at": [200, 145], "note": "M3 The Moat: raft in from the runoff"},
+    {"level": 3, "label": "4", "at": [80, 122], "note": "M4 The War Plan: the north shore"},
+    {"level": 3, "label": "5", "at": [120, 135], "note": "M5 Akpuru: the resin pit where the causeway lands", "boss": true},
+    {"level": 3, "label": "B", "at": [230, 200], "note": "the diving beetle, under the water", "boss": true},
+    {"level": 4, "label": "1", "at": [95, 250], "note": "retake the Silent Post: the bridgehead camp"},
+    {"level": 4, "label": "2", "at": [120, 285], "note": "raid the termite forward camp"},
+    {"level": 4, "label": "3", "at": [262, 305], "note": "bring down the mud-tube tower"},
+    {"level": 4, "label": "4", "at": [-290, 298], "note": "Spider's Edge: the wolf spider guards the trowel", "boss": true},
+    {"level": 5, "label": "1", "at": [-265, 349], "note": "up the trowel onto the slabs"},
+    {"level": 5, "label": "2", "at": [345, 575], "note": "the Citadel's door (planned when we get there)"}
+  ],
+  "hidden": [
+    {"at": [-128, 48], "note": "L1 The Con Beetle: 'holy dew' at the bead shrine"},
+    {"at": [75, -228], "note": "L1 Amodu's Phone, in the long grass"},
+    {"at": [-225, -70], "note": "L1 The Mantis, in the Flower Bed"},
+    {"at": [225, -60], "note": "L1 The Leak: where the ants washed in (a full water skin)"},
+    {"at": [-255, -85], "note": "L2 The Glass World: the marble"},
+    {"at": [-490, -20], "note": "L2 The Musketeers' Old Camp (in the canopy)"},
+    {"at": [-110, 290], "note": "L4 the apple core: a fruit-fly feast (food cache)"},
+    {"at": [-60, 600], "note": "L5 Under the Door: Mum's feet in the kitchen light"}
+  ],
+  "offmap": [
+    {"text": "↖ water butt and the shed (Ugo's cave): follow the hose upstream, 1.9 km", "at": [-690, -385], "anchor": "start"},
+    {"text": "compost heap (rot and fungus, not termites): 2.4 km north-east ↗", "at": [450, -385], "anchor": "end"},
+    {"text": "↑ the hose: the ants' ride in, and the road to the shed", "at": [193, -330], "anchor": "start"}
+  ]
+}

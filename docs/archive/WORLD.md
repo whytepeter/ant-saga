@@ -1,6 +1,8 @@
 # World Bible: Level 1, The Compound Grass
 
-Coordinates, sizes and routes live in [`world/lawn/layout.json`](../world/lawn/layout.json), the single source of truth. The map [`docs/lawn_map.svg`](lawn_map.svg) is drawn from it. After any layout change, run:
+> **Superseded in parts (2026-09-26).** The setting is now an **ordinary back garden in a warm, unnamed country** (not the Nigerian compound), and the game is the trio adventure: the goal is the ant kingdom, not getting home. Where this file disagrees, the story canon in [`docs/narrative/bible.md`](../narrative/bible.md), the user's decisions in [`docs/narrative/decisions.md`](../narrative/decisions.md) and the design in [`docs/GAMEPLAY.md`](../GAMEPLAY.md) win. A readable summary of the current layout is [`docs/narrative/world-facts.md`](../narrative/world-facts.md). Directions: the house is **south**, the apple tree **west**, the shed (Ugo's cave) **north-west**, the termites come from the **south-east** (the woodpile Citadel, planned), and the compost heap is **north-east** (not the termites' side).
+
+Coordinates, sizes and routes live in [`world/lawn/layout.json`](../../world/lawn/layout.json), the single source of truth. The map [`docs/lawn_map.svg`](../lawn_map.svg) is drawn from it. After any layout change, run:
 
 ```bash
 python3 tools/lawn_layout.py check && python3 tools/lawn_layout.py bake && python3 tools/lawn_layout.py render
@@ -86,7 +88,7 @@ The level is a **2 m × 2 m patch** of the compound's grass, **720 m × 720 m** 
 
 ## 5. Layout
 
-![Map](lawn_map.svg)
+![Map](../lawn_map.svg)
 
 ### Regions and gating
 - **North and west (free roam):** Backpack Hollow, Blade Forest, Dewdrop Garden, Capstone Shelter.
@@ -122,7 +124,7 @@ The south is sealed by a continuous barrier: the **Great Root** of the mango (we
 
 ## 6. Story mapping
 
-See [STORY.md](STORY.md). Level 1 hosts Act 1:
+See [STORY.md](../STORY.md). Level 1 hosts Act 1:
 
 | Story beat | Where |
 |---|---|
