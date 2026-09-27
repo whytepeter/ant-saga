@@ -167,7 +167,7 @@ func _process(delta: float) -> void:
 	_bed("bed_cave", lerpf(-40.0, -4.0, _cave))
 	# in Root Hall: the garden outside goes dull and the space opens into a cave
 	_beds_muffle.cutoff_hz = lerpf(20000.0, 700.0, _cave)
-	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("Beds"), lerpf(0.0, -8.0, _cave))
+	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("Beds"), lerpf(0.0, -8.0, _cave) + GameSettings.ambience_db)
 	_space_reverb.room_size = lerpf(0.3, 0.85, _cave)
 	_space_reverb.wet = lerpf(0.07, 0.32, _cave)
 	_space_reverb.damping = lerpf(0.7, 0.4, _cave)

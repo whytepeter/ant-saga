@@ -458,6 +458,105 @@
       "related_bugs": [],
       "occurrences": 2,
       "last_seen": "2026-09-27T19:01:35.791Z"
+    },
+    {
+      "id": "bug-032",
+      "timestamp": "2026-09-27T23:16:27.570Z",
+      "error_message": "Incorrect value in code",
+      "file": "ui/pack_screen.gd",
+      "root_cause": "Had \")), \"",
+      "fix": "Changed to \")),\n\t\t\t\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "gd"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-09-27T23:16:27.612Z"
+    },
+    {
+      "id": "bug-033",
+      "timestamp": "2026-09-27T23:16:27.743Z",
+      "error_message": "Null/undefined access in pack_screen.gd",
+      "file": "ui/pack_screen.gd",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check) | Also: if Items.icon(weapon) != null:; PackScreen.draw_item(self, weapon, c, size.x * 0.72)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "gd"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-09-27T23:16:27.789Z"
+    },
+    {
+      "error_message": "tools/build_amodu_anims.gd never finishes (idle at ~1% CPU); log shows 'Failed loading resource: motion_craft.glb'",
+      "file": "tools/build_amodu_anims.gd",
+      "root_cause": "The open Godot editor auto-imported two Meshy glbs while they were still downloading; their .import files were left valid=false with no dest_files and the md5 stamp matched, so --import skipped them. The build script then hit a SCRIPT ERROR mid-run and, being a SceneTree script, never reached quit().",
+      "fix": "Delete the broken <file>.glb.import and its .godot/imported/*.md5 stamp (literal paths), run Godot --headless --import, check every new .import has path= before building. A stuck build is a script error: read its log.",
+      "tags": [
+        "import",
+        "meshy",
+        "animation",
+        "editor-open",
+        "hang"
+      ],
+      "id": "bug-034",
+      "timestamp": "2026-09-27T23:26:15.298Z",
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-27T23:26:15.298Z"
+    },
+    {
+      "error_message": "survival_test: 'a fresh set forms at dawn' 0 drops (flaky)",
+      "file": "tests/survival_test.gd",
+      "root_cause": "The test regrew the dew with the clock at 12:06; DewDrops._process (every 0.5 s) dries everything past 'dries' end, so whether the check saw the drops depended on the timer's phase, which shifted when new checks were added before it.",
+      "fix": "Set the clock to dawn (6:00) before dew.regrow(), as in the game.",
+      "tags": [
+        "test",
+        "flaky",
+        "dew",
+        "timing"
+      ],
+      "id": "bug-035",
+      "timestamp": "2026-09-27T23:26:15.298Z",
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-27T23:26:15.298Z"
+    },
+    {
+      "error_message": "Pack screen: CRAFTING tab highlighted but the pack page still showing",
+      "file": "ui/pack_screen.gd",
+      "root_cause": "open_crafting() selected the tab without its signal and relied on open() to show it, but open() returns early when the screen is already open.",
+      "fix": "If already open, select the tab with its signal (switched -> _show_tab); only select silently before opening.",
+      "tags": [
+        "ui",
+        "tabs",
+        "pack"
+      ],
+      "id": "bug-036",
+      "timestamp": "2026-09-27T23:26:15.298Z",
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-27T23:26:15.298Z"
+    },
+    {
+      "error_message": "Game broken: Node not found 'Player' (relative to /root/Lawn); every script errors",
+      "file": "world/lawn/lawn.tscn",
+      "root_cause": "The Player instance was dragged under the HUD CanvasLayer in the editor (parent=\"HUD\"); lawn_level.gd gets $Player at the root.",
+      "fix": "Restore the scene from git (Player back under the root) and Reload it in the editor without saving the old one.",
+      "tags": [
+        "scene",
+        "editor",
+        "player"
+      ],
+      "id": "bug-037",
+      "timestamp": "2026-09-27T23:26:15.298Z",
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-27T23:26:15.298Z"
     }
   ]
 }

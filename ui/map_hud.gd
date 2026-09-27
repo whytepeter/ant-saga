@@ -88,6 +88,12 @@ func _ready() -> void:
 	_full_back.add_child(hint)
 
 
+## Shows or hides the round minimap (the Settings screen); M still opens the map.
+func set_minimap(on: bool) -> void:
+	if _mini != null and _mini.visible != on:
+		_mini.visible = on
+
+
 ## The full map as big as the screen allows, keeping the garden's proportions.
 func _fit_full() -> void:
 	var avail := _full_back.size - Vector2(80, 120)

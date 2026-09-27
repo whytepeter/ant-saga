@@ -52,12 +52,14 @@ var _crouched := false
 func _ready() -> void:
 	_target = get_parent() as Node3D
 	top_level = true
+	add_to_group(&"camera_rig")  # GameSettings refreshes the field of view
 	if _target is CollisionObject3D:
 		_arm.add_excluded_object((_target as CollisionObject3D).get_rid())
 	_arm.position.x = shoulder_offset
 	global_position = _follow_point() + Vector3.UP * height
 	yaw = _target.global_rotation.y
 	_apply_rotation()
+	refresh_fov()
 
 
 ## Basis with only the camera's yaw, for camera-relative movement input.
@@ -86,7 +88,7 @@ func set_view(v: View) -> void:
 	view = v
 	var first := v == View.FIRST
 	_arm.position.x = 0.0 if first else (close_shoulder if v == View.CLOSE else shoulder_offset)
-	camera.fov = 84.0 if first else (66.0 if v == View.CLOSE else 72.0)
+	refresh_fov()
 	_height_target = _view_height()
 	if first:
 		_arm.spring_length = 0.0
@@ -94,6 +96,12 @@ func set_view(v: View) -> void:
 		_target.call("set_first_person", first)
 	_probe_timer = 0.0
 	view_changed.emit(v)
+
+
+## The field of view for this view, around the one picked in the settings
+## (GameSettings.fov, 72° by default): wider at his eyes, tighter up close.
+func refresh_fov() -> void:
+	camera.fov = GameSettings.fov + (12.0 if view == View.FIRST else (-6.0 if view == View.CLOSE else 0.0))
 
 
 func _view_height() -> float:
@@ -106,20 +114,21 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed and Input.mouse_mode != Input.MOUSE_MODE_CAPTURED:
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	elif event.is_action_pressed("ui_cancel"):
-		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE  # (with a pause menu, it takes Esc first)
 	elif event.is_action_pressed("camera_view"):
 		cycle_view()
 	elif event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
-		yaw -= event.relative.x * mouse_sensitivity
-		pitch -= event.relative.y * mouse_sensitivity
+		var look := mouse_sensitivity * GameSettings.look_speed
+		yaw -= event.relative.x * look
+		pitch -= event.relative.y * look * (-1.0 if GameSettings.invert_y else 1.0)
 		_apply_rotation()
 
 
 func _process(delta: float) -> void:
 	var stick := Input.get_vector("look_left", "look_right", "look_up", "look_down")
 	if stick.length() > 0.0:
-		yaw -= stick.x * stick_speed * delta
-		pitch -= stick.y * stick_speed * 0.7 * delta
+		yaw -= stick.x * stick_speed * GameSettings.look_speed * delta
+		pitch -= stick.y * stick_speed * GameSettings.look_speed * 0.7 * delta * (-1.0 if GameSettings.invert_y else 1.0)
 		_apply_rotation()
 
 	_current_height = lerpf(_current_height, _height_target, clampf(8.0 * delta, 0.0, 1.0))

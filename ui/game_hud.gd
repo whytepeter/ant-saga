@@ -6,15 +6,18 @@ extends CanvasLayer
 ##            it; a thin daylight line; under it, the current objective
 ##            (ObjectiveLine)
 ##   bottom   key-cap prompts, only when Amodu is next to something
-##   left     health, only after he's been hurt; above it, small hunger and
-##            thirst meters (Survival), which pulse when low
-##   right    the weapon in his hands (WeaponBadge), once he has one; Tab opens
-##            the inventory (InventoryPanel)
+##   left     health, food and water as one matching set (Meters): thin bars
+##            on a soft band that pulse when low
+##   right    the weapon in his hands (WeaponBadge), once he has one; above it,
+##            what just went into the pack (PickupToasts). Tab opens the pack
+##            and crafting (PackScreen)
 ##   top right  a round minimap; M opens the full map (MapHud)
 ##   centre   a place-name banner the first time he enters an area; end cards
 ##   low      subtitles when the ants talk (Subtitles)
 ##
-## Controls live on a card behind F1. Debug text (the level's Info) is behind F3.
+## Controls live on a card behind H. Esc pauses (PauseMenu: settings, restart,
+## quit). Debug text (the level's Info) is behind F3. The Settings screen turns
+## the compass, the minimap, the prompts and the subtitles on and off.
 
 const CREAM := Color(1.0, 0.97, 0.9)
 const AMBER := Color(1.0, 0.76, 0.32)
@@ -24,8 +27,13 @@ const CONTROLS := [
 	["E", "Lift · carry · flip"], ["G", "Eat · drink"], ["F", "Throw"], ["Click", "Attack · hold for heavy"],
 	["Right-click", "Block"], ["Alt", "Dodge"], ["Wheel", "Weapons"], ["X", "Next weapon"],
 	["Tab", "Inventory"], ["M", "Map"], ["Q", "Call ants"], ["V", "Camera: wide · close · eyes"],
-	["Esc", "Free the mouse"],
+	["Esc", "Pause · settings"],
 ]
+## Card entries shown from the player's own keys (GameSettings), by their label.
+const CONTROL_ACTIONS := {"Sprint": "sprint", "Jump · hold to leap": "jump", "Crawl": "crawl",
+	"Lift · carry · flip": "interact", "Eat · drink": "consume", "Throw": "throw", "Attack · hold for heavy": "attack",
+	"Block": "block", "Dodge": "dodge", "Next weapon": "weapon_next", "Inventory": "inventory", "Map": "map",
+	"Camera: wide · close · eyes": "camera_view"}
 
 var player: Player
 var layout: LawnLayout
@@ -39,13 +47,15 @@ var _compass: Compass
 var _daylight: ColorRect
 var _daylight_back: ColorRect
 var _prompt_row: HBoxContainer
-var _health_box: Control
-var _health_fill: ColorRect
-var _health_shown := 0.0
 ## Hunger and thirst (set before the HUD is added; null for none).
 var survival: Survival
-var _food_fill: ColorRect
-var _water_fill: ColorRect
+var meters: Meters
+var pause_menu: PauseMenu
+var pack: PackScreen
+var _pickups: PickupToasts
+var _underwater: ColorRect
+var _underwater_mat: ShaderMaterial
+var _controls_grid: GridContainer
 var _banner: VBoxContainer
 var _banner_title: Label
 var _banner_tween: Tween
@@ -71,32 +81,21 @@ func setup(p: Player, l: LawnLayout, c: DayClock, home_at: Vector3) -> void:
 
 func _ready() -> void:
 	layer = 6
-	font = _pick_font()
+	GameSettings.load_all()
+	font = Sleek.font()
 	_build_top()
 	_build_prompt()
-	_build_health()
-	if survival != null:
-		_build_survival()
+	_build_meters()
 	_build_banner()
 	_build_card()
 	_build_subtitles()
 	_build_objective()
 	_build_controls()
+	_build_pause()  # before the map and the pack, so they take Esc first while open
 	if player != null:
 		player.show_hint_label = false
 		player.hint_changed.connect(_on_hint)
-		var combat := player.get_node_or_null("Combat") as PlayerCombat
-		if combat != null:
-			combat.health_changed.connect(_on_health)
 		_build_weapons.call_deferred()  # the player makes his Inventory in _ready
-
-
-## A rounded, friendly system font if the machine has one, else Godot's default.
-func _pick_font() -> Font:
-	var f := SystemFont.new()
-	f.font_names = PackedStringArray(["Avenir Next", "Nunito", "Futura", "Helvetica Neue", "Segoe UI", "Arial"])
-	f.font_weight = 650
-	return f
 
 
 func _process(delta: float) -> void:
@@ -116,12 +115,16 @@ func _process(delta: float) -> void:
 	_compass.markers = markers
 	if _maps != null and _maps.map != null:
 		_maps.map.destination = Vector2(home.x, home.z)
-	if survival != null:
-		_meter(_food_fill, survival.hunger, Color(0.95, 0.66, 0.25))
-		_meter(_water_fill, survival.thirst, Color(0.4, 0.72, 1.0))
-	# health fades out a while after it's full again
-	_health_shown = maxf(_health_shown - delta, 0.0)
-	_health_box.modulate.a = move_toward(_health_box.modulate.a, 1.0 if _health_shown > 0.0 else 0.0, delta * 3.0)
+	# holding his breath under water
+	meters.breath = player.breath if player.diving or player.breath < 0.999 else -1.0
+	_update_underwater(delta)
+	# what the settings show
+	_compass.visible = GameSettings.compass
+	_daylight_back.visible = GameSettings.compass
+	_prompt_row.visible = GameSettings.prompts
+	_subtitles.visible = GameSettings.subtitles
+	if _maps != null:
+		_maps.set_minimap(GameSettings.minimap)
 	if _f1_left > 0.0:
 		_f1_left -= delta
 		_f1_hint.modulate.a = clampf(_f1_left, 0.0, 1.0)
@@ -139,6 +142,8 @@ func _unhandled_input(event: InputEvent) -> void:
 	# H (or F1: on a Mac keyboard that's the brightness key unless fn is held)
 	if event.is_action_pressed("controls", false, true):
 		_controls.visible = not _controls.visible
+		if _controls.visible:
+			_fill_controls()
 		_f1_left = 0.0
 		_f1_hint.modulate.a = 0.0
 
@@ -254,73 +259,68 @@ func _build_prompt() -> void:
 	add_child(_prompt_row)
 
 
-func _build_health() -> void:
-	_health_box = Control.new()
-	_health_box.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_LEFT)
-	_health_box.offset_left = 32.0
-	_health_box.offset_top = -64.0
-	_health_box.offset_right = 300.0
-	_health_box.offset_bottom = -36.0
-	_health_box.modulate.a = 0.0
-	_health_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(_health_box)
-	var heart := _Heart.new()
-	heart.position = Vector2(0, 2)
-	heart.size = Vector2(24, 22)
-	_health_box.add_child(heart)
-	var back := Panel.new()
-	back.position = Vector2(34, 7)
-	back.size = Vector2(220, 12)
-	back.add_theme_stylebox_override("panel", _round(Color(0, 0, 0, 0.45), 6))
-	back.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_health_box.add_child(back)
-	_health_fill = ColorRect.new()
-	_health_fill.color = Color(0.92, 0.3, 0.26)
-	_health_fill.position = Vector2(36, 9)
-	_health_fill.size = Vector2(216, 8)
-	_health_fill.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_health_box.add_child(_health_fill)
+func _build_meters() -> void:
+	meters = Meters.new()
+	meters.combat = player.get_node_or_null("Combat") as PlayerCombat if player != null else null
+	meters.survival = survival
+	meters.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_LEFT)
+	meters.offset_left = 30.0
+	meters.offset_right = 300.0
+	meters.offset_top = -150.0
+	meters.offset_bottom = -30.0
+	add_child(meters)
 
 
-func _build_survival() -> void:
-	var box := Control.new()
-	box.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_LEFT)
-	box.offset_left = 32.0
-	box.offset_top = -122.0
-	box.offset_right = 250.0
-	box.offset_bottom = -70.0
-	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(box)
-	var rows := [[_Crumb.new(), "_food_fill"], [_Drop.new(), "_water_fill"]]
-	for i in rows.size():
-		var y := 24.0 * i
-		var icon := rows[i][0] as Control
-		icon.position = Vector2(2, y)
-		icon.size = Vector2(18, 18)
-		icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		box.add_child(icon)
-		var back := Panel.new()
-		back.position = Vector2(28, y + 5)
-		back.size = Vector2(150, 9)
-		back.add_theme_stylebox_override("panel", _round(Color(0, 0, 0, 0.45), 5))
-		back.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		box.add_child(back)
-		var fill := ColorRect.new()
-		fill.position = Vector2(30, y + 7)
-		fill.size = Vector2(146, 5)
-		fill.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		box.add_child(fill)
-		set(String(rows[i][1]), fill)
+## The murky green view while the camera is under a water surface.
+func _update_underwater(delta: float) -> void:
+	var cam := get_viewport().get_camera_3d()
+	var body := WaterBody.find(get_tree(), cam.global_position) if cam != null else null
+	var under := body != null and cam.global_position.y < body.level - 0.02
+	if _underwater == null:
+		if not under:
+			return
+		_underwater = ColorRect.new()
+		_underwater.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		_underwater.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_underwater_mat = ShaderMaterial.new()
+		_underwater_mat.shader = preload("res://ui/underwater.gdshader")
+		_underwater_mat.set_shader_parameter("amount", 0.0)
+		_underwater.material = _underwater_mat
+		add_child(_underwater)
+		move_child(_underwater, 0)  # under the HUD
+	var a := float(_underwater_mat.get_shader_parameter("amount"))
+	a = move_toward(a, 1.0 if under else 0.0, delta * 6.0)
+	_underwater_mat.set_shader_parameter("amount", a)
+	if under:
+		_underwater_mat.set_shader_parameter("depth", body.level - cam.global_position.y)
+	_underwater.visible = a > 0.0
 
 
-## A meter's fill: its share of 146 px, pulsing red-ward when low.
-func _meter(fill: ColorRect, value: float, color: Color) -> void:
-	fill.size.x = 146.0 * clampf(value / Survival.FULL, 0.0, 1.0)
-	if value < Survival.LOW:
-		var pulse := 0.5 + 0.5 * sin(Time.get_ticks_msec() * 0.008)
-		fill.color = color.lerp(Color(0.95, 0.3, 0.25), pulse)
-	else:
-		fill.color = color
+func _on_item_added(id: StringName, n: int) -> void:
+	if _pickups == null:
+		_pickups = PickupToasts.new()
+		_pickups.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
+		_pickups.offset_left = -420.0
+		_pickups.offset_right = -30.0
+		_pickups.offset_top = -420.0
+		_pickups.offset_bottom = -200.0  # above the weapon badge
+		add_child(_pickups)
+	_pickups.add(id, n)
+
+
+func _build_pause() -> void:
+	pause_menu = PauseMenu.new()
+	pause_menu.name = "PauseMenu"
+	pause_menu.player = player
+	pause_menu.layout = layout
+	pause_menu.clock = clock
+	pause_menu.opened.connect(func() -> void: _controls.visible = false)
+	# over everything, the minimap and subtitles included (the blur takes them in)
+	var top := CanvasLayer.new()
+	top.name = "MenuLayer"
+	top.layer = 20
+	add_child(top)
+	top.add_child(pause_menu)
 
 
 func _build_weapons() -> void:
@@ -343,12 +343,14 @@ func _build_weapons() -> void:
 	badge.offset_top = -190.0
 	badge.offset_bottom = -90.0  # above the H · Controls hint
 	add_child(badge)
-	var panel := InventoryPanel.new()
-	panel.inventory = inventory
-	panel.player = player
-	panel.font = font
-	panel.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	add_child(panel)
+	pack = PackScreen.new()
+	pack.name = "PackScreen"
+	pack.backdrop = true
+	pack.setup(player)
+	# on the menu layer, after the pause menu, so it takes Esc first while open
+	get_node("MenuLayer").add_child(pack)
+	inventory.pack_full.connect(func(_id: StringName) -> void: player.flash_hint("Pack full", 1.6))
+	inventory.item_added.connect(_on_item_added)
 
 
 func _build_banner() -> void:
@@ -422,26 +424,12 @@ func _build_controls() -> void:
 	_controls = SoftPanel.new()
 	_controls.visible = false
 	center.add_child(_controls)
-	var grid := GridContainer.new()
-	grid.columns = 5
-	grid.add_theme_constant_override("h_separation", 14)
-	grid.add_theme_constant_override("v_separation", 10)
-	_controls.add_child(grid)
-	var half := (CONTROLS.size() + 1) / 2
-	for i in half:
-		for col in 2:
-			var k := i + col * half
-			if k < CONTROLS.size():
-				var row: Array = CONTROLS[k]
-				grid.add_child(_keycap(String(row[0])))
-				grid.add_child(_label(null, 18, CREAM, 4, String(row[1])))
-			else:
-				grid.add_child(Control.new())
-				grid.add_child(Control.new())
-			if col == 0:
-				var gap := Control.new()
-				gap.custom_minimum_size.x = 26.0
-				grid.add_child(gap)
+	_controls_grid = GridContainer.new()
+	_controls_grid.columns = 5
+	_controls_grid.add_theme_constant_override("h_separation", 14)
+	_controls_grid.add_theme_constant_override("v_separation", 10)
+	_controls.add_child(_controls_grid)
+	_fill_controls()
 	_f1_hint = HBoxContainer.new()
 	_f1_hint.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
 	_f1_hint.offset_left = -200.0
@@ -455,7 +443,30 @@ func _build_controls() -> void:
 	add_child(_f1_hint)
 
 
-# ── prompts and health ────────────────────────────────────────────────────────
+## The controls card's two columns of key caps, from the player's own keys.
+func _fill_controls() -> void:
+	for c: Node in _controls_grid.get_children():
+		c.queue_free()
+	var half := (CONTROLS.size() + 1) / 2
+	for i in half:
+		for col in 2:
+			var k := i + col * half
+			if k < CONTROLS.size():
+				var row: Array = CONTROLS[k]
+				var what := String(row[1])
+				var key := GameSettings.key_text(String(CONTROL_ACTIONS[what])) if CONTROL_ACTIONS.has(what) else String(row[0])
+				_controls_grid.add_child(_keycap(key))
+				_controls_grid.add_child(_label(null, 18, CREAM, 4, what))
+			else:
+				_controls_grid.add_child(Control.new())
+				_controls_grid.add_child(Control.new())
+			if col == 0:
+				var gap := Control.new()
+				gap.custom_minimum_size.x = 26.0
+				_controls_grid.add_child(gap)
+
+
+# ── prompts ───────────────────────────────────────────────────────────────────
 
 ## Player hints read "E · Lift pebble    F · Throw": each part becomes a key cap and a verb.
 func _on_hint(text: String) -> void:
@@ -473,11 +484,6 @@ func _on_hint(text: String) -> void:
 		else:
 			item.add_child(_label(null, 18, Color(CREAM, 0.8), 5, part.strip_edges()))
 		_prompt_row.add_child(item)
-
-
-func _on_health(health: float, max_health: float) -> void:
-	_health_fill.size.x = 216.0 * clampf(health / max_health, 0.0, 1.0)
-	_health_shown = 3.0 if health >= max_health else 999.0
 
 
 # ── widgets ───────────────────────────────────────────────────────────────────
@@ -523,34 +529,3 @@ func _round(color: Color, radius: int, margin := 0) -> StyleBoxFlat:
 	sb.set_corner_radius_all(radius)
 	sb.set_content_margin_all(margin)
 	return sb
-
-
-## A small drawn heart for the health bar.
-class _Heart extends Control:
-	func _draw() -> void:
-		var c := Color(0.92, 0.3, 0.26)
-		var r := size.x * 0.27
-		draw_circle(Vector2(size.x * 0.3, size.y * 0.35), r, c)
-		draw_circle(Vector2(size.x * 0.7, size.y * 0.35), r, c)
-		draw_colored_polygon(PackedVector2Array([Vector2(size.x * 0.05, size.y * 0.45), Vector2(size.x * 0.95, size.y * 0.45),
-			Vector2(size.x * 0.5, size.y * 0.98)]), c)
-
-
-## A small drawn crumb (hunger meter).
-class _Crumb extends Control:
-	func _draw() -> void:
-		var c := Color(0.95, 0.66, 0.25)
-		draw_colored_polygon(PackedVector2Array([Vector2(size.x * 0.1, size.y * 0.55), Vector2(size.x * 0.35, size.y * 0.15),
-			Vector2(size.x * 0.8, size.y * 0.2), Vector2(size.x * 0.95, size.y * 0.6), Vector2(size.x * 0.6, size.y * 0.92),
-			Vector2(size.x * 0.2, size.y * 0.85)]), c)
-		draw_circle(Vector2(size.x * 0.45, size.y * 0.5), size.x * 0.08, c.darkened(0.35))
-		draw_circle(Vector2(size.x * 0.68, size.y * 0.42), size.x * 0.06, c.darkened(0.35))
-
-
-## A small drawn water drop (thirst meter).
-class _Drop extends Control:
-	func _draw() -> void:
-		var c := Color(0.4, 0.72, 1.0)
-		draw_circle(Vector2(size.x * 0.5, size.y * 0.64), size.x * 0.3, c)
-		draw_colored_polygon(PackedVector2Array([Vector2(size.x * 0.5, size.y * 0.02), Vector2(size.x * 0.78, size.y * 0.55),
-			Vector2(size.x * 0.22, size.y * 0.55)]), c)

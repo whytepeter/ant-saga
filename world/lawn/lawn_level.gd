@@ -140,6 +140,10 @@ func _setup_adventure() -> void:
 	survival.clock = clock
 	player.add_child(survival)
 	survival.sleep_requested.connect(_sleep)
+	if survival_mode:
+		# he wakes with his stone knife at his hip: a tool for gathering first
+		# (fibre, silk), a weak weapon second; the axe is the first thing he makes
+		(player.get_node("Inventory") as Inventory).add_weapon(Weapons.KNIFE, false)
 	var dew := DewDrops.new()
 	dew.name = "DewDrops"
 	dew.clock = clock

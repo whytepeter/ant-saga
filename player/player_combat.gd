@@ -320,6 +320,14 @@ func take_hit(damage: float, from: Vector3, kind: StringName, attacker: Node3D) 
 	return damage
 
 
+## Health back (a bandage, sap, sleep), up to full.
+func heal(amount: float) -> void:
+	if knocked or amount <= 0.0:
+		return
+	health = minf(health + amount, max_health)
+	health_changed.emit(health, max_health)
+
+
 ## Health lost with no blow (Survival: starving or parched); knocks him out at 0.
 func lose_health(amount: float) -> void:
 	if knocked or amount <= 0.0:

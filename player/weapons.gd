@@ -27,13 +27,21 @@ const ALL := {
 	&"fists": {
 		"name": "Bare fists",
 		"glyph": "fist",
+		# a boxer's chain (jab, hook, uppercut, elbow) and a front kick; the
+		# blows land where the clips' fists do (tools/clip_sheet.gd)
 		"light": [
 			{"kind": &"light", "clip": "jab_right", "speed": 2.0, "impact": 0.35, "lock": 0.35, "recover": 0.45,
 				"lunge": 3.0, "reach": 1.3, "radius": 1.3, "damage": 1.0, "chop": 0.0},
+			{"kind": &"light", "clip": "hook_left", "speed": 1.4, "impact": 0.42 / 1.4, "lock": 0.35, "recover": 0.45,
+				"lunge": 2.6, "reach": 1.3, "radius": 1.4, "damage": 1.1, "chop": 0.0},
+			{"kind": &"light", "clip": "uppercut_right", "speed": 1.3, "impact": 0.33 / 1.3, "lock": 0.4, "recover": 0.5,
+				"lunge": 2.4, "reach": 1.2, "radius": 1.3, "damage": 1.4, "chop": 0.0},
+			{"kind": &"light", "clip": "elbow_strike", "speed": 1.9, "impact": 0.8 / 1.9, "lock": 0.45, "recover": 0.6,
+				"lunge": 3.4, "reach": 1.2, "radius": 1.4, "damage": 1.8, "chop": 0.0},
 		],
-		"heavy": {"kind": &"heavy", "clip": "kick", "speed": 1.3, "impact": 0.45, "lock": 0.7, "recover": 0.8,
+		"heavy": {"kind": &"heavy", "clip": "kick", "speed": 1.3, "impact": 0.6 / 1.3, "lock": 0.7, "recover": 0.8,
 			"lunge": 4.5, "reach": 1.6, "radius": 1.7, "damage": 2.0, "chop": 0.0},
-		"block": "",
+		"block": "fist_block",
 	},
 	&"stone_axe": {
 		"name": "Stone axe",
@@ -67,12 +75,14 @@ const ALL := {
 		# middle of the handle. Quick and light: cuts silk and vines, not roots.
 		"length": 0.36,
 		"grip": 0.24,
+		# a knife fighter's moves (Meshy text-to-motion): a high-to-low slash, a
+		# backhand, a stab; quick, close in
 		"light": [
-			{"kind": &"light", "clip": "axe_chop_1", "speed": 1.9, "lock": 0.28, "recover": 0.3,
+			{"kind": &"light", "clip": "knife_slash", "speed": 2.2, "impact": 0.88 / 2.2, "lock": 0.28, "recover": 0.32,
 				"lunge": 2.4, "reach": 1.3, "radius": 1.2, "damage": 1.2, "chop": 0.5},
-			{"kind": &"light", "clip": "axe_chop_2", "speed": 2.0, "lock": 0.3, "recover": 0.32,
-				"lunge": 2.4, "reach": 1.3, "radius": 1.2, "damage": 1.2, "chop": 0.5},
-			{"kind": &"light", "clip": "knife_thrust", "speed": 1.6, "lock": 0.36, "recover": 0.4,
+			{"kind": &"light", "clip": "knife_backhand", "speed": 2.0, "impact": 0.62 / 2.0, "lock": 0.3, "recover": 0.34,
+				"lunge": 2.4, "reach": 1.3, "radius": 1.3, "damage": 1.2, "chop": 0.5},
+			{"kind": &"light", "clip": "knife_stab", "speed": 1.9, "impact": 0.7 / 1.9, "lock": 0.36, "recover": 0.42,
 				"lunge": 3.4, "reach": 1.6, "radius": 1.0, "damage": 1.8, "chop": 0.5},
 		],
 		"heavy": {"kind": &"heavy", "clip": "knife_thrust", "speed": 1.1, "lock": 0.6, "recover": 0.7,
@@ -87,17 +97,19 @@ const ALL := {
 		# a round river stone lashed to a forked stick: slow, heavy, every blow
 		# a stagger (a pill bug curls up at any hit) but it cuts nothing
 		"length": 0.7,
+		# a wide two-handed swing, then a one-handed chop; held: the overhead
+		# smash; charged: a slam into the ground that hits all round him
 		"light": [
-			{"kind": &"heavy", "clip": "axe_chop_1", "speed": 1.05, "lock": 0.55, "recover": 0.6,
-				"lunge": 2.4, "reach": 1.5, "radius": 1.6, "damage": 2.2, "chop": 0.0},
+			{"kind": &"heavy", "clip": "hammer_side_swing", "speed": 1.25, "impact": 1.2 / 1.25, "lock": 0.6, "recover": 0.7,
+				"lunge": 2.4, "reach": 1.6, "radius": 1.9, "damage": 2.4, "chop": 0.0},
 			{"kind": &"heavy", "clip": "axe_chop_3", "speed": 1.1, "lock": 0.6, "recover": 0.7,
 				"lunge": 2.8, "reach": 1.6, "radius": 1.7, "damage": 2.6, "chop": 0.0},
 		],
 		"heavy": {"kind": &"heavy", "clip": "axe_heavy", "speed": 1.0, "lock": 1.0, "recover": 1.1,
 			"lunge": 3.5, "reach": 1.8, "radius": 2.0, "damage": 5.0, "chop": 0.0},
-		"charged": {"kind": &"heavy", "clip": "axe_charged_swing", "speed": 0.85, "lock": 1.1, "recover": 1.3,
-			"lunge": 4.5, "reach": 2.0, "radius": 2.6, "damage": 8.0, "chop": 0.0},
-		"block": "axe_parry",
+		"charged": {"kind": &"heavy", "clip": "ground_slam", "speed": 1.15, "impact": 1.64 / 1.15, "lock": 1.2,
+			"recover": 1.4, "lunge": 1.5, "reach": 0.6, "radius": 3.2, "damage": 8.0, "chop": 0.0},
+		"block": "two_hand_parry",
 	},
 	&"thorn_spear": {
 		"name": "Spear",
@@ -121,7 +133,7 @@ const ALL := {
 		],
 		"heavy": {"kind": &"heavy", "clip": "spear_lunge", "speed": 1.25, "impact": 0.87 / 1.25, "lock": 0.9, "recover": 1.1,
 			"lunge": 5.5, "reach": 3.2, "radius": 1.2, "damage": 3.4, "chop": 0.5},
-		"block": "axe_parry",
+		"block": "two_hand_parry",
 	},
 }
 

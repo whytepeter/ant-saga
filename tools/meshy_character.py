@@ -131,7 +131,8 @@ def stage_model(c):
 def action_batches(m):
     """[(state key / file stem, [(name, action id), ...])], up to 10 per batch."""
     batches = []
-    for key, prefix in (("actions", "anim_"), ("more_actions", "anim_more_"), ("weapon_actions", "anim_weapon_")):
+    for key, prefix in (("actions", "anim_"), ("more_actions", "anim_more_"), ("weapon_actions", "anim_weapon_"),
+                        ("survival_actions", "anim_survival_")):
         items = list(m.get(key, {}).items())
         for i in range(0, len(items), 10):
             batches.append((f"{prefix}{i // 10}", items[i:i + 10]))

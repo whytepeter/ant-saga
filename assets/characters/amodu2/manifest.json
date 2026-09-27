@@ -94,6 +94,66 @@
     "spear_lunge": {
       "prompt": "A person holding a long spear with both hands takes a big lunging step forward and drives the spear forward hard with the whole body, then recovers to a ready guard.",
       "duration": 2.0
+    },
+    "drink_cupped": {
+      "prompt": "A person standing still cups both hands together, scoops water from a big water drop in front of them at chest height, lifts the cupped hands to the mouth and drinks, then lowers the hands. The legs stay still and the head tilts a little down toward the hands.",
+      "duration": 3.0
+    },
+    "kneel_drink": {
+      "prompt": "A person kneels down on one knee at the edge of a pond, scoops water from ground level with both cupped hands, lifts them to the mouth and drinks, then stands back up.",
+      "duration": 4.0
+    },
+    "eat_bite": {
+      "prompt": "A person standing holds a piece of bread in both hands in front of the chest, takes two big bites and chews, looking pleased. The legs stay still.",
+      "duration": 3.0
+    },
+    "web_struggle": {
+      "prompt": "A person stuck in a sticky spider web with arms and feet caught struggles hard on the spot: yanks the arms back and forth, twists the torso from side to side and strains to pull a leg free, without moving from the spot.",
+      "duration": 4.0
+    },
+    "web_break_free": {
+      "prompt": "A person caught in sticky threads makes one last powerful pull with the whole body, tears free and stumbles two steps forward, then catches their balance.",
+      "duration": 2.5
+    },
+    "knife_cut": {
+      "prompt": "A person crouches low and saws back and forth at a thick plant stem with a short knife in the right hand, the left hand holding the stem, then pulls the cut piece away.",
+      "duration": 3.0
+    },
+    "craft": {
+      "prompt": "A person kneels on one knee and works with both hands on something small on the ground in front of them, tying and binding a cord tightly around it, then lifts it up to look at it.",
+      "duration": 4.0
+    },
+    "swim_surface": {
+      "prompt": "A person swimming breaststroke at the surface of the water with the head held up above the water looking forward: arms sweep out and back together, the legs do a frog kick, body angled slightly.",
+      "duration": 3.0
+    },
+    "dive_down": {
+      "prompt": "A person treading water upright bends forward at the waist and dives head first down under the water, arms reaching forward and down, legs kicking up behind.",
+      "duration": 2.0
+    },
+    "swim_underwater": {
+      "prompt": "A person swimming underwater with the body horizontal and the head forward in line with the body, arms sweeping wide breaststroke pulls and the legs doing a frog kick, gliding forward.",
+      "duration": 3.0
+    },
+    "underwater_idle": {
+      "prompt": "A person floating underwater holding their breath, body upright and relaxed, gently sculling with the hands and slowly kicking the legs to hold position.",
+      "duration": 3.0
+    },
+    "knife_slash": {
+      "prompt": "A person in a low fighting crouch holding a short knife in the right hand makes a fast diagonal slash from high right to low left, then returns to guard.",
+      "duration": 2.0
+    },
+    "knife_stab": {
+      "prompt": "A person holding a short knife in the right hand steps forward and makes a quick straight stab at chest height, then pulls back into a ready crouch.",
+      "duration": 2.0
+    },
+    "knife_backhand": {
+      "prompt": "A person holding a short knife in the right hand makes a quick backhand slash from left to right across the body with a small step, then returns to guard.",
+      "duration": 2.0
+    },
+    "hammer_side_swing": {
+      "prompt": "A strong person holding a heavy stone hammer with both hands swings it horizontally from right to left in a wide powerful arc at waist height, stepping into the swing.",
+      "duration": 2.5
     }
   },
   "more_actions": {
@@ -111,5 +171,27 @@
     "axe_charged": 237,
     "axe_spin": 238,
     "axe_parry": 147
+  },
+  "survival_actions": {
+    "walk_pick_up": 282,
+    "run_pick_up": 273,
+    "collect": 284,
+    "pull_plant": 283,
+    "lie_down": 370,
+    "sleep": 267,
+    "wake_up": 271,
+    "stand_drink": 342,
+    "hook_left": 193,
+    "uppercut_right": 194,
+    "elbow_strike": 212,
+    "spartan_kick": 206,
+    "combat_stance": 89,
+    "fist_block": 138,
+    "ground_slam": 127,
+    "reaping_swing": 99,
+    "two_hand_parry": 149,
+    "double_combo": 92,
+    "knee_strike": 211,
+    "collect_crouch": 274
   }
 }

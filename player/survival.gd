@@ -98,7 +98,7 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	if player == null or not player.input_enabled:
 		return
-	var work := effort if _working() else 1.0
+	var work := (effort if _working() else 1.0) * GameSettings.pace
 	hunger = maxf(hunger - FULL / (hunger_minutes * 60.0) * work * delta, 0.0)
 	thirst = maxf(thirst - FULL / (thirst_minutes * 60.0) * work * delta, 0.0)
 	if _mist != Vector3.INF and player.global_position.distance_to(_mist) < mist_radius:
@@ -148,8 +148,9 @@ func consume() -> bool:
 			sleep_requested.emit(t["shelter"])
 			_target = {}
 			return true
-	if player.state == Player.State.GROUND and player.carried == null:
-		player.play_action("pick_up", 1.6)
+	# cupped hands at a drop, kneeling at the Rut, a bite of food: on his upper
+	# body, so he can walk on while he eats or drinks
+	player.play_consume(String(t["kind"]))
 	_target = {}
 	changed.emit(hunger, thirst)
 	return true

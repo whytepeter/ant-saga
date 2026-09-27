@@ -11,6 +11,11 @@ extends SceneTree
 ## at dawn; he sleeps in a shelter (not with a hunter close) and wakes there;
 ## a ground beetle comes out at night, hunts and bites, runs off when beaten
 ## and goes back under at dawn.
+## The pack and crafting: he starts with the knife; things stack up to their
+## size and a full pack says so; picking up a material teaches its recipes;
+## making twine and then an axe takes the ingredients and puts the axe on his
+## back; food is eaten from the pack; a dropped stack can be picked up again.
+## Esc pauses the world and Resume carries on.
 
 var level: Node3D
 var player: Player
@@ -45,6 +50,8 @@ func _run() -> void:
 	await _test_rut()
 	await _test_mist()
 	await _test_low_and_empty()
+	await _test_pack_and_crafting()
+	await _test_pause()
 	await _test_day_and_night()
 	await _test_dew_cycle()
 	await _test_sleep()
@@ -184,6 +191,67 @@ func _test_low_and_empty() -> void:
 	_check("and gets up again", not combat.knocked and not player.downed, "health %.0f" % combat.health)
 
 
+func _test_pack_and_crafting() -> void:
+	var inv := player.get_node("Inventory") as Inventory
+	var craft := player.get_node("Crafting") as Crafting
+	_check("he starts with the stone knife", inv.has_knife and inv.main == &"", "weapons %s" % [inv.weapons])
+	var left := inv.add_item(&"fibre", 40)
+	_check("fibre stacks 30 to a slot", left == 0 and inv.count(&"fibre") == 40 and inv.slots[0]["count"] == 30
+		and inv.slots[1]["count"] == 10, "slots %s, %s" % [inv.slots[0], inv.slots[1]])
+	_check("picking up fibre teaches twine", craft.is_known("twine") and not craft.is_known("stone_hammer"), "%s" % [craft.known])
+	var full := []
+	inv.pack_full.connect(func(id: StringName) -> void: full.append(id))
+	var over := inv.add_item(&"pebble", Items.stack(&"pebble") * inv.slots.size())
+	_check("a full pack takes what fits and says so", over > 0 and full == [&"pebble"] and inv.room_for(&"pebble") == 0,
+		"%d left over" % over)
+	inv.remove_item(&"pebble", inv.count(&"pebble") - 2)
+	inv.add_item(&"twig", 1)
+	_check("making twine: 3 fibre into 1 twine", craft.make("twine") and inv.count(&"twine") == 1 and inv.count(&"fibre") == 37,
+		"fibre %d, twine %d" % [inv.count(&"fibre"), inv.count(&"twine")])
+	_check("the axe is known and can be made", craft.is_known("stone_axe") and craft.can_make("stone_axe"),
+		craft.blocker("stone_axe"))
+	var made := craft.make("stone_axe")
+	_check("making the axe puts it on his back", made and inv.main == Weapons.AXE and inv.count(&"pebble") == 0
+		and inv.count(&"twine") == 0 and inv.count(&"twig") == 0, "main %s" % inv.main)
+	_check("and not a second one", not craft.can_make("stone_axe") and craft.blocker("stone_axe") == "You already have one", "")
+	survival.hunger = 40.0
+	inv.add_item(&"crumb", 1)
+	var slot := -1
+	for i in inv.slots.size():
+		if not inv.slots[i].is_empty() and inv.slots[i]["id"] == &"crumb":
+			slot = i
+	_check("a crumb eaten from the pack", inv.use_slot(slot) and survival.hunger > 55.0 and inv.count(&"crumb") == 0,
+		"hunger %.1f" % survival.hunger)
+	var fibre_slot := -1
+	for i in inv.slots.size():
+		if not inv.slots[i].is_empty() and inv.slots[i]["id"] == &"fibre":
+			fibre_slot = i
+			break
+	var taken := inv.take_slot(fibre_slot)
+	var drop := ItemPickup.drop(level, player.global_position, StringName(taken["id"]), int(taken["count"]))
+	await _frames(2)
+	_check("a dropped stack lies in reach", ItemPickup.in_reach(player) == drop, "")
+	var before := inv.count(&"fibre")
+	drop.take(player)
+	await _frames(2)
+	_check("and picks up again", inv.count(&"fibre") == before + int(taken["count"]) and not is_instance_valid(drop)
+		or drop.is_queued_for_deletion(), "fibre %d" % inv.count(&"fibre"))
+	# leave the pack empty for what follows
+	for i in inv.slots.size():
+		inv.slots[i] = {}
+	inv._recount()
+
+
+func _test_pause() -> void:
+	var hud := level.get("hud") as GameHud
+	hud.pause_menu.pause()
+	await process_frame
+	_check("Esc pauses the world", paused and hud.pause_menu.is_open, "")
+	hud.pause_menu.back()
+	await process_frame
+	_check("Resume carries on", not paused and not hud.pause_menu.is_open, "")
+
+
 func _set_time(hours: float) -> void:
 	clock.minutes = hours * 60.0
 	clock.advance(0.0)
@@ -220,6 +288,7 @@ func _test_dew_cycle() -> void:
 	await _frames(40)
 	_check("and it's gone by noon", get_nodes_in_group(DewDrops.GROUP).size() == 0,
 		"%d left" % get_nodes_in_group(DewDrops.GROUP).size())
+	_set_time(6.0)  # dawn, when it forms (at noon it would dry off again straight away)
 	dew.regrow(clock.day + 1)
 	await _frames(2)
 	_check("a fresh set forms at dawn", get_nodes_in_group(DewDrops.GROUP).size() > 60,

@@ -1,0 +1,11 @@
+{
+  "_about": "What Amodu can make (player/crafting.gd). needs: item id -> count. makes: an item id (a weapon item goes on his body). station: hand (anywhere), fire, bench. A recipe shows up the first time he holds any of its ingredients. Order is the order in the crafting list.",
+  "recipes": [
+    {"id": "twine", "makes": "twine", "count": 1, "needs": {"fibre": 3}, "station": "hand", "group": "Materials"},
+    {"id": "stone_axe", "makes": "stone_axe", "count": 1, "needs": {"pebble": 2, "twig": 1, "twine": 1}, "station": "hand", "group": "Tools and weapons"},
+    {"id": "stone_hammer", "makes": "stone_hammer", "count": 1, "needs": {"pebble": 4, "twig": 1, "twine": 2}, "station": "hand", "group": "Tools and weapons"},
+    {"id": "thorn_spear", "makes": "thorn_spear", "count": 1, "needs": {"twig": 3, "pebble": 1, "twine": 2}, "station": "hand", "group": "Tools and weapons"},
+    {"id": "torch", "makes": "torch", "count": 1, "needs": {"twig": 1, "resin": 1, "fibre": 1}, "station": "hand", "group": "Tools and weapons"},
+    {"id": "bandage", "makes": "bandage", "count": 1, "needs": {"clover": 2, "fibre": 1}, "station": "hand", "group": "Survival"}
+  ]
+}

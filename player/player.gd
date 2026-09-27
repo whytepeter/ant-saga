@@ -49,6 +49,9 @@ signal swim_exhausted(bank: Vector3)
 signal puff_changed(holding: bool)
 
 enum State { GROUND, AIR, CRAWL, CLIMB, SWIM }
+## The bones an upper-body clip moves (play_upper): the chest, arms and head.
+const UPPER_BONES := ["Spine", "LeftShoulder", "LeftArm", "LeftForeArm", "LeftHand", "RightShoulder", "RightArm",
+	"RightForeArm", "RightHand", "neck", "Head"]
 enum Jump { HOP, RUN, LEAP }
 
 const CHARACTER := "res://assets/characters/amodu2/"
@@ -125,6 +128,10 @@ const CRAWL_HEIGHT := 0.6
 ## too, more slowly. Worn out he can only paddle slowly and the water starts to
 ## win (`swim_drown_damage` health a second) until he reaches a bank.
 @export var swim_range := 170.0
+## Under water (C at the surface dives): how fast he swims about, and how long
+## his breath lasts before he starts to drown.
+@export var dive_speed := 2.4
+@export var breath_seconds := 28.0
 @export var swim_drown_damage := 6.0
 ## Seconds on dry ground to get his breath back from empty.
 @export var swim_recover := 5.0
@@ -237,6 +244,12 @@ var _prev_position := Vector3.ZERO
 var _water: WaterBody
 ## Metres of swimming left before he's worn out (refills on dry ground).
 var swim_left := 50.0
+## Under the surface (a dive): he swims in three dimensions and holds his breath.
+var diving := false
+## His breath, 1 full to 0 (then he drowns); it comes back at the surface.
+var breath := 1.0
+## Caught in a spider's web (SpiderWeb calls set_webbed): he struggles on the spot.
+var webbed := false
 ## Where he last stood on dry ground: the bank he goes back to when worn out.
 var _last_dry := Vector3.ZERO
 ## The seed puff he holds overhead, if any.
@@ -290,6 +303,11 @@ func _ready() -> void:
 		var inventory := Inventory.new()
 		inventory.name = "Inventory"
 		add_child(inventory)
+	if get_node_or_null("Crafting") == null:
+		var crafting := Crafting.new()
+		crafting.name = "Crafting"
+		crafting.inventory = get_node("Inventory") as Inventory
+		add_child(crafting)
 	var held := HeldWeapon.new()
 	held.name = "HeldWeapon"
 	add_child(held)
@@ -630,6 +648,13 @@ func _try_start_swim() -> bool:
 
 
 func _process_swimming(delta: float) -> void:
+	if diving:
+		_process_diving(delta)
+		return
+	breath = minf(breath + delta / 2.5, 1.0)  # at the surface he breathes again
+	if _can_act() and input_enabled and Input.is_action_just_pressed("crawl"):
+		_start_dive()
+		return
 	var input := _move_input()
 	var dir := camera_rig.flat_basis() * Vector3(input.x, 0.0, input.y)
 	dir.y = 0.0
@@ -667,10 +692,72 @@ func _process_swimming(delta: float) -> void:
 		return
 	anim_tree.set("parameters/sm/swim/stroking/blend_amount", stroke)
 	anim_tree.set("parameters/sm/swim/stroke_speed/scale", clampf(h.length() / swim_speed, 0.8, 1.5))
+	_set_under(0.0, delta)
+
+
+## C at the surface: a duck dive, head first, and he's under.
+func _start_dive() -> void:
+	diving = true
+	velocity.y = -3.0
+	play_action("dive_down", 1.5, 0.1)
+
+
+## Under water: he swims where the camera looks (Space rises, C sinks), holds
+## his breath (Meters shows it) and comes up when he nears the surface.
+func _process_diving(delta: float) -> void:
+	var input := _move_input()
+	var dir := camera_rig.camera.global_basis * Vector3(input.x, 0.0, input.y)
+	if input_enabled and Input.is_action_pressed("jump"):
+		dir.y += 1.0
+	if input_enabled and Input.is_action_pressed("crawl"):
+		dir.y -= 1.0
+	dir = dir.limit_length(1.0)
+	var fast := input_enabled and Input.is_action_pressed("sprint")
+	var target := dir * dive_speed * (1.45 if fast else 1.0)
+	if dir.length() < 0.05:
+		target.y = 0.35  # he floats up, slowly, when he stops swimming
+	velocity = velocity.move_toward(target, swim_accel * delta)
+	var h := Vector3(velocity.x, 0.0, velocity.z)
+	if h.length() > 0.2:
+		_face(h, delta)
+	move_and_slide()
+	breath = maxf(breath - delta / breath_seconds, 0.0)
+	if breath <= 0.0:
+		var combat := get_node_or_null("Combat") as PlayerCombat
+		if combat != null and not combat.knocked:
+			combat.lose_health(swim_drown_damage * 1.5 * delta)
+	# his head at the surface again: back to swimming on top
+	if global_position.y > _water.level - swim_tread_depth - 0.1 and velocity.y > -0.2:
+		diving = false
+		model.rotation.x = 0.0
+		return
+	if _water.depth_at(global_position, [get_rid()]) < swim_depth - 0.2 or not _water.contains(global_position):
+		diving = false
+		model.rotation.x = 0.0
+		_leave_water(State.GROUND if is_on_floor() else State.AIR)
+		return
+	var speed := velocity.length()
+	anim_tree.set("parameters/sm/swim/under_moving/blend_amount", clampf(speed / dive_speed, 0.0, 1.0))
+	anim_tree.set("parameters/sm/swim/under_speed/scale", clampf(speed / dive_speed, 0.7, 1.5))
+	_set_under(1.0, delta)
+	# his body follows the way he swims: nose down going down, up coming up
+	var pitch := atan2(-velocity.y, maxf(h.length(), 0.001)) * 0.9 if speed > 0.4 else 0.0
+	model.rotation.x = lerp_angle(model.rotation.x, pitch, clampf(5.0 * delta, 0.0, 1.0))
+
+
+var _under := 0.0
+
+
+## Blends the swim between on top (0) and under water (1).
+func _set_under(want: float, delta: float) -> void:
+	_under = move_toward(_under, want, delta * 3.0)
+	anim_tree.set("parameters/sm/swim/under/blend_amount", _under)
 
 
 func _leave_water(next: State) -> void:
 	_water = null
+	diving = false
+	model.rotation.x = 0.0
 	_set_state(next)
 
 
@@ -801,6 +888,12 @@ func _process_heave_input() -> void:
 		_set_hint("E · Take the %s" % pickup.title())
 		if Input.is_action_just_pressed("interact"):
 			pickup.take(self)
+		return
+	var item := ItemPickup.in_reach(self)
+	if item != null and state == State.GROUND:
+		_set_hint("E · Pick up %s" % item.title())
+		if Input.is_action_just_pressed("interact"):
+			item.take(self)
 		return
 	var seed_puff := puff_in_reach()
 	if seed_puff != null:
@@ -1403,6 +1496,8 @@ func _process(delta: float) -> void:
 	_explorer.position = _explorer_base + model.global_transform.basis.inverse() * offset
 	_update_puff()
 	_update_fingers()
+	if webbed and not is_action_playing():
+		play_action("web_struggle", 1.25, 0.25)
 	if _hide_head != null:
 		# first person: his hands hang down out of view, as they would; they come
 		# up into a guard only when he fights (a blow, and a moment after it),
@@ -1583,6 +1678,94 @@ func stop_action() -> void:
 	_action = ""
 
 
+## A one-shot clip on his arms, chest and head only (see UPPER_BONES): his legs
+## keep walking, running or standing under it.
+func play_upper(clip: String, speed := 1.0, fade := 0.15) -> void:
+	if not ANIMATIONS.has_animation(clip):
+		return
+	var root := anim_tree.tree_root as AnimationNodeBlendTree
+	(root.get_node("upper_clip") as AnimationNodeAnimation).animation = clip
+	var shot := root.get_node("upper") as AnimationNodeOneShot
+	shot.fadein_time = fade
+	anim_tree.set("parameters/upper_speed/scale", speed)
+	anim_tree.set("parameters/upper/request", AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
+
+
+func is_upper_playing() -> bool:
+	return bool(anim_tree.get("parameters/upper/active"))
+
+
+## Eating, drinking or using something from his pack (Inventory.use_slot).
+func play_use(id: StringName) -> void:
+	var fx := Items.effects(id)
+	if fx.has("food"):
+		play_upper("eat_bite", 1.5)
+	elif fx.has("water"):
+		play_upper("drink_cupped", 1.4)
+	else:
+		play_upper("craft", 1.8)  # wrapping a bandage, rubbing in sap
+
+
+## Eating or drinking from the world (Survival.consume): cupped hands at a dew
+## drop, kneeling at open water when he's standing still, a bite of food.
+func play_consume(kind: String) -> void:
+	var still := Vector2(velocity.x, velocity.z).length() < 0.6
+	match kind:
+		"water":
+			if state == State.GROUND and still and carried == null:
+				play_action("kneel_drink", 1.35, 0.2)
+				action_lock = 2.2
+			else:
+				play_upper("drink_cupped", 1.4)
+		"dew":
+			play_upper("drink_cupped", 1.4)
+		_:
+			play_upper("eat_bite", 1.5)
+
+
+## Taking something from the world (ItemPickup, the garden's gathering): "pick"
+## a small thing off the ground (on the move, just a reach down), "pull" at a
+## plant, "cut" a stem with the knife.
+func play_gather(kind: String) -> void:
+	if state != State.GROUND or carried != null:
+		return
+	var moving := Vector2(velocity.x, velocity.z).length() > 0.6
+	match kind:
+		"pull":
+			play_action("pull_fibre", 1.5, 0.2)
+			action_lock = 1.6
+		"cut":
+			var inventory := get_node_or_null("Inventory") as Inventory
+			if inventory != null:
+				inventory.draw_knife(2.0)
+			play_action("knife_cut", 1.7, 0.2)
+			action_lock = 1.5
+		_:
+			if moving:
+				play_upper("grab", 1.7)
+			else:
+				play_action("grab", 1.5, 0.12)
+				action_lock = 0.8
+
+
+## Making something (Crafting): he kneels and binds it together.
+func play_craft() -> void:
+	if state == State.GROUND and carried == null:
+		play_action("craft", 1.6, 0.25)
+
+
+## Caught in a web (SpiderWeb): he struggles on the spot, yanking at the silk,
+## until it lets him go; torn free, he stumbles out of it.
+func set_webbed(on: bool, tore := false) -> void:
+	webbed = on
+	if on:
+		play_action("web_struggle", 1.25, 0.2)
+	elif tore:
+		play_action("web_break_free", 1.4, 0.1)
+	else:
+		stop_action()
+
+
 ## Starts the day lying on his back beside the bag, and gets up.
 func wake_up() -> void:
 	play_action("get_up", 1.0, 0.0)
@@ -1677,13 +1860,25 @@ func _build_animation_tree() -> void:
 	# swimming: treading water, blending into the stroke as he gets going
 	var swim := AnimationNodeBlendTree.new()
 	swim.add_node("tread", _clip(_pick("swim_idle", "idle")))
-	swim.add_node("stroke", _clip(_pick("swim", "walk")))
+	# breaststroke with his head up (the library's crawl stroke put his face in the water)
+	swim.add_node("stroke", _clip(_pick("swim_surface", _pick("swim", "walk"))))
 	swim.add_node("stroke_speed", AnimationNodeTimeScale.new())
 	swim.add_node("stroking", AnimationNodeBlend2.new())
 	swim.connect_node("stroke_speed", 0, "stroke")
 	swim.connect_node("stroking", 0, "tread")
 	swim.connect_node("stroking", 1, "stroke_speed")
-	swim.connect_node("output", 0, "stroking")
+	# under water: hovering, blending into a gliding stroke as he gets going
+	swim.add_node("under_idle", _clip(_pick("underwater_idle", "swim_idle")))
+	swim.add_node("under_stroke", _clip(_pick("swim_underwater", "swim")))
+	swim.add_node("under_speed", AnimationNodeTimeScale.new())
+	swim.add_node("under_moving", AnimationNodeBlend2.new())
+	swim.add_node("under", AnimationNodeBlend2.new())
+	swim.connect_node("under_speed", 0, "under_stroke")
+	swim.connect_node("under_moving", 0, "under_idle")
+	swim.connect_node("under_moving", 1, "under_speed")
+	swim.connect_node("under", 0, "stroking")
+	swim.connect_node("under", 1, "under_moving")
+	swim.connect_node("output", 0, "under")
 
 	var sm := AnimationNodeStateMachine.new()
 	sm.add_node("ground", ground)
@@ -1724,7 +1919,21 @@ func _build_animation_tree() -> void:
 	root.add_node("action", shot)
 	root.connect_node("action", 0, "sm")
 	root.connect_node("action", 1, "action_speed")
-	root.connect_node("output", 0, "action")
+	# over that, clips for his arms, chest and head only (drinking, eating, a
+	# quick grab): his legs go on walking or standing underneath
+	root.add_node("upper_clip", _clip("idle"))
+	root.add_node("upper_speed", AnimationNodeTimeScale.new())
+	root.connect_node("upper_speed", 0, "upper_clip")
+	var upper := AnimationNodeOneShot.new()
+	upper.fadein_time = 0.15
+	upper.fadeout_time = 0.3
+	upper.filter_enabled = true
+	for bone: String in UPPER_BONES:
+		upper.set_filter_path(NodePath("Armature/Skeleton3D:" + bone), true)
+	root.add_node("upper", upper)
+	root.connect_node("upper", 0, "action")
+	root.connect_node("upper", 1, "upper_speed")
+	root.connect_node("output", 0, "upper")
 
 	anim_tree.tree_root = root
 	anim_tree.active = true

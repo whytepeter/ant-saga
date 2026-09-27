@@ -2,7 +2,8 @@ extends SceneTree
 ## Builds <dir>/amodu_animations.res from the Meshy animation files
 ## (tools/meshy_character.py): anim_<batch>.glb holds up to 10 library actions
 ## in manifest order ("actions"), anim_more_<batch>.glb the same for the later
-## "more_actions" and anim_weapon_<batch>.glb for "weapon_actions"; motion_<name>.glb
+## "more_actions", anim_weapon_<batch>.glb for "weapon_actions" and
+## anim_survival_<batch>.glb for "survival_actions"; motion_<name>.glb
 ## holds one custom clip.
 ##
 ##   Godot --headless --path . -s tools/build_amodu_anims.gd [-- --dir=res://assets/characters/amodu2/]
@@ -30,7 +31,8 @@ const FPS := 30.0
 const LOOPS := ["idle", "idle_look", "alert", "walk", "run", "sprint", "crouch_walk", "fall", "climb_up",
 	"climb_down", "climb_rope", "swim_idle", "swim", "block", "carry_walk", "push", "torch_crouch_walk",
 	"lamp_walk", "belly_crawl", "ride_insect", "carry_overhead_walk", "carry_overhead_idle", "jump_run", "coil",
-	"climb_left", "climb_right", "rope_hang", "bar_hang", "axe_stance"]
+	"climb_left", "climb_right", "rope_hang", "bar_hang", "axe_stance", "web_struggle", "swim_surface",
+	"swim_underwater", "underwater_idle", "combat_stance", "sleep", "fist_block"]
 ## Clips whose baked travel is removed on these axes (x, y, z).
 const IN_PLACE := {
 	"walk": [true, false, true], "run": [true, false, true], "sprint": [true, false, true],
@@ -46,6 +48,24 @@ const IN_PLACE := {
 	"axe_stance": [true, false, true], "axe_slash_right": [true, false, true], "axe_slash_left": [true, false, true],
 	"axe_combo": [true, false, true], "axe_overhead": [true, false, true], "axe_charged": [true, false, true],
 	"axe_spin": [true, false, true], "axe_parry": [true, false, true],
+	# swimming: the controller moves him (underwater, up and down too)
+	"swim_surface": [true, false, true], "swim_underwater": [true, true, true], "underwater_idle": [true, true, true],
+	"dive_down": [true, true, true],
+	# gathering, eating, drinking, the web, sleep: on the spot
+	"walk_pick_up": [true, false, true], "run_pick_up": [true, false, true], "collect": [true, false, true],
+	"pick_up": [true, false, true],
+	"collect_crouch": [true, false, true], "pull_plant": [true, false, true], "knife_cut": [true, false, true],
+	"craft": [true, false, true], "kneel_drink": [true, false, true], "drink_cupped": [true, false, true],
+	"stand_drink": [true, false, true], "eat_bite": [true, false, true], "web_struggle": [true, false, true],
+	"web_break_free": [true, false, true], "lie_down": [true, false, true], "sleep": [true, false, true],
+	"wake_up": [true, false, true],
+	# more fighting: PlayerCombat supplies the lunge
+	"hook_left": [true, false, true], "uppercut_right": [true, false, true], "elbow_strike": [true, false, true],
+	"spartan_kick": [true, false, true], "knee_strike": [true, false, true], "combat_stance": [true, false, true],
+	"fist_block": [true, false, true], "ground_slam": [true, false, true], "reaping_swing": [true, false, true],
+	"two_hand_parry": [true, false, true], "double_combo": [true, false, true], "knife_slash": [true, false, true],
+	"knife_stab": [true, false, true], "knife_backhand": [true, false, true], "hammer_side_swing": [true, false, true],
+	"spear_thrust": [true, false, true], "spear_jab": [true, false, true], "spear_lunge": [true, false, true],
 }
 ## Airborne pieces: the new clip and the jumps to cut it from, best first.
 const AIR := {
@@ -66,6 +86,10 @@ const SWINGS := {
 	"axe_charged_swing": ["axe_charged", 3.9, 5.6, 4.4],
 	"axe_spin_cut": ["axe_spin", 0.45, 1.7, 0.87],
 	"knife_thrust": ["thrust", 0.3, 1.4, 0.73],
+	# gathering: the useful middle of long library clips (the hand closes at the hit)
+	"grab": ["pick_up", 0.5, 2.4, 1.45],
+	"pull_fibre": ["pull_plant", 0.6, 3.7, 2.2],
+	"gather_crouch": ["collect", 0.5, 4.3, 2.0],
 }
 ## Standing clips whose arms hang out from the body with bent-back wrists (open
 ## hands read as claws) and locked-straight elbows: [degrees the arms swing in
@@ -102,7 +126,8 @@ func _run() -> void:
 	var lib := AnimationLibrary.new()
 	var raw_drift := {}
 	for set: Array in [["anim_%d.glb", keys], ["anim_more_%d.glb", (manifest.get("more_actions", {}) as Dictionary).keys()],
-			["anim_weapon_%d.glb", (manifest.get("weapon_actions", {}) as Dictionary).keys()]]:
+			["anim_weapon_%d.glb", (manifest.get("weapon_actions", {}) as Dictionary).keys()],
+			["anim_survival_%d.glb", (manifest.get("survival_actions", {}) as Dictionary).keys()]]:
 		var batch := 0
 		var set_keys: Array = set[1]
 		while FileAccess.file_exists(dir + String(set[0]) % batch):
