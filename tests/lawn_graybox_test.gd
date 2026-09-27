@@ -165,17 +165,20 @@ func _test_swim() -> void:
 			break
 	Input.action_release("move_forward")
 	_check("swims to the bank and wades out", out, "%.0f m to the bank; now %s" % [best_d, Player.State.keys()[player.state]])
-	# too far: worn out mid-Rut, he's put back on the bank he swam from
-	var bank := player.global_position
-	_respawn_reason = ""
+	# worn out mid-Rut: no snap back to the bank; he paddles on slowly and the
+	# water wears him down until he gets out
+	var combat := player.get_node("Combat") as PlayerCombat
+	combat.health = combat.max_health
 	var mid := layout.ground_point([180, 200], 0.0)
 	player.teleport(Vector3(mid.x, water.level + 1.5, mid.z), 0.0)
 	await _frames(60)
 	player.swim_left = 1.0
 	await _frames(240)
-	var back := Vector2(player.global_position.x, player.global_position.z).distance_to(Vector2(bank.x, bank.z))
-	_check("too far to swim: back to the bank", _respawn_reason == "Too far to swim" and back < 3.0 and not player.is_swimming(),
-		"reason '%s', %.1f m from the bank" % [_respawn_reason, back])
+	var stayed := Vector2(player.global_position.x, player.global_position.z).distance_to(Vector2(mid.x, mid.z)) < 5.0
+	_check("worn out swimming: no snap back, the water wears him down", player.is_swimming() and stayed
+		and combat.health < combat.max_health, "swimming %s, health %.0f" % [player.is_swimming(), combat.health])
+	combat.health = combat.max_health
+	player.swim_left = player.swim_range
 
 
 ## Walks from the lawn into Root Hall's mouth, across the hall, up the

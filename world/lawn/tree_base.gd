@@ -57,7 +57,7 @@ func _ready() -> void:
 	var mi := MeshInstance3D.new()
 	mi.name = "TreeBaseMesh"
 	mi.mesh = src.mesh
-	mi.material_override = _material()
+	mi.material_override = TreeBase.material()
 	add_child(mi)
 	var body := StaticBody3D.new()
 	body.name = "Climb_tree_base"
@@ -178,10 +178,26 @@ func cave_factor(p: Vector3) -> float:
 
 # ── dressing ──────────────────────────────────────────────────────────────────
 
-func _material() -> ShaderMaterial:
+## The baked base as a plain mesh (no caves' lights, no collision): the editor
+## shows it with the rest of the garden (LawnBuilder is a tool script; this
+## node is only built when the game runs).
+static func preview() -> MeshInstance3D:
+	var scene := load(MESH) as PackedScene
+	var inst := scene.instantiate()
+	var src: MeshInstance3D = inst.find_children("*", "MeshInstance3D", true, false)[0]
+	var mi := MeshInstance3D.new()
+	mi.name = "TreeBasePreview"
+	mi.mesh = src.mesh
+	mi.material_override = TreeBase.material()
+	inst.free()
+	return mi
+
+
+static func material() -> ShaderMaterial:
 	var m := ShaderMaterial.new()
 	m.shader = SHADER
-	var sets := {"bark": "bark_brown_02", "soil": "brown_mud_03", "mud": "brown_mud_03", "leaves": "forest_leaves_02"}
+	# the same bark as the tree above it (AppleTree), so the trunk runs on unbroken
+	var sets := {"bark": "bark_brown_01", "soil": "brown_mud_03", "mud": "brown_mud_03", "leaves": "forest_leaves_02"}
 	for key: String in sets:
 		var dir := "res://assets/textures/%s/%s" % [sets[key], sets[key]]
 		m.set_shader_parameter(key + "_albedo", load(dir + "_diff.jpg"))

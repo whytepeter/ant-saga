@@ -882,8 +882,9 @@
       "via": "nano",
       "polycount": 15000,
       "size": 36,
-      "prompt": "A child's plastic toy dinosaur, a green long-necked sauropod standing, a little faded with scuffed paint.",
-      "note": "Windfall Roots: a landmark."
+      "prompt": "A child's small plastic toy dinosaur standing on four legs: a long-necked sauropod moulded in green PVC plastic with visible mould seams, the paint faded and scuffed from being left outside.",
+      "note": "Windfall Roots: a landmark.",
+      "style": "Photorealistic, true-to-life proportions and real materials with real wear, dirt and scuffs, like a macro photograph, the look of the game Grounded. No cartoon shapes, no chunky simplification, no stylized hand-painted look. Single object, no base, no ground plane, no background."
     },
     {
       "id": "lego_brick",
@@ -900,8 +901,10 @@
       "via": "nano",
       "polycount": 12000,
       "size": 90,
-      "prompt": "A dropped gardening glove lying flat, green and grey fabric with a rubber-coated palm, fingers a little curled, dirty at the fingertips.",
-      "note": "Hose Run: a landmark (Mum's)."
+      "prompt": "A dropped cotton gardening glove lying flat on its back: green and grey knitted fabric with a textured rubber-coated palm, the fingers a little curled, dry soil caked on the fingertips.",
+      "note": "Hose Run: a landmark (Mum's).",
+      "style": "Photorealistic, true-to-life proportions and real materials with real wear, dirt and scuffs, like a macro photograph, the look of the game Grounded. No cartoon shapes, no chunky simplification, no stylized hand-painted look. Single object, no base, no ground plane, no background.",
+      "view": "The whole glove in frame from the cuff to the fingertips, with a wide white margin all round, seen from above at a slight angle, plain white background, soft even light."
     },
     {
       "id": "soil_clods",

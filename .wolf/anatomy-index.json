@@ -1,13 +1,13 @@
 {
   "version": 1,
   "meta": {
-    "lastScanned": "2026-09-27T13:49:29.564Z",
-    "fileCount": 298,
+    "lastScanned": "2026-09-27T19:34:02.861Z",
+    "fileCount": 328,
     "hits": 0,
     "misses": 0,
-    "renderedHash": "44edc7dfc7a88c95c3211577eeca4b60648b8d33763756bfdf425b21d3dbce82",
-    "storeUpdatedAt": "2026-09-27T13:49:29.574Z",
-    "rootHash": "ffb36681a6c88fa1"
+    "renderedHash": "27ca0fe3f7f703c066cc758f61393ecec00fb6cf99693370398427a7b48802dd",
+    "storeUpdatedAt": "2026-09-27T19:34:02.869Z",
+    "rootHash": "4ed034efbe827e27"
   },
   "files": {
     ".gitattributes": {
@@ -1461,11 +1461,11 @@
     },
     "player/player.gd": {
       "description": "Declares State",
-      "tokens": 17513,
-      "hash": "54b9033be44b6b4e",
-      "size": 66602,
-      "mtimeMs": 1790498385295.5708,
-      "updatedAt": "2026-09-27T08:39:45.384Z",
+      "tokens": 18236,
+      "hash": "56beb09c97abcb84",
+      "size": 69318,
+      "mtimeMs": 1790536395764.6396,
+      "updatedAt": "2026-09-27T19:13:15.863Z",
       "source": "hook"
     },
     "player/player.gd.uid": {
@@ -2134,11 +2134,11 @@
     },
     "ui/game_hud.gd": {
       "description": "Declares CREAM",
-      "tokens": 3227,
-      "hash": "33da3bbcf1fa109b",
-      "size": 12635,
-      "mtimeMs": 1790381647547.0251,
-      "updatedAt": "2026-09-26T00:14:07.618Z",
+      "tokens": 4504,
+      "hash": "1625de910f87faf7",
+      "size": 17460,
+      "mtimeMs": 1790535978309.7847,
+      "updatedAt": "2026-09-27T19:06:18.405Z",
       "source": "hook"
     },
     "world/ambient_life.gd": {
@@ -2818,11 +2818,11 @@
     },
     "player/inventory.gd": {
       "description": "",
-      "tokens": 896,
-      "hash": "ee3176f80e8b4180",
-      "size": 3366,
-      "mtimeMs": 1790440640818.8828,
-      "updatedAt": "2026-09-26T16:37:20.929Z",
+      "tokens": 2361,
+      "hash": "62f4e1df3eccefbe",
+      "size": 9135,
+      "mtimeMs": 1790536220429.434,
+      "updatedAt": "2026-09-27T19:10:20.534Z",
       "source": "hook"
     },
     "player/held_weapon.gd": {
@@ -3497,6 +3497,276 @@
       "size": 3199,
       "mtimeMs": 1790516969443.7683,
       "updatedAt": "2026-09-27T13:49:29.563Z",
+      "source": "hook"
+    },
+    "world/props/spider_web.gd": {
+      "description": "Declares SILK_SHADER",
+      "tokens": 3432,
+      "hash": "09b701979cef1640",
+      "size": 12871,
+      "mtimeMs": 1790517336181.7246,
+      "updatedAt": "2026-09-27T13:55:36.298Z",
+      "source": "hook"
+    },
+    "creatures/wolf_spider/lurking_spider.gd": {
+      "description": "Declares CREATURES_LAYER",
+      "tokens": 618,
+      "hash": "09339735de8bf621",
+      "size": 2316,
+      "mtimeMs": 1790517473944.6973,
+      "updatedAt": "2026-09-27T13:57:54.055Z",
+      "source": "hook"
+    },
+    "world/shaders/plant.gdshader": {
+      "description": "Declares spatial",
+      "tokens": 759,
+      "hash": "e7f65e7884ca4388",
+      "size": 2844,
+      "mtimeMs": 1790517660696.8745,
+      "updatedAt": "2026-09-27T14:01:00.794Z",
+      "source": "hook"
+    },
+    "world/props/wind_sway.gd": {
+      "description": "Declares WIND_DIR",
+      "tokens": 366,
+      "hash": "eca6490fba718e33",
+      "size": 1371,
+      "mtimeMs": 1790517706002.9016,
+      "updatedAt": "2026-09-27T14:01:46.107Z",
+      "source": "hook"
+    },
+    "world/lawn/apple_tree.gd": {
+      "description": "Declares BARK",
+      "tokens": 5450,
+      "hash": "a3a5a4dc7c030d90",
+      "size": 20841,
+      "mtimeMs": 1790518341044.0142,
+      "updatedAt": "2026-09-27T14:12:21.152Z",
+      "source": "hook"
+    },
+    "world/props/nature_models.gd": {
+      "description": "Declares DIR",
+      "tokens": 1764,
+      "hash": "2149877c54f663e3",
+      "size": 6616,
+      "mtimeMs": 1790519392372.6829,
+      "updatedAt": "2026-09-27T14:29:52.471Z",
+      "source": "hook"
+    },
+    "world/lawn/tree_grounds.gd": {
+      "description": "Declares WORLD_LAYER",
+      "tokens": 6404,
+      "hash": "54cf92a8b40b97ca",
+      "size": 24637,
+      "mtimeMs": 1790519980819.345,
+      "updatedAt": "2026-09-27T14:39:40.941Z",
+      "source": "hook"
+    },
+    "world/props/litter.gdshader_placeholder": {
+      "description": "",
+      "tokens": 4,
+      "hash": "2f73349cfc463025",
+      "size": 12,
+      "mtimeMs": 1790523009840.7227,
+      "updatedAt": "2026-09-27T15:30:09.942Z",
+      "source": "hook"
+    },
+    "world/props/litter.gd": {
+      "description": "Declares SHADER",
+      "tokens": 6906,
+      "hash": "43f926891186624b",
+      "size": 26154,
+      "mtimeMs": 1790523177635.7705,
+      "updatedAt": "2026-09-27T15:32:57.737Z",
+      "source": "hook"
+    },
+    "tools/merge_alpha.gd": {
+      "description": "Declares ROOT",
+      "tokens": 507,
+      "hash": "c4106bb6ece7f37c",
+      "size": 1898,
+      "mtimeMs": 1790533982118.3787,
+      "updatedAt": "2026-09-27T18:33:02.284Z",
+      "source": "hook"
+    },
+    "ui/sleek.gd": {
+      "description": "Declares CREAM",
+      "tokens": 1510,
+      "hash": "183e7037c97f44c4",
+      "size": 5660,
+      "mtimeMs": 1790534060623.172,
+      "updatedAt": "2026-09-27T18:34:20.741Z",
+      "source": "hook"
+    },
+    "ui/sleek_row.gd": {
+      "description": "Declares Kind",
+      "tokens": 2468,
+      "hash": "3d774c0b19c90f5c",
+      "size": 9536,
+      "mtimeMs": 1790534251071.6248,
+      "updatedAt": "2026-09-27T18:37:31.172Z",
+      "source": "hook"
+    },
+    "ui/sleek_tabs.gd": {
+      "description": "Declares GAP",
+      "tokens": 787,
+      "hash": "a20061dae3a54bef",
+      "size": 2951,
+      "mtimeMs": 1790534282315.4187,
+      "updatedAt": "2026-09-27T18:38:02.418Z",
+      "source": "hook"
+    },
+    "ui/sleek_blur.gdshader": {
+      "description": "Declares canvas_item",
+      "tokens": 257,
+      "hash": "fa947a7c311e9520",
+      "size": 961,
+      "mtimeMs": 1790534282517.2505,
+      "updatedAt": "2026-09-27T18:38:02.639Z",
+      "source": "hook"
+    },
+    "ui/sleek_screen.gd": {
+      "description": "Declares BLUR",
+      "tokens": 666,
+      "hash": "c8d2e2d0e835419e",
+      "size": 2495,
+      "mtimeMs": 1790534282730.568,
+      "updatedAt": "2026-09-27T18:38:02.831Z",
+      "source": "hook"
+    },
+    "ui/game_settings.gd": {
+      "description": "Declares PATH",
+      "tokens": 3549,
+      "hash": "57c0dd5f5c4fbfd7",
+      "size": 13567,
+      "mtimeMs": 1790534714210.281,
+      "updatedAt": "2026-09-27T18:45:14.321Z",
+      "source": "hook"
+    },
+    "ui/pause_menu.gd": {
+      "description": "Declares _Rule",
+      "tokens": 1537,
+      "hash": "c4f8269a8ec50b0d",
+      "size": 5766,
+      "mtimeMs": 1790534818249.1414,
+      "updatedAt": "2026-09-27T18:46:58.364Z",
+      "source": "hook"
+    },
+    "ui/settings_screen.gd": {
+      "description": "Declares TABS",
+      "tokens": 2429,
+      "hash": "52c4075cc49338e6",
+      "size": 9257,
+      "mtimeMs": 1790534860868.7886,
+      "updatedAt": "2026-09-27T18:47:40.960Z",
+      "source": "hook"
+    },
+    "ui/meters.gd": {
+      "description": "Declares WIDTH",
+      "tokens": 1479,
+      "hash": "e890d9fe5517ef99",
+      "size": 5546,
+      "mtimeMs": 1790535636291.7764,
+      "updatedAt": "2026-09-27T19:00:36.386Z",
+      "source": "hook"
+    },
+    "tests/_tmp_ui.gd": {
+      "description": "",
+      "tokens": 404,
+      "hash": "7f753f40ec85257e",
+      "size": 1512,
+      "mtimeMs": 1790535899268.1226,
+      "updatedAt": "2026-09-27T19:04:59.372Z",
+      "source": "hook"
+    },
+    "world/props/gatherable.gd": {
+      "description": "",
+      "tokens": 1100,
+      "hash": "9b8a35d7a894ef38",
+      "size": 4122,
+      "mtimeMs": 1790536051488.3403,
+      "updatedAt": "2026-09-27T19:07:31.579Z",
+      "source": "hook"
+    },
+    "data/items.json": {
+      "description": "",
+      "tokens": 1425,
+      "hash": "c15e760f34d64229",
+      "size": 4986,
+      "mtimeMs": 1790536084185.7495,
+      "updatedAt": "2026-09-27T19:08:04.284Z",
+      "source": "hook"
+    },
+    "data/recipes.json": {
+      "description": "",
+      "tokens": 334,
+      "hash": "c4faa2d2ae0404c5",
+      "size": 1169,
+      "mtimeMs": 1790536084371.433,
+      "updatedAt": "2026-09-27T19:08:04.461Z",
+      "source": "hook"
+    },
+    "player/items.gd": {
+      "description": "Declares PATH",
+      "tokens": 594,
+      "hash": "aebfd653cc5d1f54",
+      "size": 2226,
+      "mtimeMs": 1790536143758.3545,
+      "updatedAt": "2026-09-27T19:09:04.067Z",
+      "source": "hook"
+    },
+    "player/crafting.gd": {
+      "description": "Declares PATH",
+      "tokens": 960,
+      "hash": "772a1abf2bb72818",
+      "size": 3598,
+      "mtimeMs": 1790536144167.8066,
+      "updatedAt": "2026-09-27T19:09:04.266Z",
+      "source": "hook"
+    },
+    "world/props/gather_field.gd": {
+      "description": "Declares GROUP",
+      "tokens": 870,
+      "hash": "47e19a612be18ea9",
+      "size": 3262,
+      "mtimeMs": 1790536173980.1206,
+      "updatedAt": "2026-09-27T19:09:34.080Z",
+      "source": "hook"
+    },
+    "world/props/item_pickup.gd": {
+      "description": "Declares GROUP",
+      "tokens": 640,
+      "hash": "fe3009a2c5b6ec27",
+      "size": 2399,
+      "mtimeMs": 1790536395579.079,
+      "updatedAt": "2026-09-27T19:13:15.680Z",
+      "source": "hook"
+    },
+    "ui/pack_screen.gd": {
+      "description": "Declares TABS",
+      "tokens": 6122,
+      "hash": "404a4ff04558115e",
+      "size": 23365,
+      "mtimeMs": 1790536484983.0981,
+      "updatedAt": "2026-09-27T19:14:45.076Z",
+      "source": "hook"
+    },
+    "ui/pickup_toasts.gd": {
+      "description": "Declares LINE",
+      "tokens": 467,
+      "hash": "3a00671ea0bbf2fe",
+      "size": 1751,
+      "mtimeMs": 1790536538351.614,
+      "updatedAt": "2026-09-27T19:15:38.453Z",
+      "source": "hook"
+    },
+    "ui/underwater.gdshader": {
+      "description": "Declares canvas_item",
+      "tokens": 262,
+      "hash": "3273aec7b941ffbb",
+      "size": 981,
+      "mtimeMs": 1790537642762.7822,
+      "updatedAt": "2026-09-27T19:34:02.860Z",
       "source": "hook"
     }
   },

@@ -339,3 +339,75 @@ description: chronological action log per session, consolidated weekly
 | 14:49 | Created world/shaders/silk.gdshader | — | ~854 |
 | 14:49 | Created world/shaders/silk.gdshader | — | ~854 |
 | 14:49 | Biomes per area (garden_dressing _biomes + layout biomes; clods removed), strawberries/seeds as food, realistic plant remakes, weapon handle centring (hammer grip), spear 1.4 m + Meshy spear jab/thrust/lunge clips, first-person hands down unless fighting, ants retargeted to 82 clips | garden_dressing.gd, layout.json, survival.gd, held_weapon.gd, weapons.gd, player.gd | movement, survival, fight PASS | ~90k |
+| 14:55 | Created world/props/spider_web.gd | — | ~3432 |
+| 14:55 | Created world/props/spider_web.gd | — | ~3432 |
+| 14:57 | Created creatures/wolf_spider/lurking_spider.gd | — | ~618 |
+| 14:57 | Created creatures/wolf_spider/lurking_spider.gd | — | ~618 |
+| 15:01 | Created world/shaders/plant.gdshader | — | ~759 |
+| 15:01 | Created world/shaders/plant.gdshader | — | ~759 |
+| 15:01 | Created world/props/wind_sway.gd | — | ~366 |
+| 15:01 | Created world/props/wind_sway.gd | — | ~366 |
+| 15:12 | Created world/lawn/apple_tree.gd | — | ~5450 |
+| 15:12 | Created world/lawn/apple_tree.gd | — | ~5450 |
+| 15:29 | Created world/props/nature_models.gd | — | ~1764 |
+| 15:29 | Created world/props/nature_models.gd | — | ~1764 |
+| 15:39 | Created world/lawn/tree_grounds.gd | — | ~6404 |
+| 15:39 | Created world/lawn/tree_grounds.gd | — | ~6404 |
+| 16:30 | Created world/props/litter.gdshader_placeholder | — | ~4 |
+| 16:30 | Created world/props/litter.gdshader_placeholder | — | ~4 |
+| 16:32 | Created world/props/litter.gd | — | ~6906 |
+| 16:32 | Created world/props/litter.gd | — | ~6906 |
+| 19:33 | Created tools/merge_alpha.gd | — | ~507 |
+| 19:33 | Created tools/merge_alpha.gd | — | ~507 |
+| 19:34 | Created ui/sleek.gd | — | ~1528 |
+| 19:34 | Created ui/sleek.gd | — | ~1528 |
+| 19:34 | Edited ui/sleek.gd | 5→3 lines | ~18 |
+| 19:34 | Edited ui/sleek.gd | 5→3 lines | ~18 |
+| 19:37 | Created ui/sleek_row.gd | — | ~2468 |
+| 19:37 | Created ui/sleek_row.gd | — | ~2468 |
+| 19:38 | Created ui/sleek_tabs.gd | — | ~787 |
+| 19:38 | Created ui/sleek_tabs.gd | — | ~787 |
+| 19:38 | Created ui/sleek_blur.gdshader | — | ~257 |
+| 19:38 | Created ui/sleek_blur.gdshader | — | ~257 |
+| 19:38 | Created ui/sleek_screen.gd | — | ~666 |
+| 19:38 | Created ui/sleek_screen.gd | — | ~666 |
+| 19:45 | Created ui/game_settings.gd | — | ~3549 |
+| 19:45 | Created ui/game_settings.gd | — | ~3549 |
+| 19:46 | Created ui/pause_menu.gd | — | ~1537 |
+| 19:46 | Created ui/pause_menu.gd | — | ~1537 |
+| 19:47 | Created ui/settings_screen.gd | — | ~2429 |
+| 19:47 | Created ui/settings_screen.gd | — | ~2429 |
+| 20:00 | Created ui/meters.gd | — | ~1479 |
+| 20:00 | Created ui/meters.gd | — | ~1479 |
+| 20:01 | Edited ui/game_hud.gd | reduced (-14 lines) | ~75 |
+| 20:01 | Edited ui/game_hud.gd | reduced (-14 lines) | ~75 |
+| 20:01 | Edited ui/game_hud.gd | modified _fill_controls() | ~235 |
+| 20:01 | Edited ui/game_hud.gd | modified _fill_controls() | ~235 |
+| 20:04 | Created tests/_tmp_ui.gd | — | ~404 |
+| 20:04 | Created tests/_tmp_ui.gd | — | ~404 |
+| 20:06 | Edited ui/game_hud.gd | 2→7 lines | ~70 |
+| 20:06 | Edited ui/game_hud.gd | 2→7 lines | ~70 |
+| 20:07 | Created world/props/gatherable.gd | — | ~1100 |
+| 20:07 | Created world/props/gatherable.gd | — | ~1100 |
+| 20:08 | Created data/items.json | — | ~1425 |
+| 20:08 | Created data/items.json | — | ~1425 |
+| 20:08 | Created data/recipes.json | — | ~334 |
+| 20:08 | Created data/recipes.json | — | ~334 |
+| 20:09 | Created player/items.gd | — | ~594 |
+| 20:09 | Created player/items.gd | — | ~594 |
+| 20:09 | Created player/crafting.gd | — | ~960 |
+| 20:09 | Created player/crafting.gd | — | ~960 |
+| 20:09 | Created world/props/gather_field.gd | — | ~870 |
+| 20:09 | Created world/props/gather_field.gd | — | ~870 |
+| 20:10 | Created player/inventory.gd | — | ~2361 |
+| 20:10 | Created player/inventory.gd | — | ~2361 |
+| 20:13 | Created world/props/item_pickup.gd | — | ~640 |
+| 20:13 | Created world/props/item_pickup.gd | — | ~640 |
+| 20:13 | Edited player/player.gd | modified is_action_just_pressed() | ~111 |
+| 20:13 | Edited player/player.gd | modified is_action_just_pressed() | ~111 |
+| 20:14 | Created ui/pack_screen.gd | — | ~6122 |
+| 20:14 | Created ui/pack_screen.gd | — | ~6122 |
+| 20:15 | Created ui/pickup_toasts.gd | — | ~467 |
+| 20:15 | Created ui/pickup_toasts.gd | — | ~467 |
+| 20:34 | Created ui/underwater.gdshader | — | ~262 |
+| 20:34 | Created ui/underwater.gdshader | — | ~262 |

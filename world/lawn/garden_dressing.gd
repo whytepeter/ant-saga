@@ -26,16 +26,46 @@ const WORLD_LAYER := 1
 const CLIMBABLE_LAYER := 1 << 2
 ## What you can climb as well as bump into.
 const CLIMBABLE := ["pebbles", "twig", "toadstools", "tree_root", "bracket_fungus", "soil_clods", "snail_shell",
-	"pot_shard", "eraser", "homework_sheet", "garden_glove", "toy_dinosaur", "bendy_straw", "tennis_ball", "lego_brick"]
+	"pot_shard", "eraser", "homework_sheet", "garden_glove", "toy_dinosaur", "bendy_straw", "tennis_ball", "lego_brick",
+	"fallen_leaf", "cone_mushrooms", "inky_cap", "plantain", "moss_clump", "paperclip", "rotten_apple", "bark_chips",
+	"plant_label"]
+## What he gets from things, the Grounded way: everything you see is terrain or
+## a resource (Gatherable, via GatherField). id -> [what it's called, {item:
+## count}, blows it takes, the blade it needs (0 by hand, 0.5 his knife, 1 an
+## axe or hammer)].
+const GATHER := {
+	"fallen_leaf": ["leaf", {"leaf": 2}, 1.0, 0.0],
+	"clover": ["clover leaf", {"clover": 1}, 0.5, 0.0],
+	"cone_mushrooms": ["mushrooms", {"mushroom": 2}, 1.0, 0.0],
+	"inky_cap": ["mushroom", {"mushroom": 1}, 0.5, 0.0],
+	"toadstools": ["toadstool", {"mushroom": 4}, 3.0, 0.5],
+	"bark_chips": ["bark chip", {"bark": 2}, 1.0, 0.0],
+	"twig": ["twig", {"twig": 2}, 2.0, 1.0],
+	"pebbles": ["stone", {"pebble": 3}, 2.0, 1.0],
+	"eraser": ["eraser", {"rubber": 3}, 2.0, 0.5],
+	"pot_shard": ["pot shard", {"clay": 3}, 3.0, 1.0],
+	"plantain": ["plantain", {"fibre": 3}, 2.0, 0.5],
+	"sprout": ["sprout", {"fibre": 1}, 0.5, 0.0],
+	"weed_rosette": ["weed", {"fibre": 2}, 1.0, 0.5],
+	"nettle": ["nettle", {"fibre": 3}, 2.0, 0.5],
+	"thistle": ["thistle", {"fibre": 2}, 2.0, 0.5],
+	"moss_clump": ["moss", {"fibre": 1}, 0.5, 0.0],
+}
 ## Tall plants you bump into at the stem (a cylinder: radius and height as a
 ## share of the plant's size); their leaves are soft.
-const STEMS := {"marigold": [0.03, 0.9], "nettle": [0.02, 0.95], "thistle": [0.022, 0.9], "grass_seedhead": [0.012, 0.85]}
+const STEMS := {"marigold": [0.03, 0.9], "nettle": [0.02, 0.95], "thistle": [0.022, 0.9], "grass_seedhead": [0.012, 0.85],
+	"clover": [0.03, 0.75], "sprout": [0.05, 0.6]}
 ## Plants Amodu can eat from (Survival reads `forage`): model -> what it's called.
 const FORAGE := {"wild_strawberry": "strawberries", "grass_seedhead": "grass seeds"}
 ## Where the edible plants ended up: [{pos: Vector3, radius: float, name: String}].
 static var forage: Array[Dictionary] = []
 ## Foliage that fades out near the camera instead of filling the screen.
 const SOFT := ["clover"]
+## Flat, floppy things (a sheet of paper, a sweet wrapper) drape over the ground
+## where they land instead of lying stiff on it: each gets its own mesh bent to
+## the soil under it.
+const DRAPE := ["sweet_wrapper", "homework_sheet"]
+static var _drapes: Array[Dictionary] = []  # {id, xf, vis}
 
 ## id, surfaces, chance per 2 m cell, size range (m), minimum grass density
 ## (blades per 100 m²; keeps big pieces off the paths), sink (m), fade-out (m).
@@ -44,8 +74,8 @@ const RULES := [
 	["clover", [LawnLayout.Surface.LAWN, LawnLayout.Surface.FLATTENED], 0.003, [4.0, 7.0], 0.0, 0.3, 100.0],
 	["pebbles", [LawnLayout.Surface.BARE_SOIL, LawnLayout.Surface.ANT_ROAD], 0.007, [4.0, 11.0], 0.0, 0.4, 220.0],
 	["pebbles", [LawnLayout.Surface.LAWN, LawnLayout.Surface.MUD], 0.003, [3.0, 8.0], 0.0, 0.4, 200.0],
-	["fallen_leaf", [LawnLayout.Surface.LEAF_LITTER], 0.015, [14.0, 30.0], 0.0, 0.2, 260.0],
-	["fallen_leaf", [LawnLayout.Surface.LAWN, LawnLayout.Surface.CLOVER, LawnLayout.Surface.FLATTENED], 0.0015, [10.0, 22.0], 0.0, 0.2, 220.0],
+	["fallen_leaf", [LawnLayout.Surface.LEAF_LITTER], 0.015, [14.0, 30.0], 0.0, 0.5, 260.0],
+	["fallen_leaf", [LawnLayout.Surface.LAWN, LawnLayout.Surface.CLOVER, LawnLayout.Surface.FLATTENED], 0.0015, [10.0, 22.0], 0.0, 0.45, 220.0],
 	["twig", [LawnLayout.Surface.LAWN, LawnLayout.Surface.LEAF_LITTER], 0.002, [14.0, 26.0], 6.0, 0.6, 280.0],
 	["toadstools", [LawnLayout.Surface.LEAF_LITTER, LawnLayout.Surface.CLOVER], 0.0008, [8.0, 16.0], 2.0, 0.3, 320.0],
 ]
@@ -55,10 +85,11 @@ const NO_SHADOW := ["clover", "pebbles", "fallen_leaf", "sprout", "paperclip", "
 	"bark_chips", "soil_clods"]
 const COLLISION := {"pebbles": "convex", "twig": "convex", "fallen_leaf": "convex",
 	"toadstools": "trimesh", "tree_root": "trimesh", "bracket_fungus": "trimesh",
-	"soil_clods": "convex", "snail_shell": "convex", "pot_shard": "convex", "eraser": "convex", "button": "convex",
+	"soil_clods": "convex", "snail_shell": "convex", "pot_shard": "trimesh", "eraser": "convex", "button": "convex",
 	"cone_mushrooms": "convex", "inky_cap": "convex", "rotten_apple": "convex", "plant_label": "convex",
 	"homework_sheet": "trimesh", "garden_glove": "trimesh", "toy_dinosaur": "trimesh", "bendy_straw": "trimesh",
-	"tennis_ball": "convex", "lego_brick": "convex"}
+	"tennis_ball": "convex", "lego_brick": "convex", "plantain": "convex", "moss_clump": "convex", "paperclip": "convex",
+	"bark_chips": "convex", "weed_rosette": "convex"}
 const TOADSTOOL_SPOTS := [[-300, -112], [-331, -62], [-228, 24], [-318, 42], [-292, -152], [-210, -95]]
 
 
@@ -106,7 +137,10 @@ static func build(parent: Node3D, layout: LawnLayout) -> void:
 			(placed["toadstools"] as Array[Transform3D]).append(Transform3D(
 				Basis(Vector3.UP, rng.randf() * TAU).scaled(Vector3.ONE * size), Vector3(p.x, layout.height_at(p.x, p.y) - 0.3, p.y)))
 	forage.clear()
+	_drapes.clear()
 	_biomes(layout, rng, routes, placed, vis)
+	for d: Dictionary in _drapes:
+		_drape(parent, layout, String(d["id"]), d["xf"], float(d["vis"]))
 	var bodies := {}  # chunk -> StaticBody3D
 	for id: String in placed:
 		var prop := GardenProps.get_prop(id)
@@ -130,10 +164,11 @@ static func build(parent: Node3D, layout: LawnLayout) -> void:
 				soft.distance_fade_max_distance = 5.0
 				mmi.material_override = soft
 			parent.add_child(mmi)
+			var shapes: Array[CollisionShape3D] = []
 			if COLLISION.has(id):
 				var body := _chunk_body(parent, bodies, key, id in CLIMBABLE)
 				for xf: Transform3D in chunks[key]:
-					_add_shape(body, prop.shape(String(COLLISION[id])), xf * prop.fix)
+					shapes.append(_add_shape(body, prop.shape(String(COLLISION[id])), xf * prop.fix))
 			elif STEMS.has(id):
 				var body := _chunk_body(parent, bodies, key, true)
 				for xf: Transform3D in chunks[key]:
@@ -141,7 +176,18 @@ static func build(parent: Node3D, layout: LawnLayout) -> void:
 					var stem := CylinderShape3D.new()
 					stem.radius = maxf(float(STEMS[id][0]) * size, 0.4)
 					stem.height = float(STEMS[id][1]) * size
-					_add_shape(body, stem, Transform3D(Basis(), xf.origin + Vector3.UP * stem.height * 0.5))
+					shapes.append(_add_shape(body, stem, Transform3D(Basis(), xf.origin + Vector3.UP * stem.height * 0.5)))
+			if GATHER.has(id):
+				var spec: Array = GATHER[id]
+				var list: Array[Transform3D] = chunks[key]
+				var field := GatherField.of(parent)
+				for k in list.size():
+					var xf: Transform3D = list[k]
+					var size := xf.basis.get_scale().x
+					var long := id in ["fallen_leaf", "twig"]  # cut anywhere along it
+					field.add(String(spec[0]), xf.origin, size * 0.45, spec[1], float(spec[2]), float(spec[3]),
+						mmi.multimesh, k, shapes[k] if k < shapes.size() else null, null,
+						xf.basis.get_euler().y, size if long else 0.0)
 	_tree_heroes(parent, layout, rng)
 
 
@@ -174,11 +220,16 @@ static func _biomes(layout: LawnLayout, rng: RandomNumberGenerator, routes: Arra
 				var size := rng.randf_range(float(e[2][0]), float(e[2][1]))
 				if (COLLISION.has(id) or STEMS.has(id)) and _near_route(routes, p, PATH_CLEARANCE + size * 0.3):
 					continue
+				var ground := Vector3(p.x, layout.height_at(p.x, p.y) - float(e[3]), p.y)
+				var xf := Transform3D(_resting(layout, id, p, rng.randf() * TAU).scaled(Vector3.ONE * size), ground)
+				if id in DRAPE:
+					_drapes.append({"id": id, "xf": xf, "vis": float(e[4])})
+					made += 1
+					continue
 				if not placed.has(id):
 					placed[id] = [] as Array[Transform3D]
 					vis[id] = float(e[4])
-				var ground := Vector3(p.x, layout.height_at(p.x, p.y) - float(e[3]), p.y)
-				(placed[id] as Array[Transform3D]).append(Transform3D(Basis(Vector3.UP, rng.randf() * TAU).scaled(Vector3.ONE * size), ground))
+				(placed[id] as Array[Transform3D]).append(xf)
 				if FORAGE.has(id):
 					forage.append({"pos": ground, "radius": size * 0.45, "name": String(FORAGE[id])})
 				made += 1
@@ -187,12 +238,64 @@ static func _biomes(layout: LawnLayout, rng: RandomNumberGenerator, routes: Arra
 			if GardenProps.get_prop(id) == null:
 				continue
 			var at := LawnLayout.xz(lm[1])
+			var xf := Transform3D(_resting(layout, id, at, float(lm[3])).scaled(Vector3.ONE * float(lm[2])),
+				Vector3(at.x, layout.height_at(at.x, at.y) - 0.3, at.y))
+			if id in DRAPE:
+				_drapes.append({"id": id, "xf": xf, "vis": 900.0})
+				continue
 			if not placed.has(id):
 				placed[id] = [] as Array[Transform3D]
 				vis[id] = 900.0
-			var xf := Transform3D(Basis(Vector3.UP, float(lm[3])).scaled(Vector3.ONE * float(lm[2])),
-				Vector3(at.x, layout.height_at(at.x, at.y) - 0.3, at.y))
 			(placed[id] as Array[Transform3D]).append(xf)
+
+
+## One flat thing (DRAPE) laid over the ground: its mesh is moved into the
+## world at `xf` and every point dropped onto the soil under it (keeping its
+## own crinkles and curls above that), so it follows every bump. Solid if the
+## model collides (the homework sheet: you can walk over it).
+static func _drape(parent: Node3D, layout: LawnLayout, id: String, xf: Transform3D, vis_end: float) -> void:
+	var prop := GardenProps.get_prop(id)
+	var arrays := prop.mesh.surface_get_arrays(0)
+	var verts: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+	var normals: PackedVector3Array = arrays[Mesh.ARRAY_NORMAL]
+	var lift := xf.basis.get_scale().y
+	var turn := xf.basis.orthonormalized()
+	for i in verts.size():
+		var unit := prop.fix * verts[i]  # longest side 1, resting on y = 0
+		var w := xf * Vector3(unit.x, 0.0, unit.z)
+		verts[i] = Vector3(w.x, layout.height_at(w.x, w.z) + 0.08 + unit.y * lift, w.z)
+		normals[i] = (turn * normals[i]).normalized()
+	arrays[Mesh.ARRAY_VERTEX] = verts
+	arrays[Mesh.ARRAY_NORMAL] = normals
+	var mesh := ArrayMesh.new()
+	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
+	var mi := MeshInstance3D.new()
+	mi.name = "Draped_" + id
+	mi.mesh = mesh
+	mi.material_override = prop.material
+	mi.visibility_range_end = vis_end
+	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF if id in NO_SHADOW else GeometryInstance3D.SHADOW_CASTING_SETTING_ON
+	parent.add_child(mi)
+	if COLLISION.has(id):
+		var body := StaticBody3D.new()
+		body.collision_layer = WORLD_LAYER | (CLIMBABLE_LAYER if id in CLIMBABLE else 0)
+		body.collision_mask = 0
+		var cs := CollisionShape3D.new()
+		cs.shape = mesh.create_trimesh_shape()
+		body.add_child(cs)
+		parent.add_child(body)
+
+
+## How a dropped thing lies at `p`: turned `yaw` about the vertical and, for
+## the litter (Litter), tipped to lie on the slope of the ground as it would
+## have come to rest there; plants and fungi grow straight up.
+static func _resting(layout: LawnLayout, id: String, p: Vector2, yaw: float) -> Basis:
+	var turn := Basis(Vector3.UP, yaw)
+	if not Litter.makes(id):
+		return turn
+	var n := Vector3(layout.height_at(p.x - 2.0, p.y) - layout.height_at(p.x + 2.0, p.y), 4.0,
+		layout.height_at(p.x, p.y - 2.0) - layout.height_at(p.x, p.y + 2.0)).normalized()
+	return Basis(Quaternion(Vector3.UP, n)) * turn
 
 
 ## Main routes, the shortcut, ant roads, the haul path and the trowel as segments.
@@ -238,11 +341,12 @@ static func _chunk_body(parent: Node3D, bodies: Dictionary, key: Vector2i, climb
 	return bodies[k]
 
 
-static func _add_shape(body: StaticBody3D, shape: Shape3D, xf: Transform3D) -> void:
+static func _add_shape(body: StaticBody3D, shape: Shape3D, xf: Transform3D) -> CollisionShape3D:
 	var cs := CollisionShape3D.new()
 	cs.shape = shape
 	cs.transform = xf
 	body.add_child(cs)
+	return cs
 
 
 ## Roots and bracket fungi around the apple tree's base, and gnarled roots

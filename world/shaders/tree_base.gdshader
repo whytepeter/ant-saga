@@ -16,11 +16,11 @@ uniform sampler2D soil_normal : hint_normal, filter_linear_mipmap_anisotropic, r
 uniform sampler2D mud_albedo : source_color, filter_linear_mipmap_anisotropic, repeat_enable;
 uniform sampler2D mud_normal : hint_normal, filter_linear_mipmap_anisotropic, repeat_enable;
 uniform sampler2D leaves_albedo : source_color, filter_linear_mipmap_anisotropic, repeat_enable;
-uniform float bark_tile = 40.0;
+uniform float bark_tile = 120.0;
 uniform float soil_tile = 19.0;  // grain-scale, matching ground.gdshader
 uniform float mud_tile = 13.0;
 uniform float leaves_tile = 70.0;
-uniform vec3 bark_tint : source_color = vec3(0.95, 0.88, 0.8);
+uniform vec3 bark_tint : source_color = vec3(0.74, 0.7, 0.66);
 uniform vec3 mud_tint : source_color = vec3(0.62, 0.5, 0.42);
 global uniform float rain;
 
@@ -79,7 +79,7 @@ void fragment() {
 	}
 	if (bark > 0.001) {
 		// bark: stretched along the trunk, so the furrows run up it
-		vec3 p = vec3(wpos.x, wpos.y * 0.45, wpos.z);
+		vec3 p = vec3(wpos.x, wpos.y * 0.8, wpos.z);
 		albedo += tri_albedo(bark_albedo, p, w, bark_tile) * bark_tint * bark;
 		nrm += tri_normal(bark_normal, p, w, n, bark_tile) * bark;
 	}

@@ -1539,6 +1539,18 @@
       [
         -3900,
         -2300,
+        -705,
+        345
+      ],
+      [
+        -705,
+        -2300,
+        -360,
+        -205
+      ],
+      [
+        -705,
+        265,
         -360,
         345
       ],
@@ -2836,8 +2848,8 @@
           "eraser",
           3,
           [
-            14,
-            18
+            20,
+            24
           ],
           0.2,
           240
@@ -2848,16 +2860,6 @@
           [
             9,
             12
-          ],
-          0.1,
-          240
-        ],
-        [
-          "sweet_wrapper",
-          3,
-          [
-            18,
-            25
           ],
           0.1,
           240
@@ -3039,16 +3041,6 @@
     },
     "bare_patch": {
       "scatter": [
-        [
-          "button",
-          2,
-          [
-            6,
-            8
-          ],
-          0.1,
-          240
-        ],
         [
           "pot_shard",
           3,
@@ -3254,5 +3246,211 @@
         ]
       ]
     }
+  },
+  "tree_grounds": {
+    "note": "The ground round the apple tree west of the lawn (docs/narrative/map-plan.md, the tree grounds): built by world/lawn/tree_grounds.gd with its own terrain, which meets the lawn at x = -360 and the baked root bank round the trunk. Unmown: thin grass in the shade, last year's leaves, windfalls, puddles along the drip line.",
+    "bounds": [
+      -705,
+      -205,
+      -360,
+      265
+    ],
+    "stones": 44,
+    "areas": [
+      {
+        "id": "leaf_litter_moor",
+        "name": "Leaf-Litter Moor",
+        "center": [
+          -610,
+          140
+        ],
+        "radii": [
+          92,
+          76
+        ],
+        "note": "Dry curled apple leaves in drifts: they crunch underfoot (a blackbird turns them over later)."
+      },
+      {
+        "id": "windfall_orchard",
+        "name": "Windfall Orchard",
+        "center": [
+          -480,
+          192
+        ],
+        "radii": [
+          72,
+          46
+        ],
+        "apples": 9,
+        "note": "Apples lying where they dropped, most rotting into the leaves: food, and fruit flies."
+      },
+      {
+        "id": "sap_falls",
+        "name": "Sap Falls",
+        "center": [
+          -528,
+          -48
+        ],
+        "radii": [
+          22,
+          22
+        ],
+        "note": "A wound in the bark on the north-west side; amber resin runs down it and hardens at its foot."
+      },
+      {
+        "id": "silk_ladder",
+        "name": "The weavers' silk ladder",
+        "center": [
+          -566,
+          42
+        ],
+        "radii": [
+          6,
+          6
+        ],
+        "top": 250,
+        "note": "Two silk ropes with rungs from the bank up the west face of the trunk: the dry way up and down."
+      },
+      {
+        "id": "west_root_door",
+        "name": "West Root Door",
+        "center": [
+          -608,
+          64
+        ],
+        "radii": [
+          10,
+          10
+        ],
+        "note": "A gap under a root flare into the Rootway, on the dry side. Sealed until the Rootway is dug (tools/bake_tree_base.py)."
+      }
+    ],
+    "puddles": [
+      {
+        "pos": [
+          -632,
+          188
+        ],
+        "radius": 16
+      },
+      {
+        "pos": [
+          -686,
+          28
+        ],
+        "radius": 13
+      },
+      {
+        "pos": [
+          -642,
+          -142
+        ],
+        "radius": 18
+      },
+      {
+        "pos": [
+          -404,
+          228
+        ],
+        "radius": 12
+      }
+    ],
+    "dressing": [
+      {
+        "model": "dead_tree_trunk",
+        "pos": [
+          -648,
+          96
+        ],
+        "size": 360,
+        "yaw": 32,
+        "sink": 7,
+        "collide": "trimesh",
+        "note": "A pruned branch lying where it fell."
+      },
+      {
+        "model": "root_cluster_01",
+        "pos": [
+          -592,
+          -118
+        ],
+        "size": 95,
+        "yaw": 215,
+        "sink": 7,
+        "collide": "trimesh"
+      },
+      {
+        "model": "root_cluster_01",
+        "pos": [
+          -452,
+          166
+        ],
+        "size": 80,
+        "yaw": 20,
+        "sink": 7,
+        "collide": "trimesh"
+      },
+      {
+        "model": "single_root",
+        "pos": [
+          -620,
+          -40
+        ],
+        "size": 70,
+        "yaw": 95,
+        "tilt": 90,
+        "sink": 2,
+        "collide": "trimesh"
+      },
+      {
+        "model": "dry_branches_medium_01",
+        "variant": 0,
+        "pos": [
+          -540,
+          160
+        ],
+        "size": 120,
+        "yaw": 80,
+        "sink": 1,
+        "collide": "convex"
+      },
+      {
+        "model": "dry_branches_medium_01",
+        "variant": 1,
+        "pos": [
+          -676,
+          -60
+        ],
+        "size": 95,
+        "yaw": 150,
+        "sink": 1,
+        "collide": "convex"
+      },
+      {
+        "model": "fern_02",
+        "variant": 2,
+        "pos": [
+          -690,
+          -175
+        ],
+        "size": 70,
+        "yaw": 20,
+        "sink": 0.5,
+        "collide": ""
+      },
+      {
+        "model": "fern_02",
+        "variant": 0,
+        "pos": [
+          -560,
+          -180
+        ],
+        "size": 60,
+        "yaw": 200,
+        "sink": 0.5,
+        "collide": ""
+      }
+    ],
+    "fallen_leaves": 150
   }
 }

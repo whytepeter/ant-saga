@@ -39,6 +39,10 @@ static func available(id: String) -> bool:
 static func get_prop(id: String) -> Prop:
 	if _cache.has(id):
 		return _cache[id]
+	if Litter.makes(id):
+		# the realistic, code-built version (world/props/litter.gd)
+		_cache[id] = Litter.prop(id)
+		return _cache[id]
 	if not available(id):
 		return null
 	if _manifest.is_empty():
@@ -165,6 +169,7 @@ static func instance(prop: Prop, xform: Transform3D) -> MeshInstance3D:
 
 
 const CREATURE_SHADER := preload("res://world/shaders/creature.gdshader")
+const PLANT_SHADER := preload("res://world/shaders/plant.gdshader")
 
 
 ## The model's own textures on the creature shader, with its motion settings
@@ -184,3 +189,41 @@ static func creature_material(prop: Prop, params: Dictionary) -> ShaderMaterial:
 	for k: String in params:
 		m.set_shader_parameter(k, params[k])
 	return m
+
+
+## The model's own textures on the plant shader (world/shaders/plant.gdshader):
+## it bows and flutters in the grass's wind. `params` override bend, flutter...
+static func plant_material(prop: Prop, params := {}) -> ShaderMaterial:
+	var m := ShaderMaterial.new()
+	m.shader = PLANT_SHADER
+	_copy_textures(prop.material, m)
+	# the mesh's own up (after the import turn) and its height along it
+	var up := (prop.fix.basis.inverse() * Vector3.UP).normalized()
+	var lo := INF
+	var hi := -INF
+	for v: Vector3 in prop.mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX]:
+		var d := v.dot(up)
+		lo = minf(lo, d)
+		hi = maxf(hi, d)
+	m.set_shader_parameter("up_axis", up)
+	m.set_shader_parameter("foot_y", lo)
+	m.set_shader_parameter("plant_height", maxf(hi - lo, 0.0001))
+	for k: String in params:
+		m.set_shader_parameter(k, params[k])
+	return m
+
+
+static func _copy_textures(src_mat: Material, m: ShaderMaterial) -> void:
+	var src := src_mat as StandardMaterial3D
+	if src == null:
+		return
+	m.set_shader_parameter("albedo_tex", src.albedo_texture)
+	m.set_shader_parameter("tint", src.albedo_color)
+	if src.roughness_texture != null:
+		m.set_shader_parameter("orm_tex", src.roughness_texture)
+		m.set_shader_parameter("has_orm", true)
+	if src.normal_enabled and src.normal_texture != null:
+		m.set_shader_parameter("normal_tex", src.normal_texture)
+		m.set_shader_parameter("has_normal", true)
+	if src.transparency == BaseMaterial3D.TRANSPARENCY_ALPHA_SCISSOR:
+		m.set_shader_parameter("alpha_scissor", src.alpha_scissor_threshold)

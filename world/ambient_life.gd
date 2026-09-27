@@ -35,6 +35,9 @@ const KINDS := {
 	"springtail": ["springtail", 16, {"mode": 0}, -PI / 2.0],
 	"aphid": ["aphid", 14, {"mode": 0}, 0.0],
 }
+## Sizes (m, longest side) that differ from the model's manifest size: a pond
+## skater is about 1.7 cm across its legs (6 m here), not a heron.
+const SIZES := {"water_strider": 6.0}
 ## Ground crawlers: walking speed (m/s, staged), how far they wander per leg.
 const CRAWL := {"ladybug": [2.0, 14.0], "velvet_mite": [2.8, 9.0]}
 ## Who lives where: [kind, count, home]. A home is a layout area, "dandelion"
@@ -108,7 +111,8 @@ func _ready() -> void:
 			var holder := Node3D.new()
 			holder.add_child(mi)
 			add_child(holder)
-			mi.transform = Transform3D(Basis().scaled(Vector3.ONE * prop.size * _rng.randf_range(0.8, 1.15)), Vector3.ZERO) * prop.fix
+			var size := float(SIZES.get(kind, prop.size))
+			mi.transform = Transform3D(Basis().scaled(Vector3.ONE * size * _rng.randf_range(0.8, 1.15)), Vector3.ZERO) * prop.fix
 			mi.visibility_range_end = 320.0 if kind in ["butterfly", "dragonfly", "bee"] else 180.0
 			holder.global_position = _start_point(kind, home)
 			if kind == "aphid":
@@ -216,12 +220,17 @@ func _move(c: Dictionary, delta: float, center: Vector3) -> void:
 			vel = vel.move_toward(Vector3.ZERO, 9.0 * delta)
 			pos.y = layout.water_level + 0.05
 		"tadpole":
-			# wriggle along just under the surface, turning now and then
+			# wriggle about near the bottom, grazing; now and then one swims up
+			# to gulp air at the surface and dives straight back down
 			if pos.distance_to(target) < 2.0 or float(c["wait"]) <= 0.0:
-				c["target"] = _rut_point(-_rng.randf_range(0.7, 1.3))
-				c["wait"] = _rng.randf_range(3.0, 7.0)
-			var want := (target - pos).normalized() * 3.0
+				var gulp := _rng.randf() < 0.12 and not bool(c.get("gulped", false))
+				c["gulped"] = gulp
+				c["target"] = _tadpole_point(gulp)
+				c["wait"] = _rng.randf_range(4.0, 8.0) if not gulp else 6.0
+			var want := (target - pos).normalized() * (3.0 if absf(target.y - pos.y) < 0.5 else 2.2)
 			vel = vel.lerp(want, clampf(1.5 * delta, 0.0, 1.0))
+			# nose up when rising, down when diving
+			node.rotation.x = lerpf(node.rotation.x, clampf(-vel.y * 0.5, -0.9, 0.9), clampf(3.0 * delta, 0.0, 1.0))
 	c["vel"] = vel
 	node.global_position = pos + vel * delta
 	var flat := Vector3(vel.x, 0.0, vel.z)
@@ -350,6 +359,10 @@ func _perch_on_stalk(holder: Node3D, k: int) -> void:
 	holder.global_position = center + out * radius
 	holder.rotation.y = atan2(out.x, out.z)  # back to the air, face to the stalk
 	holder.rotate_object_local(Vector3.RIGHT, -0.15)
+	# the stalk sways in the wind (WindSway): they ride it
+	var stalk := get_tree().get_first_node_in_group(&"swaying_dandelion") as WindSway
+	if stalk != null:
+		stalk.carry(holder)
 
 
 func _start_point(kind: String, home: Dictionary) -> Vector3:
@@ -365,7 +378,7 @@ func _start_point(kind: String, home: Dictionary) -> Vector3:
 		"water_strider":
 			return _rut_point(0.0)
 		_:
-			return _rut_point(-1.0)
+			return _tadpole_point(false)
 
 
 ## A flower head in `home` to visit: the dandelion's, a daisy or buttercup, or
@@ -385,14 +398,34 @@ func _flower_point(home: Dictionary) -> Vector3:
 
 ## A random point over (height > 0), on (0) or under (< 0) the puddle's water.
 func _rut_point(height: float) -> Vector3:
+	var box := _rut_box()
 	for attempt in 30:
-		var p := Vector2(_rng.randf_range(60.0, 300.0), _rng.randf_range(158.0, 220.0))
+		var p := Vector2(_rng.randf_range(box.position.x, box.end.x), _rng.randf_range(box.position.y, box.end.y))
 		if Geometry2D.is_point_in_polygon(p, _rut):
 			var y := layout.water_level + height
 			if height < 0.0:
 				y = maxf(y, layout.height_at(p.x, p.y) + 0.6)
 			return Vector3(p.x, y, p.y)
 	return Vector3(190.0, layout.water_level + height, 190.0)
+
+
+## Where a tadpole swims to: near the muddy bottom (0.5–1.8 m above it, under
+## the surface), or, to gulp air, just under the surface.
+func _tadpole_point(gulp: bool) -> Vector3:
+	var p := _rut_point(0.0)
+	var bottom := layout.height_at(p.x, p.z)
+	var top := layout.water_level - 0.3
+	p.y = top if gulp else minf(bottom + _rng.randf_range(0.5, 1.8), top - 0.4)
+	p.y = maxf(p.y, bottom + 0.4)
+	return p
+
+
+## The puddle's outline bounds on the ground (x, z).
+func _rut_box() -> Rect2:
+	var box := Rect2(_rut[0], Vector2.ZERO)
+	for q in _rut:
+		box = box.expand(q)
+	return box
 
 
 func _ripple(at: Vector3) -> void:

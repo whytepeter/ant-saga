@@ -398,6 +398,66 @@
         "ants",
         "rig"
       ]
+    },
+    {
+      "id": "bug-028",
+      "timestamp": "2026-09-27",
+      "error_message": "Thin transparent silk (web, silk ladder) drew as thick black streaks with white bloom halos",
+      "file": "world/shaders/silk.gdshader",
+      "root_cause": "With MSAA a pixel on a one-pixel ribbon is shaded from outside the triangle, so varyings extrapolate past their range: the soft-edge term pow(abs(v_side), 6) became huge, ALPHA went far negative and the blend produced black and HDR glow. Opaque rendering hid it.",
+      "fix": "Clamp every varying used for ALPHA (abs(v_side), v_cov, v_kind) and ALPHA itself to 0..1 in transparent thin-geometry shaders.",
+      "tags": [
+        "shader",
+        "msaa",
+        "transparency",
+        "silk",
+        "nan"
+      ]
+    },
+    {
+      "id": "bug-029",
+      "timestamp": "2026-09-27",
+      "error_message": "Apple tree leaves missing: blocks of leaf MultiMeshes built with 0 instances",
+      "file": "world/lawn/apple_tree.gd",
+      "root_cause": "(blocks[key] as PackedInt32Array).append(i) appends to a copy: packed arrays are value types in GDScript, so the dictionary's array never grew",
+      "fix": "Keep per-key lists as Array[int] (a reference type) when appending through a dictionary lookup",
+      "tags": [
+        "gdscript",
+        "packed-array",
+        "multimesh"
+      ]
+    },
+    {
+      "id": "bug-030",
+      "timestamp": "2026-09-27T18:34:20.708Z",
+      "error_message": "Significant refactor of sleek.gd",
+      "file": "ui/sleek.gd",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 5→3 lines (2 removed) | Also: for ring: Array in [[0.0, 1.0], [0.62, 0.85], [1.0; pass",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "gd"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-09-27T18:34:20.754Z"
+    },
+    {
+      "id": "bug-031",
+      "timestamp": "2026-09-27T19:01:35.764Z",
+      "error_message": "Significant refactor of game_hud.gd",
+      "file": "ui/game_hud.gd",
+      "root_cause": "20 lines replaced/restructured",
+      "fix": "Rewrote 21→7 lines (20 removed) | Also: var grid := GridContainer.new(); grid.columns = 5",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "gd"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-09-27T19:01:35.791Z"
     }
   ]
 }

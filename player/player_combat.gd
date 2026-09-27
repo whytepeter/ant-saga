@@ -324,6 +324,7 @@ func take_hit(damage: float, from: Vector3, kind: StringName, attacker: Node3D) 
 func lose_health(amount: float) -> void:
 	if knocked or amount <= 0.0:
 		return
+	_since_damage = 0.0  # (a slow drain holds off regeneration, as a hit does)
 	health = maxf(health - amount, 0.0)
 	health_changed.emit(health, max_health)
 	if health <= 0.0:

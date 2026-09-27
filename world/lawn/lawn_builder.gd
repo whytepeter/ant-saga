@@ -34,7 +34,8 @@ const COLORS := {
 	"tassel": Color(0.85, 0.75, 0.42), "fence": Color(0.55, 0.42, 0.28), "fence_post": Color(0.42, 0.31, 0.2),
 	"silk": Color(0.92, 0.92, 0.9), "friendly": Color(0.2, 0.2, 0.22), "enemy": Color(0.45, 0.5, 0.58),
 	"boss": Color(0.35, 0.28, 0.24), "house": Color(0.9, 0.86, 0.78), "window": Color(0.2, 0.26, 0.32),
-	"window_frame": Color(0.95, 0.95, 0.93), "roof": Color(0.34, 0.3, 0.32), "roof_tile": Color(0.55, 0.28, 0.2),
+	"window_frame": Color(0.95, 0.95, 0.93), "uPVC": Color(0.9, 0.9, 0.88), "plastic_black": Color(0.045, 0.045, 0.05),
+	"grid_iron": Color(0.1, 0.1, 0.1), "roof": Color(0.34, 0.3, 0.32), "roof_tile": Color(0.55, 0.28, 0.2),
 	"grill": Color(0.12, 0.12, 0.13), "tyre": Color(0.1, 0.1, 0.1), "tomato_leaf": Color(0.24, 0.44, 0.18),
 	"tomato": Color(0.88, 0.16, 0.1), "shed": Color(0.45, 0.52, 0.42), "garden_soil": Color(0.27, 0.19, 0.12),
 	"far_lawn": Color(0.34, 0.52, 0.21), "canopy": Color(0.22, 0.4, 0.16), "bin": Color(0.16, 0.36, 0.2),
@@ -104,6 +105,7 @@ func rebuild() -> void:
 	_build_patio(_group(root, "Patio"))
 	_build_flowers(_group(root, "Flowers"))
 	_build_dressing(_group(root, "Dressing"))
+	_build_tree_grounds(root)
 	if grass_enabled:
 		_build_grass(_group(root, "Grass"))
 
@@ -128,16 +130,40 @@ const TEXTURED := {
 	"concrete": ["scuffed_cement", 18.0, Color(0.95, 0.94, 0.9)],
 	"joint": ["brown_mud_dry", 10.0, Color(0.9, 0.85, 0.75)],
 	"canopy": ["forest_leaves_02", 90.0, Color(0.45, 0.75, 0.3)],
+	# the house and the fence at their real sizes (a brick is 77 m long, a
+	# roof tile 60 m wide, a fence board 50 m tall)
+	"brick": ["brick_wall_001", 400.0, Color(1.0, 1.0, 1.0)],
+	"brick_dark": ["brick_wall_001", 400.0, Color(0.55, 0.5, 0.5)],
+	"roof_tile": ["clay_roof_tiles", 1000.0, Color(0.95, 0.9, 0.88)],
+	"fence": ["wood_plank_wall", 520.0, Color(1.05, 1.0, 0.95)],
+	"fence_post": ["wood_plank_wall", 260.0, Color(0.85, 0.8, 0.75)],
 }
 
 
 func _mat(key: String) -> StandardMaterial3D:
 	if not _materials.has(key) and TEXTURED.has(key):
 		_materials[key] = _textured(key)
+	if not _materials.has(key) and key == "hose":
+		# a garden hose: glossy green PVC, scuffed and dusty where it's been dragged
+		var h := StandardMaterial3D.new()
+		h.albedo_color = Color(0.1, 0.34, 0.14)
+		h.roughness = 0.3
+		h.clearcoat_enabled = true
+		h.clearcoat = 0.4
+		h.normal_enabled = true
+		h.normal_texture = load("res://assets/textures/scuffed_cement/scuffed_cement_nor.jpg")
+		h.normal_scale = 0.35
+		h.uv1_triplanar = true
+		h.uv1_world_triplanar = true
+		h.uv1_scale = Vector3.ONE / 9.0
+		h.rim_enabled = true
+		h.rim = 0.2
+		_materials[key] = h
 	if not _materials.has(key):
 		var m := StandardMaterial3D.new()
 		m.albedo_color = COLORS[key]
-		m.roughness = 0.35 if key in ["brass", "silver", "cap", "coin", "hose", "zipper", "car", "trowel", "apple", "buttercup", "bead"] else 0.9
+		m.roughness = 0.35 if key in ["brass", "silver", "cap", "coin", "hose", "zipper", "car", "trowel", "apple", "buttercup", "bead",
+			"uPVC", "plastic_black"] else 0.9
 		_materials[key] = m
 	return _materials[key]
 
@@ -616,7 +642,16 @@ func _build_boundaries(parent: Node3D) -> void:
 	# Invisible safety walls just outside the playable box; the south side opens
 	# onto the patio, which is walled off further out
 	var walls: Array = [[0, -366, 760, 12], [366, 0, 12, 760], [0, 700, 1500, 12], [-700, 530, 12, 360], [700, 530, 12, 360]]
-	if TreeBase.available(layout):
+	if layout.data.has("tree_grounds"):
+		# the west side opens onto the tree grounds (TreeGrounds): walled round them
+		var tb: Array = layout.data["tree_grounds"]["bounds"]
+		var gx0 := float(tb[0]) - 6.0
+		var gz0 := float(tb[1]) - 6.0
+		var gz1 := float(tb[3]) + 6.0
+		walls.append_array([[-366, (-380.0 + gz0) / 2.0, 12, gz0 + 380.0], [-366, (gz1 + 380.0) / 2.0, 12, 380.0 - gz1],
+			[gx0, (gz0 + gz1) / 2.0, 12, gz1 - gz0], [(gx0 - 360.0) / 2.0, gz0, -360.0 - gx0 + 12.0, 12],
+			[(gx0 - 360.0) / 2.0, gz1, -360.0 - gx0 + 12.0, 12]])
+	elif TreeBase.available(layout):
 		# the west side opens onto the tree's base: its bank is walled round instead
 		walls.append_array([[-366, -272.5, 12, 215], [-366, 272.5, 12, 215],
 			[-581, 0, 12, 354], [-473.5, -171, 227, 12], [-473.5, 171, 227, 12]])
@@ -737,7 +772,7 @@ func _build_landmarks(parent: Node3D) -> void:
 			"crisp_packet": _crisp_packet(parent, g, size)
 			# (the "apple_core" model came out as an apple with a wedge cut away: it
 			# suits the pecked-open windfall; the real core is still a graybox)
-			"fallen_apple": _fruit(parent, g, size, "apple", hash(id), "apple_core")
+			"fallen_apple": _fruit(parent, g, size, "apple", hash(id), "rotten_apple")
 			"windfall_apple": _fruit(parent, g, size, "apple_green", hash(id), "apple")
 			"apple_core": _fruit(parent, g, size, "apple_core", hash(id))
 			"marble":
@@ -759,7 +794,7 @@ func _build_landmarks(parent: Node3D) -> void:
 					var d := float(size[0])
 					parent.add_child(GardenProps.instance(marble,
 						_fitted(marble, g, Vector3(d, d, d), 2.36) * marble.fix.affine_inverse()))
-			"orb_web": _orb_web(parent, g + Vector3.UP * 12.0)
+			"orb_web": _orb_web(parent, g, size)
 			"root_hall": pass  # built with the west boundary
 			"crown_cap": _capstone(parent, g, float(size[0]) / 2.0)
 			"lookout_blade": _lookout(parent, g)
@@ -845,16 +880,25 @@ func _backpack(parent: Node3D, lm: Dictionary) -> void:
 func _dandelion(parent: Node3D, g: Vector3, height: float, seeded: bool) -> void:
 	var prop := GardenProps.get_prop("dandelion_clock" if seeded else "dandelion_flower")
 	if prop != null:
-		# the Meshy plant: climb its stalk, stand on its head (AmbientLife perches aphids on it)
+		# the Meshy plant: climb its stalk, stand on its head (AmbientLife perches
+		# aphids on it). It sways about its foot in the wind (WindSway, a moving
+		# body you ride), its head and leaves fluttering on top (plant.gdshader)
 		var xf := GardenProps.standing(prop, g, height)
-		parent.add_child(GardenProps.instance(prop, xf))
-		var body := StaticBody3D.new()
+		var body := WindSway.new()
 		body.name = "Climb_" + ("dandelion_clock" if seeded else "dandelion")
 		body.collision_layer = WORLD_LAYER | CLIMBABLE_LAYER
 		body.collision_mask = 0
+		body.lean = 0.028 if seeded else 0.034
+		body.position = xf.origin
+		body.add_to_group(&"swaying_" + ("dandelion_clock" if seeded else "dandelion"))
+		var local := Transform3D(xf.basis, Vector3.ZERO)
+		var mi := GardenProps.instance(prop, local)
+		mi.material_override = GardenProps.plant_material(prop, {"bend": 0.012,
+			"flutter": 0.35 if seeded else 0.22, "flutter_speed": 3.5 if seeded else 5.0})
+		body.add_child(mi)
 		var cs := CollisionShape3D.new()
 		cs.shape = prop.shape("trimesh")
-		cs.transform = xf * prop.fix
+		cs.transform = local * prop.fix
 		body.add_child(cs)
 		parent.add_child(body)
 		return
@@ -959,28 +1003,36 @@ func _crisp_packet(parent: Node3D, g: Vector3, size: Array) -> void:
 	holder.add_child(body)
 
 
-func _orb_web(parent: Node3D, c: Vector3) -> void:
-	var silk := StandardMaterial3D.new()
-	silk.albedo_color = Color(1, 1, 1, 0.7)
-	silk.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	silk.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	for k in 10:
-		var a := TAU * k / 10.0
-		var mesh := BoxMesh.new()
-		mesh.size = Vector3(0.06, 10.0, 0.06)
-		var dir := Vector3(0, cos(a), sin(a))
-		_add(parent, mesh, silk, Transform3D(Basis(Vector3.RIGHT, a), c + dir * 5.0))
-	for ring: float in [3.0, 5.5, 8.0]:
-		for k in 16:
-			var a0 := TAU * k / 16.0
-			var a1 := TAU * (k + 1) / 16.0
-			var p0 := c + Vector3(0, cos(a0), sin(a0)) * ring
-			var p1 := c + Vector3(0, cos(a1), sin(a1)) * ring
-			var mesh := BoxMesh.new()
-			mesh.size = Vector3(0.05, p0.distance_to(p1), 0.05)
-			var y := (p1 - p0).normalized()
-			var x := Vector3.RIGHT
-			_add(parent, mesh, silk, Transform3D(Basis(x, y, x.cross(y)), (p0 + p1) / 2.0))
+## The dew-strung orb web (SpiderWeb): hung between two stiff grass stems
+## either side of it, facing the ant road to the south, its lower edge a
+## little off the ground so Amodu can walk (or jump) into it and get stuck.
+func _orb_web(parent: Node3D, g: Vector3, size: Array) -> void:
+	var r := float(size[0]) * 0.45
+	var hub := g + Vector3.UP * (r + 1.2)
+	var stem_mesh := GrassMeshes.blade(BLADE_HEIGHT, BLADE_WIDTH, 0.0, 8, 0.0)
+	var stiff := _grass_material().duplicate() as ShaderMaterial
+	stiff.set_shader_parameter("wind_strength", 0.2)
+	var stems: Array = []
+	var anchors: Array[Vector3] = []
+	var body := StaticBody3D.new()
+	body.name = "Web_stems"
+	body.collision_layer = WORLD_LAYER | CLIMBABLE_LAYER
+	parent.add_child(body)
+	for s: float in [-1.0, 1.0]:
+		var foot := _gp([g.x + s * (r + 3.0), g.z + 1.2 * s], -0.3)
+		stems.append(Transform3D(Basis(Vector3.UP, 0.4 * s).scaled(Vector3(1.1, 1.35, 1.35)), foot))
+		anchors.append(Vector3(foot.x, hub.y + r * 0.85, foot.z))
+		anchors.append(Vector3(foot.x, hub.y - r * 0.45, foot.z))
+		var cs := CollisionShape3D.new()
+		var stem := CylinderShape3D.new()
+		stem.radius = 0.5
+		stem.height = BLADE_HEIGHT * 1.35 * 0.8
+		cs.shape = stem
+		cs.position = foot + Vector3.UP * stem.height * 0.5
+		body.add_child(cs)
+	anchors.append(_gp([g.x + 2.0, g.z + 0.5], 0.1))  # a guy line down to the soil
+	_multimesh(parent, stem_mesh, stiff, stems, [Color(0.5, 0.5, 0.42), Color(0.46, 0.48, 0.44)])
+	parent.add_child(SpiderWeb.orb(hub, Vector3(0, 0, 1), r, anchors, hash("orb_web")))
 
 
 func _capstone(parent: Node3D, g: Vector3, radius: float) -> void:
@@ -1104,8 +1156,8 @@ func _fruit(parent: Node3D, g: Vector3, size: Array, key: String, seed_value: in
 	var yaw := float(seed_value % 628) / 100.0
 	var prop := GardenProps.get_prop(model) if model != "" else null
 	if prop != null:
-		# the Meshy apple, settled a little into the soil; walk into its bitten side
-		_prop_solid(parent, prop, _fitted(prop, g - Vector3.UP * 0.6, Vector3(w, h, l), yaw), "trimesh")
+		# the apple (Poly Haven's), settled into the soil where it dropped
+		_prop_solid(parent, prop, _fitted(prop, g - Vector3.UP * h * 0.12, Vector3(w, h, l), yaw), "convex")
 		return
 	var mesh := SphereMesh.new()
 	mesh.radius = 0.5
@@ -1192,6 +1244,15 @@ func _build_standins(parent: Node3D) -> void:
 				label_color = Color(1.0, 0.5, 0.45)
 				label_height = 4.5
 			"wolf_spider":
+				var spider := GardenProps.get_prop("wolf_spider")
+				if spider != null:
+					# the Meshy spider crouched at its burrow, feet on the soil, eyes on the trip lines
+					var lurker := LurkingSpider.make(spider, g - Vector3.UP * 0.25, spider.size, -2.3, 0.0)
+					lurker.player = get_parent().get_node_or_null("Player") as Node3D if get_parent() != null else null
+					parent.add_child(lurker)
+					var tag := _label(parent, g + Vector3.UP * 11.0, String(sd["name"]), 2.5, Color(0.85, 0.55, 1.0))
+					tag.visible = false
+					continue
 				_sphere(parent, g + Vector3.UP * 4.0, 2.6, "boss", true)
 				_sphere(parent, g + Vector3(0, 4.2, 4.6), 3.3, "boss", true, 7.5)
 				for k in 8:
@@ -1304,8 +1365,11 @@ func _build_skyline(parent: Node3D) -> void:
 	# the rest of the garden's lawn, seen from high up: its blade tops
 	var far: Dictionary = layout.data["far_lawn"]
 	var top: float = far["height"]
+	var grass_top := ShaderMaterial.new()
+	grass_top.shader = preload("res://world/shaders/grass_top.gdshader")
 	for r: Array in far["rects"]:
-		_slab(parent, [r[0], r[1], r[2], r[3], top], "far_lawn", false, top - 2.0)
+		var slab := _slab(parent, [r[0], r[1], r[2], r[3], top], "far_lawn", false, top - 2.0)
+		(slab.get_child(0) as MeshInstance3D).material_override = grass_top
 
 
 ## Skyline pieces with a Meshy model (docs/WORLD_ASSETS.md): layout id -> model.
@@ -1364,61 +1428,229 @@ func _place_model(parent: Node3D, prop: GardenProps.Prop, ground: Vector3, k: fl
 	parent.add_child(mi)
 
 
-## The apple tree: a leaning trunk, a broad crown of overlapping leaf masses
-## with apples hanging under it. The crown casts no shadow (it sits beyond the
-## shadow distance; the lighting pass fakes its shade).
+## The apple tree (AppleTree): grown in code on top of the baked base, with
+## its limbs, ~18,000 leaves that tremble and fall, and apples; the crown sways
+## in the wind. Without the baked base the trunk starts at the soil.
 func _apple_tree(parent: Node3D, p: Vector2, w: float, h: float) -> void:
 	var from := -5.0
+	var r_from := w / 2.0
 	if TreeBase.available(layout):
-		from = float(layout.data["tree_base"]["trunk"]["baked_to"]) - 6.0  # the baked base is the trunk below this
-	var taper := (w / 2.0 - w * 0.36) / (h + 300.0)
-	_cylinder(parent, Vector3(p.x, from, p.y), w / 2.0 - taper * (from + 5.0), h + 300.0 - (from + 5.0), "bark", true, w * 0.36, 48)
-	var rng := RandomNumberGenerator.new()
-	rng.seed = 8
-	for k in 3:  # the main limbs
-		var dir := Vector3(rng.randf_range(-1, 1), 0.0, rng.randf_range(-1, 1)).normalized()
-		_tube(parent, Vector3(p.x, h, p.y), Vector3(p.x, h + 450.0, p.y) + dir * 600.0, w * 0.22, "bark", false, 12)
-	var crown_mat := _mat("canopy")
-	for k in 9:
-		var off := Vector3(rng.randf_range(-1000, 1000), rng.randf_range(0, 600), rng.randf_range(-1000, 1000))
-		var crown := SphereMesh.new()
-		crown.radius = rng.randf_range(600, 850)
-		crown.height = crown.radius * 1.3
-		var mi := _add(parent, crown, crown_mat, Transform3D(Basis(), Vector3(p.x, h + 800.0, p.y) + off))
-		(mi.get_child(0) as MeshInstance3D).cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	for k in 24:
-		var at := Vector3(p.x + rng.randf_range(-1300, 1300), h + rng.randf_range(250, 500), p.y + rng.randf_range(-1300, 1300))
-		var apple := _sphere(parent, at, 30.0, "apple", false)
-		(apple.get_child(0) as MeshInstance3D).cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		# the baked base is the trunk below this: carry on from its top ring
+		var trunk: Dictionary = layout.data["tree_base"]["trunk"]
+		# (it starts just inside the base's top and a hair wider, so no crack shows)
+		from = float(trunk["baked_to"]) - 0.6
+		r_from = float(trunk["radius"]) - (float(trunk["radius"]) - float(trunk["top_radius"])) * (from + 5.0) / float(trunk["height"]) + 0.1
+	if Engine.is_editor_hint() and TreeBase.available(layout):
+		parent.add_child(TreeBase.preview())  # (in the game LawnLevel adds the real one)
+	var tree := AppleTree.new()
+	tree.setup(layout, p, from, r_from, h + 40.0)
+	if get_parent() != null:
+		tree.focus = get_parent().get_node_or_null("Player") as Node3D
+	parent.add_child(tree)
 
 
-## The house south of the garden. Its north face stands at z = p.y; the back
-## door (built with the patio) sits in the gap left in the wall.
+## The house south of the garden, its back wall facing the lawn at z = p.y
+## (a two-storey brick house, 7 m tall: 2.5 km here). Red brick over a darker
+## plinth, white uPVC windows with stone sills and lintels and curtains inside,
+## French doors onto the patio, the back door (built with the patio), a tiled
+## roof over a white fascia with a black gutter and downpipe, air bricks near
+## the ground and an outside tap by the door.
 func _house(parent: Node3D, p: Vector2, w: float, h: float, d: float) -> void:
 	var patio: Dictionary = layout.data["patio"]
 	var door_x: Array = patio["door"]["x"]
-	var sill := float(patio["top"]) + float(patio["step"]["height"])
-	var door_top := sill + 720.0
+	var floor_y := float(patio["top"]) + float(patio["step"]["height"])
+	var door_top := floor_y + 720.0
 	var face := p.y
 	var wall_h := h * 0.78
-	var mid := face + d / 2.0
 	var x0 := p.x - w / 2.0
 	var x1 := p.x + w / 2.0
-	var dx0: float = door_x[0]
-	var dx1: float = door_x[1]
-	# the wall, solid, with a doorway cut out of it
-	_box(parent, Vector3((x0 + dx0) / 2.0, wall_h / 2.0, mid), Vector3(dx0 - x0, wall_h, d), "house", true)
-	_box(parent, Vector3((dx1 + x1) / 2.0, wall_h / 2.0, mid), Vector3(x1 - dx1, wall_h, d), "house", true)
-	_box(parent, Vector3((dx0 + dx1) / 2.0, (door_top + wall_h) / 2.0, mid), Vector3(dx1 - dx0, wall_h - door_top, d), "house", true)
+	var skin := 110.0  # the outer wall's thickness (30 cm)
+	var door := [float(door_x[0]), float(door_x[1]), floor_y, door_top]
+	# openings [x0, x1, y0, y1]: the patio doors, the kitchen window, the small
+	# cloakroom window, four bedroom windows upstairs
+	var windows: Array = [
+		[160.0, 700.0, floor_y + 330.0, floor_y + 760.0],
+		[1400.0, 1650.0, floor_y + 420.0, floor_y + 700.0],
+		[-1900.0, -1350.0, 1330.0, 1760.0], [-700.0, -250.0, 1330.0, 1760.0],
+		[300.0, 750.0, 1330.0, 1760.0], [1350.0, 1900.0, 1330.0, 1760.0],
+	]
+	var french := [-1950.0, -1150.0, floor_y + 8.0, floor_y + 740.0]
+	var holes: Array = [door, french]
+	holes.append_array(windows)
+	_wall_with_holes(parent, x0, x1, 60.0, wall_h, face, face + skin, holes, "brick")
+	# the plinth: darker bricks below the damp course, a touch proud of the wall
+	_wall_with_holes(parent, x0 - 8.0, x1 + 8.0, -20.0, 60.0, face - 8.0, face + skin, [[door[0], door[1], floor_y - 20.0, door_top]], "brick_dark")
+	# the rest of the house behind it: only the back door goes through
+	_wall_with_holes(parent, x0, x1, -20.0, wall_h, face + skin, face + d, [door], "brick")
+	var interior := StandardMaterial3D.new()
+	interior.albedo_color = Color(0.1, 0.085, 0.075)
+	interior.roughness = 1.0
+	var curtains := [Color(0.82, 0.78, 0.68), Color(0.36, 0.45, 0.58), Color(0.62, 0.6, 0.58), Color(0.55, 0.32, 0.28)]
+	for k in windows.size():
+		var wr: Array = windows[k]
+		_window(parent, float(wr[0]), float(wr[1]), float(wr[2]), float(wr[3]), face, skin, interior, curtains[k % curtains.size()], k)
+	_french_doors(parent, float(french[0]), float(french[1]), float(french[2]), float(french[3]), face, skin, interior)
+	# the roof: tiles over a white fascia and soffit, a black half-round gutter
 	var roof := PrismMesh.new()
 	roof.size = Vector3(d + 400.0, h - wall_h + 200.0, w + 200.0)
-	_add(parent, roof, _mat("roof_tile"), Transform3D(Basis(Vector3.UP, PI / 2.0), Vector3(p.x, wall_h + roof.size.y / 2.0, mid)))
-	_box(parent, Vector3(p.x, wall_h - 10.0, face - 30.0), Vector3(w + 60.0, 40.0, 60.0), "steel", false)  # gutter
-	_cylinder(parent, Vector3(dx1 + 260.0, 0.0, face - 30.0), 22.0, wall_h, "steel", false)  # drainpipe
-	for wx: float in [-1900.0, -1100.0, 450.0, 1250.0, 2000.0]:
-		_box(parent, Vector3(wx, 1250.0, face - 3.0), Vector3(520.0, 620.0, 10.0), "window_frame", false)
-		_box(parent, Vector3(wx, 1250.0, face - 8.0), Vector3(460.0, 560.0, 6.0), "window", false)
-		_box(parent, Vector3(wx, 930.0, face - 30.0), Vector3(560.0, 22.0, 60.0), "window_frame", false)  # sill
+	_add(parent, roof, _mat("roof_tile"), Transform3D(Basis(Vector3.UP, PI / 2.0), Vector3(p.x, wall_h + roof.size.y / 2.0, face + d / 2.0)))
+	var eave := face - 200.0
+	_box(parent, Vector3(p.x, wall_h + 25.0, eave + 6.0), Vector3(w + 200.0, 90.0, 12.0), "uPVC", false)  # fascia
+	_box(parent, Vector3(p.x, wall_h - 18.0, (eave + face) / 2.0), Vector3(w + 200.0, 8.0, 200.0), "uPVC", false)  # soffit
+	var gutter := _tube(parent, Vector3(x0 - 100.0, wall_h + 12.0, eave - 22.0), Vector3(x1 + 100.0, wall_h + 12.0, eave - 22.0), 22.0, "plastic_black", false, 16)
+	gutter.name = "Gutter"
+	# the downpipe: from the gutter, a swan-neck back to the wall, down to a drain
+	var pipe_x := float(door_x[1]) + 260.0
+	var top := Vector3(pipe_x, wall_h + 5.0, eave - 22.0)
+	var neck := Vector3(pipe_x, wall_h - 120.0, face - 16.0)
+	_tube(parent, top, neck, 12.0, "plastic_black", false, 12)
+	_tube(parent, neck, Vector3(pipe_x, float(patio["top"]) + 25.0, face - 16.0), 12.0, "plastic_black", false, 12)
+	_tube(parent, Vector3(pipe_x, float(patio["top"]) + 25.0, face - 16.0), Vector3(pipe_x, float(patio["top"]) + 8.0, face - 40.0), 12.0, "plastic_black", false, 12)
+	var y := 300.0
+	while y < wall_h - 200.0:  # brackets
+		_box(parent, Vector3(pipe_x, y, face - 12.0), Vector3(30.0, 14.0, 26.0), "plastic_black", false)
+		y += 520.0
+	_box(parent, Vector3(pipe_x, float(patio["top"]) + 1.0, face - 45.0), Vector3(90.0, 4.0, 90.0), "grid_iron", true)  # the drain's grating
+	# air bricks in the plinth, and the outside tap by the back door
+	for ax: float in [-2300.0, -800.0, 900.0, 2250.0]:
+		_box(parent, Vector3(ax, 35.0, face - 9.0), Vector3(77.0, 23.0, 4.0), "terracotta", false)
+		for k in 6:
+			_box(parent, Vector3(ax - 30.0 + k * 12.0, 35.0, face - 11.2), Vector3(5.0, 15.0, 1.0), "hole", false)
+	var tap := Vector3(float(door_x[1]) + 130.0, floor_y + 260.0, face)
+	_box(parent, tap + Vector3(0, 0, -4.0), Vector3(26.0, 36.0, 8.0), "brass", false)
+	_tube(parent, tap + Vector3(0, 0, -8.0), tap + Vector3(0, -8.0, -40.0), 7.0, "brass", false, 10)
+	_tube(parent, tap + Vector3(0, -8.0, -40.0), tap + Vector3(0, -38.0, -44.0), 6.0, "brass", false, 10)
+	_box(parent, tap + Vector3(0, 16.0, -30.0), Vector3(34.0, 5.0, 5.0), "brass", false)  # the handle
+	_tube(parent, tap + Vector3(0, 8.0, -30.0), tap + Vector3(0, 16.0, -30.0), 3.0, "brass", false, 8)
+
+
+## A wall slab from x0..x1, y0..y1, z0..z1 with rectangular openings
+## [x0, x1, y0, y1] cut through it: boxes fill everything else.
+func _wall_with_holes(parent: Node3D, x0: float, x1: float, y0: float, y1: float, z0: float, z1: float,
+		holes: Array, key: String) -> void:
+	var xs: Array[float] = [x0, x1]
+	for hh: Array in holes:
+		for v: float in [float(hh[0]), float(hh[1])]:
+			if v > x0 and v < x1 and not xs.has(v):
+				xs.append(v)
+	xs.sort()
+	for i in xs.size() - 1:
+		var a := xs[i]
+		var b := xs[i + 1]
+		var covered: Array[Vector2] = []
+		for hh: Array in holes:
+			if float(hh[0]) <= a and float(hh[1]) >= b:
+				covered.append(Vector2(maxf(float(hh[2]), y0), minf(float(hh[3]), y1)))
+		covered.sort_custom(func(u: Vector2, v: Vector2) -> bool: return u.x < v.x)
+		var y := y0
+		for c: Vector2 in covered:
+			if c.x > y:
+				_box(parent, Vector3((a + b) / 2.0, (y + c.x) / 2.0, (z0 + z1) / 2.0), Vector3(b - a, c.x - y, z1 - z0), key, true)
+			y = maxf(y, c.y)
+		if y < y1:
+			_box(parent, Vector3((a + b) / 2.0, (y + y1) / 2.0, (z0 + z1) / 2.0), Vector3(b - a, y1 - y, z1 - z0), key, true)
+
+
+## A window in an opening: white uPVC frame (and a mullion and transom when it's
+## big), glass that mirrors the sky, a stone sill and lintel, curtains drawn part
+## way, a dim room behind.
+func _window(parent: Node3D, x0: float, x1: float, y0: float, y1: float, face: float, skin: float,
+		interior: Material, curtain: Color, index: int) -> void:
+	var fw := 22.0
+	var inset := 28.0
+	var cx := (x0 + x1) / 2.0
+	var cy := (y0 + y1) / 2.0
+	for bar: Array in [[cx, y1 - fw / 2.0, x1 - x0, fw], [cx, y0 + fw / 2.0, x1 - x0, fw],
+			[x0 + fw / 2.0, cy, fw, y1 - y0], [x1 - fw / 2.0, cy, fw, y1 - y0]]:
+		_box(parent, Vector3(float(bar[0]), float(bar[1]), face + inset), Vector3(float(bar[2]), float(bar[3]), 26.0), "uPVC", false)
+	if x1 - x0 > 380.0:
+		_box(parent, Vector3(cx, cy, face + inset), Vector3(fw * 0.9, y1 - y0, 24.0), "uPVC", false)  # mullion
+	_box(parent, Vector3(cx, lerpf(y0, y1, 0.72), face + inset), Vector3(x1 - x0, fw * 0.8, 24.0), "uPVC", false)  # transom
+	var glass := BoxMesh.new()
+	glass.size = Vector3(x1 - x0 - fw, y1 - y0 - fw, 2.0)
+	var pane := MeshInstance3D.new()
+	pane.mesh = glass
+	pane.material_override = _glass_material()
+	pane.position = Vector3(cx, cy, face + inset + 4.0)
+	pane.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	parent.add_child(pane)
+	# stone sill (proud of the wall, sloping off) and lintel
+	_box(parent, Vector3(cx, y0 - 14.0, face - 4.0), Vector3(x1 - x0 + 60.0, 28.0, 64.0), "concrete", false)
+	_box(parent, Vector3(cx, y1 + 32.0, face + 4.0), Vector3(x1 - x0 + 70.0, 64.0, 12.0), "concrete", false)
+	# the room: curtains drawn part way, dark beyond
+	var cm := StandardMaterial3D.new()
+	cm.albedo_color = curtain
+	cm.roughness = 1.0
+	var open := 0.3 + 0.25 * sin(index * 2.3)
+	for side: float in [-1.0, 1.0]:
+		var cw := (x1 - x0) * (0.5 - open * 0.5)
+		var cc := Vector3(cx + side * ((x1 - x0) / 2.0 - cw / 2.0), cy, face + inset + 40.0)
+		var panel := BoxMesh.new()
+		panel.size = Vector3(cw, y1 - y0 + 40.0, 6.0)
+		var mi := MeshInstance3D.new()
+		mi.mesh = panel
+		mi.material_override = cm
+		mi.position = cc
+		parent.add_child(mi)
+	var back := BoxMesh.new()
+	back.size = Vector3(x1 - x0, y1 - y0, 2.0)
+	var room := MeshInstance3D.new()
+	room.mesh = back
+	room.material_override = interior
+	room.position = Vector3(cx, cy, face + skin - 2.0)
+	parent.add_child(room)
+
+
+## French doors onto the patio: two tall glazed leaves in white frames, a
+## threshold, the room dim behind; solid (you can't walk through the glass).
+func _french_doors(parent: Node3D, x0: float, x1: float, y0: float, y1: float, face: float, skin: float,
+		interior: Material) -> void:
+	var fw := 24.0
+	var cx := (x0 + x1) / 2.0
+	var cy := (y0 + y1) / 2.0
+	for bar: Array in [[cx, y1 - fw / 2.0, x1 - x0, fw], [cx, y0 + fw, x1 - x0, fw * 2.0], [x0 + fw / 2.0, cy, fw, y1 - y0],
+			[x1 - fw / 2.0, cy, fw, y1 - y0], [cx, cy, fw * 1.6, y1 - y0]]:
+		_box(parent, Vector3(float(bar[0]), float(bar[1]), face + 30.0), Vector3(float(bar[2]), float(bar[3]), 30.0), "uPVC", true)
+	for side: float in [-1.0, 1.0]:
+		var glass := BoxMesh.new()
+		glass.size = Vector3((x1 - x0) / 2.0 - fw * 1.3, y1 - y0 - fw * 3.0, 2.0)
+		var pane := MeshInstance3D.new()
+		pane.mesh = glass
+		pane.material_override = _glass_material()
+		pane.position = Vector3(cx + side * (x1 - x0) / 4.0, cy + fw * 0.5, face + 32.0)
+		parent.add_child(pane)
+		_box(parent, Vector3(cx + side * 20.0, cy - 20.0, face + 12.0), Vector3(8.0, 60.0, 8.0), "brass", false)  # handles
+	_box(parent, Vector3(cx, y0 - 4.0, face + 10.0), Vector3(x1 - x0 + 30.0, 16.0, 70.0), "concrete", true)  # threshold
+	var back := BoxMesh.new()
+	back.size = Vector3(x1 - x0, y1 - y0, 2.0)
+	var room := MeshInstance3D.new()
+	room.mesh = back
+	room.material_override = interior
+	room.position = Vector3(cx, cy, face + skin - 2.0)
+	parent.add_child(room)
+	var glass_block := StaticBody3D.new()  # the glass: solid
+	var cs := CollisionShape3D.new()
+	var box := BoxShape3D.new()
+	box.size = Vector3(x1 - x0, y1 - y0, 20.0)
+	cs.shape = box
+	glass_block.add_child(cs)
+	glass_block.position = Vector3(cx, cy, face + 40.0)
+	parent.add_child(glass_block)
+
+
+func _glass_material() -> StandardMaterial3D:
+	if not _materials.has("_glass"):
+		var g := StandardMaterial3D.new()
+		g.albedo_color = Color(0.2, 0.26, 0.3, 0.35)
+		g.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+		g.roughness = 0.03
+		g.metallic = 0.2
+		g.metallic_specular = 1.0
+		g.rim_enabled = true
+		g.rim = 0.6
+		g.rim_tint = 0.2
+		_materials["_glass"] = g
+	return _materials["_glass"]
 
 
 ## Wooden fence panels on three sides of the garden; the house closes the south,
@@ -1484,9 +1716,20 @@ func _build_patio(parent: Node3D) -> void:
 		row += 1
 	# the sand-and-moss joints between them, a few metres down
 	_slab(parent, [float(xr[0]), edge_z, float(xr[1]), wall_z, top - 5.0], "joint")
-	for k in 40:  # moss tufts along the edge and in the joints
-		var mx := rng.randf_range(-700.0, 700.0)
-		_box(parent, Vector3(mx, top - 1.0, edge_z - 0.4), Vector3(rng.randf_range(6, 18), rng.randf_range(4, 12), 1.5), "moss", false)
+	# moss cushions along the edge and in the joints (Poly Haven's moss)
+	var mosses := NatureModels.variants("moss_01")
+	for k in 34 if not mosses.is_empty() else 0:
+		var v := mosses[k % mosses.size()]
+		var mx := rng.randf_range(-900.0, 900.0)
+		var mz := edge_z + (0.5 if k % 3 != 0 else rng.randf_range(0.0, 1.0) * (wall_z - edge_z))
+		if k % 3 == 0:  # in a joint between slabs
+			mz = wall_z - round((wall_z - mz) / slab) * slab
+		var sz := rng.randf_range(8.0, 20.0)
+		var mi := NatureModels.instance(v, Transform3D(Basis(Vector3.UP, rng.randf() * TAU).scaled(Vector3.ONE * sz),
+			Vector3(mx, top - sz * 0.12, mz)), NatureModels.cutout_materials(v))
+		mi.visibility_range_end = 400.0
+		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		parent.add_child(mi)
 
 	# the trowel: a steel blade from the grass up onto the slabs
 	var t: Dictionary = patio["trowel"]
@@ -1524,23 +1767,39 @@ func _build_patio(parent: Node3D) -> void:
 			"flowerpot":
 				var pp := LawnLayout.xz(pr["pos"])
 				var ps: Array = pr["size"]
-				_cylinder(parent, Vector3(pp.x, top, pp.y), float(ps[0]) * 0.38, float(ps[1]), "terracotta", true, float(ps[0]) * 0.5, 28)
-				for k in 6:  # a leafy plant spilling over the rim
-					var off := Vector3(rng.randf_range(-35, 35), rng.randf_range(10, 60), rng.randf_range(-35, 35))
-					_sphere(parent, Vector3(pp.x, top + float(ps[1]), pp.y) + off, rng.randf_range(22, 34), "leaf_green", false)
+				var pot := NatureModels.variant("planter_pot_clay")
+				if pot != null:
+					# a clay pot with a fern in it, a bit of moss on its foot
+					var width := float(ps[0])
+					var pxf := Transform3D(Basis(Vector3.UP, 0.4).scaled(Vector3.ONE * width / maxf(pot.size.x, pot.size.z)), Vector3(pp.x, top, pp.y))
+					NatureModels.solid(parent, pot, pxf, "convex", WORLD_LAYER | CLIMBABLE_LAYER)
+					var fern := NatureModels.variant("fern_02", 1)
+					if fern != null:
+						var fxf := Transform3D(Basis(Vector3.UP, 1.3).scaled(Vector3.ONE * width * 1.6), Vector3(pp.x, top + width * pot.size.y / maxf(pot.size.x, pot.size.z) * 0.8, pp.y))
+						var fm := NatureModels.instance(fern, fxf, NatureModels.wind_materials(fern, {"bend": 0.02, "flutter": 0.6}))
+						parent.add_child(fm)
+				else:
+					_cylinder(parent, Vector3(pp.x, top, pp.y), float(ps[0]) * 0.38, float(ps[1]), "terracotta", true, float(ps[0]) * 0.5, 28)
 			"watering_can":
 				var wp := LawnLayout.xz(pr["pos"])
 				var ws: Array = pr["size"]
-				_cylinder(parent, Vector3(wp.x, top, wp.y), float(ws[2]) * 0.55, float(ws[1]) * 0.75, "can", true, float(ws[2]) * 0.5, 24)
-				_tube(parent, Vector3(wp.x + 25.0, top + 25.0, wp.y), Vector3(wp.x + float(ws[0]) * 0.75, top + float(ws[1]) * 0.7, wp.y), 5.0, "can", false)
-				_tube(parent, Vector3(wp.x - 20.0, top + float(ws[1]) * 0.75, wp.y), Vector3(wp.x + 20.0, top + float(ws[1]) * 1.05, wp.y), 4.0, "can", false)
+				var can := NatureModels.variant("watering_can_metal_01")
+				if can != null:
+					# a galvanised can, set down with its rose toward the lawn
+					var cxf := Transform3D(Basis(Vector3.UP, -0.9).scaled(Vector3.ONE * float(ws[0]) * 1.25), Vector3(wp.x, top, wp.y))
+					NatureModels.solid(parent, can, cxf, "convex", WORLD_LAYER | CLIMBABLE_LAYER)
+				else:
+					_cylinder(parent, Vector3(wp.x, top, wp.y), float(ws[2]) * 0.55, float(ws[1]) * 0.75, "can", true, float(ws[2]) * 0.5, 24)
 			"barbecue":
-				var bp := LawnLayout.xz(pr["pos"])
-				var bs: Array = pr["size"]
-				for k in 3:
-					var a := TAU * k / 3.0
-					_tube(parent, Vector3(bp.x + cos(a) * 80.0, top, bp.y + sin(a) * 80.0), Vector3(bp.x, top + 200.0, bp.y), 6.0, "grill", false, 8)
-				_sphere(parent, Vector3(bp.x, top + 230.0, bp.y), float(bs[0]) / 2.0, "grill", false, float(bs[0]) * 0.9)
+				_barbecue(parent, Vector3(float(pr["pos"][0]), top, float(pr["pos"][1])), float(pr["size"][0]), float(pr["size"][1]))
+	# big pots of greenery against the house wall either side of the French doors
+	for spot: Array in [[-2150.0, 0], [-850.0, 1], [1100.0, 0]]:
+		var plant := NatureModels.variant("potted_plant_02" if int(spot[1]) == 0 else "potted_plant_01")
+		if plant != null:
+			var pxf := Transform3D(Basis(Vector3.UP, float(spot[0]) * 0.01).scaled(Vector3.ONE * 300.0), Vector3(float(spot[0]), top, wall_z - 150.0))
+			var mats := NatureModels.cutout_materials(plant)
+			var mi := NatureModels.solid(parent, plant, pxf, "convex", WORLD_LAYER, mats)
+			mi.name = "PottedPlant"
 	var b: Dictionary = patio["brush"]
 	var brush := GardenProps.get_prop("hand_brush")
 	if brush != null:
@@ -1560,9 +1819,19 @@ func _build_patio(parent: Node3D) -> void:
 	var gap: float = dr["gap"]
 	var door_w := float(dx[1]) - float(dx[0])
 	var door_c := (float(dx[0]) + float(dx[1])) / 2.0
-	_box(parent, Vector3(door_c, sill + gap + 360.0, wall_z + 7.2), Vector3(door_w, 720.0, 14.4), "door", true)
-	_box(parent, Vector3(door_c + door_w * 0.38, sill + gap + 330.0, wall_z - 2.0), Vector3(8.0, 30.0, 6.0), "brass", false)  # handle
-	_box(parent, Vector3(door_c, sill + gap + 500.0, wall_z - 1.0), Vector3(90.0, 14.0, 3.0), "brass", false)  # letterbox
+	# a white uPVC back door: panelled below, glazed above, a lever handle
+	_box(parent, Vector3(door_c, sill + gap + 360.0, wall_z + 7.2), Vector3(door_w, 720.0, 14.4), "uPVC", true)
+	for panel: Array in [[sill + gap + 150.0, 190.0], [sill + gap + 360.0, 120.0]]:
+		_box(parent, Vector3(door_c, float(panel[0]), wall_z - 0.6), Vector3(door_w - 70.0, float(panel[1]), 2.0), "window_frame", false)
+	var door_glass := BoxMesh.new()
+	door_glass.size = Vector3(door_w - 70.0, 220.0, 2.0)
+	var dg := MeshInstance3D.new()
+	dg.mesh = door_glass
+	dg.material_override = _glass_material()
+	dg.position = Vector3(door_c, sill + gap + 575.0, wall_z - 0.8)
+	parent.add_child(dg)
+	_box(parent, Vector3(door_c + door_w * 0.36, sill + gap + 330.0, wall_z - 6.0), Vector3(36.0, 7.0, 7.0), "silver", false)  # lever
+	_box(parent, Vector3(door_c + door_w * 0.36, sill + gap + 318.0, wall_z - 2.0), Vector3(10.0, 40.0, 3.0), "silver", false)  # backplate
 	_slab(parent, [dx[0], wall_z, dx[1], wall_z + 260.0, sill], "kitchen", true, sill - 20.0)  # the kitchen floor inside
 	var glow := StandardMaterial3D.new()
 	glow.albedo_color = COLORS["door_light"]
@@ -1580,6 +1849,76 @@ func _build_patio(parent: Node3D) -> void:
 	parent.add_child(lamp)
 	# walls behind the kitchen floor so nobody wanders into the house
 	_box(parent, Vector3(door_c, sill + 360.0, wall_z + 265.0), Vector3(door_w, 720.0, 10.0), "kitchen", true)
+
+
+## A kettle barbecue on the patio (60 cm across, a metre tall): a black
+## enamelled bowl on three legs, two with wheels, a lid with a vent and handle,
+## an ash pan hung under it. Solid where it stands.
+func _barbecue(parent: Node3D, foot: Vector3, width: float, height: float) -> void:
+	var enamel := StandardMaterial3D.new()
+	enamel.albedo_color = Color(0.035, 0.035, 0.04)
+	enamel.roughness = 0.28
+	enamel.metallic = 0.35
+	enamel.clearcoat_enabled = true
+	enamel.clearcoat = 0.6
+	var steel := _mat("silver")
+	var r := width / 2.0
+	var bowl_y := foot.y + height * 0.62
+	# the bowl (a half sphere) and the lid (a shallower dome), a steel band between
+	var bowl := SphereMesh.new()
+	bowl.radius = r
+	bowl.height = r * 1.7
+	bowl.is_hemisphere = false
+	var st := MeshInstance3D.new()
+	st.mesh = bowl
+	st.material_override = enamel
+	st.position = Vector3(foot.x, bowl_y, foot.z)
+	parent.add_child(st)
+	_tube(parent, Vector3(foot.x - r * 1.01, bowl_y + 2.0, foot.z), Vector3(foot.x + r * 1.01, bowl_y + 2.0, foot.z), 1.5, "silver", false, 6)
+	var handle_y := bowl_y + r * 0.85
+	_box(parent, Vector3(foot.x, handle_y + 8.0, foot.z), Vector3(r * 0.5, 7.0, 10.0), "wood", false)
+	_tube(parent, Vector3(foot.x - r * 0.22, handle_y - 4.0, foot.z), Vector3(foot.x - r * 0.25, handle_y + 5.0, foot.z), 2.0, "silver", false, 6)
+	_tube(parent, Vector3(foot.x + r * 0.22, handle_y - 4.0, foot.z), Vector3(foot.x + r * 0.25, handle_y + 5.0, foot.z), 2.0, "silver", false, 6)
+	_cylinder(parent, Vector3(foot.x + r * 0.35, bowl_y + r * 0.72, foot.z + r * 0.2), 9.0, 4.0, "silver", false)  # the vent
+	# legs: three, splayed, two ending in wheels; a triangle rack between them
+	var leg_top := bowl_y - r * 0.55
+	for k in 3:
+		var a := TAU * k / 3.0 + 0.5
+		var out := Vector3(cos(a), 0.0, sin(a))
+		var low := Vector3(foot.x, foot.y + (12.0 if k < 2 else 0.0), foot.z) + out * r * 0.95
+		_tube(parent, Vector3(foot.x, leg_top, foot.z) + out * r * 0.55, low, 4.5, "silver", false, 8)
+		if k < 2:
+			var wheel := CylinderMesh.new()
+			wheel.top_radius = 12.0
+			wheel.bottom_radius = 12.0
+			wheel.height = 7.0
+			var wm := MeshInstance3D.new()
+			wm.mesh = wheel
+			wm.material_override = _mat("tyre")
+			wm.transform = Transform3D(Basis.looking_at(out.cross(Vector3.UP), Vector3.UP) * Basis(Vector3.RIGHT, PI / 2.0), low)
+			parent.add_child(wm)
+	_cylinder(parent, Vector3(foot.x, foot.y + height * 0.25, foot.z), r * 0.6, 3.0, "silver", false)  # the rack
+	_cylinder(parent, Vector3(foot.x, leg_top - 30.0, foot.z), r * 0.32, 18.0, "silver", false)  # the ash pan
+	# solid: a column for the legs, the bowl
+	var body := StaticBody3D.new()
+	body.collision_layer = WORLD_LAYER
+	var cs := CollisionShape3D.new()
+	var sphere := SphereShape3D.new()
+	sphere.radius = r
+	cs.shape = sphere
+	cs.position = Vector3(foot.x, bowl_y, foot.z)
+	body.add_child(cs)
+	for k in 3:
+		var a := TAU * k / 3.0 + 0.5
+		var leg := CollisionShape3D.new()
+		var cyl := CylinderShape3D.new()
+		cyl.radius = 5.0
+		cyl.height = leg_top - foot.y
+		leg.shape = cyl
+		leg.position = Vector3(foot.x + cos(a) * r * 0.75, (foot.y + leg_top) / 2.0, foot.z + sin(a) * r * 0.75)
+		body.add_child(leg)
+	parent.add_child(body)
+	st.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
 
 
 ## The trowel without its model: a steel blade box from the grass up onto the
@@ -1674,6 +2013,18 @@ func _build_dressing(parent: Node3D) -> void:
 
 
 # ── grass ─────────────────────────────────────────────────────────────────────
+
+## The tree grounds west of the lawn (TreeGrounds): their own ground, leaf
+## litter, the orchard, Sap Falls, the silk ladder, the root door, puddles.
+func _build_tree_grounds(root: Node3D) -> void:
+	if not layout.data.has("tree_grounds"):
+		return
+	var grounds := TreeGrounds.new()
+	var blades: Array[ArrayMesh] = [GrassMeshes.blade(BLADE_HEIGHT, BLADE_WIDTH, 0.08, 6, 0.35),
+		GrassMeshes.blade(BLADE_HEIGHT, BLADE_WIDTH * 0.8, 0.22, 6, -0.5)]
+	grounds.setup(layout, _ground_material(), _grass_material(), blades)
+	root.add_child(grounds)
+
 
 func _grass_material() -> ShaderMaterial:
 	if not _materials.has("_grass"):

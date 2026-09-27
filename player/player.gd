@@ -120,9 +120,12 @@ const CRAWL_HEIGHT := 0.6
 @export var swim_tread_depth := 1.35
 @export var swim_stroke_depth := 0.7
 @export var swim_jump_speed := 6.0
-## Metres he can swim before he's worn out (the Rut is ~90 m across at its
-## narrowest, so it stays a moat). Treading water tires him too, more slowly.
-@export var swim_range := 50.0
+## Metres he can swim before he's worn out: enough to cross the Rut (about
+## 130 m north to south), not to swim its length. Treading water tires him
+## too, more slowly. Worn out he can only paddle slowly and the water starts to
+## win (`swim_drown_damage` health a second) until he reaches a bank.
+@export var swim_range := 170.0
+@export var swim_drown_damage := 6.0
 ## Seconds on dry ground to get his breath back from empty.
 @export var swim_recover := 5.0
 
@@ -633,14 +636,15 @@ func _process_swimming(delta: float) -> void:
 	if dir.length_squared() > 1.0:
 		dir = dir.normalized()
 	var fast := input_enabled and Input.is_action_pressed("sprint")
-	var target := dir * (swim_sprint_speed if fast else swim_speed)
+	var worn_out := swim_left <= 0.0
+	var target := dir * (swim_sprint_speed if fast else swim_speed) * (0.45 if worn_out else 1.0)
 	var h := Vector3(velocity.x, 0.0, velocity.z).move_toward(target, swim_accel * delta)
 	velocity.x = h.x
 	velocity.z = h.z
 	# float: a spring toward the surface, lower while treading, higher while stroking
 	var stroke := clampf(h.length() / swim_speed, 0.0, 1.0)
 	var goal := _water.level - lerpf(swim_tread_depth, swim_stroke_depth, stroke) \
-		+ sin(Time.get_ticks_msec() * 0.0025) * 0.05
+		+ sin(Time.get_ticks_msec() * 0.0025) * (0.05 if not worn_out else 0.25) - (0.3 if worn_out else 0.0)
 	velocity.y = clampf((goal - global_position.y) * 5.0, -4.0, 3.0)
 	if _can_act() and Input.is_action_just_pressed("jump"):
 		velocity.y = swim_jump_speed  # kick up, to reach a bank
@@ -651,12 +655,13 @@ func _process_swimming(delta: float) -> void:
 	if h.length() > 0.2:
 		_face(h, delta)
 	move_and_slide()
-	swim_left -= maxf(h.length(), 0.4) * delta  # treading tires him too
+	swim_left = maxf(swim_left - maxf(h.length(), 0.4) * delta, 0.0)  # treading tires him too
 	if swim_left <= 0.0:
-		swim_left = swim_range
-		_leave_water(State.AIR)
-		swim_exhausted.emit(_last_dry)
-		return
+		if not worn_out:
+			swim_exhausted.emit(_last_dry)  # (the level says so)
+		var combat := get_node_or_null("Combat") as PlayerCombat
+		if combat != null and not combat.knocked:
+			combat.lose_health(swim_drown_damage * delta)
 	if _water.depth_at(global_position, [get_rid()]) < swim_depth - 0.2 or not _water.contains(global_position):
 		_leave_water(State.GROUND if is_on_floor() else State.AIR)  # shallow enough to stand: wade out
 		return
@@ -805,7 +810,8 @@ func _process_heave_input() -> void:
 		return
 	_pushing = null
 	if state != State.GROUND:
-		_set_hint("Getting tired: head for the bank" if state == State.SWIM and swim_left < swim_range * 0.4 else "")
+		_set_hint(("Worn out: get to the bank!" if swim_left <= 0.0 else "Getting tired: head for the bank")
+			if state == State.SWIM and swim_left < swim_range * 0.4 else "")
 		return
 	var bug := flippable_in_reach()
 	if bug != null:
