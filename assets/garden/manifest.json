@@ -1,306 +1,434 @@
 {
- "note": "Garden art made with Meshy (tools/meshy_assets.py). 'size' is the in-game size in metres of the object's longest side (Amodu is 1.8 m; the world is x360). Primitives in the builder are only layout and collision proxies; these replace their looks.",
- "style": "Stylized 3D game asset: hand-sculpted chunky readable shapes, slightly exaggerated proportions, rich saturated natural colours, hand-painted look PBR textures, soft warm lighting feel, clean silhouette. Single object, no base, no ground plane, no background.",
- "ai_model": "latest",
- "assets": [
-  {
-   "id": "daisy",
-   "pilot": true,
-   "polycount": 15000,
-   "size": 40,
-   "prompt": "An ox-eye daisy flower on one slender curved green stem with two small leaves, bright white petals around a raised golden-yellow centre, flower head facing up."
-  },
-  {
-   "id": "buttercup",
-   "pilot": false,
-   "polycount": 10000,
-   "size": 26,
-   "prompt": "A single buttercup flower on a thin green stem, five glossy golden-yellow cup-shaped petals, one small lobed leaf."
-  },
-  {
-   "id": "clover",
-   "pilot": true,
-   "polycount": 12000,
-   "size": 7,
-   "prompt": "A small clump of white clover: several three-leaf clover leaves on thin stalks with pale chevron markings, and one round white clover flower head."
-  },
-  {
-   "id": "toadstools",
-   "pilot": true,
-   "polycount": 12000,
-   "size": 14,
-   "prompt": "A cluster of three red fly agaric toadstools with white spots and white stalks, one large, one medium, one small."
-  },
-  {
-   "id": "bracket_fungus",
-   "pilot": true,
-   "polycount": 12000,
-   "size": 20,
-   "prompt": "A cluster of layered orange-brown bracket fungus shelves growing from a chunk of tree bark, half-disc shelves with pale rims."
-  },
-  {
-   "id": "twig",
-   "pilot": true,
-   "polycount": 8000,
-   "size": 40,
-   "prompt": "A fallen dry twig with two small side branches and rough grey-brown bark, lying flat.",
-   "lie_flat": false
-  },
-  {
-   "id": "fallen_leaf",
-   "pilot": true,
-   "polycount": 5000,
-   "size": 30,
-   "prompt": "A single fallen dry apple leaf, slightly curled at the edges, clear veins, golden brown fading to green.",
-   "lie_flat": true
-  },
-  {
-   "id": "pebbles",
-   "pilot": true,
-   "polycount": 6000,
-   "size": 9,
-   "prompt": "A cluster of five smooth rounded garden pebbles in grey and tan, different sizes, touching each other."
-  },
-  {
-   "id": "tree_root",
-   "pilot": true,
-   "polycount": 25000,
-   "size": 90,
-   "prompt": "A thick gnarled tree root arching out of the ground and back in like a bridge, deep bark grooves, patches of green moss."
-  },
-  {
-   "id": "butterfly",
-   "group": "creatures",
-   "polycount": 8000,
-   "size": 18,
-   "prompt": "A butterfly with its wings spread wide open and flat, symmetrical, bright orange wings with black veins and white spots along black edges, slim black body, two antennae.",
-   "lie_flat": true
-  },
-  {
-   "id": "bee",
-   "group": "creatures",
-   "polycount": 8000,
-   "size": 6,
-   "prompt": "A fuzzy round honeybee in flight, wings spread out to the sides, golden-yellow and black striped body, small legs tucked under."
-  },
-  {
-   "id": "dragonfly",
-   "group": "creatures",
-   "polycount": 8000,
-   "size": 25,
-   "prompt": "A dragonfly with four long clear veined wings spread flat out to the sides, long slender metallic blue-green body, big round eyes.",
-   "lie_flat": true
-  },
-  {
-   "id": "water_strider",
-   "group": "creatures",
-   "polycount": 6000,
-   "size": 12,
-   "prompt": "A water strider pond skater insect standing on water: slim dark brown body and four very long thin legs spread wide, two short front legs."
-  },
-  {
-   "id": "tadpole",
-   "group": "creatures",
-   "polycount": 5000,
-   "size": 5,
-   "prompt": "A frog tadpole (pollywog): a smooth glossy dark grey-black oval blob body with no fins and no scales, two tiny eyes on top, and one long thin flat tail with a soft translucent edge fin. Simple, amphibian larva, not a fish."
-  },
-  {
-   "id": "backpack",
-   "group": "gear",
-   "polycount": 8000,
-   "size": 0.75,
-   "bone": "Spine",
-   "prompt": "A small rugged adventurer's backpack in olive canvas with brown leather straps and buckles, a rolled blanket on top and side pockets for tools, empty straps (no person)."
-  },
-  {
-   "id": "satchel",
-   "group": "gear",
-   "polycount": 6000,
-   "size": 0.4,
-   "bone": "Hips",
-   "prompt": "A small brown leather satchel bag with a flap, a brass clasp and a long shoulder strap, for carrying loot. No person."
-  },
-  {
-   "id": "belt_pouch",
-   "group": "gear",
-   "polycount": 4000,
-   "size": 0.22,
-   "bone": "Hips",
-   "prompt": "A small olive canvas belt pouch with a flap and a button, for carrying small tools. No person."
-  },
-  {
-   "id": "school_bag",
-   "group": "world2",
-   "polycount": 30000,
-   "size": 150,
-   "prompt": "A child's school backpack standing upright on the ground: blue canvas body, a darker navy front pocket with a zip and pull tab, a main zip curving over the top, padded shoulder straps hanging at the back, a grab loop on top, a small keyring charm on the zip. Worn and well used, a few scuffs and stitched seams."
-  },
-  {
-   "id": "ladybug",
-   "group": "world2",
-   "polycount": 8000,
-   "size": 2.8,
-   "prompt": "A seven-spot ladybird beetle walking: glossy domed bright red wing cases with black spots, black head with small white patches, six short black legs, short antennae."
-  },
-  {
-   "id": "aphid",
-   "group": "world2",
-   "polycount": 5000,
-   "size": 1.0,
-   "prompt": "A green aphid insect: soft plump pear-shaped pale green body, six thin legs, long thin antennae, two small tubes at the back end."
-  },
-  {
-   "id": "velvet_mite",
-   "group": "world2",
-   "polycount": 5000,
-   "size": 1.4,
-   "prompt": "A red velvet mite: a round plump fuzzy bright red body like velvet, eight short red legs, tiny head at the front."
-  },
-  {
-   "id": "springtail",
-   "group": "world2",
-   "polycount": 5000,
-   "size": 0.6,
-   "prompt": "A springtail (collembola) tiny soil hexapod: soft segmented grey-blue body, short antennae, six short legs, a small forked tail tucked underneath."
-  },
-  {
-   "id": "glow_mushroom",
-   "group": "world2",
-   "polycount": 8000,
-   "size": 3.0,
-   "prompt": "A cluster of five small bioluminescent mushrooms of different heights on thin pale stems, glowing soft cyan-green translucent caps with gills underneath."
-  },
-  {
-   "id": "dandelion_seed",
-   "group": "glide",
-   "polycount": 8000,
-   "size": 5.5,
-   "prompt": "A single dandelion seed parachute standing upright: a small slim brown seed at the bottom, a long thin pale stalk rising from it, topped by a wide white fluffy umbrella of fine radiating silky hairs (the pappus), like an open parasol. One seed, symmetrical."
-  },
-  {
-   "id": "dandelion_flower",
-   "group": "glide",
-   "polycount": 15000,
-   "size": 80,
-   "prompt": "A dandelion plant: one tall straight hollow pale green stalk with a single bright yellow shaggy flower head of many thin petals facing up, and a rosette of long jagged toothed green leaves spread flat around the base."
-  },
-  {
-   "id": "dandelion_clock",
-   "group": "glide",
-   "polycount": 15000,
-   "size": 70,
-   "prompt": "A dandelion seed head (clock): one tall straight pale green stalk topped by a perfect white fluffy sphere of many seed parachutes radiating from the centre, a few seeds missing, and a rosette of long jagged green leaves flat around the base."
-  },
-  {
-   "id": "bottle_cap",
-   "group": "route",
-   "polycount": 8000,
-   "size": 9.4,
-   "prompt": "A single red metal crown bottle cap, right way up: a flat round top with a slightly raised centre and a short crimped skirt of fluted teeth all round the rim, glossy red paint scuffed to silver at the edges, hollow underneath."
-  },
-  {
-   "id": "apple",
-   "group": "route",
-   "polycount": 12000,
-   "size": 29,
-   "prompt": "A ripe red apple fallen on the ground, lying on its side, a bruised patch and one side pecked open showing pale juicy flesh, short brown stem."
-  },
-  {
-   "id": "apple_core",
-   "group": "route",
-   "polycount": 10000,
-   "size": 25,
-   "prompt": "A gnawed apple core: a narrow bitten waist of pale browning flesh with brown pips showing, a cap of red apple skin at each end, a short stem at the top."
-  },
-  {
-   "id": "pencil",
-   "group": "route",
-   "polycount": 6000,
-   "size": 68,
-   "prompt": "A yellow hexagonal wooden pencil, sharpened to a point at one end with bare pale wood and a dark graphite tip, a silver metal ferrule and a pink rubber eraser at the other end."
-  },
-  {
-   "id": "trowel",
-   "group": "route",
-   "polycount": 10000,
-   "size": 108,
-   "prompt": "A garden hand trowel: a pointed, slightly dished steel scoop blade joined by a short bent metal neck to a green wooden handle with a hanging hole near its end."
-  },
-  {
-   "id": "hand_brush",
-   "group": "route",
-   "polycount": 10000,
-   "size": 108,
-   "prompt": "A wooden hand brush for sweeping, as used with a dustpan: a flat varnished wooden back that narrows into a long straight handle, a dense block of stiff black bristles under the wide head."
-  },
-  {
-   "id": "stone_axe",
-   "group": "weapons",
-   "source": "user",
-   "polycount": 12000,
-   "size": 0.62,
-   "bone": "RightHand",
-   "note": "Made by the user with Meshy image-to-3D from their reference (a knapped stone head lashed to a split stick with green vine and a fresh leaf). Raw 639k-triangle GLB in source/meshy/user_axe.glb; decimated to 12k triangles, 1024 px textures and stood upright (butt at the origin) in Blender."
-  },
-  {
-   "id": "stone_knife",
-   "group": "weapons",
-   "source": "user",
-   "polycount": 12000,
-   "size": 0.4,
-   "bone": "RightHand",
-   "note": "Made by the user with Meshy image-to-3D (a knapped dark stone blade on a vine-wrapped stick handle with a leaf). Raw 715k-triangle GLB in source/meshy/user_knife.glb; decimated to 12k triangles, 1024 px textures, stood upright (pommel at the origin)."
-  },
-  {
-   "id": "pebble",
-   "group": "heavables",
-   "polycount": 5000,
-   "size": 1.0,
-   "prompt": "A single smooth rounded garden pebble, a slightly flattened oval, grey-tan with dark speckles and a few tiny pits.",
-   "note": "A loose prop Amodu lifts, carries and throws (world/props/heavable.gd); scaled to each placement's size."
-  },
-  {
-   "id": "cake_crumb",
-   "group": "heavables",
-   "polycount": 5000,
-   "size": 1.0,
-   "prompt": "A single crumb of yellow sponge cake: a rough irregular chunk with an airy porous inside and a thin golden-brown baked crust on one side.",
-   "note": "A loose prop Amodu lifts, carries and throws (world/props/heavable.gd); scaled to each placement's size."
-  },
-  {
-   "id": "cheese_crumb",
-   "group": "heavables",
-   "polycount": 5000,
-   "size": 1.0,
-   "prompt": "A small crumbly broken chunk of yellow cheddar cheese with irregular edges, a few tiny holes and cracks.",
-   "note": "A loose prop Amodu lifts, carries and throws (world/props/heavable.gd); scaled to each placement's size."
-  },
-  {
-   "id": "stone_hammer",
-   "group": "weapons",
-   "source": "user",
-   "polycount": 12000,
-   "size": 0.7,
-   "bone": "RightHand",
-   "note": "Made by the user with Meshy (source/meshy/user/hammer.glb, 895k tris); decimated to 12k, 1024 px, stood upright (butt at the origin)."
-  },
-  {
-   "id": "thorn_spear",
-   "group": "weapons",
-   "source": "user",
-   "polycount": 12000,
-   "size": 1.9,
-   "bone": "RightHand",
-   "note": "Made by the user with Meshy (source/meshy/user/spear.glb, 392k tris); decimated to 8k, 1024 px, stood upright (butt at the origin)."
-  },
-  {
-   "id": "pill_bug",
-   "group": "creatures",
-   "source": "user",
-   "polycount": 16000,
-   "size": 4.3,
-   "note": "The user's Meshy pill bug (source/meshy/user/pill_bug.glb: UniRig rig, no animations, plus a stray icosphere). Rig and sphere removed, decimated to 16k tris, 1024 px. creatures/pill_bug/pill_bug.gd uses it for the upright bug."
-  }
- ]
+  "note": "Garden art made with Meshy (tools/meshy_assets.py). 'size' is the in-game size in metres of the object's longest side (Amodu is 1.8 m; the world is x360). Primitives in the builder are only layout and collision proxies; these replace their looks.",
+  "style": "Stylized 3D game asset: hand-sculpted chunky readable shapes, slightly exaggerated proportions, rich saturated natural colours, hand-painted look PBR textures, soft warm lighting feel, clean silhouette. Single object, no base, no ground plane, no background.",
+  "ai_model": "latest",
+  "assets": [
+    {
+      "id": "daisy",
+      "pilot": true,
+      "polycount": 15000,
+      "size": 40,
+      "prompt": "An ox-eye daisy flower on one slender curved green stem with two small leaves, bright white petals around a raised golden-yellow centre, flower head facing up."
+    },
+    {
+      "id": "buttercup",
+      "pilot": false,
+      "polycount": 10000,
+      "size": 26,
+      "prompt": "A single buttercup flower on a thin green stem, five glossy golden-yellow cup-shaped petals, one small lobed leaf."
+    },
+    {
+      "id": "clover",
+      "pilot": true,
+      "polycount": 12000,
+      "size": 7,
+      "prompt": "A small clump of white clover: several three-leaf clover leaves on thin stalks with pale chevron markings, and one round white clover flower head."
+    },
+    {
+      "id": "toadstools",
+      "pilot": true,
+      "polycount": 12000,
+      "size": 14,
+      "prompt": "A cluster of three red fly agaric toadstools with white spots and white stalks, one large, one medium, one small."
+    },
+    {
+      "id": "bracket_fungus",
+      "pilot": true,
+      "polycount": 12000,
+      "size": 20,
+      "prompt": "A cluster of layered orange-brown bracket fungus shelves growing from a chunk of tree bark, half-disc shelves with pale rims."
+    },
+    {
+      "id": "twig",
+      "pilot": true,
+      "polycount": 8000,
+      "size": 40,
+      "prompt": "A fallen dry twig with two small side branches and rough grey-brown bark, lying flat.",
+      "lie_flat": false
+    },
+    {
+      "id": "fallen_leaf",
+      "pilot": true,
+      "polycount": 5000,
+      "size": 30,
+      "prompt": "A single fallen dry apple leaf, slightly curled at the edges, clear veins, golden brown fading to green.",
+      "lie_flat": true
+    },
+    {
+      "id": "pebbles",
+      "pilot": true,
+      "polycount": 6000,
+      "size": 9,
+      "prompt": "A cluster of five smooth rounded garden pebbles in grey and tan, different sizes, touching each other."
+    },
+    {
+      "id": "tree_root",
+      "pilot": true,
+      "polycount": 25000,
+      "size": 90,
+      "prompt": "A thick gnarled tree root arching out of the ground and back in like a bridge, deep bark grooves, patches of green moss."
+    },
+    {
+      "id": "butterfly",
+      "group": "creatures",
+      "polycount": 8000,
+      "size": 18,
+      "prompt": "A butterfly with its wings spread wide open and flat, symmetrical, bright orange wings with black veins and white spots along black edges, slim black body, two antennae.",
+      "lie_flat": true
+    },
+    {
+      "id": "bee",
+      "group": "creatures",
+      "polycount": 8000,
+      "size": 6,
+      "prompt": "A fuzzy round honeybee in flight, wings spread out to the sides, golden-yellow and black striped body, small legs tucked under."
+    },
+    {
+      "id": "dragonfly",
+      "group": "creatures",
+      "polycount": 8000,
+      "size": 25,
+      "prompt": "A dragonfly with four long clear veined wings spread flat out to the sides, long slender metallic blue-green body, big round eyes.",
+      "lie_flat": true
+    },
+    {
+      "id": "water_strider",
+      "group": "creatures",
+      "polycount": 6000,
+      "size": 12,
+      "prompt": "A water strider pond skater insect standing on water: slim dark brown body and four very long thin legs spread wide, two short front legs."
+    },
+    {
+      "id": "tadpole",
+      "group": "creatures",
+      "polycount": 5000,
+      "size": 5,
+      "prompt": "A frog tadpole (pollywog): a smooth glossy dark grey-black oval blob body with no fins and no scales, two tiny eyes on top, and one long thin flat tail with a soft translucent edge fin. Simple, amphibian larva, not a fish."
+    },
+    {
+      "id": "backpack",
+      "group": "gear",
+      "polycount": 8000,
+      "size": 0.75,
+      "bone": "Spine",
+      "prompt": "A small rugged adventurer's backpack in olive canvas with brown leather straps and buckles, a rolled blanket on top and side pockets for tools, empty straps (no person)."
+    },
+    {
+      "id": "satchel",
+      "group": "gear",
+      "polycount": 6000,
+      "size": 0.4,
+      "bone": "Hips",
+      "prompt": "A small brown leather satchel bag with a flap, a brass clasp and a long shoulder strap, for carrying loot. No person."
+    },
+    {
+      "id": "belt_pouch",
+      "group": "gear",
+      "polycount": 4000,
+      "size": 0.22,
+      "bone": "Hips",
+      "prompt": "A small olive canvas belt pouch with a flap and a button, for carrying small tools. No person."
+    },
+    {
+      "id": "school_bag",
+      "group": "world2",
+      "polycount": 30000,
+      "size": 150,
+      "prompt": "A child's school backpack standing upright on the ground: blue canvas body, a darker navy front pocket with a zip and pull tab, a main zip curving over the top, padded shoulder straps hanging at the back, a grab loop on top, a small keyring charm on the zip. Worn and well used, a few scuffs and stitched seams."
+    },
+    {
+      "id": "ladybug",
+      "group": "world2",
+      "polycount": 8000,
+      "size": 2.8,
+      "prompt": "A seven-spot ladybird beetle walking: glossy domed bright red wing cases with black spots, black head with small white patches, six short black legs, short antennae."
+    },
+    {
+      "id": "aphid",
+      "group": "world2",
+      "polycount": 5000,
+      "size": 1.0,
+      "prompt": "A green aphid insect: soft plump pear-shaped pale green body, six thin legs, long thin antennae, two small tubes at the back end."
+    },
+    {
+      "id": "velvet_mite",
+      "group": "world2",
+      "polycount": 5000,
+      "size": 1.4,
+      "prompt": "A red velvet mite: a round plump fuzzy bright red body like velvet, eight short red legs, tiny head at the front."
+    },
+    {
+      "id": "springtail",
+      "group": "world2",
+      "polycount": 5000,
+      "size": 0.6,
+      "prompt": "A springtail (collembola) tiny soil hexapod: soft segmented grey-blue body, short antennae, six short legs, a small forked tail tucked underneath."
+    },
+    {
+      "id": "glow_mushroom",
+      "group": "world2",
+      "polycount": 8000,
+      "size": 3.0,
+      "prompt": "A cluster of five small bioluminescent mushrooms of different heights on thin pale stems, glowing soft cyan-green translucent caps with gills underneath."
+    },
+    {
+      "id": "dandelion_seed",
+      "group": "glide",
+      "polycount": 8000,
+      "size": 5.5,
+      "prompt": "A single dandelion seed parachute standing upright: a small slim brown seed at the bottom, a long thin pale stalk rising from it, topped by a wide white fluffy umbrella of fine radiating silky hairs (the pappus), like an open parasol. One seed, symmetrical."
+    },
+    {
+      "id": "dandelion_flower",
+      "group": "glide",
+      "polycount": 15000,
+      "size": 80,
+      "prompt": "A dandelion plant: one tall straight hollow pale green stalk with a single bright yellow shaggy flower head of many thin petals facing up, and a rosette of long jagged toothed green leaves spread flat around the base."
+    },
+    {
+      "id": "dandelion_clock",
+      "group": "glide",
+      "polycount": 15000,
+      "size": 70,
+      "prompt": "A dandelion seed head (clock): one tall straight pale green stalk topped by a perfect white fluffy sphere of many seed parachutes radiating from the centre, a few seeds missing, and a rosette of long jagged green leaves flat around the base."
+    },
+    {
+      "id": "bottle_cap",
+      "group": "route",
+      "polycount": 8000,
+      "size": 9.4,
+      "prompt": "A single red metal crown bottle cap, right way up: a flat round top with a slightly raised centre and a short crimped skirt of fluted teeth all round the rim, glossy red paint scuffed to silver at the edges, hollow underneath."
+    },
+    {
+      "id": "apple",
+      "group": "route",
+      "polycount": 12000,
+      "size": 29,
+      "prompt": "A ripe red apple fallen on the ground, lying on its side, a bruised patch and one side pecked open showing pale juicy flesh, short brown stem."
+    },
+    {
+      "id": "apple_core",
+      "group": "route",
+      "polycount": 10000,
+      "size": 25,
+      "prompt": "A gnawed apple core: a narrow bitten waist of pale browning flesh with brown pips showing, a cap of red apple skin at each end, a short stem at the top."
+    },
+    {
+      "id": "pencil",
+      "group": "route",
+      "polycount": 6000,
+      "size": 68,
+      "prompt": "A yellow hexagonal wooden pencil, sharpened to a point at one end with bare pale wood and a dark graphite tip, a silver metal ferrule and a pink rubber eraser at the other end."
+    },
+    {
+      "id": "trowel",
+      "group": "route",
+      "polycount": 10000,
+      "size": 108,
+      "prompt": "A garden hand trowel: a pointed, slightly dished steel scoop blade joined by a short bent metal neck to a green wooden handle with a hanging hole near its end."
+    },
+    {
+      "id": "hand_brush",
+      "group": "route",
+      "polycount": 10000,
+      "size": 108,
+      "prompt": "A wooden hand brush for sweeping, as used with a dustpan: a flat varnished wooden back that narrows into a long straight handle, a dense block of stiff black bristles under the wide head."
+    },
+    {
+      "id": "stone_axe",
+      "group": "weapons",
+      "source": "user",
+      "polycount": 12000,
+      "size": 0.62,
+      "bone": "RightHand",
+      "note": "Made by the user with Meshy image-to-3D from their reference (a knapped stone head lashed to a split stick with green vine and a fresh leaf). Raw 639k-triangle GLB in source/meshy/user_axe.glb; decimated to 12k triangles, 1024 px textures and stood upright (butt at the origin) in Blender."
+    },
+    {
+      "id": "stone_knife",
+      "group": "weapons",
+      "source": "user",
+      "polycount": 12000,
+      "size": 0.4,
+      "bone": "RightHand",
+      "note": "Made by the user with Meshy image-to-3D (a knapped dark stone blade on a vine-wrapped stick handle with a leaf). Raw 715k-triangle GLB in source/meshy/user_knife.glb; decimated to 12k triangles, 1024 px textures, stood upright (pommel at the origin)."
+    },
+    {
+      "id": "pebble",
+      "group": "heavables",
+      "polycount": 5000,
+      "size": 1.0,
+      "prompt": "A single smooth rounded garden pebble, a slightly flattened oval, grey-tan with dark speckles and a few tiny pits.",
+      "note": "A loose prop Amodu lifts, carries and throws (world/props/heavable.gd); scaled to each placement's size."
+    },
+    {
+      "id": "cake_crumb",
+      "group": "heavables",
+      "polycount": 5000,
+      "size": 1.0,
+      "prompt": "A single crumb of yellow sponge cake: a rough irregular chunk with an airy porous inside and a thin golden-brown baked crust on one side.",
+      "note": "A loose prop Amodu lifts, carries and throws (world/props/heavable.gd); scaled to each placement's size."
+    },
+    {
+      "id": "cheese_crumb",
+      "group": "heavables",
+      "polycount": 5000,
+      "size": 1.0,
+      "prompt": "A small crumbly broken chunk of yellow cheddar cheese with irregular edges, a few tiny holes and cracks.",
+      "note": "A loose prop Amodu lifts, carries and throws (world/props/heavable.gd); scaled to each placement's size."
+    },
+    {
+      "id": "stone_hammer",
+      "group": "weapons",
+      "source": "user",
+      "polycount": 12000,
+      "size": 0.7,
+      "bone": "RightHand",
+      "note": "Made by the user with Meshy (source/meshy/user/hammer.glb, 895k tris); decimated to 12k, 1024 px, stood upright (butt at the origin)."
+    },
+    {
+      "id": "thorn_spear",
+      "group": "weapons",
+      "source": "user",
+      "polycount": 12000,
+      "size": 1.9,
+      "bone": "RightHand",
+      "note": "Made by the user with Meshy (source/meshy/user/spear.glb, 392k tris); decimated to 8k, 1024 px, stood upright (butt at the origin)."
+    },
+    {
+      "id": "pill_bug",
+      "group": "creatures",
+      "source": "user",
+      "polycount": 16000,
+      "size": 4.3,
+      "note": "The user's Meshy pill bug (source/meshy/user/pill_bug.glb: UniRig rig, no animations, plus a stray icosphere). Rig and sphere removed, decimated to 16k tris, 1024 px. creatures/pill_bug/pill_bug.gd uses it for the upright bug."
+    },
+    {
+      "id": "bully_sneaker",
+      "group": "level1",
+      "polycount": 10000,
+      "size": 165,
+      "prompt": "The bottom of one leg of a child standing still: a single worn, dirty sneaker with a white sock, and the leg above it in faded blue jeans rising straight up to knee height. Scuffed canvas and rubber, frayed laces, mud on the sole, grass stains. Only the shoe and the jeans leg, nothing else. Weathered and used, never new or shiny.",
+      "note": "Opening as Opigo: the bully's foot and shin (never a face); used twice for his two feet."
+    },
+    {
+      "id": "soda_can",
+      "group": "level1",
+      "polycount": 8000,
+      "size": 43,
+      "prompt": "An empty aluminium soda can standing upright, dented in on one side, ring-pull open, faded made-up orange-and-green fruit soda label with no real brand or text, scuffed paint, a little rust at the rim. Weathered and used, never new or shiny.",
+      "note": "Opening: the bully's can that fizzes over and rolls at the ants."
+    },
+    {
+      "id": "potion_vial",
+      "group": "level1",
+      "polycount": 5000,
+      "size": 1.2,
+      "prompt": "A tiny hand-made glass potion vial with a cork stopper tied with grass fibre, filled with glowing bright green liquid with small bubbles.",
+      "note": "Opening: the ants' shrinking potion."
+    },
+    {
+      "id": "cardboard_box",
+      "group": "level1",
+      "polycount": 6000,
+      "size": 150,
+      "prompt": "A closed cardboard moving box: peeling brown packing tape, damp water stains, one corner crushed in, scuffed and frayed edges. Weathered and used, never new or shiny.",
+      "note": "Opening: the boxes Amodu hides behind."
+    },
+    {
+      "id": "orb_weaver",
+      "group": "level1",
+      "polycount": 12000,
+      "size": 10,
+      "prompt": "A garden orb-weaver spider standing on its eight long legs: round plump abdomen with a pale cross pattern on brown and tan, long banded striped legs, small head. Natural, not monstrous.",
+      "note": "M7 Caught: the spider at the orb web."
+    },
+    {
+      "id": "ground_beetle",
+      "group": "level1",
+      "polycount": 12000,
+      "size": 12,
+      "prompt": "A large ground beetle walking on six long legs: glossy black shell with a bronze-green metallic sheen, grooved wing cases, strong short jaws, long antennae.",
+      "note": "M5 Hold Your Breath: the beetle the size of a bus."
+    },
+    {
+      "id": "oyibo_shield",
+      "group": "level1",
+      "polycount": 5000,
+      "size": 0.8,
+      "prompt": "A small round shield made by ants from a pale beetle-shell plate with a rim of bound dry grass, a carved mark of three crossed blades in the middle, worn and scratched. Weathered and used, never new or shiny.",
+      "note": "M7: Oyibo's shield in the silk."
+    },
+    {
+      "id": "fire_pit",
+      "group": "level1",
+      "polycount": 5000,
+      "size": 2.0,
+      "prompt": "A tiny camp fire pit: a ring of small grey stones around crossed charred dry twigs and grey ash, unlit.",
+      "note": "First Night camp (flames are particles)."
+    },
+    {
+      "id": "leaf_shelter",
+      "group": "level1",
+      "polycount": 6000,
+      "size": 4.0,
+      "prompt": "A small shelter made from one curled dry brown leaf propped up on two twigs and tied down with grass fibre, open at the front.",
+      "note": "First Night camp."
+    },
+    {
+      "id": "kit_bundle",
+      "group": "level1",
+      "polycount": 4000,
+      "size": 1.5,
+      "prompt": "A small travel bundle wrapped in a green leaf and tied with dry grass fibre, a short stick poking out of the top. Weathered and used, never new or shiny.",
+      "note": "M2: the ants' kit under the fallen stone."
+    },
+    {
+      "id": "coin",
+      "group": "level1",
+      "polycount": 6000,
+      "size": 8.0,
+      "prompt": "A single old coin lying flat: dull copper-bronze, a faded plain embossed design with no readable text or numbers, scratched and dirty. Weathered and used, never new or shiny.",
+      "note": "M8: the coin in the plaza Amodu rolls through the termite line."
+    },
+    {
+      "id": "door_slab",
+      "group": "level1",
+      "polycount": 6000,
+      "size": 8.0,
+      "prompt": "A thick flat weathered stone slab, roughly round, grey with pale lichen, dark cracks filled with old hardened amber resin.",
+      "note": "Root Hall's door stone (replaces the pebble stand-in)."
+    },
+    {
+      "id": "bully_phone",
+      "group": "level1",
+      "polycount": 8000,
+      "size": 55,
+      "prompt": "A smartphone lying face up on its back, dark blank screen, one cracked corner, scuffed plain grey case, no logos or text. Weathered and used, never new or shiny.",
+      "note": "Hidden mission: the bully's phone in the long grass."
+    },
+    {
+      "id": "crisp_packet",
+      "group": "level1",
+      "polycount": 10000,
+      "size": 54,
+      "prompt": "An empty crisp packet lying crumpled open on its side, silver foil lining inside, faded made-up red and yellow snack print with no real brand or text, creased and a little torn. Weathered and used, never new or shiny.",
+      "note": "The Cut Road: the ants' torn-open rest stop (the graybox tent)."
+    },
+    {
+      "id": "marble",
+      "group": "level1",
+      "polycount": 5000,
+      "size": 6.0,
+      "prompt": "A glass marble with a twist of orange and blue inside, scratched and a little cloudy.",
+      "note": "The Flower Bed's lost marble."
+    },
+    {
+      "id": "hose_coupling",
+      "group": "level1",
+      "polycount": 8000,
+      "size": 18,
+      "prompt": "A green plastic garden hose connector coupling with a short stub of hose, dirty, faded and scratched. Weathered and used, never new or shiny.",
+      "note": "The Hose Run's coupling."
+    }
+  ]
 }

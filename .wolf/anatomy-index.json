@@ -1,13 +1,13 @@
 {
   "version": 1,
   "meta": {
-    "lastScanned": "2026-09-27T08:39:45.384Z",
-    "fileCount": 280,
+    "lastScanned": "2026-09-27T08:53:18.411Z",
+    "fileCount": 281,
     "hits": 0,
     "misses": 0,
-    "renderedHash": "fb35f8bf0f3f71278a6204905fabe56d0e8551b40715c5143cda383152511b77",
-    "storeUpdatedAt": "2026-09-27T08:39:45.393Z",
-    "rootHash": "391e522ce0ea7485"
+    "renderedHash": "05250200f4a40b88a96ba34291b34bafd8fa1f92286aec725572a98b5a90a92d",
+    "storeUpdatedAt": "2026-09-27T08:53:18.420Z",
+    "rootHash": "b20957ea82f38f65"
   },
   "files": {
     ".gitattributes": {
@@ -3291,6 +3291,15 @@
       "size": 1217,
       "mtimeMs": 1790498332991.9546,
       "updatedAt": "2026-09-27T08:38:53.100Z",
+      "source": "hook"
+    },
+    "tests/_tmp_props.gd": {
+      "description": "",
+      "tokens": 537,
+      "hash": "2d44f394644a201b",
+      "size": 2013,
+      "mtimeMs": 1790499198303.3105,
+      "updatedAt": "2026-09-27T08:53:18.410Z",
       "source": "hook"
     }
   },

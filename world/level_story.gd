@@ -38,6 +38,10 @@ var missions: Missions
 var camp_stone: Heavable
 var camp_freed := false
 var door_stone: Heavable
+## The door stone standing shut (on its edge, face east-west), and how far it
+## has rolled from there like a wheel (radians about its face's normal).
+var _door_basis := Basis.IDENTITY
+var _door_roll := 0.0
 var gate_shut := false
 var door_open := false
 var finished := false
@@ -206,8 +210,21 @@ func _open_door() -> void:
 	to.y = TreeBase.ground_height(layout, to.x, to.z) + (_door_home.y - float((_spec["door_stone"] as Dictionary)["floor_y"]))
 	var roll := create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT).set_parallel()
 	roll.tween_property(door_stone, "global_position", to, 1.8)
-	roll.tween_property(door_stone, "rotation:z", door_stone.rotation.z - 1.2, 1.8)
+	roll.tween_method(_roll_door, 0.0, _door_roll_angle(to), 1.8)
 	door_opened.emit()
+
+
+## The angle the slab turns through rolling from the door to `to` on its edge.
+func _door_roll_angle(to: Vector3) -> float:
+	var travel := Vector2(to.x - _door_home.x, to.z - _door_home.z)
+	var normal := _door_basis * Vector3.UP  # its face's normal: the model's thin axis
+	var along := Vector2(-normal.z, normal.x)  # normal × up: the way a positive turn rolls it
+	return travel.dot(along) / (door_stone.size * 0.5)
+
+
+func _roll_door(angle: float) -> void:
+	_door_roll = angle
+	door_stone.basis = Basis(_door_basis * Vector3.UP, angle) * _door_basis
 
 
 func _inside() -> bool:
@@ -228,7 +245,7 @@ func _finish() -> void:
 			ant.regroup()
 	var back := create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN).set_parallel()
 	back.tween_property(door_stone, "global_position", _door_home, 1.2)
-	back.tween_property(door_stone, "rotation:z", 0.0, 1.2)
+	back.tween_method(_roll_door, _door_roll, 0.0, 1.2)
 	level_finished.emit()
 
 
@@ -238,8 +255,11 @@ func _build_door_stone() -> void:
 	var spec: Dictionary = _spec.get("door_stone", {})
 	if spec.is_empty():
 		return
-	door_stone = Heavable.make("pebble", float(spec["size"]), "Door stone")
+	door_stone = Heavable.make("slab", float(spec["size"]), "Door stone")
 	door_stone.name = "DoorStone"
+	# the slab stands on its edge across the tunnel mouth (the tunnel runs east-west)
+	door_stone.rotation.z = PI / 2.0
+	_door_basis = door_stone.basis
 	door_stone.locked = true
 	door_stone.heave_any_size = true
 	door_stone.freeze_mode = RigidBody3D.FREEZE_MODE_KINEMATIC
@@ -251,7 +271,7 @@ func _build_door_stone() -> void:
 		var hull := cs.shape as ConvexPolygonShape3D
 		if hull != null:
 			for pt: Vector3 in hull.points:
-				low = minf(low, (cs.transform * pt).y)
+				low = minf(low, (door_stone.basis * (cs.transform * pt)).y)
 	var pos: Array = spec["pos"]
 	_door_home = Vector3(float(pos[0]), float(spec["floor_y"]) - low, float(pos[1]))
 	door_stone.global_position = _door_home
@@ -266,10 +286,30 @@ func _find_camp_stone() -> void:
 	if camp_stone == null:
 		return
 	_stone_home = camp_stone.global_position
+	_place_kit(spec)
 	_stone_marker = PickupMarker.new()
 	_stone_marker.height = camp_stone.size * 0.5 + 1.8
 	_stone_marker.reach = 40.0
 	camp_stone.add_child(_stone_marker)
+
+
+## The ants' kit, a leaf-wrapped bundle under the stone (layout "camp_stone"
+## "kit"): hidden while the stone sits on it, there to see once it's pushed off.
+func _place_kit(spec: Dictionary) -> void:
+	var kit: Dictionary = spec.get("kit", {})
+	var prop := GardenProps.get_prop("kit_bundle")
+	if kit.is_empty() or prop == null:
+		return
+	var at: Array = kit["pos"]
+	var x := float(at[0])
+	var z := float(at[1])
+	var unit := prop.fix * prop.mesh.get_aabb()
+	var k := float(kit.get("size", 1.5)) / maxf(unit.size.x, maxf(unit.size.y, unit.size.z))
+	var xf := Transform3D(Basis(Vector3.UP, float(kit.get("yaw", 0.4))).scaled(Vector3.ONE * k),
+		Vector3(x, layout.height_at(x, z) - 0.1, z))
+	var mi := GardenProps.instance(prop, xf)
+	mi.name = "KitBundle"
+	level.add_child(mi)
 
 
 ## Both ants put their shoulders to the stone (and it doesn't move).

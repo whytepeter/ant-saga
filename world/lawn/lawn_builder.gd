@@ -750,7 +750,15 @@ func _build_landmarks(parent: Node3D) -> void:
 				mesh.height = 5.8
 				var shape := SphereShape3D.new()
 				shape.radius = 2.9
-				_add(parent, mesh, glass, Transform3D(Basis(), g + Vector3.UP * 2.9), shape)
+				var ball := _add(parent, mesh, glass, Transform3D(Basis(), g + Vector3.UP * 2.9), shape)
+				var marble := GardenProps.get_prop("marble")
+				if marble != null:
+					# the Meshy marble, its orange and blue twist toward the path from the
+					# north-east; the sphere stays as its collision
+					_hide_looks(ball)
+					var d := float(size[0])
+					parent.add_child(GardenProps.instance(marble,
+						_fitted(marble, g, Vector3(d, d, d), 2.36) * marble.fix.affine_inverse()))
 			"orb_web": _orb_web(parent, g + Vector3.UP * 12.0)
 			"root_hall": pass  # built with the west boundary
 			"crown_cap": _capstone(parent, g, float(size[0]) / 2.0)
@@ -759,7 +767,15 @@ func _build_landmarks(parent: Node3D) -> void:
 				_sphere(parent, g + Vector3.UP * 1.2, 1.5, "pebble")
 				_sphere(parent, g + Vector3.UP * 3.9, 1.45, "bead")
 			"colony_gate": _colony_gate(parent, g)
-			"coin_plaza": _cylinder(parent, g - Vector3.UP * 0.2, float(size[0]) / 2.0, 0.8, "coin", true, -1.0, 48)
+			"coin_plaza":
+				var coin := GardenProps.get_prop("coin")
+				if coin != null:
+					# the Meshy coin lying flat (it's modelled on its edge), a little sunk
+					var flat := _fitted(coin, g - Vector3.UP * 0.2, Vector3(float(size[0]), float(size[1]), float(size[2])),
+						0.3, Basis(Vector3.RIGHT, -PI / 2.0))
+					_prop_solid(parent, coin, flat, "convex")
+				else:
+					_cylinder(parent, g - Vector3.UP * 0.2, float(size[0]) / 2.0, 0.8, "coin", true, -1.0, 48)
 			"worm_casts":
 				_sphere(parent, g, 3.2, "mud", true, 8.0)
 				for extra: Array in lm.get("also", []):
@@ -884,6 +900,13 @@ func _crisp_packet(parent: Node3D, g: Vector3, size: Array) -> void:
 	var w: float = size[0]
 	var h: float = size[1]
 	var d: float = size[2]
+	var packet := GardenProps.get_prop("crisp_packet")
+	if packet != null:
+		# the Meshy packet (modelled standing, open at the top) laid on its side and
+		# crumpled low, its torn-open end facing west, toward the ants' road
+		var lying := _fitted(packet, g - Vector3.UP * 0.4, Vector3(w, h, d), PI / 2.0, Basis(Vector3.RIGHT, -PI / 2.0))
+		_prop_solid(parent, packet, lying, "trimesh")
+		return
 	var print_mat := StandardMaterial3D.new()
 	print_mat.albedo_color = Color(0.85, 0.2, 0.18)
 	print_mat.metallic = 0.6
@@ -1019,7 +1042,21 @@ func _coupling(parent: Node3D, g: Vector3) -> void:
 	var after := _gp(pts[3], 3.25)
 	var c := g + Vector3.UP * 3.25
 	var dir := (after - before).normalized()
-	_tube(parent, c - dir * 7.0, c + dir * 7.0, 5.5, "brass", true, 20)
+	var tube := _tube(parent, c - dir * 7.0, c + dir * 7.0, 5.5, "brass", true, 20)
+	var coupling := GardenProps.get_prop("hose_coupling")
+	if coupling != null:
+		# the Meshy coupling along the hose, its side port up where the leak sprays;
+		# the tube stays as its collision
+		_hide_looks(tube)
+		var flat_dir := Vector2(dir.x, dir.z).normalized()
+		var length := coupling.size
+		var unit := coupling.fix * coupling.mesh.get_aabb()
+		# 30% stouter than modelled so it sleeves the 6.5 m hose, sunk to stay on its axis
+		var fit_size := unit.size * (length / unit.size.x) * Vector3(1.0, 1.3, 1.3)
+		var fit := _fitted(coupling, g - Vector3.UP * 1.0, fit_size, atan2(-flat_dir.y, flat_dir.x))
+		var mi := GardenProps.instance(coupling, fit * coupling.fix.affine_inverse())
+		mi.material_override = _weathered(coupling, g.y, 0.35, 0.2, 0.4, 2.0)
+		parent.add_child(mi)
 	var mist := StandardMaterial3D.new()
 	mist.albedo_color = Color(1, 1, 1, 0.12)
 	mist.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA

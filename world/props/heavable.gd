@@ -46,7 +46,8 @@ var weight: Weight:
 		return Weight.PUSH if size <= PUSH_LIMIT else Weight.IMMOVABLE
 
 
-## Builds a ready-to-place prop. `kind` is "pebble", "crumb" or "grain".
+## Builds a ready-to-place prop. `kind` is "pebble", "slab" (a flat door stone),
+## "crumb" or "grain".
 static func make(kind: String, prop_size: float, prop_name: String) -> Heavable:
 	var h := Heavable.new()
 	h.display_name = prop_name
@@ -79,6 +80,8 @@ static func make(kind: String, prop_size: float, prop_name: String) -> Heavable:
 		var rng := RandomNumberGenerator.new()
 		rng.seed = hash(prop_name) ^ int(prop_size * 1000.0)
 		var turn := Basis(Vector3.UP, rng.randf() * TAU) * Basis(Vector3.RIGHT, rng.randf_range(-0.3, 0.3))
+		if kind == "slab":
+			turn = Basis(Vector3.UP, rng.randf() * TAU)  # flat and level: the caller stands it up
 		var unit := prop.fix * prop.mesh.get_aabb()
 		# centred on the body, the longest side `prop_size` across
 		var xf := Transform3D(turn.scaled(Vector3.ONE * prop_size), Vector3.ZERO)
@@ -107,6 +110,8 @@ static func _model_id(kind: String, prop_name: String) -> String:
 	match kind:
 		"crumb":
 			return "cheese_crumb" if "cheese" in prop_name.to_lower() else "cake_crumb"
+		"slab":
+			return "door_slab"
 		"grain":
 			return "maize_kernel"  # none yet: Meshy keeps making a whole cob
 	return "pebble"

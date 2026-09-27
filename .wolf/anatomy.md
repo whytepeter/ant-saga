@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-27T08:39:45.384Z
-> Files: 280 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-27T08:53:18.411Z
+> Files: 281 tracked | Anatomy hits: 0 | Misses: 0
 
 > Project structure index. Auto-maintained by OpenWolf hooks and daemon.
 > Run `openwolf scan` to generate, or wait for the first Claude Code session.
@@ -248,6 +248,7 @@
 ## tests/
 
 - `_anim_shots.gd` (~635 tok)
+- `_tmp_props.gd` (~537 tok)
 - `_tmp_trowel.gd` (~325 tok)
 - `expedition_test.gd` (~3386 tok)
 - `fight_test.gd` (~970 tok)

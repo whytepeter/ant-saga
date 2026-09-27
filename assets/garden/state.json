@@ -178,5 +178,85 @@
     "preview": "01a0de4d-1550-75bf-b460-2a596b8f155b",
     "refine": "01a0de4d-fb51-7513-bc39-9ead8334d9ab",
     "done": true
+  },
+  "bully_sneaker": {
+    "preview": "01a0df6a-f9d0-7554-b3e2-35b95ff03912",
+    "refine": "01a0df6c-4655-7513-be83-5e293729dda0",
+    "done": true
+  },
+  "soda_can": {
+    "preview": "01a0df6a-f9cd-7606-a3cb-e5ef318e8f6f",
+    "refine": "01a0df6c-2401-707f-81b2-d980eed0302d",
+    "done": true
+  },
+  "potion_vial": {
+    "preview": "01a0df6a-f9cf-7358-97c8-fc9ddcba967d",
+    "refine": "01a0df6c-4691-7623-adb3-459b14d0b4cc",
+    "done": true
+  },
+  "cardboard_box": {
+    "preview": "01a0df6a-f9cf-73b0-89d7-b0455f8bdda5",
+    "refine": "01a0df6c-6993-7050-a1fd-e09708da8a5f",
+    "done": true
+  },
+  "orb_weaver": {
+    "preview": "01a0df6a-f9d0-737e-a972-21559b0c82b6",
+    "refine": "01a0df6c-6991-77d1-b530-a12b996bbbb1",
+    "done": true
+  },
+  "ground_beetle": {
+    "preview": "01a0df6d-21c9-77a4-b05f-27253491f8a5",
+    "refine": "01a0df6e-04c4-77dd-83a0-9511d225429c",
+    "done": true
+  },
+  "oyibo_shield": {
+    "preview": "01a0df6d-296c-7148-9214-d0992281bdbe",
+    "refine": "01a0df6e-5272-7521-a672-873e7cbff782",
+    "done": true
+  },
+  "fire_pit": {
+    "preview": "01a0df6d-3123-7063-9979-f13c3663766e",
+    "refine": "01a0df6e-e879-74c0-972b-7bb654c8226b",
+    "done": true
+  },
+  "leaf_shelter": {
+    "preview": "01a0df6d-3d60-7518-8c4d-7e1b0b99a61a",
+    "refine": "01a0df6e-42b7-7618-a0dc-4bcdfe63b470",
+    "done": true
+  },
+  "kit_bundle": {
+    "preview": "01a0df6d-5efc-7792-a6d1-2faa4f1f16fd",
+    "refine": "01a0df6e-ac23-7423-a540-8f129513f61e",
+    "done": true
+  },
+  "coin": {
+    "preview": "01a0df6e-cc3b-729e-9f93-31c7cf61cad2",
+    "refine": "01a0df6f-d178-706e-a901-91ba83452fe7",
+    "done": true
+  },
+  "door_slab": {
+    "preview": "01a0df6f-0a34-70b5-9c70-8aa4824e126a",
+    "refine": "01a0df6f-ec45-777b-92eb-182cf31ebcd8",
+    "done": true
+  },
+  "bully_phone": {
+    "preview": "01a0df6f-19c8-77c6-ab38-20efeabe786f",
+    "refine": "01a0df6f-fbda-7251-97ff-16e9b38fc9c8",
+    "done": true
+  },
+  "crisp_packet": {
+    "preview": "01a0df6f-9641-7467-891f-4e99a4537d79",
+    "refine": "01a0df70-a295-72fb-9d1b-75125e888e9c",
+    "done": true
+  },
+  "marble": {
+    "preview": "01a0df6f-ad84-7743-a5b7-ad998c9365d4",
+    "refine": "01a0df70-b30a-7246-8d50-2d4934e7acbe",
+    "done": true
+  },
+  "hose_coupling": {
+    "preview": "01a0df71-02af-75cf-aa53-709c9fe0945e",
+    "refine": "01a0df71-e4cf-7788-b549-985490b15e2e",
+    "done": true
   }
 }

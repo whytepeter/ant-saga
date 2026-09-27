@@ -939,11 +939,11 @@
       ],
       "size": [
         54,
-        5,
-        36
+        9,
+        38
       ],
       "real": "empty crisp packet, silver inside, a puddle of rain in it",
-      "note": "Translucent nylon tent with a puddle still inside; abandoned ant rest stop."
+      "note": "The Meshy crisp packet laid on its side, crumpled, torn-open end facing west toward the ants' road; abandoned ant rest stop."
     },
     {
       "id": "marble",
@@ -2407,7 +2407,8 @@
       "aside": [
         -334,
         -9
-      ]
+      ],
+      "note": "Root Hall's door: the door_slab model standing on its edge across the tunnel mouth."
     },
     "inside": {
       "at": [
@@ -2556,7 +2557,15 @@
           -227.8
         ]
       ],
-      "note": "While the stone sits on the camp the ants push at it from these spots; it counts as freed once moved freed_after metres."
+      "note": "While the stone sits on the camp the ants push at it from these spots; it counts as freed once moved freed_after metres. \"kit\" is the ants' leaf-wrapped bundle under it (the kit_bundle model).",
+      "kit": {
+        "pos": [
+          62,
+          -230
+        ],
+        "size": 1.5,
+        "yaw": 0.4
+      }
     },
     "first_night": {
       "at": [

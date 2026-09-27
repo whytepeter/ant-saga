@@ -281,3 +281,6 @@ description: chronological action log per session, consolidated weekly
 | 09:39 | Edited player/player.gd | modified is_on_floor() | ~113 |
 | 09:39 | Edited player/player.gd | modified is_on_floor() | ~113 |
 | 09:41 | Map plan step A applied: lolly stick removed, the Rut enlarged (no bridge), tussock into the water, termite_raid (kerb top) and causeway paths, First Night spot, compost note; swim limit 50 m (back to the bank); trowel kept clear of dressing; WORLD.md archived; review + map decisions recorded | layout.json, lawn_layout.py, player.gd, lawn_level.gd, garden_dressing.gd, lawn_builder.gd, garden_map.gd, lawn_graybox_test.gd, docs/narrative/* | check, movement and graybox all PASS | ~60k |
+| 09:53 | Created tests/_tmp_props.gd | — | ~537 |
+| 09:53 | Created tests/_tmp_props.gd | — | ~537 |
+| 09:56 | Placed 6 Meshy models in Level 1: crisp packet (on its side, 9 m, open end west), marble (twist toward path), coin (flat in the plaza), hose coupling (sleeves the hose, port up), door slab (Root Hall door on its edge, rolls aside like a wheel), kit bundle under the camp stone | lawn_builder.gd, heavable.gd, level_story.gd, layout.json | all 3 checks PASS | ~40k |
