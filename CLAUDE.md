@@ -47,7 +47,7 @@ python3 tools/lawn_layout.py check
 /Applications/Godot.app/Contents/MacOS/Godot --headless --path . --fixed-fps 60 -s tests/lawn_graybox_test.gd
 /Applications/Godot.app/Contents/MacOS/Godot --headless --path . --fixed-fps 60 -s tests/survival_test.gd
 ```
-The game starts in **survival mode** (`survival_mode` on the level: Amodu alone, hunger and thirst, no story). The graybox test runs the story with it off.
+The game starts in **survival mode** (`survival_mode` on the level: Amodu alone, hunger and thirst, no story); the graybox test checks the world in it. Story mode's checks are parked in `tests/story_test.gd` (not in the everyday set; run it before story mode comes back).
 For visuals, run `tests/lawn_tour.gd` without `--headless`, passing `-- --out=<dir>`, and look at the screenshots.
 
 ## Conventions
