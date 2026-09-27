@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-26T20:18:39.200Z
-> Files: 271 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-27T08:39:45.384Z
+> Files: 280 tracked | Anatomy hits: 0 | Misses: 0
 
 > Project structure index. Auto-maintained by OpenWolf hooks and daemon.
 > Run `openwolf scan` to generate, or wait for the first Claude Code session.
@@ -164,6 +164,15 @@
 
 - `gameplay_vision_chatgpt.md` — Gameplay vision (reference, verbatim) (~6628 tok)
 
+## docs/narrative/
+
+- `bible.md` — Story bible: Ant Kingdom Saga (~7347 tok)
+- `improvements-2026-09-26.md` — Everything we have, made better (~4322 tok)
+- `logic-check-2026-09-26.md` — Logic check, 2026-09-26 (~4835 tok)
+- `map-plan.json` (~1930 tok)
+- `pitch-2026-09-26.md` — Pitch: what Ant Kingdom Saga can be (~4227 tok)
+- `real-world.md` — Real world at 5 mm: a cheat sheet (~983 tok)
+
 ## docs/story/
 
 - `original_draft.md` — Ant Kingdom Saga: original story draft (chapters 1–16) (~20639 tok)
@@ -178,7 +187,7 @@
 - `inventory.gd` (~896 tok)
 - `player_audio.gd` — Declares SETS (~1805 tok)
 - `player_combat.gd` — Declares CREATURES_LAYER (~3147 tok)
-- `player.gd` — Declares State (~16052 tok)
+- `player.gd` — Declares State (~17513 tok)
 - `player.gd.uid` (~6 tok)
 - `player.tscn` (~732 tok)
 - `weapons.gd` — Declares FISTS (~804 tok)
@@ -239,6 +248,7 @@
 ## tests/
 
 - `_anim_shots.gd` (~635 tok)
+- `_tmp_trowel.gd` (~325 tok)
 - `expedition_test.gd` (~3386 tok)
 - `fight_test.gd` (~970 tok)
 - `lawn_graybox_test.gd` (~4160 tok)
@@ -261,10 +271,12 @@
 - `clip_sheet.gd` — Declares COLS (~972 tok)
 - `lawn_layout.py` — Validate and render the Lawn layout (world/lawn/layout.json). (~11232 tok)
 - `make_sounds.py` — Synthesise the game's sound effects into assets/audio/ (16-bit mono WAV). (~5158 tok)
+- `narrative_map.py` — Draws docs/narrative/map-proposal.html: the garden as it is today (world/lawn/layout.json) (~5097 tok)
 - `process_sounds.py` — Make the game's sounds (assets/audio/*.ogg) from recorded CC0 sources. (~3133 tok)
 - `prop_sheet.gd` — Declares VIEWS (~787 tok)
 - `render_portraits.gd` — Declares OUT (~960 tok)
 - `retarget_ant_heroes.gd` — Declares SOURCE_DIR (~2084 tok)
+- `world_facts.py` — Writes docs/narrative/world-facts.md: a short, readable summary of the garden (~1766 tok)
 
 ## ui/
 
@@ -307,7 +319,7 @@
 ## world/lawn/
 
 - `dialogue.json` (~1408 tok)
-- `garden_dressing.gd` — Declares RULES (~1529 tok)
+- `garden_dressing.gd` — CHUNK: collision (~3168 tok)
 - `lawn_builder.gd` — Declares WORLD_LAYER (~17893 tok)
 - `lawn_builder.gd.uid` (~6 tok)
 - `lawn_layout.gd` — Declares LAYOUT_PATH (~934 tok)

@@ -355,6 +355,35 @@
         "dialogue",
         "level_story"
       ]
+    },
+    {
+      "id": "bug-025",
+      "timestamp": "2026-09-27",
+      "error_message": "trowel ramp onto the patio: Amodu stuck at the trowel's foot (Dressing/Solid_* pebble) after route_b was shortened",
+      "file": "world/lawn/garden_dressing.gd",
+      "root_cause": "Scattered solid dressing only avoided main routes, ant roads and haul paths; the trowel was never in _route_lines, and the old route_b to Spider's Edge had been keeping its foot clear by accident. Any re-bake also reshuffles the scatter (one seeded rng over the whole map).",
+      "fix": "_route_lines adds the trowel plus 15 m of approach before its foot",
+      "tags": [
+        "dressing",
+        "trowel",
+        "patio",
+        "scatter",
+        "bake"
+      ]
+    },
+    {
+      "id": "bug-026",
+      "timestamp": "2026-09-27",
+      "error_message": "too far to swim: put back 83 m from the bank (over the water)",
+      "file": "player/player.gd",
+      "root_cause": "_last_dry was saved before the move step, when is_on_floor() was still true from before a teleport, so a point over the Rut was taken as dry ground",
+      "fix": "Update _last_dry (and refill swim_left) after the state's move, when is_on_floor() is fresh",
+      "tags": [
+        "swim",
+        "teleport",
+        "is_on_floor",
+        "player"
+      ]
     }
   ]
 }

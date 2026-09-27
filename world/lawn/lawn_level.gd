@@ -82,6 +82,11 @@ func _ready() -> void:
 			_spawn_ants()
 		if Companion.ENABLED:
 			_spawn_companions()
+	# swam too far: worn out, back on the bank he swam from
+	player.swim_exhausted.connect(func(bank: Vector3) -> void:
+		player.teleport(bank + Vector3.UP * 0.3, player.camera_rig.yaw)
+		show_toast("Too far to swim · back to the bank")
+		respawned.emit("Too far to swim"))
 	# knocked out: he comes round back at the last checkpoint
 	var combat := player.get_node_or_null("Combat") as PlayerCombat
 	if combat != null and not expedition_mode:

@@ -69,7 +69,7 @@ func _inside(at: Vector2, margin := 0.0) -> bool:
 
 func _draw_marks() -> void:
 	var ci := _marks
-	# the ramps up onto the patio and the step, and the lolly-stick bridge
+	# the ramps up onto the patio and the step
 	for r: Array in map.ramps():
 		var a := to_panel(r[0])
 		var b := to_panel(r[1])

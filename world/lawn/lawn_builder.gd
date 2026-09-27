@@ -771,7 +771,6 @@ func _build_landmarks(parent: Node3D) -> void:
 				var yaw := atan2(exit.x, exit.y)
 				_box(parent, g + Vector3(exit.normalized().x * 5.6, 1.5, exit.normalized().y * 5.6), Vector3(3.5, 3.0, 1.0), "hole", false, yaw)
 			"hose_coupling": _coupling(parent, g)
-			"lolly_stick": _lolly_stick(parent, lm)
 			"abandoned_post": _palisade(parent, g)
 			"termite_camp": _termite_camp(parent, g)
 			"termite_tower": _cylinder(parent, g - Vector3.UP, 3.0, 16.0, "mud_tube", true, 1.8, 10)
@@ -1035,28 +1034,6 @@ func _coupling(parent: Node3D, g: Vector3) -> void:
 	jet.bottom_radius = 0.3
 	jet.height = 30.0
 	_add(parent, jet, mist, Transform3D(Basis(Vector3.FORWARD, 0.9), c + Vector3(-12, 9, 0)))
-
-
-## The stick rests on both banks, bedded into the mud so its ends sit just
-## proud of the ground and Amodu can walk straight onto it.
-func _lolly_stick(parent: Node3D, lm: Dictionary) -> void:
-	var size: Array = lm["size"]
-	var w: float = size[0]
-	var t: float = size[1]
-	var l: float = size[2]
-	var p := LawnLayout.xz(lm["pos"])
-	var north := Vector3(p.x, 0.0, p.y - l / 2.0 + 0.5)
-	var south := Vector3(p.x, 0.0, p.y + l / 2.0 - 0.5)
-	north.y = maxf(layout.height_at(north.x, north.z), layout.water_level) + 0.1 - t / 2.0
-	south.y = maxf(layout.height_at(south.x, south.z), layout.water_level) + 0.1 - t / 2.0
-	var along := (south - north).normalized()
-	var x := Vector3.RIGHT
-	var y := along.cross(x).normalized()
-	var mesh := BoxMesh.new()
-	mesh.size = Vector3(w, t, l)
-	var shape := BoxShape3D.new()
-	shape.size = mesh.size
-	_add(parent, mesh, _mat("wood"), Transform3D(Basis(x, y, along), (north + south) / 2.0), shape)
 
 
 func _palisade(parent: Node3D, g: Vector3) -> void:

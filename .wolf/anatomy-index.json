@@ -1,13 +1,13 @@
 {
   "version": 1,
   "meta": {
-    "lastScanned": "2026-09-26T20:18:39.200Z",
-    "fileCount": 271,
+    "lastScanned": "2026-09-27T08:39:45.384Z",
+    "fileCount": 280,
     "hits": 0,
     "misses": 0,
-    "renderedHash": "1410520a7ce9c92dce788ea52944f4c739f9e7073c121b345fbe79449d2816de",
-    "storeUpdatedAt": "2026-09-26T20:18:39.209Z",
-    "rootHash": "67c7c49bcd665573"
+    "renderedHash": "fb35f8bf0f3f71278a6204905fabe56d0e8551b40715c5143cda383152511b77",
+    "storeUpdatedAt": "2026-09-27T08:39:45.393Z",
+    "rootHash": "391e522ce0ea7485"
   },
   "files": {
     ".gitattributes": {
@@ -1461,11 +1461,11 @@
     },
     "player/player.gd": {
       "description": "Declares State",
-      "tokens": 16052,
-      "hash": "edcdebd01c0d5d55",
-      "size": 61118,
-      "mtimeMs": 1790427228064.1099,
-      "updatedAt": "2026-09-26T12:53:48.167Z",
+      "tokens": 17513,
+      "hash": "54b9033be44b6b4e",
+      "size": 66602,
+      "mtimeMs": 1790498385295.5708,
+      "updatedAt": "2026-09-27T08:39:45.384Z",
       "source": "hook"
     },
     "player/player.gd.uid": {
@@ -2151,12 +2151,12 @@
       "source": "hook"
     },
     "world/lawn/garden_dressing.gd": {
-      "description": "Declares RULES",
-      "tokens": 1529,
-      "hash": "eb8d42ecd94dc49d",
-      "size": 5733,
-      "mtimeMs": 1790383601063.1128,
-      "updatedAt": "2026-09-26T00:46:41.183Z",
+      "description": "CHUNK: collision",
+      "tokens": 3168,
+      "hash": "0c12d8e4e7fca719",
+      "size": 11881,
+      "mtimeMs": 1790498385084.2417,
+      "updatedAt": "2026-09-27T08:39:45.215Z",
       "source": "hook"
     },
     "tests/lookdev_tour.gd": {
@@ -3066,6 +3066,231 @@
       "size": 8592,
       "mtimeMs": 1790453919076.1428,
       "updatedAt": "2026-09-26T20:18:39.199Z",
+      "source": "hook"
+    },
+    "docs/narrative/bible.md": {
+      "description": "Story bible: Ant Kingdom Saga",
+      "tokens": 7347,
+      "hash": "c3f448f700612de1",
+      "size": 29462,
+      "mtimeMs": 1790460487066.29,
+      "updatedAt": "2026-09-26T22:08:07.164Z",
+      "source": "hook"
+    },
+    "docs/narrative/pitch-2026-09-26.md": {
+      "description": "Pitch: what Ant Kingdom Saga can be",
+      "tokens": 4227,
+      "hash": "ea53ee0d21557150",
+      "size": 16924,
+      "mtimeMs": 1790455878657.2383,
+      "updatedAt": "2026-09-26T20:51:18.777Z",
+      "source": "hook"
+    },
+    "docs/narrative/improvements-2026-09-26.md": {
+      "description": "Everything we have, made better",
+      "tokens": 4322,
+      "hash": "9e47e875415e916a",
+      "size": 17363,
+      "mtimeMs": 1790455966571.7253,
+      "updatedAt": "2026-09-26T20:52:46.707Z",
+      "source": "hook"
+    },
+    "docs/narrative/logic-check-2026-09-26.md": {
+      "description": "Logic check, 2026-09-26",
+      "tokens": 4835,
+      "hash": "8207e6dae0821dc4",
+      "size": 19485,
+      "mtimeMs": 1790458174017.518,
+      "updatedAt": "2026-09-26T21:29:34.128Z",
+      "source": "hook"
+    },
+    "tools/world_facts.py": {
+      "description": "Writes docs/narrative/world-facts.md: a short, readable summary of the garden",
+      "tokens": 1766,
+      "hash": "4815932a059c5b86",
+      "size": 6191,
+      "mtimeMs": 1790459224735.4092,
+      "updatedAt": "2026-09-26T21:47:04.857Z",
+      "source": "hook",
+      "symbols": [
+        {
+          "name": "xz",
+          "kind": "fn",
+          "startLine": 21,
+          "endLine": 24,
+          "tokens": 15
+        },
+        {
+          "name": "real_mm",
+          "kind": "fn",
+          "startLine": 25,
+          "endLine": 30,
+          "tokens": 47
+        },
+        {
+          "name": "compass",
+          "kind": "fn",
+          "startLine": 31,
+          "endLine": 36,
+          "tokens": 62
+        },
+        {
+          "name": "cell",
+          "kind": "fn",
+          "startLine": 37,
+          "endLine": 40,
+          "tokens": 20
+        },
+        {
+          "name": "main",
+          "kind": "fn",
+          "startLine": 41,
+          "endLine": 133,
+          "tokens": 1445
+        }
+      ]
+    },
+    "docs/narrative/real-world.md": {
+      "description": "Real world at 5 mm: a cheat sheet",
+      "tokens": 983,
+      "hash": "22c46c6c7de00913",
+      "size": 3938,
+      "mtimeMs": 1790459246826.8408,
+      "updatedAt": "2026-09-26T21:47:26.927Z",
+      "source": "hook"
+    },
+    "tools/narrative_map.py": {
+      "description": "Draws docs/narrative/map-proposal.html: the garden as it is today (world/lawn/layout.json)",
+      "tokens": 5097,
+      "hash": "cc29c3613c0350c8",
+      "size": 17840,
+      "mtimeMs": 1790461439868.7058,
+      "updatedAt": "2026-09-26T22:23:59.984Z",
+      "source": "hook",
+      "symbols": [
+        {
+          "name": "set_window",
+          "kind": "fn",
+          "startLine": 23,
+          "endLine": 29,
+          "tokens": 47
+        },
+        {
+          "name": "P",
+          "kind": "fn",
+          "startLine": 30,
+          "endLine": 33,
+          "tokens": 15
+        },
+        {
+          "name": "pts",
+          "kind": "fn",
+          "startLine": 34,
+          "endLine": 37,
+          "tokens": 24
+        },
+        {
+          "name": "colour",
+          "kind": "fn",
+          "startLine": 38,
+          "endLine": 41,
+          "tokens": 29
+        },
+        {
+          "name": "level_name",
+          "kind": "fn",
+          "startLine": 42,
+          "endLine": 45,
+          "tokens": 22
+        },
+        {
+          "name": "label",
+          "kind": "fn",
+          "startLine": 46,
+          "endLine": 51,
+          "tokens": 77
+        },
+        {
+          "name": "circle",
+          "kind": "fn",
+          "startLine": 52,
+          "endLine": 58,
+          "tokens": 70
+        },
+        {
+          "name": "ellipse",
+          "kind": "fn",
+          "startLine": 59,
+          "endLine": 63,
+          "tokens": 45
+        },
+        {
+          "name": "rect",
+          "kind": "fn",
+          "startLine": 64,
+          "endLine": 70,
+          "tokens": 74
+        },
+        {
+          "name": "line",
+          "kind": "fn",
+          "startLine": 71,
+          "endLine": 75,
+          "tokens": 42
+        },
+        {
+          "name": "pin",
+          "kind": "fn",
+          "startLine": 76,
+          "endLine": 82,
+          "tokens": 90
+        },
+        {
+          "name": "centre",
+          "kind": "fn",
+          "startLine": 83,
+          "endLine": 88,
+          "tokens": 40
+        },
+        {
+          "name": "base_layer",
+          "kind": "fn",
+          "startLine": 89,
+          "endLine": 135,
+          "tokens": 647
+        },
+        {
+          "name": "build",
+          "kind": "fn",
+          "startLine": 136,
+          "endLine": 298,
+          "tokens": 2966
+        },
+        {
+          "name": "main",
+          "kind": "fn",
+          "startLine": 299,
+          "endLine": 348,
+          "tokens": 652
+        }
+      ]
+    },
+    "docs/narrative/map-plan.json": {
+      "description": "",
+      "tokens": 1930,
+      "hash": "dc59a95d5c0d95b2",
+      "size": 6767,
+      "mtimeMs": 1790461304092.4565,
+      "updatedAt": "2026-09-26T22:21:44.216Z",
+      "source": "hook"
+    },
+    "tests/_tmp_trowel.gd": {
+      "description": "",
+      "tokens": 325,
+      "hash": "081bcf3896ac3b8d",
+      "size": 1217,
+      "mtimeMs": 1790498332991.9546,
+      "updatedAt": "2026-09-27T08:38:53.100Z",
       "source": "hook"
     }
   },

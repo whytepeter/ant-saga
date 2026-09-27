@@ -229,3 +229,55 @@ description: chronological action log per session, consolidated weekly
 | 21:02 | Dialogue: axe given in the fight (not found at camp), new 'knife' conversation at the orb web | world/lawn/dialogue.json | text only, triggers not rewired | ~300 |
 | 21:18 | Created .claude/agents/narrative-designer.md | — | ~2288 |
 | 21:18 | Created .claude/agents/narrative-designer.md | — | ~2288 |
+| 21:40 | Story decisions applied (size, goal, why shrink, bridge->pond, knife at First Night, crafting to L2, Zina, Ugo under shed) | docs/GAMEPLAY.md, CLAUDE.md | done | ~1500 |
+| 21:42 | Created docs/narrative/bible.md | — | ~5332 |
+| 21:42 | Created docs/narrative/bible.md | — | ~5332 |
+| 21:51 | Created docs/narrative/pitch-2026-09-26.md | — | ~4509 |
+| 21:51 | Created docs/narrative/pitch-2026-09-26.md | — | ~4509 |
+| 21:52 | Created docs/narrative/improvements-2026-09-26.md | — | ~4611 |
+| 21:52 | Created docs/narrative/improvements-2026-09-26.md | — | ~4611 |
+| 22:20 | Accepted 3 replacements (story armour, Musketeers' Old Camp, knife at First Night); game to ~L10; Ugly One not verbatim | docs/GAMEPLAY.md, dialogue.json, agent | done | ~800 |
+| 22:23 | Added Know and Home threads (GAMEPLAY §4, L1 M6 Mum/flood, L2 knot-hole kitchen light), ant-name glossary in bible | docs/GAMEPLAY.md, docs/narrative/bible.md | done | ~700 |
+| 22:29 | Created docs/narrative/logic-check-2026-09-26.md | — | ~5157 |
+| 22:29 | Created docs/narrative/logic-check-2026-09-26.md | — | ~5157 |
+| 22:37 | Amodu same size as ants (A4 withdrawn); agent: realism tolerance + may change the map after approval | agent, docs | done | ~900 |
+| 22:47 | Created tools/world_facts.py | — | ~1766 |
+| 22:47 | Created tools/world_facts.py | — | ~1766 |
+| 22:47 | Created docs/narrative/real-world.md | — | ~1048 |
+| 22:47 | Created docs/narrative/real-world.md | — | ~1048 |
+| 22:47 | Narrative agent efficiency: decisions.md, world-facts.md (tools/world_facts.py), real-world.md, agent start-order and working rules; findings tracker in progress | docs/narrative/*, tools/world_facts.py, agent | done | ~3000 |
+| 22:56 | world_facts.py now reads Amodu's moves from player.gd (power jump 12 m/11 m etc.); real-world.md + agent logic check reference them | tools/world_facts.py, docs/narrative | done | ~600 |
+| 22:59 | 16 narrative decisions accepted; decisions.md, findings.md (0 needs-decision), bible OPEN note | docs/narrative | done | ~900 |
+| 23:08 | Created docs/narrative/bible.md | — | ~7837 |
+| 23:08 | Created docs/narrative/bible.md | — | ~7837 |
+| 23:12 | Created tools/narrative_map.py | — | ~5862 |
+| 23:12 | Created tools/narrative_map.py | — | ~5862 |
+| 23:13 | Docs updated to the 16 decisions + no-bridge pond (GAMEPLAY, WORLD banner, decisions; bible via agent); map proposal tools/narrative_map.py -> docs/narrative/map-proposal.html (tree grounds, pond, Rootway, Citadel) | docs, tools | done | ~6000 |
+| 23:16 | M1 can: rolls past, Amodu does nothing (option D); Know starts at First Night | docs | done | ~700 |
+| 23:21 | Created docs/narrative/map-plan.json | — | ~1930 |
+| 23:21 | Created docs/narrative/map-plan.json | — | ~1930 |
+| 23:23 | Created tools/narrative_map.py | — | ~5097 |
+| 23:24 | Created tools/narrative_map.py | — | ~5097 |
+| 09:21 | Session end: 24 writes across 10 files (GAMEPLAY.md, narrative-designer.md, bible.md, pitch-2026-09-26.md, improvements-2026-09-26.md) | 7 reads | ~150113 tok |
+| 09:21 | Session end: 24 writes across 10 files (GAMEPLAY.md, narrative-designer.md, bible.md, pitch-2026-09-26.md, improvements-2026-09-26.md) | 7 reads | ~150113 tok |
+| 09:21 | Session end: 76 writes across 32 files (ant_model.gd, companion.gd, haul.gd, worker_ant.gd, player.gd) | 106 reads | ~145687 tok |
+| 09:21 | Session end: 76 writes across 32 files (ant_model.gd, companion.gd, haul.gd, worker_ant.gd, player.gd) | 106 reads | ~145687 tok |
+| 09:21 | Session end: 106 writes across 43 files (ground.gdshader, lawn_builder.gd, soil_detail.gd, grain.gdshader, thatch.gdshader) | 192 reads | ~205507 tok |
+| 09:21 | Session end: 106 writes across 43 files (ground.gdshader, lawn_builder.gd, soil_detail.gd, grain.gdshader, thatch.gdshader) | 192 reads | ~205507 tok |
+
+## Session: 2026-09-27 09:22
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-09-27 09:22
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 09:38 | Created tests/_tmp_trowel.gd | — | ~325 |
+| 09:38 | Created tests/_tmp_trowel.gd | — | ~325 |
+| 09:39 | Edited world/lawn/garden_dressing.gd | modified is_empty() | ~103 |
+| 09:39 | Edited world/lawn/garden_dressing.gd | modified is_empty() | ~103 |
+| 09:39 | Edited player/player.gd | modified is_on_floor() | ~113 |
+| 09:39 | Edited player/player.gd | modified is_on_floor() | ~113 |
+| 09:41 | Map plan step A applied: lolly stick removed, the Rut enlarged (no bridge), tussock into the water, termite_raid (kerb top) and causeway paths, First Night spot, compost note; swim limit 50 m (back to the bank); trowel kept clear of dressing; WORLD.md archived; review + map decisions recorded | layout.json, lawn_layout.py, player.gd, lawn_level.gd, garden_dressing.gd, lawn_builder.gd, garden_map.gd, lawn_graybox_test.gd, docs/narrative/* | check, movement and graybox all PASS | ~60k |

@@ -1,121 +1,38 @@
 ---
 description: session handoff, regenerate with /handoff when a quest finishes
-budget_tokens: 1500
+budget_tokens: 1800
 ---
 # STATUS — ant-game
 
-> Read this FIRST when resuming. Last updated: 2026-09-26 (night).
+> Read this FIRST when resuming. Last updated: 2026-09-26 (just before midnight). Two sessions worked today: one on **code** (Level 1 beats), one on **story/design docs** (this handoff merges both).
 
 ## Direction
-**SMALL GIANT**: Amodu (5 mm, full human strength, huge jumps, no fall damage) wakes by his school bag at the far end of an ordinary back garden and must get home under the back door before sunset. The Nigerian compound is dropped. Heroes following him are on hold (`Companion.ENABLED = false`). Weapons: the axe is his signature weapon plus crafted ones (docs/GAMEPLAY.md). Art: no blocky primitives as final visuals; use Meshy + CC0 textures, targeting Grounded and Smalland. Ask before spending Meshy credits (balance **1752**). Keep on-screen text minimal.
+The trio adventure: Opigo and Opumie meant to shrink the bully; the low mist got **Amodu** (5 mm, **about ant size**, a full-size boy's strength). Goal: be big again (the Queen can do it, but only after the war). Level 1 backyard → gate shut → Root Hall; Level 2 the apple tree; Level 3 the kingdom and the pond; the game runs to ~Level 10, ending not planned. **Canon order:** the user's words in chat → `docs/narrative/decisions.md` → `docs/narrative/bible.md` → `docs/GAMEPLAY.md`. `docs/The Ugly One.pdf` is the user's story: inspiration, never copied word for word.
 
-## ✅ Done (committed; all 3 test suites pass)
-- **Amodu v2** from the user's T-pose design: `assets/characters/amodu2/` (Meshy image-to-3D, rig, 47 library clips + 7 text-to-motion). `tools/build_amodu_anims.gd --dir=` builds the library: cut jumps, landings, coil pose, lift/throw timing, ARM_FIX idle arms. Old `assets/characters/amodu/` is unused.
-- **player.gd**:
-  - Movement: instant jumps; air pose by vertical speed; one landing; running jump held becomes the big leap.
-  - Carrying: lift/carry/throw with the prop riding on his hands.
-  - Other: idle look-around fidgets, `wake_up()`, and the material fix (no glow, not metallic).
-  - Rendering: drawn at an interpolated position, the camera follows it.
-- **Swimming**: SWIM state plus `world/water_body.gd` and `world/water_fx.gd`; the Rut no longer respawns you.
-- **Seed-puff gliding**: `world/props/seed_puff.gd`, spots in layout `puffs`. Grab with E; glide sink 3 m/s, tiring after 10 s (about 190 m from the bag); no slam. Sprint while climbing is ×2.2.
-- **Camera**: V cycles wide / close / first person. First person uses `player/hide_head.gd`: head hidden, arms carried in a guard so the hands show.
-- **Water shader**: Fresnel, ripples, in-shader SSR, thin foam; caustics in `ground.gdshader` (global `water_level`).
-- **Rain** (`world/weather.gd`, `rain_splash.gdshader`): streaks, splash crowns and rings, overcast (DayClock `base_energy`).
-- **Tree base + caves**:
-  - Built from layout `tree_base` → `tools/bake_tree_base.py` (Blender) → `assets/world/tree_base.glb`, placed by `world/lawn/tree_base.gd`.
-  - Route: Root Hall mouth → hall → Heartwood Stair → knot-hole balcony. Glow mushrooms, hanging roots, cave darkness plus a glow on Amodu. West walls moved round the bank.
-- **Meshy props**:
-  - school_bag (climbable; V2 viewpoint on its 136 m ridge).
-  - dandelion_flower and dandelion_clock (trimesh, climbable).
-  - glow_mushroom, fallen-leaf drifts.
-  - Creatures: ladybug, aphid, velvet_mite, springtail.
-- **AmbientLife**: insects live in fixed HABITATS (areas, the dandelion, the Rut, the Rut bank) and never follow the player. Far ones update at 1/6 rate.
-- **Route home without text** (`world/route_guide.gd`, layout `route_home`, 9 stages from the bag's top to the back door). The next stage gets a gold mote column plus a distant light shaft, and a gold diamond on the compass. Later stages skip ahead.
-- **The ground reads at 5 mm** (user playtest, Grounded/Smalland feel):
-  - Soil textures rescaled to grain size (no twigs photo); fine grit near the camera; far blur at 150 m.
-  - Terrain relief baked in `tools/lawn_layout.py` (`relief_mask`, `place_mounds`): 90 bare dirt mounds up to 4.6 m (≤29°) plus rolling ground, all with collision; kept off props, hollow, Bare Patch, runoff, Rut and tree bank.
-  - A scatter of loose grains/clods/straw was tried and REJECTED by the user (see cerebrum Do-Not-Repeat).
-  - Underwater look limited to the Rut (`water_box`); it used to hit ~14k dry lawn points below water level.
-- **Grass**: tufts of 2–4 blades from one crown with a soil heap (ground material) at the foot; sheathed, creased, twisting blades; veins, midrib, browning tips, ~8% dry straw blades.
-- **Root Hall is findable**: clover now keeps off routes and ant roads, so `ant_road_west` reads as a trail from the Capstone through the Flower Bed to the mouth.
-- **Keys**: V only changes the camera (dodge is Alt); controls panel on H (F1 is brightness on a Mac).
-- **Tests added**: swim, Root Hall walk-through, glide, route guide, running jumps. The pill-bug throw test freezes the bug during the wind-up.
+## ✅ Done
+- **Code (committed; tests passed then):** companions follow and talk (subtitles with faces), objectives + hints, Opumie leads, route ends at Root Hall; beats: camp stone → axe handed over at the crisp packet → ants atop the bag (**untested in play**) → gate shuts → Root Hall door stone → end card.
+- **Narrative designer agent** `.claude/agents/narrative-designer.md` (loads as a named agent next session): critic + creator, logic check at "obvious" tolerance, state-of-mind check, may propose map changes and edit `layout.json` only after user approval.
+- **Narrative files** (`docs/narrative/`): `decisions.md` (all user decisions), `bible.md` (canon), `findings.md` (one tracker, N1–N124), `world-facts.md` (generated by `tools/world_facts.py` from layout + `player/player.gd`), `real-world.md` (insects at 5 mm), plus audit/pitch/improvements/logic-check reports.
+- **Decided today:** 16 items (strength = space and grip, not weight; the Queen after the war; termites are dusk raiders; Citadel = woodpile against the house, SE; hose arrival; mercy = rope haul, two light branches; Mba spars; smith = Opumie's ex-wife; swimming a stated exception…); Know + Home threads; story armour; knife given at **First Night**; crafting starts **Level 2**; **the can in M1 just rolls past** (he does nothing); **the pond has no bridge** in any level.
+- `docs/GAMEPLAY.md`, `docs/WORLD.md` (superseded banner), `world/lawn/dialogue.json` (knife lines moved to `first_night_knife`; "Yellow Log") updated to match.
+- **Map plan:** `docs/narrative/map-plan.json` (data) → `tools/narrative_map.py` → `docs/narrative/map-proposal.html`, explained in `map-plan.md`: tree grounds loop (West Root Door, silk ladder, Leaf-Litter Moor), bigger pond, the south opens in L4 over the captured causeway (Frontier → Spider's Edge), L5 the Slabs to the Citadel, L6+ up the hose to the shed. `docs/lawn_map.svg` re-rendered.
 
-## ✅ Weapons and inventory (2026-09-26, uncommitted)
-- Design: `docs/GAMEPLAY.md` (whole-game vision + Level 1 plan). The axe is Amodu's signature weapon; crafted weapons later.
-- `player/weapons.gd` (move sets: fists, ant axe 3-chop chain / overhead heavy / charged), `player/inventory.gd` (1–4, wheel, X fists↔weapon), `player/held_weapon.gd` (right hand or slung on his back), `world/props/weapon_pickup.gd` (layout `pickups`: the ant axe by the pencil log).
-- UI in the compass style: `ui/hud_glyphs.gd`, `ui/weapon_badge.gd` (bottom right), `ui/inventory_panel.gd` (Tab/I). Number keys stay on the debug viewpoints (1–5, 0 start); weapons are wheel / X (1–4 only inside the inventory panel).
-- Clips: Meshy `weapon_actions` (anim_weapon_0.glb, 24 credits); builder cuts axe_chop_1..3, axe_heavy, axe_charged_swing, axe_spin_cut (SWINGS, hit times in "times" meta).
-- Push animation now plays when pushing (bug-016).
-- Fingers: `tools/add_finger_bones.gd` (bones + reweighted mesh/skin) and `player/finger_curl.gd` (relaxed 0.3, fist round the axe or to punch, 0.8 grip to climb/carry). The axe has a rest grip and a swing grip (bug-017). Controls card is two columns on a SoftPanel (bug-018).
-- Axe model `assets/garden/ant_axe` (stone head, leaf/fibre binding; mound trimmed in Blender). The user's reference (stylized pale stone head, green vine lashing, fresh leaf) is closer: remake by image-to-3D once the picture is in the repo.
-- Meshy balance after this: 1446.
+## ⚠️ Uncommitted (nothing from today's docs work is committed)
+- 16 Meshy models in `assets/garden/*` (group `level1`, ~115 MB, imported, none placed; `leaf_shelter` bad, `fire_pit` has an unwanted flame).
+- All of `docs/narrative/`, `tools/world_facts.py`, `tools/narrative_map.py`, the agent file, GAMEPLAY/WORLD/dialogue edits. Ask the user before committing; never commit `docs/The Ugly One.pdf`.
 
-- Stone axe + stone knife: the user's own Meshy image-to-3D models (raw in source/meshy/user_*.glb), decimated to 12k tris / 1024 px in Blender; pickups by the pencil log (axe) and at the Capstone (knife). First person holds the weapon upright and plays an in-view chop/punch (HideHead.swing) instead of the clip. Idle arms: soft elbows (ARM_FIX third value) and fingers curled 0.42.
-- Map: `ui/garden_map.gd` (painted from the bake + patio, fog of war), `ui/map.gdshader`, `ui/map_panel.gd`, `ui/map_hud.gd`: round minimap top right, M (or click it) for the full map with every area and place named.
-- Performance (paused by the user): GrassShadows (grass casts shadows within 100 m only) + 3-row shadow blades. Measured the Dressing multimeshes (424 batches of ~3 Meshy props each) as the main cost (~25 fps at the Flower Bed); SSAO + volumetric fog ~18%.
-
-- Loose props are Meshy models (pebble, cake_crumb, cheese_crumb) with convex hulls (world/props/heavable.gd); the maize grains became crumbs (Meshy kept making whole cobs; unused models in source/meshy). Floating amber pickup markers (world/props/pickup_marker.gd): weapons from 70 m, food within 18 m.
-- Opigo/Opumie: the user is generating their own models (my attempts are in source/meshy/ants_attempt). Characters need a rig: Meshy auto-rig (their bones match Amodu's, so his animation library fits).
-
-- Loadout (Inventory): knife = permanent tool (E cuts silk), axe = main, one secondary picked in the Tab panel; X/wheel swap axe/secondary/fists. Weapons: stone axe, knife, stone hammer (every blow curls a pill bug, no cutting), thorn spear (reach). Pickups: axe by the pencil log, knife at the Capstone, spear at the Colony Gate, hammer at the crisp packet (off route).
-- Choppables (world/props/choppable.gd, layout "choppables"): a fallen twig across the ant road north of the hollow (axe, 3 chops), the Spider's Edge trip lines (knife/E or any blade).
-- Live pill bugs at the Bare Patch in the adventure (the user's model, assets/garden/pill_bug), first fight (tests/fight_test.gd). Knocked out -> back at the checkpoint.
-- Opigo and Opumie: the user's Meshy models (assets/characters/opigo|opumie, Mixamo rig in metres), standing at the Capstone (lawn_level._spawn_ants); other ants use the ant scout.
-- Insects: ladybirds and mites walk with leg motion (creature.gdshader mode 3), bees beat their wings.
-- Pickup marker: thin cream diamond with a glow and hairline (compass style).
-
-- Level 1 tracker: docs/GAMEPLAY.md "what's done and what's left". Day: 07:30-18:30 in 75 real min, dusk to 20:00 (DayClock.night()), no game over at sunset. Opening sequence (lawn_level._opening; tests set opening=false). Ants a bit bigger than Amodu (AntModel.HEIGHTS).
-- Future: character select (Amodu or Edi, the user's Meshy model in ~/Downloads/Edi.zip).
-
-## 📝 Open from the user (2026-09-26)
-- Chopping (roots, straw, silk) not built yet: `chop` values exist on moves.
-
-## 📝 User notes to act on (2026-09-26)
-- **Garden tools look too new.** Trowel, brush (and pencil) must be rickety, worn and dirty, not polished. The brush model isn't realistic enough (it reads as a hairbrush); a better Meshy regen needs credit approval.
-- **Insects at the Flower Bed float without animation** (ladybird and others): they need walking/crawling legs, wing flutter, and to sit on surfaces instead of hovering.
-- **Sound** (recorded, 2026-09-26; needs the user's ears): 41 CC0 recordings from BigSoundBank (in `source/bigsoundbank/`, git-ignored) cut, pitched, looped and levelled by `tools/process_sounds.py` into `assets/audio/*.ogg` (credits in `assets/audio/CREDITS.md`). Mixed in `world/garden_audio.gd` (beds by time of day, birds overhead, far mower/dog, Rut, flies at the apple, crickets, chimes by the door, rain/drops/thunder, Root Hall muffle + cave reverb) and `player/player_audio.gd` (steps by surface: soil, leaf, grass, wood, hollow, wade). ffmpeg here has no libvorbis: native Vorbis encoder, stereo only.
-
-## 🚀 Next quest: world sign-off, then plan Level 1 with the user
-The user said: "later on we will plan the first level of the game once the world is okay".
-1. The user playtests the new world: route guide, gliding, caves, swimming, insect habitats, first-person hands. Fix what they flag.
-2. Replace the remaining graybox, most visible first (Meshy, about 30 credits each; needs approval):
-   - pencil, crisp packet, bottle cap, apples/core, hose coupling
-   - house, shed, fence, patio props (trowel, brush), lolly stick, coin, marble
-   - termite camp, worm casts, spider burrow, colony gate
-3. Then run a Level 1 planning session: goals, threats, pacing along `route_home`.
-
-**Acceptance:** the user says the world is okay; there are no primitives on the route home; tests pass.
-
+## 🚀 Next quest: the user decides the map plan, then it's applied
+Files: `docs/narrative/map-plan.md`, `map-plan.json`, `findings.md` (N117–N124); then `world/lawn/layout.json`.
 **Open decisions for the user:**
-- Custom athletic jump motions (~26 credits; the hurdle clip raises an open hand).
-- Bags/gear props (~90 credits, manifest group `gear`).
-- The graybox prop spend (above).
-- When to commit.
-
-Suggestions not yet done:
-- Something under the Rut's water (a diving beetle).
-- Rideable ladybugs (the ride animation exists).
-- A grub-nest hub in Root Hall.
-- A rain event that raises the Rut.
+1. How the Level 1 raiders pass the pond's east end: **A** along the driveway kerb top (recommended; visible from the Capstone, no new geometry) / B mud tube through the tussock / C thin the tussock.
+2. South opens in L4 over the captured causeway, or earlier by raft? L4 "the Frontier", L5 "the Slabs" as a frame?
+3. **Apple tree or oak?** (The user called it an oak; canon says apple; oak turns Apple Fall into acorns.)
+4. The compost heap: rot and fungus (maybe the Forest of Decay later) or scenery?
+5. Move First Night 80 m south (N122)?
+**Acceptance:** decisions recorded in `decisions.md`; the agent applies the approved changes to `layout.json` (remove `lolly_stick`, reshape `rut_puddle`, raid path, compost note, tree-grounds bounds), runs `python3 tools/lawn_layout.py check && bake && render`, re-runs `tools/world_facts.py`; `lawn_graybox_test` and `player_movement_test` updated and passing.
+**Also waiting (code, from the other session):** place the models (door_slab, kit_bundle, crisp packet, marble, coupling, coin); retry leaf_shelter (30 credits, needs OK); the Opigo cold open; the web rescue, ground beetle, First Night + day 2, hunger/thirst; rewire dialogue triggers to the new beats (the axe line still fires on pickup; `first_night_knife` has no trigger; the M1 can beat changed).
 
 ## Context
-- **Git:** committed on `main` (see `git log`). The old unused `assets/characters/amodu/` (174 MB) and tool caches are git-ignored. Never commit `.env`.
-- **Tools:**
-  - Blender 5.2 CLI works (`Blender -b --factory-startup --python ...`).
-  - Plain python3 has no numpy.
-  - After adding `class_name` scripts or assets, run `Godot --headless --path . --import`.
-- **Test/runtime quirks:**
-  - The graybox test takes about 5 min (level build about 3 s).
-  - "MCP Bridge failed to listen" errors are harmless.
-  - If the editor is open, tell the user to choose **Reload**.
-- **Stale docs:** `docs/PLAN.md` and `docs/WORLD.md` still describe the old compound setting.
-
-## 🔧 Commands
-```bash
-python3 tools/lawn_layout.py check && python3 tools/lawn_layout.py bake && python3 tools/lawn_layout.py render
-/Applications/Godot.app/Contents/MacOS/Godot --headless --path . --fixed-fps 60 -s tests/{player_movement,lawn_graybox,expedition}_test.gd
-/Applications/Godot.app/Contents/MacOS/Godot --headless --path . -s tools/build_amodu_anims.gd -- --dir=res://assets/characters/amodu2/
-/Applications/Blender.app/Contents/MacOS/Blender -b --factory-startup --python tools/bake_tree_base.py
-python3 tools/meshy_assets.py plan --group <g>    # then: make --group <g> (spends credits)
-```
+- Branch `main`, last commit 7db03b8. Graybox test ~6 min; don't pipe tests through `head`. After new `class_name` scripts or assets run `Godot --headless --path . --import`; after Meshy downloads `python3 tools/compress_textures.py`. Meshy balance ~3735; ask before spending.
+- Directions (checked): house **south** (z 640), tree **west** (x −470), shed **NW** and compost **NE** (both far off-map), termites **SE**. Playable area ±360 m.
+- Background subagents can't write files here; run file-writing agents in the foreground (or resume one).

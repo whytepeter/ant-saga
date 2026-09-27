@@ -131,6 +131,12 @@ static func _route_lines(layout: LawnLayout) -> Array[PackedVector2Array]:
 		for pt: Array in job["haul_path"]:
 			line.append(LawnLayout.xz(pt))
 		lines.append(line)
+	# the trowel, and 15 m of lawn before its foot, so nothing blocks the way up
+	var trowel: Dictionary = layout.data.get("patio", {}).get("trowel", {})
+	if not trowel.is_empty():
+		var foot := LawnLayout.xz(trowel["from"])
+		var tip := LawnLayout.xz(trowel["to"])
+		lines.append(PackedVector2Array([foot - (tip - foot).normalized() * 15.0, foot, tip]))
 	return lines
 
 

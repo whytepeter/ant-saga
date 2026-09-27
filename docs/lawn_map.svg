@@ -14,8 +14,8 @@
     <stop offset="1" stop-color="#1f3b1a" stop-opacity="0"/></linearGradient>
 </defs>
 <rect width="1124" height="1270" fill="#efe9dc"/>
-<text x="130.0" y="44.0" text-anchor="start" fill="#2b2a26" style="font-size:26px;font-weight:700;">Level 1 — The Compound Grass</text>
-<text x="130.0" y="68.0" text-anchor="start" fill="#6b675d" style="font-size:12.5px;font-weight:400;">Top-down layout · 720 m × 720 m in game (2 m × 2 m of real ground, scale ×360) · 07:30, rainy-season morning</text>
+<text x="130.0" y="44.0" text-anchor="start" fill="#2b2a26" style="font-size:26px;font-weight:700;">Level 1 — The Road to the Kingdom</text>
+<text x="130.0" y="68.0" text-anchor="start" fill="#6b675d" style="font-size:12.5px;font-weight:400;">Top-down layout · 720 m × 720 m in game (2 m × 2 m of real ground, scale ×360) · 07:30, a summer morning after rain</text>
 <g transform="translate(0,36)">
 <rect x="130.0" y="130.0" width="864.0" height="864.0" fill="#9cc47a"/>
 <rect x="130.0" y="130.0" width="475.2" height="864.0" fill="url(#canopy)"/>
@@ -35,12 +35,12 @@
 <ellipse cx="394.0" cy="628.0" rx="54.0" ry="48.0" fill="#f0d6a8" fill-opacity="0.55" stroke="#2b2a26" stroke-opacity="0.35" stroke-dasharray="4 4"/>
 <ellipse cx="586.0" cy="664.0" rx="84.0" ry="78.0" fill="#c9ad83" fill-opacity="0.55" stroke="#2b2a26" stroke-opacity="0.35" stroke-dasharray="4 4"/>
 <ellipse cx="820.0" cy="514.0" rx="84.0" ry="114.0" fill="#cfe8f3" fill-opacity="0.55" stroke="#2b2a26" stroke-opacity="0.35" stroke-dasharray="4 4"/>
-<ellipse cx="730.0" cy="790.0" rx="144.0" ry="66.0" fill="#e9d9b4" fill-opacity="0.55" stroke="#2b2a26" stroke-opacity="0.35" stroke-dasharray="4 4"/>
+<ellipse cx="778.0" cy="796.0" rx="144.0" ry="84.0" fill="#e9d9b4" fill-opacity="0.55" stroke="#2b2a26" stroke-opacity="0.35" stroke-dasharray="4 4"/>
 <ellipse cx="358.0" cy="856.0" rx="132.0" ry="66.0" fill="#b89a74" fill-opacity="0.55" stroke="#2b2a26" stroke-opacity="0.35" stroke-dasharray="4 4"/>
 <ellipse cx="208.0" cy="922.0" rx="60.0" ry="42.0" fill="#8c7a86" fill-opacity="0.55" stroke="#2b2a26" stroke-opacity="0.35" stroke-dasharray="4 4"/>
-<polygon points="490.0,772.0 562.0,768.4 636.4,763.6 636.4,821.2 562.0,818.8 490.0,816.4" fill="url(#tuss)" stroke="#2f4d24" stroke-width="1"/>
-<polygon points="922.0,730.0 976.0,730.0 976.0,850.0 922.0,850.0" fill="url(#tuss)" stroke="#2f4d24" stroke-width="1"/>
-<polygon points="616.0,787.6 631.6,760.0 676.0,748.0 712.0,754.0 730.0,770.8 754.0,751.6 814.0,744.4 874.0,748.0 916.0,760.0 928.0,787.6 916.0,816.4 868.0,828.4 802.0,830.8 754.0,826.0 730.0,809.2 700.0,833.2 652.0,832.0 624.4,814.0" fill="#6fb3d9" stroke="#3d86b3" stroke-width="1.5"/>
+<polygon points="490.0,772.0 562.0,768.4 636.4,761.2 660.4,754.0 662.8,844.0 636.4,833.2 562.0,818.8 490.0,816.4" fill="url(#tuss)" stroke="#2f4d24" stroke-width="1"/>
+<polygon points="880.0,736.0 904.0,715.6 976.0,715.6 976.0,892.0 850.0,892.0 868.0,862.0 904.0,816.4 907.6,768.4" fill="url(#tuss)" stroke="#2f4d24" stroke-width="1"/>
+<polygon points="646.0,742.0 682.0,720.4 754.0,715.6 826.0,718.0 886.0,730.0 916.0,766.0 912.4,820.0 880.0,864.4 808.0,876.4 730.0,876.4 700.0,850.0 670.0,845.2 641.2,820.0 634.0,778.0" fill="#6fb3d9" stroke="#3d86b3" stroke-width="1.5"/>
 <polyline points="835.6,508.0 826.0,610.0 808.0,694.0 796.0,744.4" fill="none" stroke="#6fb3d9" stroke-width="3" stroke-linecap="round"/>
 <polyline points="139.6,682.0 226.0,706.0 322.0,742.0 418.0,768.4 490.0,784.0" fill="none" stroke="#7a5634" stroke-width="28.8" stroke-linecap="round" stroke-linejoin="round"/>
 <polyline points="226.0,708.4 247.6,820.0" fill="none" stroke="#7a5634" stroke-width="14.4" stroke-linecap="round" stroke-linejoin="round"/>
@@ -53,7 +53,9 @@
 <polyline points="610.0,696.4 514.0,658.0 442.0,636.4 394.0,628.0 322.0,592.0 214.0,568.0 149.2,562.0" fill="none" stroke="#5a3e22" stroke-width="2" stroke-dasharray="1 5" stroke-linecap="round" opacity="0.9"/>
 <polyline points="610.0,696.4 598.0,586.0 610.0,442.0 622.0,328.0" fill="none" stroke="#5a3e22" stroke-width="2" stroke-dasharray="1 5" stroke-linecap="round" opacity="0.9"/>
 <polyline points="610.0,696.4 682.0,634.0 742.0,574.0" fill="none" stroke="#5a3e22" stroke-width="2" stroke-dasharray="1 5" stroke-linecap="round" opacity="0.9"/>
-<polyline points="958.0,976.0 910.0,936.4 838.0,916.0 754.0,900.4 706.0,888.4 676.0,856.0" fill="none" stroke="#c0392b" stroke-width="2.2" stroke-dasharray="6 4"/>
+<polyline points="958.0,976.0 910.0,936.4 838.0,916.0 754.0,900.4 742.0,883.6" fill="none" stroke="#c0392b" stroke-width="2.2" stroke-dasharray="6 4"/>
+<polyline points="706.0,898.0 802.0,904.0 910.0,922.0 970.0,958.0 984.4,862.0 984.4,742.0 982.0,706.0 922.0,696.4 802.0,691.6 682.0,691.6 617.2,696.4" fill="none" stroke="#c0392b" stroke-width="1.6" stroke-dasharray="2 3" opacity="0.8"/>
+<polyline points="742.0,876.4 718.0,820.0 694.0,766.0 676.0,727.6" fill="none" stroke="#c0392b" stroke-width="7.2" stroke-linecap="round" opacity="0.35"/>
 <circle cx="223.6" cy="487.59999999999997" r="8.4" fill="#fbf6e6" stroke="#c9a13b" stroke-width="1"/>
 <circle cx="206.8" cy="509.2" r="9.6" fill="#fbf6e6" stroke="#c9a13b" stroke-width="1"/>
 <circle cx="223.6" cy="533.2" r="9.6" fill="#fbf6e6" stroke="#c9a13b" stroke-width="1"/>
@@ -71,9 +73,8 @@
 <polyline points="677.2,312.4 646.0,334.0 619.6,346.0 610.0,442.0 598.0,586.0 610.0,696.4" fill="none" stroke="#f2c14e" stroke-width="2.4" stroke-dasharray="4 3" stroke-linecap="round" opacity="0.95"/>
 <circle cx="677.1999999999999" cy="312.4" r="4.0" fill="#c9782a" stroke="#fff" stroke-width="1.5"/>
 <polyline points="610.0,316.0 526.0,322.0 430.0,358.0 346.0,430.0 274.0,514.0 322.0,580.0 388.0,643.6 490.0,648.4 586.0,664.0 610.0,696.4" fill="none" stroke="#e8641b" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#arrow)" marker-mid="url(#arrow)"/>
-<polyline points="751.6,564.4 790.0,526.0 816.4,502.0 828.4,586.0 808.0,682.0 742.0,742.0 730.0,768.4 730.0,811.6 718.0,850.0 706.0,888.4 586.0,876.4 466.0,868.0 358.0,856.0 262.0,862.0 214.0,910.0" fill="none" stroke="#e8641b" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#arrow)" marker-mid="url(#arrow)"/>
+<polyline points="751.6,564.4 790.0,526.0 816.4,502.0 828.4,586.0 808.0,682.0 754.0,701.2" fill="none" stroke="#e8641b" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#arrow)" marker-mid="url(#arrow)"/>
 <polyline points="322.0,778.0 322.0,712.0 358.0,664.0 384.4,646.0" fill="none" stroke="#e8641b" stroke-width="2.4" stroke-dasharray="2 5" stroke-linecap="round"/>
-<rect x="727.8" y="765.4" width="4.3" height="49.2" rx="2" fill="#e2c58b" stroke="#9c7b43"/>
 <circle cx="586.0" cy="664.0" r="54.0" fill="none" stroke="#8a6d49" stroke-width="3" stroke-opacity="0.7"/>
 <line x1="223.6" y1="844.0" x2="283.6" y2="835.6" stroke="#f4f1ea" stroke-width="1" opacity="0.9"/>
 <line x1="223.6" y1="851.1999999999999" x2="283.6" y2="845.1999999999999" stroke="#f4f1ea" stroke-width="1" opacity="0.9"/>
@@ -118,7 +119,6 @@
 <text x="620.0" y="710.4" text-anchor="start" fill="#2b2a26" style="font-size:10.5px;font-weight:500;" stroke="#efe9dc" stroke-width="3" paint-order="stroke" stroke-linejoin="round">Colony Gate</text>
 <text x="752.0" y="578.0" text-anchor="start" fill="#2b2a26" style="font-size:10.5px;font-weight:500;" stroke="#efe9dc" stroke-width="3" paint-order="stroke" stroke-linejoin="round">Patrol Gate</text>
 <text x="844.0" y="484.0" text-anchor="start" fill="#2b2a26" style="font-size:10.5px;font-weight:500;" stroke="#efe9dc" stroke-width="3" paint-order="stroke" stroke-linejoin="round">Leaking coupling</text>
-<text x="738.0" y="768.0" text-anchor="start" fill="#2b2a26" style="font-size:10.5px;font-weight:500;" stroke="#efe9dc" stroke-width="3" paint-order="stroke" stroke-linejoin="round">Ice-lolly stick</text>
 <text x="666.0" y="860.0" text-anchor="end" fill="#2b2a26" style="font-size:10.5px;font-weight:500;" stroke="#efe9dc" stroke-width="3" paint-order="stroke" stroke-linejoin="round">Silent ant outpost</text>
 <text x="706.0" y="928.0" text-anchor="middle" fill="#2b2a26" style="font-size:10.5px;font-weight:500;" stroke="#efe9dc" stroke-width="3" paint-order="stroke" stroke-linejoin="round">Termite forward camp</text>
 <text x="884.4" y="922.0" text-anchor="start" fill="#2b2a26" style="font-size:10.5px;font-weight:500;" stroke="#efe9dc" stroke-width="3" paint-order="stroke" stroke-linejoin="round">Mud-tube tower</text>
@@ -142,9 +142,9 @@
 <circle cx="858.0" cy="552.0" r="11" fill="#2b2a26"/>
 <text x="858.0" y="556.0" text-anchor="middle" fill="#fff" style="font-size:12px;font-weight:700;">6</text>
 <text x="858.0" y="576.0" text-anchor="middle" fill="#2b2a26" style="font-size:14px;font-weight:700;" stroke="#efe9dc" stroke-width="3" paint-order="stroke" stroke-linejoin="round">Hose Run</text>
-<circle cx="730.0" cy="722.0" r="11" fill="#2b2a26"/>
-<text x="730.0" y="726.0" text-anchor="middle" fill="#fff" style="font-size:12px;font-weight:700;">7</text>
-<text x="730.0" y="746.0" text-anchor="middle" fill="#2b2a26" style="font-size:14px;font-weight:700;" stroke="#efe9dc" stroke-width="3" paint-order="stroke" stroke-linejoin="round">Lolly-Stick Bridge</text>
+<circle cx="778.0" cy="728.0" r="11" fill="#2b2a26"/>
+<text x="778.0" y="732.0" text-anchor="middle" fill="#fff" style="font-size:12px;font-weight:700;">7</text>
+<text x="778.0" y="752.0" text-anchor="middle" fill="#2b2a26" style="font-size:14px;font-weight:700;" stroke="#efe9dc" stroke-width="3" paint-order="stroke" stroke-linejoin="round">The Rut</text>
 <circle cx="398.0" cy="842.0" r="11" fill="#2b2a26"/>
 <text x="398.0" y="846.0" text-anchor="middle" fill="#fff" style="font-size:12px;font-weight:700;">8</text>
 <text x="398.0" y="866.0" text-anchor="middle" fill="#2b2a26" style="font-size:14px;font-weight:700;" stroke="#efe9dc" stroke-width="3" paint-order="stroke" stroke-linejoin="round">Windfall Roots</text>
@@ -157,13 +157,13 @@
 <text x="694.0" y="197.4" text-anchor="end" fill="#7b3fa0" style="font-size:10px;font-weight:700;" stroke="#efe9dc" stroke-width="3" paint-order="stroke" stroke-linejoin="round">V2</text>
 <polygon points="430.8,615.0 409.9,614.1 413.5,603.3" fill="#7b3fa0" stroke="#fff" stroke-width="1"/>
 <text x="409.6" y="603.0" text-anchor="end" fill="#7b3fa0" style="font-size:10px;font-weight:700;" stroke="#efe9dc" stroke-width="3" paint-order="stroke" stroke-linejoin="round">V3</text>
-<polygon points="726.5,805.6 725.4,784.8 736.4,787.2" fill="#7b3fa0" stroke="#fff" stroke-width="1"/>
-<text x="724.0" y="783.0" text-anchor="end" fill="#7b3fa0" style="font-size:10px;font-weight:700;" stroke="#efe9dc" stroke-width="3" paint-order="stroke" stroke-linejoin="round">V4</text>
+<polygon points="742.0,719.6 736.3,699.5 747.7,699.5" fill="#7b3fa0" stroke="#fff" stroke-width="1"/>
+<text x="736.0" y="696.6" text-anchor="end" fill="#7b3fa0" style="font-size:10px;font-weight:700;" stroke="#efe9dc" stroke-width="3" paint-order="stroke" stroke-linejoin="round">V4</text>
 <polygon points="313.8,755.7 319.3,735.6 329.0,741.4" fill="#7b3fa0" stroke="#fff" stroke-width="1"/>
 <text x="316.0" y="735.0" text-anchor="end" fill="#7b3fa0" style="font-size:10px;font-weight:700;" stroke="#efe9dc" stroke-width="3" paint-order="stroke" stroke-linejoin="round">V5</text>
 <circle cx="610.0" cy="316.0" r="6" fill="#fff" stroke="#e8641b" stroke-width="3"/>
 <text x="620.0" y="332.0" text-anchor="start" fill="#e8641b" style="font-size:11px;font-weight:700;" stroke="#efe9dc" stroke-width="3" paint-order="stroke" stroke-linejoin="round">Start</text>
-<text x="12.0" y="408.4" text-anchor="start" fill="#2b2a26" style="font-size:11px;font-weight:700;">Mango tree (trunk)</text>
+<text x="12.0" y="408.4" text-anchor="start" fill="#2b2a26" style="font-size:11px;font-weight:700;">Apple tree (trunk)</text>
 <text x="12.0" y="421.4" text-anchor="start" fill="#6b675d" style="font-size:10px;font-weight:400;">470 m · 120 m wide</text>
 <line x1="562.0" y1="998.0" x2="562.0" y2="1022.0" stroke="#6b675d" stroke-width="1.4" marker-end="url(#sky)"/>
 <text x="562.0" y="1038.0" text-anchor="middle" fill="#2b2a26" style="font-size:11px;font-weight:700;">House</text>
@@ -209,15 +209,17 @@
 <text x="746.0" y="1116.0" text-anchor="start" fill="#2b2a26" style="font-size:11.5px;font-weight:400;">Ant road</text>
 <line x1="130.0" y1="1136.0" x2="160.0" y2="1136.0" stroke="#c0392b" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="6 4"/>
 <text x="170.0" y="1140.0" text-anchor="start" fill="#2b2a26" style="font-size:11.5px;font-weight:400;">Termite trail</text>
-<line x1="418.0" y1="1136.0" x2="448.0" y2="1136.0" stroke="#7a5634" stroke-width="8" stroke-linecap="round"/>
-<text x="458.0" y="1140.0" text-anchor="start" fill="#2b2a26" style="font-size:11.5px;font-weight:400;">Oak roots (walls)</text>
-<line x1="706.0" y1="1136.0" x2="736.0" y2="1136.0" stroke="#2f6b4a" stroke-width="7" stroke-linecap="round"/>
-<text x="746.0" y="1140.0" text-anchor="start" fill="#2b2a26" style="font-size:11.5px;font-weight:400;">Garden hose</text>
-<rect x="130.0" y="1153.0" width="30" height="14" fill="#6fb3d9" stroke="#2b2a26" stroke-width="0.6"/>
-<text x="170.0" y="1164.0" text-anchor="start" fill="#2b2a26" style="font-size:11.5px;font-weight:400;">The Rut (tyre rut, water = defeat)</text>
-<rect x="418.0" y="1153.0" width="30" height="14" fill="url(#tuss)" stroke="#2b2a26" stroke-width="0.6"/>
-<text x="458.0" y="1164.0" text-anchor="start" fill="#2b2a26" style="font-size:11.5px;font-weight:400;">Tussock (impassable)</text>
-<polygon points="728.0,1160.0 714.0,1153.0 714.0,1167.0" fill="#7b3fa0"/>
-<text x="746.0" y="1164.0" text-anchor="start" fill="#2b2a26" style="font-size:11.5px;font-weight:400;">Viewpoint (sight-line check)</text>
+<line x1="418.0" y1="1136.0" x2="448.0" y2="1136.0" stroke="#c0392b" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="2 3"/>
+<text x="458.0" y="1140.0" text-anchor="start" fill="#2b2a26" style="font-size:11.5px;font-weight:400;">Termite raid (L1, kerb top)</text>
+<line x1="706.0" y1="1136.0" x2="736.0" y2="1136.0" stroke="#7a5634" stroke-width="8" stroke-linecap="round"/>
+<text x="746.0" y="1140.0" text-anchor="start" fill="#2b2a26" style="font-size:11.5px;font-weight:400;">Apple roots (walls)</text>
+<line x1="130.0" y1="1160.0" x2="160.0" y2="1160.0" stroke="#2f6b4a" stroke-width="7" stroke-linecap="round"/>
+<text x="170.0" y="1164.0" text-anchor="start" fill="#2b2a26" style="font-size:11.5px;font-weight:400;">Garden hose</text>
+<rect x="418.0" y="1153.0" width="30" height="14" fill="#6fb3d9" stroke="#2b2a26" stroke-width="0.6"/>
+<text x="458.0" y="1164.0" text-anchor="start" fill="#2b2a26" style="font-size:11.5px;font-weight:400;">The Rut (moat, swimmable, no bridge)</text>
+<rect x="706.0" y="1153.0" width="30" height="14" fill="url(#tuss)" stroke="#2b2a26" stroke-width="0.6"/>
+<text x="746.0" y="1164.0" text-anchor="start" fill="#2b2a26" style="font-size:11.5px;font-weight:400;">Tussock (impassable)</text>
+<polygon points="152.0,1184.0 138.0,1177.0 138.0,1191.0" fill="#7b3fa0"/>
+<text x="170.0" y="1188.0" text-anchor="start" fill="#2b2a26" style="font-size:11.5px;font-weight:400;">Viewpoint (sight-line check)</text>
 </g>
 </svg>

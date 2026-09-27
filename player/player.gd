@@ -1,6 +1,6 @@
 class_name Player
 extends CharacterBody3D
-## Amodu at insect scale: 1.8 m tall in a world scaled x360 (docs/WORLD.md).
+## Amodu at insect scale: 1.8 m tall in a world scaled x360 (docs/archive/WORLD.md).
 ##
 ## States: GROUND (walk / jog / sprint), AIR, CRAWL (belly crawl under low
 ## overhangs) and CLIMB (any surface on the "climbable" physics layer). The
@@ -44,6 +44,8 @@ signal called_workers(at: Vector3, answered: int)
 signal power_jumped(charge: float)
 signal slammed(at: Vector3, fall: float)
 signal entered_water(at: Vector3, speed: float)
+## Swam too far: worn out, he goes back to the bank he swam from (`bank`).
+signal swim_exhausted(bank: Vector3)
 signal puff_changed(holding: bool)
 
 enum State { GROUND, AIR, CRAWL, CLIMB, SWIM }
@@ -118,6 +120,11 @@ const CRAWL_HEIGHT := 0.6
 @export var swim_tread_depth := 1.35
 @export var swim_stroke_depth := 0.7
 @export var swim_jump_speed := 6.0
+## Metres he can swim before he's worn out (the Rut is ~90 m across at its
+## narrowest, so it stays a moat). Treading water tires him too, more slowly.
+@export var swim_range := 50.0
+## Seconds on dry ground to get his breath back from empty.
+@export var swim_recover := 5.0
 
 @export_group("Power jump")
 ## Holding jump longer than this crouches for a power jump instead of a hop.
@@ -219,6 +226,10 @@ var _hands := PackedInt32Array([-1, -1])
 var _prev_position := Vector3.ZERO
 ## The water he is swimming in.
 var _water: WaterBody
+## Metres of swimming left before he's worn out (refills on dry ground).
+var swim_left := 50.0
+## Where he last stood on dry ground: the bank he goes back to when worn out.
+var _last_dry := Vector3.ZERO
 ## The seed puff he holds overhead, if any.
 var puff: Node3D
 ## Seen through his own eyes (CameraRig.View.FIRST).
@@ -303,6 +314,10 @@ func _physics_process(delta: float) -> void:
 			_process_climbing(delta)
 		State.SWIM:
 			_process_swimming(delta)
+	# after the move, so is_on_floor() is fresh (not left over from before a teleport)
+	if state == State.GROUND and is_on_floor():
+		_last_dry = global_position
+		swim_left = minf(swim_left + swim_range / swim_recover * delta, swim_range)
 	_update_carried()
 
 
@@ -630,6 +645,12 @@ func _process_swimming(delta: float) -> void:
 	if h.length() > 0.2:
 		_face(h, delta)
 	move_and_slide()
+	swim_left -= maxf(h.length(), 0.4) * delta  # treading tires him too
+	if swim_left <= 0.0:
+		swim_left = swim_range
+		_leave_water(State.AIR)
+		swim_exhausted.emit(_last_dry)
+		return
 	if _water.depth_at(global_position, [get_rid()]) < swim_depth - 0.2 or not _water.contains(global_position):
 		_leave_water(State.GROUND if is_on_floor() else State.AIR)  # shallow enough to stand: wade out
 		return
@@ -778,7 +799,7 @@ func _process_heave_input() -> void:
 		return
 	_pushing = null
 	if state != State.GROUND:
-		_set_hint("")
+		_set_hint("Getting tired: head for the bank" if state == State.SWIM and swim_left < swim_range * 0.4 else "")
 		return
 	var bug := flippable_in_reach()
 	if bug != null:

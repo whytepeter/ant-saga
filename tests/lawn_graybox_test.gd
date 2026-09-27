@@ -117,7 +117,7 @@ func _test_ground_matches_terrain() -> void:
 
 func _test_viewpoints() -> void:
 	# height of the surface Amodu should end up standing on, above the local ground
-	var expected := {"V1": 0.0, "V2": 136.0, "V3": 25.0, "V5": 12.0}
+	var expected := {"V1": 0.0, "V2": 136.0, "V3": 25.0, "V4": 0.0, "V5": 12.0}
 	var vps: Array = layout.items("viewpoints")
 	for i in vps.size():
 		var vp: Dictionary = vps[i]
@@ -126,17 +126,10 @@ func _test_viewpoints() -> void:
 		await _frames(90)
 		var p := player.global_position
 		var ok := player.is_on_floor() and _respawn_reason == ""
-		var detail := ""
-		if vp["id"] == "V4":
-			var stick: Dictionary = layout.item("landmarks", "lolly_stick")
-			var on_stick := Vector2(p.x, p.z).distance_to(LawnLayout.xz(stick["pos"])) < 3.0 and p.y > layout.water_level
-			ok = ok and on_stick
-			detail = "on the lolly stick at y=%.2f (water %.2f)" % [p.y, layout.water_level]
-		else:
-			var above := p.y - layout.height_at(p.x, p.z)
-			var want: float = expected[vp["id"]]
-			ok = ok and absf(above - want) < 1.0
-			detail = "standing %.1f m above ground (expected ~%.1f)" % [above, want]
+		var above := p.y - layout.height_at(p.x, p.z)
+		var want: float = expected[vp["id"]]
+		ok = ok and absf(above - want) < 1.0
+		var detail := "standing %.1f m above ground (expected ~%.1f)" % [above, want]
 		if _respawn_reason != "":
 			detail += ", respawned: %s" % _respawn_reason
 		_check("viewpoint %s %s" % [vp["id"], vp["name"]], ok, detail)
@@ -144,11 +137,11 @@ func _test_viewpoints() -> void:
 
 ## Dropped into the Rut he swims: afloat with his head out, then out onto the nearest bank.
 func _test_swim() -> void:
-	var water := WaterBody.find(self, Vector3(100, 0, 195))
+	var water := WaterBody.find(self, Vector3(130, 0, 165))
 	_check("the Rut is swimmable water", water != null, "")
 	if water == null:
 		return
-	var deep := layout.ground_point([100, 195], 0.0)
+	var deep := layout.ground_point([130, 165], 0.0)
 	player.teleport(Vector3(deep.x, water.level + 1.5, deep.z), 0.0)
 	await _frames(150)
 	var head := player.global_position.y + 1.6
@@ -174,6 +167,17 @@ func _test_swim() -> void:
 			break
 	Input.action_release("move_forward")
 	_check("swims to the bank and wades out", out, "%.0f m to the bank; now %s" % [best_d, Player.State.keys()[player.state]])
+	# too far: worn out mid-Rut, he's put back on the bank he swam from
+	var bank := player.global_position
+	_respawn_reason = ""
+	var mid := layout.ground_point([180, 200], 0.0)
+	player.teleport(Vector3(mid.x, water.level + 1.5, mid.z), 0.0)
+	await _frames(60)
+	player.swim_left = 1.0
+	await _frames(240)
+	var back := Vector2(player.global_position.x, player.global_position.z).distance_to(Vector2(bank.x, bank.z))
+	_check("too far to swim: back to the bank", _respawn_reason == "Too far to swim" and back < 3.0 and not player.is_swimming(),
+		"reason '%s', %.1f m from the bank" % [_respawn_reason, back])
 
 
 ## Walks from the lawn into Root Hall's mouth, across the hall, up the

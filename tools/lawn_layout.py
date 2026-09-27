@@ -130,7 +130,7 @@ def by_id(items, id_):
     return next(it for it in items if it["id"] == id_)
 
 
-def build_grid(layout, bridge=True, tunnel=True):
+def build_grid(layout, causeway=True, tunnel=True):
     g = Grid(layout)
     # World edges: the playable box is inset from the boundary props.
     edge = {"north": ("z", -345, -1), "south": ("z", 345, 1), "east": ("x", 345, 1), "west": ("x", -350, -1)}
@@ -150,11 +150,9 @@ def build_grid(layout, bridge=True, tunnel=True):
     for p in layout["paths"]:
         if p["kind"] == "root":
             g.block_polyline(p["points"], p["width"] / 2, p["id"])
-    if bridge:
-        stick = by_id(layout["landmarks"], "lolly_stick")
-        (cx, cz), (sw, _, sl) = stick["pos"], stick["size"]
-        g.block_polygon([[cx - sw / 2, cz - sl / 2], [cx + sw / 2, cz - sl / 2],
-                         [cx + sw / 2, cz + sl / 2], [cx - sw / 2, cz + sl / 2]], None, value=False)
+    if causeway:
+        cw = by_id(layout["paths"], "causeway")
+        g.block_polyline(cw["points"], cw["width"] / 2, None, value=False)
     if tunnel:
         g.block_polyline(by_id(layout["paths"], "root_tunnel")["points"], 2.0, None, value=False)
     return g
@@ -163,7 +161,7 @@ def build_grid(layout, bridge=True, tunnel=True):
 # ── check ─────────────────────────────────────────────────────────────────────
 
 # Landmarks you can walk over, through or under (or that the builder keeps a lane through).
-WALKABLE = {"pot_ring", "trip_lines", "orb_web", "colony_gate", "lolly_stick", "spider_burrow",
+WALKABLE = {"pot_ring", "trip_lines", "orb_web", "colony_gate", "spider_burrow",
             "coin_plaza", "termite_camp", "abandoned_post", "pencil_log", "root_hall", "crisp_packet"}
 STANDIN_RADIUS = {"ant": 1.4, "pill_bug": 2.8, "wolf_spider": 5.5}  # spider: solid body only, the legs are visual
 
@@ -208,27 +206,27 @@ def check(layout):
                 fail(f"{coll}/{it['id']} at {x},{z} is outside the playable box")
     ok("all areas and landmarks inside the 720 m box") if not failures else None
 
-    print("Gating (no bridge, no tunnel): the south must be sealed")
-    g = build_grid(layout, bridge=False, tunnel=False)
+    print("Gating (no causeway, no tunnel): the south must be sealed")
+    g = build_grid(layout, causeway=False, tunnel=False)
     seen = g.flood(spawn)
     for a in layout["areas"]:
         i, j = g.to_cell(*a["center"])
         reach = seen[j][i]
         if a["id"] in south_areas and reach:
-            fail(f"{a['id']} reachable without the bridge: the south is not sealed")
-        elif a["id"] not in south_areas and not reach and a["id"] != "lolly_bridge":
+            fail(f"{a['id']} reachable without the causeway: the south is not sealed")
+        elif a["id"] not in south_areas and not reach and a["id"] != "the_rut":
             fail(f"{a['id']} unreachable from spawn")
     if not any("sealed" in f or "unreachable" in f for f in failures):
         ok("south sealed; every northern area reachable from spawn")
 
-    print("Full level (bridge + tunnel)")
+    print("Full game (causeway + tunnel)")
     g = build_grid(layout)
     seen = g.flood(spawn)
     before = len(failures)
     for a in layout["areas"]:
         i, j = g.to_cell(*a["center"])
-        if not seen[j][i]:
-            fail(f"{a['id']} unreachable with the bridge")
+        if not seen[j][i] and a["id"] != "the_rut":
+            fail(f"{a['id']} unreachable with the causeway")
     if len(failures) == before:
         ok("all 9 areas reachable")
 
@@ -381,7 +379,7 @@ COL = {
 AREA_TINT = {
     "backpack_hollow": "#f3e7b0", "blade_forest": "#6f9d52", "flower_bed": "#bfe3ea",
     "capstone_shelter": "#f0d6a8", "bare_patch": "#c9ad83", "hose_run": "#cfe8f3",
-    "lolly_bridge": "#e9d9b4", "windfall_roots": "#b89a74", "spiders_edge": "#8c7a86",
+    "the_rut": "#e9d9b4", "windfall_roots": "#b89a74", "spiders_edge": "#8c7a86",
 }
 
 
@@ -415,7 +413,7 @@ LABELS = {
     "crisp_packet": (0, -26, "middle"), "marble": (-8, 4, "end"), "orb_web": (10, 4, "start"),
     "root_hall": (12, -8, "start"), "lookout_blade": (8, -6, "start"),
     "colony_gate": (10, 14, "start"), "patrol_gate": (10, 4, "start"),
-    "hose_coupling": (12, -6, "start"), "lolly_stick": (8, -22, "start"),
+    "hose_coupling": (12, -6, "start"),
     "abandoned_post": (-10, 4, "end"), "termite_camp": (0, 30, "middle"), "termite_tower": (8, -6, "start"),
     "spider_burrow": (0, 18, "middle"), "trip_lines": (40, -4, "start"),
 }
@@ -443,8 +441,8 @@ def render(layout):
     a(f'<rect width="{W}" height="{H}" fill="{COL["paper"]}"/>')
 
     # Title
-    a(text(M, 44, "Level 1 — The Compound Grass", 26, 700, halo=False))
-    a(text(M, 68, "Top-down layout · 720 m × 720 m in game (2 m × 2 m of real ground, scale ×360) · 07:30, rainy-season morning",
+    a(text(M, 44, "Level 1 — The Road to the Kingdom", 26, 700, halo=False))
+    a(text(M, 68, "Top-down layout · 720 m × 720 m in game (2 m × 2 m of real ground, scale ×360) · 07:30, a summer morning after rain",
            12.5, 400, fill=COL["muted"], halo=False))
     a(f'<g transform="translate(0,{TOP})">')
 
@@ -503,6 +501,11 @@ def render(layout):
               f'stroke-dasharray="1 5" stroke-linecap="round" opacity="0.9"/>')
     a(f'<polyline points="{pts_attr(paths["termite_trail"]["points"])}" fill="none" stroke="{COL["termite"]}" '
       f'stroke-width="2.2" stroke-dasharray="6 4"/>')
+    # Level 1 raid along the kerb top, and the Level 3 causeway
+    a(f'<polyline points="{pts_attr(paths["termite_raid"]["points"])}" fill="none" stroke="{COL["termite"]}" '
+      f'stroke-width="1.6" stroke-dasharray="2 3" opacity="0.8"/>')
+    a(f'<polyline points="{pts_attr(paths["causeway"]["points"])}" fill="none" stroke="{COL["termite"]}" '
+      f'stroke-width="{paths["causeway"]["width"] * S:.1f}" stroke-linecap="round" opacity="0.35"/>')
 
     # Flower Bed climb: daisy and buttercup heads
     for fl in layout.get("flowers", []):
@@ -534,14 +537,9 @@ def render(layout):
             a(f'<polyline points="{pts_attr(p["points"])}" fill="none" stroke="{COL["route"]}" stroke-width="2.4" '
               f'stroke-dasharray="2 5" stroke-linecap="round"/>')
 
-    # Popsicle stick
-    st = by_id(layout["landmarks"], "lolly_stick")
-    (sx, sz), (sw, _, sl) = st["pos"], st["size"]
-    a(f'<rect x="{px(sx - sw / 2):.1f}" y="{pz(sz - sl / 2):.1f}" width="{max(sw * S, 4):.1f}" height="{sl * S:.1f}" '
-      f'rx="2" fill="{COL["stick"]}" stroke="#9c7b43"/>')
 
     # Landmarks (footprint to scale, minimum marker size)
-    skip_shape = {"lolly_stick", "hose_coupling", "pencil_log", "pot_ring", "trip_lines", "termite_camp"}
+    skip_shape = {"hose_coupling", "pencil_log", "pot_ring", "trip_lines", "termite_camp"}
     pr = by_id(layout["landmarks"], "pot_ring")
     a(f'<circle cx="{px(pr["pos"][0])}" cy="{pz(pr["pos"][1])}" r="{pr["size"][0] / 2 * S}" fill="none" '
       f'stroke="#8a6d49" stroke-width="3" stroke-opacity="0.7"/>')
@@ -578,7 +576,7 @@ def render(layout):
             a(text(px(lm["pos"][0]) + dx, pz(lm["pos"][1]) + dy, name, 10.5, 500, anc))
 
     # Area numbers and names
-    name_off = {"hose_run": (38, 60), "lolly_bridge": (0, -46), "bare_patch": (0, -40), "capstone_shelter": (0, 44),
+    name_off = {"hose_run": (38, 60), "the_rut": (0, -46), "bare_patch": (0, -40), "capstone_shelter": (0, 44),
                 "spiders_edge": (26, -40), "windfall_roots": (40, 8), "flower_bed": (50, -30),
                 "backpack_hollow": (-120, 10), "blade_forest": (0, 12)}
     for ar in layout["areas"]:
@@ -614,7 +612,7 @@ def render(layout):
         x, z = sk["pos"]
         dist = math.hypot(x, z)
         if sk["id"] == "apple_tree":  # drawn on the map itself; label it beside the trunk
-            a(text(M - 118, pz(-128), "Mango tree (trunk)", 11, 700, "start", halo=False))
+            a(text(M - 118, pz(-128), "Apple tree (trunk)", 11, 700, "start", halo=False))
             a(text(M - 118, pz(-128) + 13, f"{dist:.0f} m · {sk['size'][0]:.0f} m wide", 10, 400, "start", fill=COL["muted"], halo=False))
             continue
         ang = math.atan2(z, x)
@@ -651,9 +649,9 @@ def render(layout):
     ly = pz(360) + 118
     items = [
         ("line", COL["route"], "Main route", "3.2", None), ("line", COL["route"], "Shortcut (root tunnel)", "2.4", "2 5"),
-        ("line", COL["antroad"], "Ant road", "2", "1 5"), ("line", COL["termite"], "Termite trail", "2.2", "6 4"),
-        ("line", COL["root"], "Oak roots (walls)", "8", None), ("line", COL["hose"], "Garden hose", "7", None),
-        ("box", COL["water"], "The Rut (tyre rut, water = defeat)", None, None), ("box", "url(#tuss)", "Tussock (impassable)", None, None),
+        ("line", COL["antroad"], "Ant road", "2", "1 5"), ("line", COL["termite"], "Termite trail", "2.2", "6 4"), ("line", COL["termite"], "Termite raid (L1, kerb top)", "1.6", "2 3"),
+        ("line", COL["root"], "Apple roots (walls)", "8", None), ("line", COL["hose"], "Garden hose", "7", None),
+        ("box", COL["water"], "The Rut (moat, swimmable, no bridge)", None, None), ("box", "url(#tuss)", "Tussock (impassable)", None, None),
         ("tri", "#7b3fa0", "Viewpoint (sight-line check)", None, None),
     ]
     col_w = MAPPX / 3
@@ -772,7 +770,7 @@ def relief_mask(ctx, x, z):
             else:
                 m *= smoothstep(f.clear, f.clear + f.ramp + RELIEF_PAD, d)
     m *= smoothstep(1.0, 1.5, ellipse_q(x, z, ctx.areas["backpack_hollow"]))
-    m *= smoothstep(1.0, 1.4, ellipse_q(x, z, ctx.areas["lolly_bridge"]))
+    m *= smoothstep(1.0, 1.4, ellipse_q(x, z, ctx.areas["the_rut"]))
     m *= smoothstep(ctx.ring_r + 15, ctx.ring_r + 40, math.hypot(x - ctx.ring_c[0], z - ctx.ring_c[1]))
     if -30 < x < 270 and -80 < z < 190:
         m *= smoothstep(4, 14, dist_to_polyline(x, z, ctx.runoff))
@@ -928,10 +926,10 @@ def bake(layout):
             surf = "lawn"
             dens = FILL
 
-            # Areas: clearings, the flattened hollow, touch-me-not, shade under the mango
+            # Areas: clearings, the flattened hollow, touch-me-not, shade under the tree
             q = {k: ellipse_q(x, z, a) for k, a in areas.items()}
             for k, qv in q.items():
-                if qv < 1.0 and k not in ("blade_forest", "backpack_hollow", "bare_patch", "lolly_bridge"):
+                if qv < 1.0 and k not in ("blade_forest", "backpack_hollow", "bare_patch", "the_rut"):
                     dens = min(dens, FILL * (0.15 + 0.85 * smoothstep(0.55, 1.0, qv)))
             if q["blade_forest"] < 1.0:
                 dens = FILL * (1.0 + 0.6 * (1 - smoothstep(0.6, 1.0, q["blade_forest"])))

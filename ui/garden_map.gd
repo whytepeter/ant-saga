@@ -31,7 +31,7 @@ const JOINT := Color(0.42, 0.4, 0.36)
 ## Landmarks named on the full map: [layout id, label].
 const PLACES := [["backpack", "School bag"], ["dandelion", "Dandelion"], ["dandelion_clock", "Dandelion clock"],
 	["crisp_packet", "Crisp packet"], ["marble", "Marble"], ["crown_cap", "Capstone"], ["root_hall", "Root Hall"],
-	["colony_gate", "Colony Gate"], ["hose_coupling", "Water station"], ["lolly_stick", "Lolly-stick bridge"],
+	["colony_gate", "Colony Gate"], ["hose_coupling", "Water station"],
 	["termite_camp", "Termite camp"], ["fallen_apple", "Windfall apple"], ["apple_core", "Apple core"],
 	["spider_burrow", "Spider's burrow"]]
 
@@ -116,19 +116,14 @@ func home() -> Vector2:
 	return Vector2(-185.0, 640.0)
 
 
-## Lines worth drawing over the paint (the trowel and brush ramps, the lolly
-## stick): [[from, to, width], ...] in world metres.
+## Lines worth drawing over the paint (the trowel and brush ramps):
+## [[from, to, width], ...] in world metres.
 func ramps() -> Array:
 	var out := []
 	var patio: Dictionary = layout.data.get("patio", {})
 	for key in ["trowel", "brush"]:
 		if patio.has(key):
 			out.append([LawnLayout.xz(patio[key]["from"]), LawnLayout.xz(patio[key]["to"]), float(patio[key].get("width", 8.0))])
-	var stick := layout.item("landmarks", "lolly_stick")
-	if not stick.is_empty():
-		var c := LawnLayout.xz(stick["pos"])
-		var half := float(stick["size"][2]) * 0.5
-		out.append([c + Vector2(0, -half), c + Vector2(0, half), float(stick["size"][0])])
 	return out
 
 
