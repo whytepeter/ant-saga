@@ -13,6 +13,9 @@ extends Choppable
 
 ## What it gives: item id -> count.
 var yields := {}
+## How he takes it (Player.play_gather): "pick" from the ground, "pull" a
+## plant, "cut" with the knife.
+var gesture := "pick"
 ## The picture to hide when it's gone: a MultiMesh and the instance in it, or
 ## a whole node.
 var multimesh: MultiMesh
@@ -59,6 +62,8 @@ func chop(power: float, from: Vector3, by: Node3D) -> bool:
 	_gone = true
 	collision_layer = 0
 	chopped.emit(by)
+	if by != null and by.has_method("play_gather"):
+		by.call("play_gather", gesture)
 	_take_away()
 	return true
 

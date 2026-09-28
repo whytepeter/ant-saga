@@ -6,6 +6,9 @@ extends Node3D
 ## further off they're just their picture and collision, which the dressing
 ## built. What's been taken stays taken; what's been hit keeps its wounds.
 
+## Something was taken: what it gave (item id -> count).
+signal gathered(gives: Dictionary)
+
 const GROUP := &"gather_field"
 const CELL := 30.0
 ## Things within this of the camera are live; freed again a little further out.
@@ -36,10 +39,11 @@ static func of(parent: Node) -> GatherField:
 ## thing (a leaf, a twig) so E finds it from anywhere along it.
 func add(what: String, at: Vector3, radius: float, gives: Dictionary, blows: float, need: float,
 		multimesh: MultiMesh = null, instance := -1, solid: CollisionShape3D = null, node: Node3D = null,
-		yaw := 0.0, length := 0.0) -> void:
+		yaw := 0.0, length := 0.0, gesture := "pick") -> void:
 	var i := _entries.size()
 	_entries.append({"what": what, "at": at, "radius": radius, "gives": gives, "health": blows, "need": need,
-		"mm": multimesh, "i": instance, "solid": solid, "node": node, "yaw": yaw, "length": length, "gone": false})
+		"mm": multimesh, "i": instance, "solid": solid, "node": node, "yaw": yaw, "length": length, "gone": false,
+		"gesture": gesture})
 	var key := Vector2i(floori(at.x / CELL), floori(at.z / CELL))
 	if not _cells.has(key):
 		_cells[key] = [] as Array[int]
@@ -85,9 +89,11 @@ func _wake(i: int) -> void:
 	g.instance = int(e["i"])
 	g.solid = e["solid"]
 	g.visual_node = e["node"]
+	g.gesture = String(e["gesture"])
 	g.chopped.connect(func(_by: Node3D) -> void:
 		e["gone"] = true
-		_live.erase(i))
+		_live.erase(i)
+		gathered.emit(e["gives"]))
 	add_child(g)
 	_live[i] = g
 

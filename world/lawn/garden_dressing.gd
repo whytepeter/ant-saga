@@ -32,24 +32,24 @@ const CLIMBABLE := ["pebbles", "twig", "toadstools", "tree_root", "bracket_fungu
 ## What he gets from things, the Grounded way: everything you see is terrain or
 ## a resource (Gatherable, via GatherField). id -> [what it's called, {item:
 ## count}, blows it takes, the blade it needs (0 by hand, 0.5 his knife, 1 an
-## axe or hammer)].
+## axe or hammer), how he takes it ("pick", "pull" or "cut"; default pick)].
 const GATHER := {
 	"fallen_leaf": ["leaf", {"leaf": 2}, 1.0, 0.0],
-	"clover": ["clover leaf", {"clover": 1}, 0.5, 0.0],
+	"clover": ["clover leaf", {"clover": 1}, 0.5, 0.0, "pull"],
 	"cone_mushrooms": ["mushrooms", {"mushroom": 2}, 1.0, 0.0],
 	"inky_cap": ["mushroom", {"mushroom": 1}, 0.5, 0.0],
-	"toadstools": ["toadstool", {"mushroom": 4}, 3.0, 0.5],
+	"toadstools": ["toadstool", {"mushroom": 4}, 3.0, 0.5, "cut"],
 	"bark_chips": ["bark chip", {"bark": 2}, 1.0, 0.0],
 	"twig": ["twig", {"twig": 2}, 2.0, 1.0],
 	"pebbles": ["stone", {"pebble": 3}, 2.0, 1.0],
-	"eraser": ["eraser", {"rubber": 3}, 2.0, 0.5],
+	"eraser": ["eraser", {"rubber": 3}, 2.0, 0.5, "cut"],
 	"pot_shard": ["pot shard", {"clay": 3}, 3.0, 1.0],
-	"plantain": ["plantain", {"fibre": 3}, 2.0, 0.5],
-	"sprout": ["sprout", {"fibre": 1}, 0.5, 0.0],
-	"weed_rosette": ["weed", {"fibre": 2}, 1.0, 0.5],
-	"nettle": ["nettle", {"fibre": 3}, 2.0, 0.5],
-	"thistle": ["thistle", {"fibre": 2}, 2.0, 0.5],
-	"moss_clump": ["moss", {"fibre": 1}, 0.5, 0.0],
+	"plantain": ["plantain", {"fibre": 3}, 2.0, 0.5, "pull"],
+	"sprout": ["sprout", {"fibre": 1}, 0.5, 0.0, "pull"],
+	"weed_rosette": ["weed", {"fibre": 2}, 1.0, 0.5, "pull"],
+	"nettle": ["nettle", {"fibre": 3}, 2.0, 0.5, "pull"],
+	"thistle": ["thistle", {"fibre": 2}, 2.0, 0.5, "pull"],
+	"moss_clump": ["moss", {"fibre": 1}, 0.5, 0.0, "pull"],
 }
 ## Tall plants you bump into at the stem (a cylinder: radius and height as a
 ## share of the plant's size); their leaves are soft.
@@ -187,7 +187,7 @@ static func build(parent: Node3D, layout: LawnLayout) -> void:
 					var long := id in ["fallen_leaf", "twig"]  # cut anywhere along it
 					field.add(String(spec[0]), xf.origin, size * 0.45, spec[1], float(spec[2]), float(spec[3]),
 						mmi.multimesh, k, shapes[k] if k < shapes.size() else null, null,
-						xf.basis.get_euler().y, size if long else 0.0)
+						xf.basis.get_euler().y, size if long else 0.0, String(spec[4]) if spec.size() > 4 else "pick")
 	_tree_heroes(parent, layout, rng)
 
 

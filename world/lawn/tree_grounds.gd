@@ -618,7 +618,8 @@ func _build_dressing() -> void:
 			cs.position = ground + Vector3.UP * cyl.height * 0.5
 			base.add_child(cs)
 			add_child(base)
-			GatherField.of(get_parent()).add("fern", ground, cyl.radius + 2.0, {"fibre": 4}, 2.0, 0.5, null, -1, cs, mi)
+			GatherField.of(get_parent()).add("fern", ground, cyl.radius + 2.0, {"fibre": 4}, 2.0, 0.5, null, -1, cs, mi,
+				0.0, 0.0, "pull")
 		mi.name = String(d["model"])
 		mi.visibility_range_end = float(d.get("seen", 700.0))
 		mi.visibility_range_end_margin = 60.0
