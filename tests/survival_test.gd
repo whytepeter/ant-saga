@@ -16,6 +16,11 @@ extends SceneTree
 ## making twine and then an axe takes the ingredients and puts the axe on his
 ## back; food is eaten from the pack; a dropped stack can be picked up again.
 ## Esc pauses the world and Resume carries on.
+## Harvesting, Grounded's way: a pebble is picked up by hand; fists can't smash
+## a stone (the prompt says what it needs); three axe blows fell a grass stalk,
+## and the fallen stalk comes apart into four planks that lie on the ground to
+## pick up; a leaf comes apart in pieces; a velvet mite hit fights back and,
+## killed, leaves its fuzz.
 
 var level: Node3D
 var player: Player
@@ -51,6 +56,7 @@ func _run() -> void:
 	await _test_mist()
 	await _test_low_and_empty()
 	await _test_pack_and_crafting()
+	await _test_harvest()
 	await _test_pause()
 	await _test_day_and_night()
 	await _test_dew_cycle()
@@ -205,14 +211,14 @@ func _test_pack_and_crafting() -> void:
 	_check("a full pack takes what fits and says so", over > 0 and full == [&"pebble"] and inv.room_for(&"pebble") == 0,
 		"%d left over" % over)
 	inv.remove_item(&"pebble", inv.count(&"pebble") - 2)
-	inv.add_item(&"twig", 1)
+	inv.add_item(&"sprig", 1)
 	_check("making twine: 3 fibre into 1 twine", craft.make("twine") and inv.count(&"twine") == 1 and inv.count(&"fibre") == 37,
 		"fibre %d, twine %d" % [inv.count(&"fibre"), inv.count(&"twine")])
 	_check("the axe is known and can be made", craft.is_known("stone_axe") and craft.can_make("stone_axe"),
 		craft.blocker("stone_axe"))
 	var made := craft.make("stone_axe")
 	_check("making the axe puts it on his back", made and inv.main == Weapons.AXE and inv.count(&"pebble") == 0
-		and inv.count(&"twine") == 0 and inv.count(&"twig") == 0, "main %s" % inv.main)
+		and inv.count(&"twine") == 0 and inv.count(&"sprig") == 0, "main %s" % inv.main)
 	_check("and not a second one", not craft.can_make("stone_axe") and craft.blocker("stone_axe") == "You already have one", "")
 	survival.hunger = 40.0
 	inv.add_item(&"crumb", 1)
@@ -240,6 +246,101 @@ func _test_pack_and_crafting() -> void:
 	for i in inv.slots.size():
 		inv.slots[i] = {}
 	inv._recount()
+
+
+func _test_harvest() -> void:
+	var inv := player.get_node("Inventory") as Inventory
+	# a pebble by hand
+	var finds := level.get_node_or_null("LooseFinds")
+	var field := GatherField.of(level)
+	_check("pebbles lie about to pick up by hand", finds != null and field.count() > 300, "%d in the field" % field.count())
+	var pebblet: Gatherable = null
+	var near := player.global_position
+	var best := INF
+	for e: Dictionary in field.get("_entries"):
+		var sp: Dictionary = e["spec"]
+		if String(sp.get("id", "")) == "pebblet" and (e["at"] as Vector3).distance_to(near) < best:
+			best = (e["at"] as Vector3).distance_to(near)
+			near = e["at"]
+	player.teleport(near + Vector3(1.4, 0.4, 0.0), 0.0)
+	await _frames(40)
+	for g: Node in field.get_children():
+		if g is Gatherable and (g as Gatherable).is_hand() and (g as Node3D).global_position.distance_to(near) < 0.5:
+			pebblet = g as Gatherable
+	var before := inv.count(&"pebble")
+	_check("a pebble picked up by hand goes in the pack", pebblet != null and pebblet.take(player) and inv.count(&"pebble") == before + 1,
+		"pebbles %d" % inv.count(&"pebble"))
+	# bare hands: nothing to smash or chop with
+	var bare := Inventory.new()
+	var p := Harvest.prompt_for(Harvest.spec("pebbles"), bare)
+	_check("bare hands can't smash a stone, and it says so", not bool(p["ok"]) and String(p["need"]) == "Needs a hammer", str(p))
+	var chop_p := Harvest.prompt_for(Harvest.spec("grass"), bare)
+	_check("nor chop grass", not bool(chop_p["ok"]) and String(chop_p["need"]).begins_with("Needs an axe"), str(chop_p))
+	bare.free()
+	inv.add_weapon(Weapons.AXE, false)
+	# fell a grass stalk and chop it up
+	var blade := GrassField.nearest_blade(player.global_position, Vector2(0, -1), 40.0)
+	_check("grass stalks to chop", blade != null and GrassField.count() > 10000, "%d blades" % GrassField.count())
+	var axe := Harvest.best_tool(inv, Harvest.CHOP, 1)
+	for k in 2:
+		blade.hit(Harvest.CHOP, 1, float(axe["power"]), player.global_position, player)
+	var standing := not blade.is_gone()
+	blade.hit(Harvest.CHOP, 1, float(axe["power"]), player.global_position, player)
+	_check("three axe blows fell a grass stalk", standing and blade.is_gone(), "")
+	await _frames(120)
+	var fallen: Gatherable = null
+	for g: Node in level.find_children("*", "Gatherable", true, false):
+		if (g as Gatherable).display_name == "Fallen grass" and not (g as Gatherable).is_gone():
+			fallen = g as Gatherable
+	_check("it lies on the ground to chop", fallen != null and fallen.length > 10.0, "")
+	var pickups_before := get_nodes_in_group(ItemPickup.GROUP).size()
+	for k in 4:
+		fallen.hit(Harvest.CHOP, 1, 1.0, player.global_position, player)
+	await _frames(60)
+	var planks := 0
+	for it: Node in get_nodes_in_group(ItemPickup.GROUP):
+		if (it as ItemPickup).item == &"grass_plank":
+			planks += 1
+	_check("chopped, it comes apart into four planks on the ground", planks == 4
+		and (not is_instance_valid(fallen) or fallen.is_gone()),
+		"%d planks, %d pickups before" % [planks, pickups_before])
+	# a leaf in pieces
+	var leaf := Gatherable.make("Fallen leaf", player.global_position + Vector3(3, 0, 0), 3.0, Harvest.spec("fallen_leaf"))
+	level.add_child(leaf)
+	leaf.hit(Harvest.CHOP, 1, 1.0, player.global_position, player)
+	_check("a leaf comes apart a piece at a time", leaf.stage == 1 and not leaf.is_gone(), "stage %d" % leaf.stage)
+	# a mite, riled and killed
+	var life := level.get_node_or_null("AmbientLife") as AmbientLife
+	var mites := life.critters("velvet_mite") if life != null else ([] as Array[Node3D])
+	_check("velvet mites about", not mites.is_empty(), "")
+	if not mites.is_empty():
+		var mite := mites[0]
+		player.teleport(mite.global_position + Vector3(2.5, 0.5, 0.0), 0.0)
+		await _frames(5)
+		var body: Node = null
+		for c: Node in mite.get_children():
+			if c.has_method("take_hit"):
+				body = c
+		var combat := player.get_node("Combat") as PlayerCombat
+		combat.health = combat.max_health
+		body.call("take_hit", 1.0, player.global_position, &"light", player)
+		await _frames(150)
+		_check("a mite hit turns on him and nips", combat.health < combat.max_health, "health %.0f" % combat.health)
+		body.call("take_hit", 5.0, player.global_position, &"light", player)
+		await _frames(60)
+		var fuzz := 0
+		for it: Node in get_nodes_in_group(ItemPickup.GROUP):
+			if (it as ItemPickup).item == &"mite_fuzz":
+				fuzz += 1
+		_check("killed, it leaves its fuzz", fuzz == 2, "%d fuzz" % fuzz)
+		combat.health = combat.max_health
+	# clear up for what follows
+	for it: Node in get_nodes_in_group(ItemPickup.GROUP):
+		it.queue_free()
+	for i in inv.slots.size():
+		inv.slots[i] = {}
+	inv._recount()
+	await _frames(2)
 
 
 func _test_pause() -> void:

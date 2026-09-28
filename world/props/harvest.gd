@@ -1,0 +1,139 @@
+class_name Harvest
+extends RefCounted
+## How the garden comes apart, the way Grounded does it. Small loose things
+## (pebbles, sprigs, a tuft of fibre, the pieces other things drop) are picked
+## up by hand. Everything else needs a tool: chopped with an axe or the knife
+## (grass, leaves, weeds, mushrooms, twigs), or smashed with a hammer (stones,
+## pot shards, amber). Each tool has a tier, and a tough thing (a toadstool)
+## needs a better one. Fists harvest nothing.
+##
+## Nothing big comes away whole: a thing takes `hits` blows (at an axe's
+## strength; the knife cuts at half) and breaks into `stages` pieces, each
+## spilling its `drops` on the ground as it comes away.
+
+const HAND := "hand"
+const CHOP := "chop"
+const BUST := "bust"
+
+## What each kind of thing is (by its model or kind id).
+##   name    what the prompt calls it
+##   tool    HAND, CHOP or BUST;  tier  the tool's tier it needs
+##   hits    blows to take it all;  stages  pieces it breaks into
+##   drops   what each piece spills (item id -> count); a hand pick gives it
+##   gesture how he takes it by hand (Player.play_gather): "pick" or "pull"
+const SPECS := {
+	# picked up by hand
+	"sprout": {"name": "Sprig", "tool": HAND, "drops": {"sprig": 1}, "gesture": "pull"},
+	"moss_clump": {"name": "Moss", "tool": HAND, "drops": {"fibre": 1}, "gesture": "pull"},
+	"pebblet": {"name": "Pebble", "tool": HAND, "drops": {"pebble": 1}},
+	# chopped
+	"grass": {"name": "Grass stalk", "tool": CHOP, "tier": 1, "hits": 3, "stages": 1, "drops": {"fibre": 1}},
+	"fallen_grass": {"name": "Fallen grass", "tool": CHOP, "tier": 1, "hits": 4, "stages": 4, "drops": {"grass_plank": 1}},
+	"fallen_leaf": {"name": "Fallen leaf", "tool": CHOP, "tier": 1, "hits": 4, "stages": 4, "drops": {"leaf": 1}},
+	"clover": {"name": "Clover", "tool": CHOP, "tier": 1, "hits": 3, "stages": 3, "drops": {"clover": 1}},
+	"cone_mushrooms": {"name": "Mushroom", "tool": CHOP, "tier": 1, "hits": 3, "stages": 3, "drops": {"mushroom": 1}},
+	"inky_cap": {"name": "Inky cap", "tool": CHOP, "tier": 1, "hits": 2, "stages": 2, "drops": {"mushroom": 1}},
+	"glow_mushroom": {"name": "Glow mushroom", "tool": CHOP, "tier": 1, "hits": 2, "stages": 2, "drops": {"glow_spores": 1}},
+	"toadstools": {"name": "Toadstool", "tool": CHOP, "tier": 2, "hits": 8, "stages": 4, "drops": {"mushroom": 2}},
+	"bark_chips": {"name": "Bark chip", "tool": CHOP, "tier": 1, "hits": 2, "stages": 2, "drops": {"bark": 1}},
+	"twig": {"name": "Fallen twig", "tool": CHOP, "tier": 1, "hits": 6, "stages": 3, "drops": {"twig": 1}},
+	"eraser": {"name": "Eraser", "tool": CHOP, "tier": 1, "hits": 4, "stages": 2, "drops": {"rubber": 1}},
+	"plantain": {"name": "Plantain", "tool": CHOP, "tier": 1, "hits": 3, "stages": 3, "drops": {"fibre": 1}},
+	"weed_rosette": {"name": "Weed", "tool": CHOP, "tier": 1, "hits": 2, "stages": 2, "drops": {"fibre": 1}},
+	"nettle": {"name": "Nettle", "tool": CHOP, "tier": 1, "hits": 3, "stages": 3, "drops": {"fibre": 1}},
+	"thistle": {"name": "Thistle", "tool": CHOP, "tier": 1, "hits": 3, "stages": 3, "drops": {"fibre": 1}},
+	"fern": {"name": "Fern", "tool": CHOP, "tier": 1, "hits": 3, "stages": 3, "drops": {"fibre": 1}},
+	"sap": {"name": "Sap", "tool": CHOP, "tier": 1, "hits": 2, "stages": 2, "drops": {"resin": 1}},
+	# smashed
+	"pebbles": {"name": "Stone", "tool": BUST, "tier": 1, "hits": 4, "stages": 2, "drops": {"pebble": 2}},
+	"stone": {"name": "Stone", "tool": BUST, "tier": 1, "hits": 4, "stages": 2, "drops": {"pebble": 2}},
+	"pot_shard": {"name": "Pot shard", "tool": BUST, "tier": 1, "hits": 4, "stages": 2, "drops": {"clay": 1}},
+	"amber": {"name": "Amber", "tool": BUST, "tier": 1, "hits": 3, "stages": 1, "drops": {"amber": 1}},
+}
+
+
+## The spec for `id` with its blanks filled in ({} if it isn't one).
+static func spec(id: String) -> Dictionary:
+	if not SPECS.has(id):
+		return {}
+	var s: Dictionary = (SPECS[id] as Dictionary).duplicate()
+	s["id"] = id
+	s["tier"] = int(s.get("tier", 1))
+	s["hits"] = float(s.get("hits", 1.0))
+	s["stages"] = maxi(int(s.get("stages", 1)), 1)
+	s["gesture"] = String(s.get("gesture", "pick"))
+	return s
+
+
+## The colour of what flies off a blow: stone grey, plant green, mushroom
+## pale, rubber dark, wood brown.
+static func chip_colour(s: Dictionary) -> Color:
+	var id := String(s.get("id", ""))
+	if String(s.get("tool", "")) == BUST:
+		return Color(0.82, 0.62, 0.3) if id == "amber" else Color(0.56, 0.55, 0.52)
+	if id in ["cone_mushrooms", "inky_cap", "toadstools", "glow_mushroom"]:
+		return Color(0.88, 0.82, 0.7)
+	if id == "eraser":
+		return Color(0.75, 0.35, 0.4)
+	if id in ["twig", "bark_chips"]:
+		return Color(0.52, 0.38, 0.24)
+	if id == "sap":
+		return Color(0.95, 0.65, 0.2)
+	if id in ["grass", "fallen_grass", "fallen_leaf", "clover", "plantain", "weed_rosette", "nettle", "thistle", "fern"]:
+		return Color(0.5, 0.64, 0.28) if id != "fallen_leaf" else Color(0.72, 0.58, 0.28)
+	return Color(0.62, 0.48, 0.3)
+
+
+static func verb(tool: String) -> String:
+	match tool:
+		CHOP:
+			return "Chop"
+		BUST:
+			return "Smash"
+	return "Pick up"
+
+
+## What the prompt says when he hasn't the tool ("Needs a hammer").
+static func need_text(tool: String, tier: int) -> String:
+	match tool:
+		CHOP:
+			return "Needs an axe or the knife" if tier <= 1 else "Needs a stronger axe"
+		BUST:
+			return "Needs a hammer" if tier <= 1 else "Needs a stronger hammer"
+	return ""
+
+
+## The best thing he carries for `tool` at `tier` or better: {"weapon", "tier",
+## "power"}, the one in his hands first if it will do; {} if he has nothing.
+static func best_tool(inventory: Inventory, tool: String, tier: int) -> Dictionary:
+	if inventory == null or tool == HAND:
+		return {}
+	var carried: Array[StringName] = [inventory.equipped]
+	for w: StringName in [inventory.main, inventory.secondary]:
+		if w != &"" and not w in carried:
+			carried.append(w)
+	if inventory.has_knife and not Weapons.KNIFE in carried:
+		carried.append(Weapons.KNIFE)
+	var best := {}
+	for w: StringName in carried:
+		var t: Dictionary = Weapons.tool(w)
+		if not t.has(tool):
+			continue
+		var spec_t: Array = t[tool]
+		if int(spec_t[0]) < tier:
+			continue
+		var power := float(spec_t[1])
+		if best.is_empty() or power > float(best["power"]) + 0.01:
+			best = {"weapon": w, "tier": int(spec_t[0]), "power": power}
+	return best
+
+
+## The prompt for a thing that takes `s` (a spec), for this inventory:
+## {"name", "verb", "ok", "need", "hand"}.
+static func prompt_for(s: Dictionary, inventory: Inventory) -> Dictionary:
+	var tool := String(s.get("tool", HAND))
+	var out := {"name": String(s.get("name", "")), "verb": verb(tool), "ok": true, "need": "", "hand": tool == HAND}
+	if tool != HAND and best_tool(inventory, tool, int(s.get("tier", 1))).is_empty():
+		out["ok"] = false
+		out["need"] = need_text(tool, int(s.get("tier", 1)))
+	return out

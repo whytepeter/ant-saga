@@ -197,13 +197,25 @@ func _strike(move: Dictionary) -> void:
 		hit_any[target] = true
 		target.call("take_hit", float(move["damage"]), player.global_position, kind, player)
 		attack_landed.emit(target, kind)
-	# a blade also cuts what it meets (Choppable: twigs, silk); fists glance off
+	# a tool also harvests what it meets (Choppable, Gatherable: Harvest): the
+	# axe and knife chop, the hammer smashes, fists and the spear do nothing
+	var inventory := player.get_node_or_null("Inventory") as Inventory
+	var tool := Weapons.tool(inventory.equipped if inventory != null else Weapons.FISTS)
+	if tool.is_empty():
+		return
 	query.collision_mask = Choppable.CHOP_LAYER
 	for hit: Dictionary in player.get_world_3d().direct_space_state.intersect_shape(query, 8):
 		var thing := hit["collider"] as Choppable
-		if thing != null and not hit_any.has(thing):
-			hit_any[thing] = true
-			thing.chop(float(move.get("chop", 0.0)), player.global_position, player)
+		if thing == null or hit_any.has(thing):
+			continue
+		hit_any[thing] = true
+		var how: String = tool.keys()[0]
+		var t: Array = tool[how]
+		# a blade's cut is its move's "chop" (the axe's heavy swing 2, charged 3;
+		# the knife 0.5); a hammer's heavy smash counts twice
+		var power := float(move.get("chop", float(t[1]))) if how == Harvest.CHOP \
+			else float(t[1]) * (2.0 if kind == &"heavy" else 1.0)
+		thing.hit(how, int(t[0]), power, player.global_position, player)
 
 
 ## Turns to the nearest enemy near the camera's aim, else to the move input or the aim.

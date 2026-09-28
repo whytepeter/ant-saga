@@ -2134,6 +2134,7 @@ func _build_grass(parent: Node3D) -> void:
 				(_chunk(chunks, x, z)["flat"] as Array).append(Transform3D(basis, Vector3(x, base_h + 0.03, z)))
 
 	var mat := _grass_material()
+	GrassField.reset(parent, mat, BLADE_HEIGHT)  # the blades he can chop (Harvest "grass")
 	var collar_mesh := GrassMeshes.soil_collar(rng)
 	var collar_mat := _ground_material()
 	var flat_mat := mat.duplicate() as ShaderMaterial  # blades pressed flat where Amodu hid: bruised, drying
@@ -2152,18 +2153,22 @@ func _build_grass(parent: Node3D) -> void:
 
 	for key: Vector2i in chunks:
 		var bucket: Dictionary = chunks[key]
+		var mms: Array = [null, null]
 		for variant in 2:
 			var xforms: Array = bucket["standing"][variant]
 			if xforms.is_empty():
 				continue
-			shadows.add(_multimesh(parent, blade_meshes[variant], mat, xforms, bucket["colors"][variant]))
+			var mmi := _multimesh(parent, blade_meshes[variant], mat, xforms, bucket["colors"][variant])
+			shadows.add(mmi)
+			mms[variant] = mmi.multimesh
 		if not (bucket["flat"] as Array).is_empty():
 			_multimesh(parent, blade_meshes[0], flat_mat, bucket["flat"], [], false)
 		if not (bucket["collars"] as Array).is_empty():
 			var heaps := _multimesh(parent, collar_mesh, collar_mat, bucket["collars"], bucket["collar_colors"], false)
 			heaps.visibility_range_end = 160.0
-		if physics:
-			_grass_body(bucket)
+		var body := _grass_body(bucket) if physics else RID()
+		if mms[0] != null or mms[1] != null:
+			GrassField.register(mms, bucket["standing"], bucket["colors"], body)
 
 
 func _chunk(chunks: Dictionary, x: float, z: float) -> Dictionary:
@@ -2191,8 +2196,9 @@ func _multimesh(parent: Node3D, mesh: Mesh, mat: Material, xforms: Array, colors
 	return mmi
 
 
-## One static body per chunk carrying a box for the lower half of every standing blade.
-func _grass_body(bucket: Dictionary) -> void:
+## One static body per chunk carrying a box for the lower half of every standing
+## blade (variant 0's, then variant 1's, then the clovers': GrassField counts on it).
+func _grass_body(bucket: Dictionary) -> RID:
 	var body := PhysicsServer3D.body_create()
 	PhysicsServer3D.body_set_mode(body, PhysicsServer3D.BODY_MODE_STATIC)
 	PhysicsServer3D.body_set_collision_layer(body, GRASS_LAYER)
@@ -2206,6 +2212,7 @@ func _grass_body(bucket: Dictionary) -> void:
 		PhysicsServer3D.body_add_shape(body, _grass_shapes[1], Transform3D(Basis(), xf.origin + Vector3.UP * 5.0))
 	PhysicsServer3D.body_set_space(body, get_world_3d().space)
 	_grass_bodies.append(body)
+	return body
 
 
 func _free_grass_physics() -> void:

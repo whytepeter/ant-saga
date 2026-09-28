@@ -557,6 +557,147 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-09-27T23:26:15.298Z"
+    },
+    {
+      "id": "bug-038",
+      "timestamp": "2026-09-28T07:05:12.136Z",
+      "error_message": "Missing await",
+      "file": "tests/_tmp_wormways.gd",
+      "root_cause": "Async call without await — returned Promise instead of value",
+      "fix": "Added await to async call | Also: func _walk_3d(target: Vector3, seconds: float) -> void:; for f in int(seconds * 60.0):",
+      "tags": [
+        "auto-detected",
+        "async-fix",
+        "gd"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-09-28T07:05:12.168Z"
+    },
+    {
+      "id": "bug-039",
+      "timestamp": "2026-09-28T07:37:54.770Z",
+      "error_message": "Significant refactor of great_worm.gd",
+      "file": "creatures/earthworm/great_worm.gd",
+      "root_cause": "6 lines replaced/restructured",
+      "fix": "Rewrote 11→36 lines (6 removed) | Also: ## Back the way it came (burned, or done): it pull; var back := (_from - _head)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "gd"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-09-28T07:37:54.795Z"
+    },
+    {
+      "id": "bug-040",
+      "timestamp": "2026-09-28T07:41:21.670Z",
+      "error_message": "Null/undefined access in earthworm.gd",
+      "file": "creatures/earthworm/earthworm.gd",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check) | Also: # worms feel footfalls: he runs up close and it flinches and; if scare != null and _flee <= 0.0 and state == State.CRAWLIN",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "gd"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-09-28T07:41:21.692Z"
+    },
+    {
+      "id": "bug-041",
+      "timestamp": "2026-09-28T07:47:32.068Z",
+      "error_message": "Null/undefined access in lawn_level.gd",
+      "file": "world/lawn/lawn_level.gd",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check) | Also: # (deep in the Wormways is under the lawn, not out of the wo; # the lowest burrow, or far outside any, counts as a fall)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "gd"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-09-28T07:47:32.096Z"
+    },
+    {
+      "id": "bug-042",
+      "timestamp": "2026-09-28T08:11:04.908Z",
+      "error_message": "Significant refactor of nature_models.gd",
+      "file": "world/props/nature_models.gd",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 10→27 lines (2 removed) | Also: cs.shape = v.shape(kind); cs.transform = xf * v.fix",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "gd"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-09-28T08:11:04.971Z"
+    },
+    {
+      "id": "bug-043",
+      "timestamp": "2026-09-28",
+      "error_message": "Amodu could walk into the rotten apples in the tree grounds (Windfall Orchard)",
+      "file": "world/props/nature_models.gd",
+      "root_cause": "NatureModels.solid put the placement (a squashed, turned apple: non-uniform scale and rotation) on the CollisionShape3D transform; physics can't scale a shape unevenly, so the hull no longer matched the apple",
+      "fix": "NatureModels.baked_shape bakes the placement into the hull points (or trimesh faces) and the CollisionShape3D keeps an identity transform, as LawnBuilder._prop_solid already did",
+      "tags": [
+        "physics",
+        "collision",
+        "non-uniform-scale",
+        "convex"
+      ]
+    },
+    {
+      "error_message": "Loose pebbles at Spider's Edge buried in the ground; teleporting to one dropped Amodu under the terrain (respawn)",
+      "file": "world/lawn/loose_finds.gd",
+      "root_cause": "Placed at layout.height_at (the flat lawn) where the apple tree's base raises the ground.",
+      "fix": "Use TreeBase.ground_height(layout, x, z) for anything placed on the ground near the tree.",
+      "tags": [
+        "placement",
+        "terrain",
+        "tree-base"
+      ],
+      "id": "bug-044",
+      "timestamp": "2026-09-28T08:35:38.101Z",
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-28T08:35:38.101Z"
+    },
+    {
+      "error_message": "GrassField.nearest_blade found nothing with a long reach",
+      "file": "world/lawn/grass_field.gd",
+      "root_cause": "It only searched the 3x3 cells (4 m) round the point whatever reach it was given.",
+      "fix": "Search ceil((reach + 1) / CELL) cells each way.",
+      "tags": [
+        "search",
+        "grass"
+      ],
+      "id": "bug-045",
+      "timestamp": "2026-09-28T08:35:38.101Z",
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-28T08:35:38.101Z"
+    },
+    {
+      "error_message": "Parse Error: Identifier \"LawnBuilder\" not declared in the current scope (grass_field.gd) broke every script that depends on player.gd",
+      "file": "world/lawn/grass_field.gd",
+      "root_cause": "lawn_builder.gd has no class_name, so its constants can't be named from another script.",
+      "fix": "Pass the value in (GrassField.reset(parent, mat, BLADE_HEIGHT)).",
+      "tags": [
+        "gdscript",
+        "class_name",
+        "parse"
+      ],
+      "id": "bug-046",
+      "timestamp": "2026-09-28T08:35:38.101Z",
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-28T08:35:38.101Z"
     }
   ]
 }

@@ -1,11 +1,13 @@
 class_name Choppable
 extends StaticBody3D
 ## Something Amodu can cut with a blade (docs/GAMEPLAY.md: the axe is a tool as
-## much as a weapon). Blows land here from PlayerCombat like they land on
-## creatures: each has a `chop` power (the axe 1, its heavy swing 2, its charged
-## swing 3; the knife 0.5; fists 0). A blow weaker than `needs` glances off
-## ("Too tough for the knife"); stronger ones wear down `health` until it comes
-## apart: the pieces fall away and sink, and its collision goes.
+## much as a weapon). Blows land here (`hit`: the tool, its tier and power,
+## Harvest) from a swing, E on it (Player.harvest_swing) or PlayerCombat: the
+## axe cuts at 1 (its heavy swing 2, its charged swing 3), the knife at half;
+## fists and hammers glance off. Each blow wears down `health` until it comes
+## apart: the pieces fall away and sink, a twig's `drops` spill out to pick up,
+## and its collision goes. Facing it, he sees it outlined and named (prompt,
+## outline_parts).
 ##
 ## Kinds (layout "choppables", or the Spider's Edge trip lines):
 ##   twig  a fallen twig across the way: solid, needs the axe (1), 3 cuts' worth
@@ -24,6 +26,12 @@ const CLIMBABLE_LAYER := 1 << 2
 @export var display_name := "twig"
 ## How long it is along its own Z (m): a twig or a trip line is long and thin.
 var length := 1.0
+## What spills out when it comes apart (item id -> count; Gatherable spills per piece).
+var drops := {}
+## How far from its middle (or its line) he can reach it from, beyond arm's length.
+var reach_radius := 1.5
+## The colour of the bits that fly off a blow (wood: brown).
+var chip_colour := Color(0.62, 0.48, 0.3)
 
 var _visual: Node3D
 var _base: Transform3D
@@ -38,6 +46,8 @@ static func twig(a: Vector3, b: Vector3, thick := 3.2) -> Choppable:
 	c.needs = 1.0
 	c.health = 3.0
 	c.display_name = "twig"
+	c.drops = {"twig": 2}
+	c.reach_radius = thick * 0.5 + 0.5
 	c.collision_layer = WORLD_LAYER | CLIMBABLE_LAYER | CHOP_LAYER
 	var length := a.distance_to(b)
 	c.length = length
@@ -121,13 +131,58 @@ func _process(delta: float) -> void:
 	_visual.transform = _base.translated_local(Vector3(sin(_shake * 90.0) * 0.12 * k, 0.0, 0.0))
 
 
-## A blade's blow with `power` (Weapons "chop"). True if it bit.
-func chop(power: float, from: Vector3, by: Node3D) -> bool:
+## What it takes (Harvest): [tool, tier]. Any blade cuts a twig or silk.
+func harvest_tool() -> Array:
+	return [Harvest.CHOP, 1]
+
+
+## What the prompt says for him ({"name", "verb", "ok", "need", "hand"}).
+func prompt(inventory: Inventory) -> Dictionary:
+	var need := harvest_tool()
+	var p := Harvest.prompt_for({"name": display_name.capitalize(), "tool": need[0], "tier": need[1]}, inventory)
+	if kind == "silk":
+		p["verb"] = "Cut"
+	return p
+
+
+## Its meshes and where they are, for the outline: [[Mesh, Transform3D], ...].
+func outline_parts() -> Array:
+	var out := []
+	if _visual != null:
+		for n: Node in _visual.find_children("*", "MeshInstance3D", true, false):
+			var mi := n as MeshInstance3D
+			if mi.mesh != null and mi.is_visible_in_tree():
+				out.append([mi.mesh, mi.global_transform])
+	return out
+
+
+## The point on it nearest `from` (along its line, for a long thing).
+func aim_point(from: Vector3) -> Vector3:
+	var local := global_transform.affine_inverse() * from
+	return global_transform * Vector3(0.0, 0.0, clampf(local.z, -length * 0.5, length * 0.5))
+
+
+func is_gone() -> bool:
+	return _gone
+
+
+## A blow from a tool (Harvest.CHOP or BUST) of `tier` with `power`. True if it bit.
+func hit(tool: String, tier: int, power: float, from: Vector3, by: Node3D) -> bool:
 	if _gone:
 		return false
-	if power < needs:
+	var need := harvest_tool()
+	if tool != String(need[0]) or tier < int(need[1]) or power <= 0.0:
 		_glance(by)
 		return false
+	return _wear(power, from, by)
+
+
+## A blade's blow with `power` (Weapons "chop"; the old way in, kept for callers).
+func chop(power: float, from: Vector3, by: Node3D) -> bool:
+	return hit(Harvest.CHOP, 1, power, from, by)
+
+
+func _wear(power: float, from: Vector3, by: Node3D) -> bool:
 	health -= power
 	_shake = 0.25
 	_chips(from)
@@ -141,15 +196,19 @@ func _glance(by: Node3D) -> void:
 	_shake = 0.12
 	_sound(false)
 	if by is Player:
-		var inventory := by.get_node_or_null("Inventory") as Inventory
-		var held := Weapons.display_name(inventory.equipped).to_lower() if inventory != null else "that"
-		(by as Player).flash_hint("Too tough for the %s" % held if held != "bare fists" else "Too tough to cut by hand", 1.6)
+		var need := harvest_tool()
+		(by as Player).flash_hint(Harvest.need_text(String(need[0]), int(need[1])), 1.6)
 
 
 func _fall(by: Node3D) -> void:
 	_gone = true
 	collision_layer = 0
 	chopped.emit(by)
+	# its pieces tumble out toward him, to pick up
+	var toward := (by.global_position if by != null else global_position) - global_position
+	for id: String in drops:
+		ItemPickup.spill(get_parent(), aim_point(by.global_position if by != null else global_position) + Vector3.UP * 1.0,
+			StringName(id), int(drops[id]), toward)
 	if _visual == null:
 		queue_free()
 		return
@@ -171,10 +230,20 @@ func _fall(by: Node3D) -> void:
 
 ## A few bits flying off where the blade bit.
 func _chips(from: Vector3) -> void:
+	var at := from
+	at.y = global_position.y + 0.8
+	chips_at(get_parent(), global_position.lerp(at, 0.3), Color(0.95, 0.95, 1.0) if kind == "silk" else chip_colour,
+		6 if kind == "silk" else 14)
+
+
+## Bits of `colour` bursting out at `at` (a blow landing), under `parent`.
+static func chips_at(parent: Node, at: Vector3, colour: Color, amount := 14) -> void:
+	if parent == null or not parent.is_inside_tree():
+		return
 	var p := CPUParticles3D.new()
 	p.one_shot = true
 	p.emitting = false
-	p.amount = 14 if kind != "silk" else 6
+	p.amount = amount
 	p.lifetime = 0.7
 	p.explosiveness = 0.95
 	p.direction = Vector3.UP
@@ -187,15 +256,13 @@ func _chips(from: Vector3) -> void:
 	var bit := BoxMesh.new()
 	bit.size = Vector3.ONE * 0.5
 	var mat := StandardMaterial3D.new()
-	mat.albedo_color = Color(0.62, 0.48, 0.3) if kind != "silk" else Color(0.95, 0.95, 1.0)
+	mat.albedo_color = colour
 	bit.material = mat
 	p.mesh = bit
-	get_parent().add_child(p)
-	var at := from
-	at.y = global_position.y + 0.8
-	p.global_position = global_position.lerp(at, 0.3)
+	parent.add_child(p)
+	p.global_position = at
 	p.emitting = true
-	get_tree().create_timer(1.2).timeout.connect(p.queue_free)
+	parent.get_tree().create_timer(1.2).timeout.connect(p.queue_free)
 
 
 func _sound(bit: bool) -> void:

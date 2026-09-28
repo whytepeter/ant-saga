@@ -375,7 +375,7 @@ func _drop(s: _Slot) -> void:
 	var taken := inventory.take_slot(s.index)
 	if taken.is_empty():
 		return
-	ItemPickup.drop(player.get_parent(), player.global_position, StringName(taken["id"]), int(taken["count"]))
+	ItemPickup.drop(player.get_parent(), player.global_position, StringName(taken["id"]), int(taken["count"]), true)
 
 
 func _flash_line(text: String) -> void:

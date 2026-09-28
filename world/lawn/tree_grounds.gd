@@ -249,7 +249,7 @@ func _build_litter() -> void:
 		cs.transform = xforms[k] * prop.fix
 		body.add_child(cs)
 		var size := xforms[k].basis.get_scale().x
-		field.add("leaf", xforms[k].origin, size * 0.45, {"leaf": 2}, 1.0, 0.0, mmi.multimesh, k, cs, null,
+		field.add_spec("fallen_leaf", xforms[k].origin, size * 0.45, mmi.multimesh, k, cs, null,
 			xforms[k].basis.get_euler().y, size)
 
 
@@ -471,7 +471,7 @@ func _build_sap_falls() -> void:
 		body.position = Vector3(p.x, TreeBase.ground_height(layout, p.x, p.y) + r * 0.3, p.y)
 		body.rotation = Vector3(_rng.randf(), _rng.randf() * TAU, _rng.randf())
 		add_child(body)
-		GatherField.of(get_parent()).add("amber", body.position, r + 1.0, {"amber": 1}, 1.0, 0.5, null, -1, cs, body)
+		GatherField.of(get_parent()).add_spec("amber", body.position, r + 1.0, null, -1, cs, body)
 
 
 ## A tube through `pts` (radius per point) into `st`, capped at the bottom end.
@@ -618,8 +618,7 @@ func _build_dressing() -> void:
 			cs.position = ground + Vector3.UP * cyl.height * 0.5
 			base.add_child(cs)
 			add_child(base)
-			GatherField.of(get_parent()).add("fern", ground, cyl.radius + 2.0, {"fibre": 4}, 2.0, 0.5, null, -1, cs, mi,
-				0.0, 0.0, "pull")
+			GatherField.of(get_parent()).add_spec("fern", ground, cyl.radius + 2.0, null, -1, cs, mi)
 		mi.name = String(d["model"])
 		mi.visibility_range_end = float(d.get("seen", 700.0))
 		mi.visibility_range_end_margin = 60.0
@@ -640,7 +639,7 @@ func _build_dressing() -> void:
 		var mi := NatureModels.solid(self, v, xf, "convex", WORLD_LAYER | CLIMBABLE_LAYER)
 		mi.name = "Stone"
 		var stone_body := get_child(get_child_count() - 1) as StaticBody3D
-		GatherField.of(get_parent()).add("stone", ground, size * 0.5, {"pebble": 3}, 2.0, 1.0, null, -1,
+		GatherField.of(get_parent()).add_spec("stone", ground, size * 0.5, null, -1,
 			stone_body.get_child(0) as CollisionShape3D, mi)
 		# small stones: only near, and no shadow past the first cascade's worth
 		mi.visibility_range_end = 160.0 + size * 12.0

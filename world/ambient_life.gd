@@ -12,7 +12,12 @@ extends Node3D
 ## bees about the flowers, ladybirds where the aphids are, mites on bare soil,
 ## springtails in damp litter, skaters on the puddle. Nothing follows Amodu.
 ##
-## Decoration only: no collision, simple steering. Wings, tails and legs move
+## Mostly decoration: simple steering. The small ground creatures (PREY: aphids,
+## springtails, velvet mites) can be hit and killed for parts, the way
+## Grounded's aphids and mites give meat and fuzz: hit, a mite turns and chases
+## him, nipping, while springtails and aphids bolt; killed, one flips over and
+## leaves its parts on the ground (ItemPickup), and another turns up at its home
+## a while later, out of his sight. Wings, tails and legs move
 ## in the creature shader (world/shaders/creature.gdshader): ladybirds and mites
 ## step with alternating legs while they walk and stand still when they stop. Speeds are staged, not
 ## scaled (a real butterfly at ×360 would cross the level in a second).
@@ -39,7 +44,16 @@ const KINDS := {
 ## skater is about 1.7 cm across its legs (6 m here), not a heron.
 const SIZES := {"water_strider": 6.0}
 ## Ground crawlers: walking speed (m/s, staged), how far they wander per leg.
-const CRAWL := {"ladybug": [2.0, 14.0], "velvet_mite": [2.8, 9.0]}
+const CRAWL := {"ladybug": [2.0, 14.0], "velvet_mite": [2.8, 9.0], "aphid": [1.2, 5.0]}
+## What he can kill: hit points, what it leaves, what it does when hit.
+const PREY := {
+	"aphid": {"hp": 2.0, "drops": {"bug_meat": 1, "honeydew": 1}, "angry": "flee"},
+	"springtail": {"hp": 2.0, "drops": {"bug_meat": 1}, "angry": "flee"},
+	"velvet_mite": {"hp": 4.0, "drops": {"mite_fuzz": 2}, "angry": "bite", "bite": 4.0},
+}
+## Seconds before a killed one's replacement turns up at its home.
+const RESPAWN := 150.0
+const CREATURES_LAYER := 1 << 3
 ## Who lives where: [kind, count, home]. A home is a layout area, "dandelion"
 ## (round the dandelion), "rut" (on or over the puddle) or "rut_bank" (the damp
 ## ground round it).
@@ -51,7 +65,7 @@ const HABITATS := [
 	["ladybug", 4, "flower_bed"], ["ladybug", 3, "dandelion"], ["ladybug", 2, "blade_forest"],
 	["velvet_mite", 4, "bare_patch"], ["velvet_mite", 2, "backpack_hollow"],
 	["springtail", 8, "windfall_roots"], ["springtail", 6, "rut_bank"],
-	["aphid", 14, "dandelion"],
+	["aphid", 14, "dandelion"], ["aphid", 6, "flower_bed"], ["aphid", 5, "blade_forest"],
 ]
 
 ## A ladybird opened its wing cases and took off (GardenAudio gives it a whirr).
@@ -70,6 +84,9 @@ var _time := 0.0
 var _dust: GPUParticles3D
 var _rng := RandomNumberGenerator.new()
 var _frame := 0
+var _props := {}  # kind -> GardenProps.Prop
+var _mats := {}  # kind -> the creature material
+var _respawns: Array[Dictionary] = []  # {kind, home, at: seconds}
 
 
 func setup(l: LawnLayout, player: Node3D) -> void:
@@ -90,37 +107,15 @@ func _ready() -> void:
 	_ripple_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	_ripple_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	_ripple_mat.albedo_color = Color(0.9, 0.95, 1.0, 0.5)
-	var mats := {}
 	var aphids := 0
 	for habitat: Array in HABITATS:
 		var kind: String = habitat[0]
-		var spec: Array = KINDS[kind]
-		var prop := GardenProps.get_prop(String(spec[0]))
-		if prop == null:
-			continue
-		if not mats.has(kind):
-			mats[kind] = GardenProps.creature_material(prop, spec[2])
-		var mat: ShaderMaterial = mats[kind]
 		var home := _home(String(habitat[2]))
 		for k in int(habitat[1]):
-			var mi := GardenProps.instance(prop, Transform3D.IDENTITY)
-			mi.material_override = mat
-			mi.set_instance_shader_parameter("phase", _rng.randf() * TAU)
-			mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON if kind in ["butterfly", "dragonfly", "ladybug"] \
-				else GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-			var holder := Node3D.new()
-			holder.add_child(mi)
-			add_child(holder)
-			var size := float(SIZES.get(kind, prop.size))
-			mi.transform = Transform3D(Basis().scaled(Vector3.ONE * size * _rng.randf_range(0.8, 1.15)), Vector3.ZERO) * prop.fix
-			mi.visibility_range_end = 320.0 if kind in ["butterfly", "dragonfly", "bee"] else 180.0
-			holder.global_position = _start_point(kind, home)
-			if kind == "aphid":
-				_perch_on_stalk(holder, aphids)
+			var perched := kind == "aphid" and String(home["id"]) == "dandelion"
+			_spawn(kind, home, aphids if perched else -1)
+			if perched:
 				aphids += 1
-			_critters.append({"kind": kind, "node": holder, "yaw_offset": float(spec[3]), "vel": Vector3.ZERO,
-				"wait": _rng.randf_range(0.0, 3.0), "seed": _rng.randf() * 10.0, "target": holder.global_position,
-				"hop_t": -1.0, "from": holder.global_position, "hop_time": 1.0, "arc": 0.0, "home": home, "skip": 0.0})
 	_dust = _particles(260, 0.07, Color(1.0, 0.95, 0.8), 28.0, 14.0, 0.25)
 	var clock_lm: Dictionary = layout.item("landmarks", "dandelion_clock")
 	var seeds := _particles(24, 1.1, Color(0.97, 0.96, 0.92), 6.0, 5.0, 0.0, 40.0)
@@ -130,6 +125,118 @@ func _ready() -> void:
 	spm.initial_velocity_max = 3.0
 	spm.gravity = Vector3(0.6, 0.05, 0.2)
 	seeds.global_position = layout.ground_point(clock_lm["pos"], float(clock_lm["size"][1]) + 3.0)
+
+
+## One critter of `kind` at `home`; `perch` >= 0 puts an aphid up the
+## dandelion's stalk (that place in the spiral). {} if it has no model.
+func _spawn(kind: String, home: Dictionary, perch := -1) -> Dictionary:
+	var spec: Array = KINDS[kind]
+	if not _props.has(kind):
+		_props[kind] = GardenProps.get_prop(String(spec[0]))
+		if _props[kind] != null:
+			_mats[kind] = GardenProps.creature_material(_props[kind], spec[2])
+	var prop: GardenProps.Prop = _props[kind]
+	if prop == null:
+		return {}
+	var mi := GardenProps.instance(prop, Transform3D.IDENTITY)
+	mi.material_override = _mats[kind]
+	mi.set_instance_shader_parameter("phase", _rng.randf() * TAU)
+	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON if kind in ["butterfly", "dragonfly", "ladybug"] \
+		else GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	var holder := Node3D.new()
+	holder.add_child(mi)
+	add_child(holder)
+	var size := float(SIZES.get(kind, prop.size)) * _rng.randf_range(0.8, 1.15)
+	mi.transform = Transform3D(Basis().scaled(Vector3.ONE * size), Vector3.ZERO) * prop.fix
+	mi.visibility_range_end = 320.0 if kind in ["butterfly", "dragonfly", "bee"] else 180.0
+	holder.global_position = _start_point(kind, home)
+	if perch >= 0:
+		_perch_on_stalk(holder, perch)
+	var c := {"kind": kind, "node": holder, "yaw_offset": float(spec[3]), "vel": Vector3.ZERO,
+		"wait": _rng.randf_range(0.0, 3.0), "seed": _rng.randf() * 10.0, "target": holder.global_position,
+		"hop_t": -1.0, "from": holder.global_position, "hop_time": 1.0, "arc": 0.0, "home": home, "skip": 0.0,
+		"perched": perch >= 0, "size": size}
+	if PREY.has(kind):
+		c["hp"] = float(PREY[kind]["hp"])
+		_make_prey(c)
+	_critters.append(c)
+	return c
+
+
+## A body on the creatures layer that PlayerCombat's blows find (take_hit).
+func _make_prey(c: Dictionary) -> void:
+	var body := _PreyBody.new()
+	body.life = self
+	body.critter = c
+	body.collision_layer = CREATURES_LAYER
+	body.collision_mask = 0
+	var cs := CollisionShape3D.new()
+	var sphere := SphereShape3D.new()
+	sphere.radius = maxf(float(c["size"]) * 0.4, 0.5)
+	cs.shape = sphere
+	cs.position = Vector3.UP * sphere.radius * 0.8
+	body.add_child(cs)
+	(c["node"] as Node3D).add_child(body)
+
+
+## A blow landed on a critter: it's hurt and riled; at no hit points it dies.
+func hit_critter(c: Dictionary, damage: float, from: Vector3, by: Node3D) -> float:
+	if bool(c.get("dead", false)):
+		return 0.0
+	c["hp"] = float(c["hp"]) - damage
+	c["angry"] = 9.0
+	c["threat"] = by
+	var node: Node3D = c["node"]
+	if bool(c.get("perched", false)):
+		_knock_off_stalk(c)
+	# a jolt away from the blow
+	var away := node.global_position - from
+	away.y = 0.0
+	if away.length() > 0.01:
+		node.global_position += away.normalized() * 0.6
+	if float(c["hp"]) <= 0.0:
+		_kill(c, by)
+	return damage
+
+
+## An aphid knocked off the stalk drops to the ground (and stops riding its sway).
+func _knock_off_stalk(c: Dictionary) -> void:
+	var node: Node3D = c["node"]
+	var at := node.global_position
+	if node.get_parent() != self:
+		node.get_parent().remove_child(node)
+		add_child(node)
+		node.global_position = at
+	node.rotation = Vector3(0.0, node.rotation.y, 0.0)
+	c["perched"] = false
+	var ground := Vector3(at.x, TreeBase.ground_height(layout, at.x, at.z), at.z)
+	c["from"] = at
+	c["target"] = ground
+	c["hop_t"] = 0.0
+	c["hop_time"] = maxf(sqrt(maxf(at.y - ground.y, 0.1)) * 0.3, 0.4)
+	c["arc"] = 0.5
+
+
+## Dead: it flips on its back, leaves its parts, and fades; another comes later.
+func _kill(c: Dictionary, by: Node3D) -> void:
+	c["dead"] = true
+	var node: Node3D = c["node"]
+	for body: Node in node.get_children():
+		if body is _PreyBody:
+			body.queue_free()
+	_critters.erase(c)
+	var kind := String(c["kind"])
+	var drops: Dictionary = PREY[kind]["drops"]
+	var toward := (by.global_position if by != null else node.global_position) - node.global_position
+	var t := create_tween()
+	t.tween_property(node, "rotation:z", PI, 0.3).set_trans(Tween.TRANS_BACK)
+	t.tween_callback(func() -> void:
+		for id: String in drops:
+			ItemPickup.spill(self, node.global_position + Vector3.UP * 0.8, StringName(id), int(drops[id]), toward))
+	t.tween_interval(1.2)
+	t.tween_property(node, "scale", Vector3.ONE * 0.01, 0.6)
+	t.tween_callback(node.queue_free)
+	_respawns.append({"kind": kind, "home": c["home"], "at": _time + RESPAWN})
 
 
 ## The critters of one kind (their holder nodes), for GardenAudio to give voices.
@@ -157,6 +264,14 @@ func _physics_process(delta: float) -> void:
 			c["skip"] = 0.0
 		else:
 			_move(c, delta, center)
+	for i in range(_respawns.size() - 1, -1, -1):
+		var r: Dictionary = _respawns[i]
+		if _time >= float(r["at"]):
+			var home: Dictionary = r["home"]
+			var hc: Vector2 = home["c"]
+			if Vector2(center.x, center.z).distance_to(hc) > 60.0:
+				_respawns.remove_at(i)
+				_spawn(String(r["kind"]), home)
 	for i in range(_ripples.size() - 1, -1, -1):
 		var r: Dictionary = _ripples[i]
 		r["age"] = float(r["age"]) + delta
@@ -178,9 +293,12 @@ func _move(c: Dictionary, delta: float, center: Vector3) -> void:
 	var vel: Vector3 = c["vel"]
 	c["wait"] = float(c["wait"]) - delta
 	var kind := String(c["kind"])
-	if kind == "aphid":
+	if kind == "aphid" and bool(c.get("perched", false)):
 		return  # they sit tight on the stalk, sucking sap
 	if kind in CRAWL or kind == "springtail":
+		if float(c.get("angry", 0.0)) > 0.0 and float(c["hop_t"]) < 0.0:
+			_riled(c, delta)
+			return
 		_move_on_ground(c, delta, center)
 		return
 	match kind:
@@ -293,6 +411,57 @@ func _move_on_ground(c: Dictionary, delta: float, center: Vector3) -> void:
 		(node.get_child(0) as GeometryInstance3D).set_instance_shader_parameter("walk", w)
 
 
+## Hit and riled: a velvet mite chases whoever hit it and nips; springtails
+## spring away, aphids scuttle off. It calms down after a while.
+func _riled(c: Dictionary, delta: float) -> void:
+	var node: Node3D = c["node"]
+	var kind := String(c["kind"])
+	c["angry"] = float(c["angry"]) - delta
+	var threat := c.get("threat") as Node3D
+	if threat == null or not is_instance_valid(threat):
+		c["angry"] = 0.0
+		return
+	var pos := node.global_position
+	var to := threat.global_position - pos
+	to.y = 0.0
+	var dist := to.length()
+	var dir := to / maxf(dist, 0.001)
+	var heading := Vector3.ZERO
+	if String(PREY[kind]["angry"]) == "bite":
+		c["nip"] = maxf(float(c.get("nip", 0.0)) - delta, 0.0)
+		if dist > 1.7:
+			pos += dir * 4.4 * delta
+			heading = dir
+		elif float(c["nip"]) <= 0.0:
+			c["nip"] = 1.2
+			var combat := threat.get_node_or_null("Combat") as PlayerCombat
+			if combat != null:
+				combat.take_hit(float(PREY[kind].get("bite", 3.0)), pos, &"light", node)
+		else:
+			heading = dir * 0.01  # face him between nips
+	elif kind == "springtail":
+		# a big spring away from him
+		var land := pos - dir * _rng.randf_range(6.0, 10.0)
+		c["from"] = pos
+		c["target"] = Vector3(land.x, TreeBase.ground_height(layout, land.x, land.z), land.z)
+		c["hop_t"] = 0.0
+		c["hop_time"] = 0.45
+		c["arc"] = _rng.randf_range(2.0, 3.5)
+		c["angry"] = maxf(float(c["angry"]) - 3.0, 0.0)
+		return
+	else:
+		pos -= dir * 3.0 * delta
+		heading = -dir
+	pos.y = TreeBase.ground_height(layout, pos.x, pos.z)
+	node.global_position = pos
+	if heading.length() > 0.001:
+		node.rotation.y = lerp_angle(node.rotation.y, atan2(heading.x, heading.z) + float(c["yaw_offset"]), clampf(8.0 * delta, 0.0, 1.0))
+	var w := move_toward(float(c.get("walk", 0.0)), 1.0, delta * 5.0)
+	if w != float(c.get("walk", 0.0)):
+		c["walk"] = w
+		(node.get_child(0) as GeometryInstance3D).set_instance_shader_parameter("walk", w)
+
+
 ## A point on dry ground `rmin`..`rmax` from `center`, inside `home`.
 func _ground_near(center: Vector3, rmin: float, rmax: float, home: Dictionary) -> Vector3:
 	for attempt in 12:
@@ -367,7 +536,7 @@ func _perch_on_stalk(holder: Node3D, k: int) -> void:
 
 func _start_point(kind: String, home: Dictionary) -> Vector3:
 	match kind:
-		"ladybug", "velvet_mite", "springtail":
+		"ladybug", "velvet_mite", "springtail", "aphid":
 			return _home_point(home, 0.0, true)
 		"butterfly":
 			return _home_point(home, _rng.randf_range(8.0, 30.0), false)
@@ -474,3 +643,12 @@ func _particles(amount: int, size: float, color: Color, radius: float, height: f
 	p.draw_pass_1 = dot
 	add_child(p)
 	return p
+
+
+## The body a critter is hit through (PlayerCombat finds it on the creatures layer).
+class _PreyBody extends StaticBody3D:
+	var life: Node
+	var critter: Dictionary
+
+	func take_hit(damage: float, from: Vector3, _kind: StringName, attacker: Node3D) -> float:
+		return float(life.call("hit_critter", critter, damage, from, attacker))

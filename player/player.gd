@@ -46,9 +46,17 @@ signal slammed(at: Vector3, fall: float)
 signal entered_water(at: Vector3, speed: float)
 ## Swam too far: worn out, he goes back to the bank he swam from (`bank`).
 signal swim_exhausted(bank: Vector3)
+## What he's facing that E acts on: {"name", "verb", "ok", "need", "hand", "more"}
+## ({} for nothing), for the HUD's target prompt.
+signal target_changed(info: Dictionary)
 signal puff_changed(holding: bool)
 
 enum State { GROUND, AIR, CRAWL, CLIMB, SWIM }
+## How far beyond a thing's own size he can pick it up, chop or smash it (m).
+const TARGET_REACH := 2.4
+## Held E on a pickup sweeps up everything within this (m), after this long (s).
+const SWEEP_RADIUS := 5.0
+const SWEEP_HOLD := 0.45
 ## The bones an upper-body clip moves (play_upper): the chest, arms and head.
 const UPPER_BONES := ["Spine", "LeftShoulder", "LeftArm", "LeftForeArm", "LeftHand", "RightShoulder", "RightArm",
 	"RightForeArm", "RightHand", "neck", "Head"]
@@ -250,6 +258,13 @@ var diving := false
 var breath := 1.0
 ## Caught in a spider's web (SpiderWeb calls set_webbed): he struggles on the spot.
 var webbed := false
+## What E acts on now (see _update_target): an ItemPickup, a WeaponPickup, a
+## Choppable or Gatherable, or a grass blade (GrassField); null for nothing.
+var target: Object = null
+var _target_info := {}
+var _target_wait := 0.0
+var _outline: Outline
+var _hold_e := -1.0  # seconds E has been held on a pickup
 ## Where he last stood on dry ground: the bank he goes back to when worn out.
 var _last_dry := Vector3.ZERO
 ## The seed puff he holds overhead, if any.
@@ -312,6 +327,9 @@ func _ready() -> void:
 	held.name = "HeldWeapon"
 	add_child(held)
 	held.setup(self, _skeleton)
+	_outline = Outline.new()
+	_outline.name = "TargetOutline"
+	add_child(_outline)
 
 
 func _physics_process(delta: float) -> void:
@@ -855,6 +873,165 @@ func _mantle(up: Vector3) -> void:
 		_set_state(State.GROUND))
 
 
+# ── harvest: pick up, chop, smash (Grounded's way) ──────────────────────────
+
+## What E would act on (Grounded's look-at): something lying about to pick up,
+## or something to gather, chop or smash (Choppable, Gatherable): the nearest
+## in reach that he's facing, the camera's way. It's outlined (Outline) and the
+## HUD names it with what E does (target_changed).
+func _update_target() -> void:
+	_target_wait -= get_physics_process_delta_time()
+	if target != null and is_instance_valid(target) and _target_wait > 0.0:
+		return
+	_target_wait = 0.1
+	target = _find_target()
+
+
+func _find_target() -> Object:
+	if state != State.GROUND or carried != null or hauling != null or puff != null or downed:
+		return null
+	var here := global_position
+	var look := -camera_rig.camera.global_basis.z
+	var look_flat := Vector2(look.x, look.z)
+	look_flat = look_flat.normalized() if look_flat.length() > 0.01 else Vector2(sin(model.rotation.y), cos(model.rotation.y))
+	var best: Object = null
+	var best_score := INF
+	for p: ItemPickup in get_tree().get_nodes_in_group(ItemPickup.GROUP):
+		if p.is_queued_for_deletion():
+			continue
+		var sc := _target_score(p.global_position, 0.5, here, look_flat) - 0.8  # the pieces first
+		if sc < best_score:
+			best_score = sc
+			best = p
+	for w: WeaponPickup in get_tree().get_nodes_in_group(WeaponPickup.GROUP):
+		var sc := _target_score(w.global_position, 0.8, here, look_flat) - 0.8
+		if sc < best_score:
+			best_score = sc
+			best = w
+	for c: Choppable in get_tree().get_nodes_in_group(&"choppables"):
+		if c.collision_layer == 0 or c.is_gone():
+			continue
+		var sc := _target_score(c.aim_point(here), c.reach_radius, here, look_flat)
+		if sc < best_score:
+			best_score = sc
+			best = c
+	var blade := GrassField.nearest_blade(here, look_flat, TARGET_REACH)
+	if blade != null:
+		var sc := _target_score(blade.aim_point(here), blade.reach_radius(), here, look_flat)
+		if sc < best_score:
+			best_score = sc
+			best = blade
+	return best
+
+
+## How good a target a thing at `at` is (lower is better; INF: out of reach):
+## near him, and in front of him the way the camera looks.
+func _target_score(at: Vector3, reach: float, here: Vector3, look_flat: Vector2) -> float:
+	var d := Vector2(at.x - here.x, at.z - here.z)
+	var dist := d.length()
+	if dist > TARGET_REACH + reach or absf(at.y - (here.y + 0.9)) > 2.5 + reach:
+		return INF
+	var facing := d.normalized().dot(look_flat) if dist > 0.05 else 1.0
+	if facing < -0.1 and dist > reach + 0.6:
+		return INF
+	return maxf(dist - reach, 0.0) - facing * 1.2
+
+
+func _takes_by_hand(t: Object) -> bool:
+	if t is ItemPickup or t is WeaponPickup:
+		return true
+	return t is Gatherable and (t as Gatherable).is_hand()
+
+
+## Outlines `t` and tells the HUD what it is and what E does.
+func _show_target(t: Object) -> void:
+	var inventory := get_node_or_null("Inventory") as Inventory
+	var info: Dictionary = t.call("prompt", inventory)
+	if _takes_by_hand(t) and t is ItemPickup:
+		var near := ItemPickup.all_near(get_tree(), global_position, SWEEP_RADIUS).size()
+		info["more"] = near
+	if info != _target_info:
+		_target_info = info
+		target_changed.emit(info)
+	if _outline != null:
+		_outline.show_parts(t.call("outline_parts"))
+
+
+func _clear_target() -> void:
+	if not _target_info.is_empty():
+		_target_info = {}
+		target_changed.emit({})
+	if _outline != null:
+		_outline.clear()
+	_hold_e = -1.0
+
+
+## E on something to take by hand: it's his; held, he sweeps up everything
+## lying round him.
+func _handle_take(t: Object) -> void:
+	if Input.is_action_just_pressed("interact"):
+		_hold_e = 0.0
+		t.call("take", self)
+		target = null
+	elif _hold_e >= 0.0 and Input.is_action_pressed("interact"):
+		_hold_e += get_physics_process_delta_time()
+		if _hold_e >= SWEEP_HOLD:
+			_hold_e = -1.0
+			for p: ItemPickup in ItemPickup.all_near(get_tree(), global_position, SWEEP_RADIUS):
+				p.take(self)
+			target = null
+	else:
+		_hold_e = -1.0
+
+
+## E on something to chop or smash: with the right tool he has (the knife out
+## of his belt, or the axe or hammer to his hand), a swing at it; without one,
+## the HUD says what it needs.
+func harvest_swing(t: Object) -> void:
+	if action_lock > 0.0 or t == null:
+		return
+	var inventory := get_node_or_null("Inventory") as Inventory
+	var need: Array = t.call("harvest_tool")
+	var tool := String(need[0])
+	var tier := int(need[1])
+	var best := Harvest.best_tool(inventory, tool, tier)
+	if best.is_empty():
+		flash_hint(Harvest.need_text(tool, tier), 1.6)
+		return
+	var at: Vector3 = t.call("aim_point", global_position)
+	var to := at - global_position
+	if Vector2(to.x, to.z).length() > 0.1:
+		model.rotation.y = atan2(to.x, to.z)
+	var w: StringName = best["weapon"]
+	var clip := "axe_chop_1"
+	var speed := 1.5
+	var impact := -1.0
+	if w == Weapons.KNIFE:
+		if inventory.equipped != Weapons.KNIFE:
+			inventory.draw_knife(1.1)  # out of his belt for the cut
+		clip = "knife_slash"
+		speed = 2.2
+		impact = 0.88 / speed
+	else:
+		if inventory.equipped != w:
+			inventory.equip(w)
+		if tool == Harvest.BUST:
+			clip = "axe_heavy"
+			speed = 1.35
+	if impact < 0.0:
+		impact = float(_times.get(clip, 0.4)) / speed
+	if first_person:
+		start_view_blow(clip, impact * 2.2)
+	else:
+		play_action(clip, speed)
+	action_lock = impact + 0.15
+	var power := float(best["power"])
+	var best_tier := int(best["tier"])
+	get_tree().create_timer(impact).timeout.connect(func() -> void:
+		if is_instance_valid(t):
+			t.call("hit", tool, best_tier, power, global_position, self))
+
+
 # ── heave: lift, carry, throw, push ──────────────────────────────────────────
 
 func _process_heave_input() -> void:
@@ -883,17 +1060,12 @@ func _process_heave_input() -> void:
 		if Input.is_action_just_pressed("interact"):
 			let_go_puff()
 		return
-	var pickup := WeaponPickup.in_reach(self)
-	if pickup != null and state == State.GROUND:
-		_set_hint("E · Take the %s" % pickup.title())
-		if Input.is_action_just_pressed("interact"):
-			pickup.take(self)
-		return
-	var item := ItemPickup.in_reach(self)
-	if item != null and state == State.GROUND:
-		_set_hint("E · Pick up %s" % item.title())
-		if Input.is_action_just_pressed("interact"):
-			item.take(self)
+	# what he's facing: something to pick up comes first (the pieces he chopped)
+	_update_target()
+	if target != null and _takes_by_hand(target):
+		_set_hint("")
+		_show_target(target)
+		_handle_take(target)
 		return
 	var seed_puff := puff_in_reach()
 	if seed_puff != null:
@@ -903,19 +1075,30 @@ func _process_heave_input() -> void:
 		return
 	_pushing = null
 	if state != State.GROUND:
+		_clear_target()
 		_set_hint(("Worn out: get to the bank!" if swim_left <= 0.0 else "Getting tired: head for the bank")
 			if state == State.SWIM and swim_left < swim_range * 0.4 else "")
 		return
 	var bug := flippable_in_reach()
 	if bug != null:
+		_clear_target()
 		_set_hint("E · Flip it over")
 		if Input.is_action_just_pressed("interact"):
 			flip(bug)
 		return
 	var prop := prop_in_reach()
 	if prop == null:
-		_set_hint(_chop_prompt())
+		# something to chop or smash: outlined and named, E with the right tool
+		if target != null:
+			_set_hint("")
+			_show_target(target)
+			if Input.is_action_just_pressed("interact"):
+				harvest_swing(target)
+		else:
+			_clear_target()
+			_set_hint("")
 		return
+	_clear_target()
 	if prop is Haul:
 		var haul := prop as Haul
 		var status := "%d/%d strength" % [haul.strength(), haul.strength_needed]
@@ -1297,69 +1480,10 @@ func _dress_model() -> void:
 	mi.material_override = m
 
 
-## The nearest thing he could cut, within reach and not behind him.
-func _choppable_in_reach() -> Choppable:
-	var facing := Vector3(sin(model.rotation.y), 0.0, cos(model.rotation.y))
-	var best: Choppable = null
-	var best_d := 3.5
-	for c: Choppable in get_tree().get_nodes_in_group(&"choppables"):
-		if c.collision_layer == 0:
-			continue  # already cut
-		# near its line, not only its middle: a twig or a trip line is long
-		var nearest := _nearest_on(c)
-		var d := Vector2(nearest.x - global_position.x, nearest.z - global_position.z)
-		if d.length() < best_d and (d.length() < 1.0 or d.normalized().dot(Vector2(facing.x, facing.z)) > -0.3):
-			best_d = d.length()
-			best = c
-	return best
-
-
-func _nearest_on(c: Choppable) -> Vector3:
-	var local := c.global_transform.affine_inverse() * global_position
-	return c.global_transform * Vector3(0.0, 0.0, clampf(local.z, -c.length * 0.5, c.length * 0.5))
-
-
-## "E · Cut the silk" (his knife) or "Click · Chop the twig" (a blade in hand
-## strong enough), next to something he can cut; E cuts with the knife.
-func _chop_prompt() -> String:
-	var c := _choppable_in_reach()
-	var inventory := get_node_or_null("Inventory") as Inventory
-	if c == null or inventory == null:
-		return ""
-	var knife := float(Weapons.info(Weapons.KNIFE)["light"][0].get("chop", 0.5))
-	if inventory.has_knife and knife >= c.needs:
-		if Input.is_action_just_pressed("interact"):
-			cut_with_knife(c)
-		return "E · Cut the %s" % c.display_name
-	if _chop_power(inventory.equipped) >= c.needs:
-		return "Click · Chop the %s" % c.display_name
-	if inventory.main != &"" and _chop_power(inventory.main) >= c.needs:
-		return "X · Take out the %s" % Weapons.display_name(inventory.main).to_lower()
-	return ""
-
-
-func _chop_power(weapon: StringName) -> float:
-	var power := 0.0
-	for move: Dictionary in Weapons.info(weapon).get("light", []):
-		power = maxf(power, float(move.get("chop", 0.0)))
-	return power
-
-
-## A quick slash with his knife (it comes to his hand and goes back).
+## A quick cut with his knife at `c` (it comes to his hand and goes back): the
+## same as E on it (harvest_swing), kept for callers that name the knife.
 func cut_with_knife(c: Choppable) -> void:
-	var inventory := get_node_or_null("Inventory") as Inventory
-	if inventory == null or not inventory.has_knife or action_lock > 0.0:
-		return
-	var to := _nearest_on(c) - global_position
-	if Vector2(to.x, to.z).length() > 0.1:
-		model.rotation.y = atan2(to.x, to.z)
-	inventory.draw_knife(0.75)
-	play_action("axe_chop_1", 1.9)
-	action_lock = 0.4
-	var hit_at := float(_times.get("axe_chop_1", 0.35)) / 1.9
-	get_tree().create_timer(hit_at).timeout.connect(func() -> void:
-		if is_instance_valid(c):
-			c.chop(float(Weapons.info(Weapons.KNIFE)["light"][0].get("chop", 0.5)), global_position, self))
+	harvest_swing(c)
 
 
 ## Shows `text` in the prompt line for `seconds` ("Too tough for the knife").

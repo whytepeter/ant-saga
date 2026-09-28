@@ -15,6 +15,8 @@ extends RefCounted
 ##   radius   how wide it catches
 ##   damage   hit points taken off a creature
 ##   kind     &"light" or &"heavy" (a heavy blow knocks a pill bug into a ball)
+## A weapon's "tool" says what it harvests (Harvest): the axe and the knife
+## chop, the hammer smashes, fists and the spear harvest nothing.
 ##   chop     how much it cuts (roots, straw, silk); 0 for fists
 
 const FISTS := &"fists"
@@ -42,6 +44,7 @@ const ALL := {
 		"heavy": {"kind": &"heavy", "clip": "kick", "speed": 1.3, "impact": 0.6 / 1.3, "lock": 0.7, "recover": 0.8,
 			"lunge": 4.5, "reach": 1.6, "radius": 1.7, "damage": 2.0, "chop": 0.0},
 		"block": "fist_block",
+		"tool": {},  # bare hands pick things up; they chop and smash nothing
 	},
 	&"stone_axe": {
 		"name": "Stone axe",
@@ -64,6 +67,7 @@ const ALL := {
 		"charged": {"kind": &"heavy", "clip": "axe_charged_swing", "speed": 1.0, "lock": 0.9, "recover": 1.1,
 			"lunge": 5.0, "reach": 1.9, "radius": 2.2, "damage": 6.0, "chop": 3.0},
 		"block": "axe_parry",
+		"tool": {"chop": [1, 1.0]},  # chops grass, leaves, weeds, mushrooms, twigs
 	},
 	&"stone_knife": {
 		"name": "Stone knife",
@@ -88,6 +92,7 @@ const ALL := {
 		"heavy": {"kind": &"heavy", "clip": "knife_thrust", "speed": 1.1, "lock": 0.6, "recover": 0.7,
 			"lunge": 5.0, "reach": 1.8, "radius": 1.1, "damage": 3.0, "chop": 0.5},
 		"block": "axe_parry",
+		"tool": {"chop": [1, 0.5]},  # chops like the axe, slowly (Grounded's dagger)
 	},
 	&"stone_hammer": {
 		"name": "Stone hammer",
@@ -110,6 +115,7 @@ const ALL := {
 		"charged": {"kind": &"heavy", "clip": "ground_slam", "speed": 1.15, "impact": 1.64 / 1.15, "lock": 1.2,
 			"recover": 1.4, "lunge": 1.5, "reach": 0.6, "radius": 3.2, "damage": 8.0, "chop": 0.0},
 		"block": "two_hand_parry",
+		"tool": {"bust": [1, 1.0]},  # smashes stones, pot shards, amber
 	},
 	&"thorn_spear": {
 		"name": "Spear",
@@ -134,12 +140,18 @@ const ALL := {
 		"heavy": {"kind": &"heavy", "clip": "spear_lunge", "speed": 1.25, "impact": 0.87 / 1.25, "lock": 0.9, "recover": 1.1,
 			"lunge": 5.5, "reach": 3.2, "radius": 1.2, "damage": 3.4, "chop": 0.5},
 		"block": "two_hand_parry",
+		"tool": {},  # a weapon, not a tool
 	},
 }
 
 
 static func info(id: StringName) -> Dictionary:
 	return ALL.get(id, ALL[FISTS])
+
+
+## What it harvests with (Harvest): {"chop": [tier, power], "bust": [tier, power]}.
+static func tool(id: StringName) -> Dictionary:
+	return info(id).get("tool", {})
 
 
 static func display_name(id: StringName) -> String:

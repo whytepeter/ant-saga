@@ -53,6 +53,7 @@ var meters: Meters
 var pause_menu: PauseMenu
 var pack: PackScreen
 var _pickups: PickupToasts
+var _target: TargetPrompt
 var _underwater: ColorRect
 var _underwater_mat: ShaderMaterial
 var _controls_grid: GridContainer
@@ -95,6 +96,15 @@ func _ready() -> void:
 	if player != null:
 		player.show_hint_label = false
 		player.hint_changed.connect(_on_hint)
+		# what E does to the thing he faces, just under the middle (Grounded's)
+		_target = TargetPrompt.new()
+		_target.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
+		_target.offset_left = -300.0
+		_target.offset_right = 300.0
+		_target.offset_top = 80.0
+		_target.offset_bottom = 180.0
+		add_child(_target)
+		player.target_changed.connect(_target.set_info)
 		_build_weapons.call_deferred()  # the player makes his Inventory in _ready
 
 
@@ -126,6 +136,8 @@ func _process(delta: float) -> void:
 	_compass.visible = GameSettings.compass
 	_daylight_back.visible = GameSettings.compass
 	_prompt_row.visible = GameSettings.prompts
+	if _target != null:
+		_target.visible = GameSettings.prompts
 	_subtitles.visible = GameSettings.subtitles
 	if _maps != null:
 		_maps.set_minimap(GameSettings.minimap)

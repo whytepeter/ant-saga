@@ -147,6 +147,10 @@ func _setup_adventure() -> void:
 		# he wakes with his stone knife at his hip: a tool for gathering first
 		# (fibre, silk), a weak weapon second; the axe is the first thing he makes
 		(player.get_node("Inventory") as Inventory).add_weapon(Weapons.KNIFE, false)
+	var finds := LooseFinds.new()  # pebbles to pick up by hand, for the first tools
+	finds.name = "LooseFinds"
+	finds.setup(layout)
+	add_child(finds)
 	var dew := DewDrops.new()
 	dew.name = "DewDrops"
 	dew.clock = clock

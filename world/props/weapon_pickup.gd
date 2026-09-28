@@ -27,6 +27,21 @@ func _ready() -> void:
 	add_child(marker)
 
 
+## What the prompt says: {"name", "verb", "ok", "hand"}.
+func prompt(_inventory: Inventory) -> Dictionary:
+	return {"name": Weapons.display_name(weapon), "verb": "Take", "ok": true, "hand": true, "need": ""}
+
+
+## Its meshes and where they are (for the outline).
+func outline_parts() -> Array:
+	var out := []
+	for n: Node in find_children("*", "MeshInstance3D", true, false):
+		var mi := n as MeshInstance3D
+		if mi.mesh != null and not mi is PickupMarker:
+			out.append([mi.mesh, mi.global_transform])
+	return out
+
+
 ## Label for the prompt.
 func title() -> String:
 	return Weapons.display_name(weapon).to_lower()
