@@ -474,8 +474,11 @@ func _build_terrain(parent: Node3D) -> void:
 	# the Wormways' burrow mouths: holes in the lawn (samples within a mouth are
 	# dropped from the mesh here, and are holes in the collision below)
 	var holes := {}
+	var mouths := Landmarks.holes(layout)
 	if Wormways.available(layout):
-		for m in Wormways.mouths(layout):
+		mouths.append_array(Wormways.mouths(layout))
+	if not mouths.is_empty():
+		for m in mouths:
 			for j in n:
 				for i in n:
 					var x := layout.origin + i * layout.cell
@@ -778,11 +781,14 @@ func _tunnel_mouths(parent: Node3D) -> void:
 # ── landmarks ─────────────────────────────────────────────────────────────────
 
 func _build_landmarks(parent: Node3D) -> void:
+	Landmarks.grass_material = _grass_material()
 	for lm: Dictionary in layout.items("landmarks"):
 		var id := String(lm["id"])
 		var pos: Array = lm["pos"]
 		var size: Array = lm["size"]
 		var g := _gp(pos)
+		if Landmarks.build(parent, layout, lm, g):
+			continue  # the termites' works, the matchstick post, the spider's burrow, the bead, the gates... (Landmarks)
 		if id.begins_with("fallen_leaf"):
 			_fallen_leaf(parent, g, float(size[0]), float(size[2]), hash(id))
 			continue
@@ -819,11 +825,6 @@ func _build_landmarks(parent: Node3D) -> void:
 			"orb_web": _orb_web(parent, g, size)
 			"root_hall": pass  # built with the west boundary
 			"crown_cap": _capstone(parent, g, float(size[0]) / 2.0)
-			"lookout_blade": _lookout(parent, g)
-			"bead_shrine":
-				_sphere(parent, g + Vector3.UP * 1.2, 1.5, "pebble")
-				_sphere(parent, g + Vector3.UP * 3.9, 1.45, "bead")
-			"colony_gate": _colony_gate(parent, g)
 			"coin_plaza":
 				var coin := GardenProps.get_prop("coin")
 				if coin != null:
@@ -833,26 +834,7 @@ func _build_landmarks(parent: Node3D) -> void:
 					_prop_solid(parent, coin, flat, "convex")
 				else:
 					_cylinder(parent, g - Vector3.UP * 0.2, float(size[0]) / 2.0, 0.8, "coin", true, -1.0, 48)
-			"worm_casts":
-				_sphere(parent, g, 3.2, "mud", true, 8.0)
-				for extra: Array in lm.get("also", []):
-					_sphere(parent, _gp(extra), 3.0, "mud", true, 7.0)
-			"patrol_gate":
-				_sphere(parent, g + Vector3.UP * 1.5, 6.0, "pebble", true, 9.0)
-				# the exit hole faces where Garden Patrol (route_b) sets off
-				var exit := LawnLayout.xz(layout.item("paths", "route_b")["points"][0]) - LawnLayout.xz(pos)
-				var yaw := atan2(exit.x, exit.y)
-				_box(parent, g + Vector3(exit.normalized().x * 5.6, 1.5, exit.normalized().y * 5.6), Vector3(3.5, 3.0, 1.0), "hole", false, yaw)
 			"hose_coupling": _coupling(parent, g)
-			"abandoned_post": _palisade(parent, g)
-			"termite_camp": _termite_camp(parent, g)
-			"termite_tower": _cylinder(parent, g - Vector3.UP, 3.0, 16.0, "mud_tube", true, 1.8, 10)
-			"spider_burrow":
-				_cylinder(parent, g - Vector3.UP * 0.3, 4.0, 0.4, "hole", false)
-				var ring := TorusMesh.new()
-				ring.inner_radius = 3.8
-				ring.outer_radius = 5.3
-				_add(parent, ring, _mat("silk"), Transform3D(Basis(), g + Vector3.UP * 0.6))
 			"trip_lines":
 				pass  # silk you can cut: Choppable, placed by lawn_level.gd
 			_:
@@ -1084,32 +1066,6 @@ func _capstone(parent: Node3D, g: Vector3, radius: float) -> void:
 		_box(parent, base + dir * (radius + 0.15) + Vector3.UP * 0.8, Vector3(0.5, 1.6, 0.9), "cap", false, -a)
 
 
-func _lookout(parent: Node3D, g: Vector3) -> void:
-	var blade := GrassMeshes.blade(25.0, 1.6, 0.04, 8)
-	var body_shape := BoxShape3D.new()
-	body_shape.size = Vector3(1.2, 25.0, 0.4)
-	var grass_mat := _grass_material().duplicate() as ShaderMaterial
-	grass_mat.set_shader_parameter("tint_scale", 1.0)  # a lone blade has no instance tint
-	_add(parent, blade, grass_mat, Transform3D(Basis(), g), body_shape, WORLD_LAYER, Transform3D(Basis(), Vector3.UP * 12.5))
-	var deck := g + Vector3.UP * 23.5
-	_cylinder(parent, deck, 3.2, 0.5, "wood", true, -1.0, 20)
-	# thread ladder hanging from the deck edge, facing south
-	_box(parent, Vector3(g.x, g.y + 11.75, g.z + 3.4), Vector3(1.2, 23.5, 0.3), "silk", true, 0.0,
-		WORLD_LAYER | CLIMBABLE_LAYER)
-
-
-func _colony_gate(parent: Node3D, g: Vector3) -> void:
-	# hair-tie arch over the entrance crack, facing the route in from the west
-	var yaw := atan2(20.0, 27.0)
-	var tie := TorusMesh.new()
-	tie.inner_radius = 6.5
-	tie.outer_radius = 7.9
-	tie.rings = 48
-	var basis := Basis(Vector3.UP, yaw) * Basis(Vector3.RIGHT, PI / 2.0)
-	_add(parent, tie, _mat("hair_tie"), Transform3D(basis, g))
-	_box(parent, g + Vector3.UP * -0.9, Vector3(12, 2.0, 3.0), "hole", false, yaw + PI / 2.0)
-
-
 func _coupling(parent: Node3D, g: Vector3) -> void:
 	var pts: Array = layout.item("paths", "hose")["points"]
 	var before := _gp(pts[1], 3.25)
@@ -1145,29 +1101,6 @@ func _coupling(parent: Node3D, g: Vector3) -> void:
 	jet.bottom_radius = 0.3
 	jet.height = 30.0
 	_add(parent, jet, mist, Transform3D(Basis(Vector3.FORWARD, 0.9), c + Vector3(-12, 9, 0)))
-
-
-func _palisade(parent: Node3D, g: Vector3) -> void:
-	var rng := RandomNumberGenerator.new()
-	rng.seed = 17
-	for k in 10:
-		var a := TAU * k / 10.0
-		var base := g + Vector3(cos(a), 0, sin(a)) * 8.0
-		var post := _box(parent, base + Vector3.UP * 6.0, Vector3(0.7, 12.0, 0.7), "wood", true, a)
-		if k % 3 == 0:
-			post.rotate_object_local(Vector3.FORWARD, rng.randf_range(0.4, 1.2))
-		_box(post, Vector3.UP * 6.3, Vector3(0.9, 1.0, 0.9), "match_head", false)
-
-
-## Mud tubes ringed around a trampled clearing (the route runs through the middle).
-func _termite_camp(parent: Node3D, g: Vector3) -> void:
-	var rng := RandomNumberGenerator.new()
-	rng.seed = 99
-	for k in 7:
-		var a := TAU * k / 7.0 + rng.randf_range(-0.2, 0.2)
-		var off := Vector3(cos(a) * 24.0, 0.0, sin(a) * 16.0)
-		var r := rng.randf_range(1.5, 3.0)
-		_cylinder(parent, _gp([g.x + off.x, g.z + off.z]) - Vector3.UP, r, rng.randf_range(6, 15), "mud_tube", true, r * 0.6, 10)
 
 
 ## A windfall apple, a little unripe one or a gnawed core: an ellipsoid on its side.
@@ -2087,6 +2020,8 @@ func _build_grass(parent: Node3D) -> void:
 			var cz := layout.origin + j * layout.cell
 			if count > 0 and Wormways.available(layout) and Wormways.near_mouth(layout, cx, cz, 1.0):
 				count = 0  # (a burrow mouth: bare soil)
+			if count > 0 and Landmarks.cleared(layout, cx, cz):
+				count = 0  # (trampled bare round a landmark)
 			for c in count:
 				var crown := Vector2(cx + rng.randf_range(-1.0, 1.0), cz + rng.randf_range(-1.0, 1.0))
 				var hs := rng.randf_range(0.75, 1.2)

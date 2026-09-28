@@ -97,8 +97,8 @@ static func build(parent: Node3D, layout: LawnLayout) -> void:
 					continue
 				var x := cx + rng.randf_range(-1.0, 1.0)
 				var z := cz + rng.randf_range(-1.0, 1.0)
-				if Wormways.near_mouth(layout, x, z, 2.0):
-					continue  # (nothing lies in a burrow mouth)
+				if Wormways.near_mouth(layout, x, z, 2.0) or Landmarks.cleared(layout, x, z):
+					continue  # (nothing lies in a burrow mouth or on a landmark)
 				var id: String = rule[0]
 				var size := rng.randf_range(float(rule[3][0]), float(rule[3][1]))
 				# solid pieces stay clear of the routes, and so does clover, so a trail
@@ -211,7 +211,8 @@ static func _biomes(layout: LawnLayout, rng: RandomNumberGenerator, routes: Arra
 					break
 				var a := rng.randf() * TAU
 				var p := c + Vector2(cos(a) * r.x, sin(a) * r.y) * sqrt(rng.randf()) * 0.95
-				if layout.surface_at(p.x, p.y) in [LawnLayout.Surface.WATER, LawnLayout.Surface.TUSSOCK]:
+				if layout.surface_at(p.x, p.y) in [LawnLayout.Surface.WATER, LawnLayout.Surface.TUSSOCK] \
+						or Landmarks.cleared(layout, p.x, p.y):
 					continue
 				var size := rng.randf_range(float(e[2][0]), float(e[2][1]))
 				# solid things keep clear of the routes (the plantain too: grown in code, every leaf solid)

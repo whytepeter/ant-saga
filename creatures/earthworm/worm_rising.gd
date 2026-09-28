@@ -14,7 +14,6 @@ const MAX_NEAR := 5
 const NEAR := 170.0
 ## Seconds into a shower before the first worm comes up (the soil has to soak).
 const SOAK := 14.0
-const CAST_TEX := "res://assets/textures/brown_mud_03/brown_mud_03"
 const HOLES_KEPT := 40
 
 var layout: LawnLayout
@@ -28,7 +27,7 @@ var _worms: Array[Earthworm] = []
 var _rain_for := 0.0
 var _next_in := 0.0
 var _rng := RandomNumberGenerator.new()
-var _cast_mat: StandardMaterial3D
+var _cast_mat: Material
 var _hole_mat: StandardMaterial3D
 var _holes: Array[Node3D] = []
 var _count := 0
@@ -45,14 +44,7 @@ func _ready() -> void:
 	_rng.seed = 2718
 	if weather != null:
 		weather.rain_changed.connect(_on_rain)
-	_cast_mat = StandardMaterial3D.new()
-	_cast_mat.albedo_texture = load(CAST_TEX + "_diff.jpg")
-	_cast_mat.albedo_color = Color(0.62, 0.52, 0.46)
-	_cast_mat.normal_enabled = true
-	_cast_mat.normal_texture = load(CAST_TEX + "_nor.jpg")
-	_cast_mat.roughness = 0.35  # fresh and wet
-	_cast_mat.uv1_triplanar = true
-	_cast_mat.uv1_scale = Vector3.ONE * 0.6
+	_cast_mat = WormRising.cast_material()
 	_hole_mat = StandardMaterial3D.new()
 	_hole_mat.albedo_color = Color(0.03, 0.022, 0.018)
 	_hole_mat.roughness = 0.2
@@ -194,46 +186,81 @@ func _open_hole(at: Vector3, girth: float, toward: Vector3) -> void:
 	create_tween().tween_property(holder, "scale", Vector3.ONE, 2.5).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 
-## Worm casts: a heap of coiled, pellety soil (a rope of it, wound on itself),
-## about the worm's own girth thick.
-func _cast(girth: float) -> MeshInstance3D:
+## Worm casts: what a worm pushes up out of its burrow, a low heap of soil
+## with short squiggles of it (each about the worm's girth, lumpy) tangled over
+## the top. Soil-coloured and damp (the pellets shader), not a neat coil.
+static func cast_mesh(girth: float, rng: RandomNumberGenerator) -> ArrayMesh:
 	var st := SurfaceTool.new()
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
-	var sides := 8
-	var rope := girth * 0.42
-	var pts: Array[Vector3] = []
-	var turns := 3.2
-	var n := 60
-	for i in n + 1:
-		var t := float(i) / n
-		var a := t * turns * TAU + _rng.randf_range(-0.1, 0.1)
-		var r := lerpf(girth * 1.5, girth * 0.25, t)
-		pts.append(Vector3(cos(a) * r, rope * 0.8 + t * girth * 1.6, sin(a) * r))
-	var rings: Array[PackedVector3Array] = []
-	var norms: Array[PackedVector3Array] = []
-	for i in pts.size():
-		var tng := (pts[mini(i + 1, pts.size() - 1)] - pts[maxi(i - 1, 0)]).normalized()
-		var side := tng.cross(Vector3.UP).normalized()
-		var up := side.cross(tng)
-		# pellets: the rope bulges and pinches along its length
-		var bulge := rope * (0.8 + 0.3 * sin(i * 2.7)) * (1.0 - 0.6 * float(i) / pts.size())
-		var ring := PackedVector3Array()
-		var nr := PackedVector3Array()
-		for k in sides:
-			var a := TAU * k / sides
-			var d := side * cos(a) + up * sin(a)
-			ring.append(pts[i] + d * bulge)
-			nr.append(d)
-		rings.append(ring)
-		norms.append(nr)
-	for i in rings.size() - 1:
-		for k in sides:
-			var k1 := (k + 1) % sides
-			for q: Array in [[i, k], [i + 1, k1], [i + 1, k], [i, k], [i, k1], [i + 1, k1]]:
-				st.set_normal(norms[q[0]][q[1]])
-				st.add_vertex(rings[q[0]][q[1]])
+	var spread := girth * 1.7
+	var tall := girth * 0.9
+	# the heap under it all: a lumpy dome
+	var rings := 5
+	var segs := 14
+	for i in rings:
+		for k in segs:
+			for q: Array in [[i, k], [i + 1, k], [i + 1, k + 1], [i, k], [i + 1, k + 1], [i, k + 1]]:
+				var t := float(q[0]) / rings
+				var a := TAU * float(q[1] % segs) / segs
+				var r := spread * t * (0.85 + 0.3 * sin(a * 3.0 + girth))
+				var h := tall * pow(maxf(1.0 - t * t, 0.0), 1.3) - (0.25 if int(q[0]) == rings else 0.0)
+				st.add_vertex(Vector3(cos(a) * r, h, sin(a) * r))
+	# squiggles of soil tangled over it
+	var rope := girth * 0.3
+	var sides := 7
+	for strand in rng.randi_range(5, 7):
+		var a := rng.randf() * TAU
+		var r := rng.randf() * spread * 0.6
+		var p := Vector3(cos(a) * r, 0.0, sin(a) * r)
+		var dir := Vector3(cos(a + rng.randf_range(1.2, 2.0)), 0.0, sin(a + rng.randf_range(1.2, 2.0)))
+		var pts: Array[Vector3] = []
+		for i in rng.randi_range(9, 15):
+			var rr := Vector2(p.x, p.z).length() / spread
+			p.y = tall * pow(maxf(1.0 - rr * rr, 0.0), 1.3) + rope * 0.55
+			pts.append(p)
+			dir = dir.rotated(Vector3.UP, rng.randf_range(-0.9, 0.9))
+			p += dir * rope * 1.3
+			if Vector2(p.x, p.z).length() > spread * 0.9:
+				dir = -Vector3(p.x, 0.0, p.z).normalized().rotated(Vector3.UP, rng.randf_range(-0.6, 0.6))
+		var rings_pts: Array[PackedVector3Array] = []
+		for i in pts.size():
+			var tng := (pts[mini(i + 1, pts.size() - 1)] - pts[maxi(i - 1, 0)]).normalized()
+			var side := tng.cross(Vector3.UP).normalized()
+			var up := side.cross(tng)
+			var end := minf(float(i), float(pts.size() - 1 - i))
+			var bulge := rope * (0.8 + 0.35 * sin(i * 2.3 + strand)) * minf(1.0, 0.35 + end * 0.4)
+			var ring := PackedVector3Array()
+			for k in sides:
+				var b := TAU * k / sides
+				ring.append(pts[i] + (side * cos(b) + up * sin(b)) * bulge)
+			rings_pts.append(ring)
+		for i in rings_pts.size() - 1:
+			for k in sides:
+				var k1 := (k + 1) % sides
+				for v: Vector3 in [rings_pts[i][k], rings_pts[i + 1][k1], rings_pts[i + 1][k], rings_pts[i][k], rings_pts[i][k1], rings_pts[i + 1][k1]]:
+					st.add_vertex(v)
+	st.generate_normals()
+	return st.commit()
+
+
+func _cast(girth: float) -> MeshInstance3D:
 	var mi := MeshInstance3D.new()
 	mi.name = "WormCast"
-	mi.mesh = st.commit()
+	mi.mesh = WormRising.cast_mesh(girth, _rng)
 	mi.material_override = _cast_mat
 	return mi
+
+
+static var _cast_material: ShaderMaterial
+
+
+## The casts' look: fresh, damp soil, finely pelleted (world/shaders/pellets).
+static func cast_material() -> ShaderMaterial:
+	if _cast_material == null:
+		_cast_material = ShaderMaterial.new()
+		_cast_material.shader = load("res://world/shaders/pellets.gdshader")
+		_cast_material.set_shader_parameter("color_a", Color(0.52, 0.43, 0.33))
+		_cast_material.set_shader_parameter("color_b", Color(0.4, 0.33, 0.25))
+		_cast_material.set_shader_parameter("pellet", 0.2)
+		_cast_material.set_shader_parameter("damp", 0.3)
+	return _cast_material

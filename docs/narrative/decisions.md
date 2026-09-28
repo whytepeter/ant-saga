@@ -69,7 +69,7 @@ Read this first. Everything here was decided by the user; don't re-raise it as a
 1. **The raiders' road (N117):** in Level 1 the termites march **along the top of the driveway kerb** and climb down a **kerb stair** at [350, 120], then west along the pond's north shore to the gate. The tussock stays a wall for the player. Seen from the Capstone at dusk.
 2. **The south opens in Level 4 (N120)** over the termites' causeway, captured at the end of Level 3, with a second way in through the Maw's hole in Windfall Roots.
 3. **Frame for later levels (N120):** Level 4 **the Frontier** (Silent Post, termite camp, mud-tube tower, Spider's Edge); Level 5 **the Slabs** (up the trowel, across the patio past the back door, to the woodpile Citadel). A frame, not a build list.
-4. **The tree stays an apple tree (N123).**
+4. **The tree stays an apple tree (N123)** (confirmed again 2026-09-28: "Apple tree").
 5. **The compost heap (N121):** rot and fungus (*"steaming: rot, fungus and things that live on them"*); it may become the Forest of Decay later, not promised.
 6. **First Night moves** from [-125, -200] to **[-130, -120] (N122)**, on the way to the Flower Bed.
 7. **Swimming tires (N131):** he can swim about **50 m**, then he's worn out and put back on the bank he swam from ("Too far to swim"); no drowning. The Rut (about 90 m at its narrowest) stays a real moat until the raft and the causeway.
