@@ -13,6 +13,7 @@ const GRASS_LAYER := 1 << 4
 const CHUNK := 60.0
 const BLADE_HEIGHT := 24.0  # nominal blade mesh; instances scale 0.6–1.7
 const BLADE_WIDTH := 1.9
+const PRESSED_LENGTH := 13.0  # the pressed-flat blade mesh, foot to tip
 const TUFT_SIZE := 3.0  # blades per tuft, on average
 
 const COLORS := {
@@ -105,9 +106,13 @@ func rebuild() -> void:
 	_build_patio(_group(root, "Patio"))
 	_build_flowers(_group(root, "Flowers"))
 	_build_dressing(_group(root, "Dressing"))
-	_build_tree_grounds(root)
+	var grounds := _build_tree_grounds(root)
 	if grass_enabled:
 		_build_grass(_group(root, "Grass"))
+		if grounds != null and not _grass_shapes.is_empty() and grounds.grass_multimeshes.size() == 2:
+			# the tree grounds' grass is solid and falls to his axe like the lawn's
+			var bucket := {"standing": grounds.grass_xforms, "clover": []}
+			GrassField.register(grounds.grass_multimeshes, grounds.grass_xforms, grounds.grass_colors, _grass_body(bucket))
 
 
 # ── helpers ───────────────────────────────────────────────────────────────────
@@ -463,6 +468,17 @@ func _build_terrain(parent: Node3D) -> void:
 			var hd := h[mini(j + 1, n - 1) * n + i]
 			normals[k] = Vector3(hl - hr, 2.0 * layout.cell, hu - hd).normalized()
 			colors[k] = SURFACE_WEIGHTS[layout.surface[k]]
+	# the Wormways' burrow mouths: holes in the lawn (samples within a mouth are
+	# dropped from the mesh here, and are holes in the collision below)
+	var holes := {}
+	if Wormways.available(layout):
+		for m in Wormways.mouths(layout):
+			for j in n:
+				for i in n:
+					var x := layout.origin + i * layout.cell
+					var z := layout.origin + j * layout.cell
+					if Vector2(x - m.x, z - m.y).length() < m.z + 0.6:
+						holes[j * n + i] = true
 	var indices := PackedInt32Array()
 	indices.resize((n - 1) * (n - 1) * 6)
 	var w := 0
@@ -472,9 +488,12 @@ func _build_terrain(parent: Node3D) -> void:
 			var b := a + 1
 			var c := a + n
 			var d := c + 1
+			if holes.has(a) or holes.has(b) or holes.has(c) or holes.has(d):
+				continue
 			indices[w] = a; indices[w + 1] = b; indices[w + 2] = c
 			indices[w + 3] = b; indices[w + 4] = d; indices[w + 5] = c
 			w += 6
+	indices.resize(w)
 	var arrays := []
 	arrays.resize(Mesh.ARRAY_MAX)
 	arrays[Mesh.ARRAY_VERTEX] = verts
@@ -492,7 +511,7 @@ func _build_terrain(parent: Node3D) -> void:
 	hm.map_depth = n
 	var scaled := PackedFloat32Array(h)
 	for k in scaled.size():
-		scaled[k] = h[k] / layout.cell
+		scaled[k] = NAN if holes.has(k) else h[k] / layout.cell
 	hm.map_data = scaled
 	var shape_xform := Transform3D(Basis().scaled(Vector3.ONE * layout.cell), Vector3.ZERO)
 	var ground := _add(parent, mesh, mat, Transform3D.IDENTITY, hm, WORLD_LAYER, shape_xform)
@@ -2016,14 +2035,15 @@ func _build_dressing(parent: Node3D) -> void:
 
 ## The tree grounds west of the lawn (TreeGrounds): their own ground, leaf
 ## litter, the orchard, Sap Falls, the silk ladder, the root door, puddles.
-func _build_tree_grounds(root: Node3D) -> void:
+func _build_tree_grounds(root: Node3D) -> TreeGrounds:
 	if not layout.data.has("tree_grounds"):
-		return
+		return null
 	var grounds := TreeGrounds.new()
 	var blades: Array[ArrayMesh] = [GrassMeshes.blade(BLADE_HEIGHT, BLADE_WIDTH, 0.08, 6, 0.35),
 		GrassMeshes.blade(BLADE_HEIGHT, BLADE_WIDTH * 0.8, 0.22, 6, -0.5)]
 	grounds.setup(layout, _ground_material(), _grass_material(), blades)
 	root.add_child(grounds)
+	return grounds
 
 
 func _grass_material() -> ShaderMaterial:
@@ -2055,6 +2075,8 @@ func _build_grass(parent: Node3D) -> void:
 		Color(0.42, 0.46, 0.48), Color(0.6, 0.55, 0.34)]
 	var hollow: Dictionary = layout.item("areas", "backpack_hollow")
 	var hollow_c := LawnLayout.xz(hollow["center"])
+	var flat_rng := RandomNumberGenerator.new()  # (its own, so the pressed grass doesn't shift the lawn's)
+	flat_rng.seed = 77
 
 	# chunk key -> {"standing": [[xforms], [xforms]], "colors": [...], "flat": xforms, "clover": xforms,
 	#   "collars": xforms, "collar_colors": ground weights}
@@ -2072,6 +2094,8 @@ func _build_grass(parent: Node3D) -> void:
 				count += 1
 			var cx := layout.origin + i * layout.cell
 			var cz := layout.origin + j * layout.cell
+			if count > 0 and Wormways.available(layout) and Wormways.near_mouth(layout, cx, cz, 1.0):
+				count = 0  # (a burrow mouth: bare soil)
 			for c in count:
 				var crown := Vector2(cx + rng.randf_range(-1.0, 1.0), cz + rng.randf_range(-1.0, 1.0))
 				var hs := rng.randf_range(0.75, 1.2)
@@ -2116,33 +2140,48 @@ func _build_grass(parent: Node3D) -> void:
 				var collar_bucket := _chunk(chunks, crown.x, crown.y)
 				(collar_bucket["collars"] as Array).append(Transform3D(heap, Vector3(crown.x, ground - 0.05, crown.y)))
 				(collar_bucket["collar_colors"] as Array).append(SURFACE_WEIGHTS[surf])
-			# flattened blades in the hollow Amodu sat in: lying radially outward
+			# grass pressed flat in the hollow he wakes in (where he lay when he
+			# shrank): a mat of blades bent over at the foot, lying out from the
+			# middle and crossing, pale from the dark under him. He pulls them up by
+			# hand for fibre (Harvest "pressed_grass"), the way Grounded's first
+			# fibre comes off the ground.
 			if surf == LawnLayout.Surface.FLATTENED and rng.randf() < 0.22:
 				var x := cx + rng.randf_range(-1.0, 1.0)
 				var z := cz + rng.randf_range(-1.0, 1.0)
 				var out := Vector2(x, z) - hollow_c
 				var yaw := atan2(out.x, out.y) + rng.randf_range(-0.4, 0.4)
-				# pressed flush to the soil, following its slope from base to tip, so
-				# Amodu stands on them rather than in them
 				var length_scale := rng.randf_range(0.45, 0.65)
-				var length := BLADE_HEIGHT * length_scale
-				var base_h := layout.height_at(x, z)
-				var tip_h := layout.height_at(x + sin(yaw) * length, z + cos(yaw) * length)
-				var pitch := atan2(tip_h - base_h, length)
-				var basis := Basis(Vector3.UP, yaw) * Basis(Vector3.RIGHT, PI / 2.0 - pitch)
-				basis = basis.scaled_local(Vector3(rng.randf_range(0.7, 1.0), length_scale, 0.05))
-				(_chunk(chunks, x, z)["flat"] as Array).append(Transform3D(basis, Vector3(x, base_h + 0.03, z)))
+				rng.randf_range(0.7, 1.0)  # (kept, so the rest of the lawn keeps its layout)
+				for b in flat_rng.randi_range(2, 3):
+					var p := Vector2(x, z) + Vector2(flat_rng.randf_range(-1.4, 1.4), flat_rng.randf_range(-1.4, 1.4))
+					var turn := yaw + flat_rng.randf_range(-0.6, 0.6)
+					var length := BLADE_HEIGHT * length_scale * flat_rng.randf_range(0.8, 1.15)
+					# lying on the slope from foot to tip, so he stands on them, not in them
+					var base_h := layout.height_at(p.x, p.y)
+					var tip_h := layout.height_at(p.x + sin(turn) * length, p.y + cos(turn) * length)
+					var basis := Basis(Vector3.UP, turn) * Basis(Vector3.RIGHT, -atan2(tip_h - base_h, length))
+					basis = basis.scaled_local(Vector3(flat_rng.randf_range(0.7, 1.0), 1.0, length / PRESSED_LENGTH))
+					var bucket := _chunk(chunks, p.x, p.y)
+					(bucket["flat"] as Array).append(Transform3D(basis, Vector3(p.x, base_h - 0.05, p.y)))
+					var tint: Color = greens[flat_rng.randi() % greens.size()]
+					var roll := flat_rng.randf()
+					tint.a = 0.0 if roll < 0.05 else (0.6 if roll < 0.3 else 1.0)  # straw, drying, still green
+					(bucket["flat_colors"] as Array).append(tint)
 
 	var mat := _grass_material()
 	GrassField.reset(parent, mat, BLADE_HEIGHT)  # the blades he can chop (Harvest "grass")
 	var collar_mesh := GrassMeshes.soil_collar(rng)
 	var collar_mat := _ground_material()
-	var flat_mat := mat.duplicate() as ShaderMaterial  # blades pressed flat where Amodu hid: bruised, drying
-	flat_mat.set_shader_parameter("tint_scale", 1.0)
-	flat_mat.set_shader_parameter("base_color", Color(0.22, 0.3, 0.1))
-	flat_mat.set_shader_parameter("mid_color", Color(0.42, 0.52, 0.2))
-	flat_mat.set_shader_parameter("tip_color", Color(0.72, 0.66, 0.34))
-	flat_mat.set_shader_parameter("wind_strength", 0.15)
+	var flat_mat := mat.duplicate() as ShaderMaterial  # blades pressed flat where he lay: pale, bruised, drying
+	flat_mat.set_shader_parameter("base_color", Color(0.3, 0.34, 0.15))
+	flat_mat.set_shader_parameter("mid_color", Color(0.46, 0.52, 0.24))
+	flat_mat.set_shader_parameter("tip_color", Color(0.66, 0.63, 0.34))
+	flat_mat.set_shader_parameter("wind_strength", 0.04)
+	flat_mat.set_shader_parameter("push_strength", 0.0)  # (lying flat: nothing to push aside)
+	flat_mat.set_shader_parameter("vein_strength", 0.35)  # (pressed smooth)
+	flat_mat.set_shader_parameter("fade_near", 0.0)  # (and never in the way of the camera)
+	flat_mat.set_shader_parameter("fade_far", 0.01)
+	var pressed_mesh := GrassMeshes.pressed_blade(PRESSED_LENGTH, BLADE_WIDTH * 0.85)
 	var physics := not Engine.is_editor_hint() and is_inside_tree()
 	if physics:
 		var blade_box := PhysicsServer3D.box_shape_create()
@@ -2162,7 +2201,16 @@ func _build_grass(parent: Node3D) -> void:
 			shadows.add(mmi)
 			mms[variant] = mmi.multimesh
 		if not (bucket["flat"] as Array).is_empty():
-			_multimesh(parent, blade_meshes[0], flat_mat, bucket["flat"], [], false)
+			var flat := _multimesh(parent, pressed_mesh, flat_mat, bucket["flat"], bucket["flat_colors"], false)
+			flat.visibility_range_end = 260.0
+			if physics:
+				var field := GatherField.of(parent)
+				var list: Array = bucket["flat"]
+				for fi in list.size():
+					var fx: Transform3D = list[fi]
+					var along := fx.basis.z * PRESSED_LENGTH  # foot to tip
+					field.add_spec("pressed_grass", fx.origin + along * 0.5, 2.0, flat.multimesh, fi, null, null,
+						atan2(along.x, along.z), along.length() * 0.8)
 		if not (bucket["collars"] as Array).is_empty():
 			var heaps := _multimesh(parent, collar_mesh, collar_mat, bucket["collars"], bucket["collar_colors"], false)
 			heaps.visibility_range_end = 160.0
@@ -2174,7 +2222,8 @@ func _build_grass(parent: Node3D) -> void:
 func _chunk(chunks: Dictionary, x: float, z: float) -> Dictionary:
 	var key := Vector2i(floori(x / CHUNK), floori(z / CHUNK))
 	if not chunks.has(key):
-		chunks[key] = {"standing": [[], []], "colors": [[], []], "flat": [], "clover": [], "collars": [], "collar_colors": []}
+		chunks[key] = {"standing": [[], []], "colors": [[], []], "flat": [], "flat_colors": [], "clover": [], "collars": [],
+			"collar_colors": []}
 	return chunks[key]
 
 

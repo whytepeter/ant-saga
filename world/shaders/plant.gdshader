@@ -27,7 +27,10 @@ uniform float flutter_speed = 5.0;
 uniform vec2 wind_dir = vec2(0.8, 0.6);
 uniform float wind_speed = 0.9;
 uniform float backlight = 0.35;
+// how far (m) a leaf gives way when Amodu brushes it
+uniform float push = 1.4;
 global uniform float rain;
+global uniform vec3 player_position;
 
 varying float v_h;
 
@@ -45,6 +48,14 @@ void vertex() {
 	vec3 wp = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
 	float f = sin(TIME * flutter_speed + wp.x * 0.9 + wp.z * 0.7) * sin(TIME * flutter_speed * 1.37 + wp.y * 1.3);
 	off += vec3(wind_dir.y * 0.4, 1.0, -wind_dir.x * 0.4) * f * flutter * gust * h;
+	// Amodu pushing through: leaves near him give way, bending aside and down
+	// (each part by its own distance, so the leaf he touches moves most)
+	vec3 away = wp - player_position;
+	float near = 1.0 - smoothstep(0.6, 2.8, length(away.xz));
+	near *= 1.0 - smoothstep(0.5, 3.0, abs(away.y - 0.8));
+	away.y = 0.0;
+	off += normalize(away + vec3(0.001, 0.0, 0.0)) * near * push * h;
+	off.y -= near * push * 0.5 * h;
 	VERTEX += inverse(mat3(MODEL_MATRIX)) * off;
 }
 

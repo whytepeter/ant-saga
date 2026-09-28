@@ -1,13 +1,13 @@
 {
   "version": 1,
   "meta": {
-    "lastScanned": "2026-09-27T19:34:02.861Z",
-    "fileCount": 328,
+    "lastScanned": "2026-09-28T18:40:19.853Z",
+    "fileCount": 356,
     "hits": 0,
     "misses": 0,
-    "renderedHash": "27ca0fe3f7f703c066cc758f61393ecec00fb6cf99693370398427a7b48802dd",
-    "storeUpdatedAt": "2026-09-27T19:34:02.869Z",
-    "rootHash": "4ed034efbe827e27"
+    "renderedHash": "9de60adec10f5e4f4f9f37ebb60bad02573d9168b1687c5fd64eec7793fffa01",
+    "storeUpdatedAt": "2026-09-28T18:40:19.863Z",
+    "rootHash": "1220d64dfd5f8de6"
   },
   "files": {
     ".gitattributes": {
@@ -1488,12 +1488,12 @@
     },
     "project.godot": {
       "description": "",
-      "tokens": 2082,
-      "hash": "ec32fc3cd004e4ed",
-      "size": 7807,
-      "mtimeMs": 1790372074959.6829,
-      "updatedAt": "2026-09-25T22:20:40.436Z",
-      "source": "scan"
+      "tokens": 3922,
+      "hash": "652418ab5151e9b2",
+      "size": 14705,
+      "mtimeMs": 1790583218228.9885,
+      "updatedAt": "2026-09-28T08:13:38.350Z",
+      "source": "hook"
     },
     "README.md": {
       "description": "Project documentation",
@@ -1828,12 +1828,12 @@
     },
     "world/grass_meshes.gd": {
       "description": "",
-      "tokens": 620,
-      "hash": "592d9bff8c590ce8",
-      "size": 2323,
-      "mtimeMs": 1790371366684.6958,
-      "updatedAt": "2026-09-25T22:20:40.442Z",
-      "source": "scan"
+      "tokens": 1982,
+      "hash": "d4bac446676103b2",
+      "size": 7430,
+      "mtimeMs": 1790620219223.9985,
+      "updatedAt": "2026-09-28T18:30:19.332Z",
+      "source": "hook"
     },
     "world/grass_meshes.gd.uid": {
       "description": "",
@@ -1927,12 +1927,12 @@
     },
     "world/lawn/lawn_level.gd": {
       "description": "Declares CHECKPOINT_RADIUS",
-      "tokens": 1543,
-      "hash": "ade2028a7b8cf73c",
-      "size": 5803,
-      "mtimeMs": 1790373270541.644,
-      "updatedAt": "2026-09-25T22:20:40.451Z",
-      "source": "scan"
+      "tokens": 6083,
+      "hash": "e9ae4bac46381cd7",
+      "size": 22841,
+      "mtimeMs": 1790620154835.47,
+      "updatedAt": "2026-09-28T18:29:14.933Z",
+      "source": "hook"
     },
     "world/lawn/lawn_level.gd.uid": {
       "description": "",
@@ -2152,11 +2152,11 @@
     },
     "world/lawn/garden_dressing.gd": {
       "description": "CHUNK: collision",
-      "tokens": 3168,
-      "hash": "0c12d8e4e7fca719",
-      "size": 11881,
-      "mtimeMs": 1790498385084.2417,
-      "updatedAt": "2026-09-27T08:39:45.215Z",
+      "tokens": 5597,
+      "hash": "43b4c8a0283e733e",
+      "size": 20987,
+      "mtimeMs": 1790619754628.4253,
+      "updatedAt": "2026-09-28T18:22:34.745Z",
       "source": "hook"
     },
     "tests/lookdev_tour.gd": {
@@ -2899,11 +2899,11 @@
     },
     "ui/map.gdshader": {
       "description": "Declares canvas_item",
-      "tokens": 346,
-      "hash": "0781793b6781bfa2",
-      "size": 1296,
-      "mtimeMs": 1790433261275.1777,
-      "updatedAt": "2026-09-26T14:34:21.577Z",
+      "tokens": 423,
+      "hash": "70d9db32aa47280d",
+      "size": 1583,
+      "mtimeMs": 1790551868787.505,
+      "updatedAt": "2026-09-27T23:31:08.892Z",
       "source": "hook"
     },
     "ui/map_panel.gd": {
@@ -2917,11 +2917,11 @@
     },
     "ui/map_hud.gd": {
       "description": "Declares MINI",
-      "tokens": 1306,
-      "hash": "3562a8117ddbf156",
-      "size": 4897,
-      "mtimeMs": 1790433354650.5212,
-      "updatedAt": "2026-09-26T14:35:54.758Z",
+      "tokens": 1019,
+      "hash": "36214eb2c3eb7e1a",
+      "size": 3819,
+      "mtimeMs": 1790552099132.4502,
+      "updatedAt": "2026-09-27T23:34:59.241Z",
       "source": "hook"
     },
     "world/shaders/pickup_marker.gdshader": {
@@ -3340,11 +3340,11 @@
     },
     "docs/SURVIVAL.md": {
       "description": "Survival: the game (design, 2026-09-27)",
-      "tokens": 2253,
-      "hash": "ea6e028f81716d8b",
-      "size": 9028,
-      "mtimeMs": 1790502347118.3115,
-      "updatedAt": "2026-09-27T09:45:47.219Z",
+      "tokens": 2976,
+      "hash": "a82b8cdb9a73fe0e",
+      "size": 11925,
+      "mtimeMs": 1790580090192.1797,
+      "updatedAt": "2026-09-28T07:21:30.277Z",
       "source": "hook"
     },
     "creatures/ground_beetle/night_beetle.gd": {
@@ -3519,11 +3519,11 @@
     },
     "world/shaders/plant.gdshader": {
       "description": "Declares spatial",
-      "tokens": 759,
-      "hash": "e7f65e7884ca4388",
-      "size": 2844,
-      "mtimeMs": 1790517660696.8745,
-      "updatedAt": "2026-09-27T14:01:00.794Z",
+      "tokens": 920,
+      "hash": "81d7b83c79b6433e",
+      "size": 3449,
+      "mtimeMs": 1790583313985.2195,
+      "updatedAt": "2026-09-28T08:15:14.108Z",
       "source": "hook"
     },
     "world/props/wind_sway.gd": {
@@ -3546,11 +3546,11 @@
     },
     "world/props/nature_models.gd": {
       "description": "Declares DIR",
-      "tokens": 1764,
-      "hash": "2149877c54f663e3",
-      "size": 6616,
-      "mtimeMs": 1790519392372.6829,
-      "updatedAt": "2026-09-27T14:29:52.471Z",
+      "tokens": 2200,
+      "hash": "e9a7975cc9bbcf39",
+      "size": 8249,
+      "mtimeMs": 1790583064792.5474,
+      "updatedAt": "2026-09-28T08:11:04.948Z",
       "source": "hook"
     },
     "world/lawn/tree_grounds.gd": {
@@ -3672,20 +3672,20 @@
     },
     "tests/_tmp_ui.gd": {
       "description": "",
-      "tokens": 404,
-      "hash": "7f753f40ec85257e",
-      "size": 1512,
-      "mtimeMs": 1790535899268.1226,
-      "updatedAt": "2026-09-27T19:04:59.372Z",
+      "tokens": 619,
+      "hash": "c60dc1748b275f87",
+      "size": 2320,
+      "mtimeMs": 1790538043144.935,
+      "updatedAt": "2026-09-27T19:40:43.247Z",
       "source": "hook"
     },
     "world/props/gatherable.gd": {
       "description": "",
-      "tokens": 1100,
-      "hash": "9b8a35d7a894ef38",
-      "size": 4122,
-      "mtimeMs": 1790536051488.3403,
-      "updatedAt": "2026-09-27T19:07:31.579Z",
+      "tokens": 1981,
+      "hash": "a615ffc5a7b80265",
+      "size": 7428,
+      "mtimeMs": 1790580368613.0693,
+      "updatedAt": "2026-09-28T07:26:08.718Z",
       "source": "hook"
     },
     "data/items.json": {
@@ -3735,20 +3735,20 @@
     },
     "world/props/item_pickup.gd": {
       "description": "Declares GROUP",
-      "tokens": 640,
-      "hash": "fe3009a2c5b6ec27",
-      "size": 2399,
-      "mtimeMs": 1790536395579.079,
-      "updatedAt": "2026-09-27T19:13:15.680Z",
+      "tokens": 1442,
+      "hash": "05cad02d180bbfb9",
+      "size": 5410,
+      "mtimeMs": 1790580072638.7588,
+      "updatedAt": "2026-09-28T07:21:12.748Z",
       "source": "hook"
     },
     "ui/pack_screen.gd": {
       "description": "Declares TABS",
-      "tokens": 6122,
-      "hash": "404a4ff04558115e",
-      "size": 23365,
-      "mtimeMs": 1790536484983.0981,
-      "updatedAt": "2026-09-27T19:14:45.076Z",
+      "tokens": 6203,
+      "hash": "b644a45ae89e9f45",
+      "size": 23667,
+      "mtimeMs": 1790550987681.8308,
+      "updatedAt": "2026-09-27T23:16:27.777Z",
       "source": "hook"
     },
     "ui/pickup_toasts.gd": {
@@ -3767,6 +3767,258 @@
       "size": 981,
       "mtimeMs": 1790537642762.7822,
       "updatedAt": "2026-09-27T19:34:02.860Z",
+      "source": "hook"
+    },
+    "world/shaders/earthworm.gdshader": {
+      "description": "Declares spatial",
+      "tokens": 1282,
+      "hash": "c2b312f857498ed9",
+      "size": 4807,
+      "mtimeMs": 1790538060896.379,
+      "updatedAt": "2026-09-27T19:41:00.994Z",
+      "source": "hook"
+    },
+    "tools/render_icons.gd": {
+      "description": "Declares OUT",
+      "tokens": 2724,
+      "hash": "d4fa55836dc37a63",
+      "size": 10354,
+      "mtimeMs": 1790550814029.2283,
+      "updatedAt": "2026-09-27T23:13:34.127Z",
+      "source": "hook"
+    },
+    "creatures/earthworm/earthworm.gd": {
+      "description": "Declares State",
+      "tokens": 3053,
+      "hash": "d805e8d6f561b38f",
+      "size": 11452,
+      "mtimeMs": 1790581281933.102,
+      "updatedAt": "2026-09-28T07:41:22.019Z",
+      "source": "hook"
+    },
+    "creatures/earthworm/worm_rising.gd": {
+      "description": "Declares MAX_NEAR",
+      "tokens": 2250,
+      "hash": "3f685f8593a62e58",
+      "size": 8438,
+      "mtimeMs": 1790581349935.4692,
+      "updatedAt": "2026-09-28T07:42:30.028Z",
+      "source": "hook"
+    },
+    "ui/map_screen.gd": {
+      "description": "Declares MOST_PINS",
+      "tokens": 1980,
+      "hash": "7d346309568f2cb6",
+      "size": 7432,
+      "mtimeMs": 1790551960473.9622,
+      "updatedAt": "2026-09-27T23:32:40.567Z",
+      "source": "hook"
+    },
+    "world/shaders/wormways.gdshader": {
+      "description": "Declares spatial",
+      "tokens": 803,
+      "hash": "8ef8701dad7c8e61",
+      "size": 3011,
+      "mtimeMs": 1790552038696.111,
+      "updatedAt": "2026-09-27T23:33:58.798Z",
+      "source": "hook"
+    },
+    "world/wormways/wormways.gd": {
+      "description": "Declares MESH",
+      "tokens": 5486,
+      "hash": "6446aa9124aff8b7",
+      "size": 21024,
+      "mtimeMs": 1790582821002.6775,
+      "updatedAt": "2026-09-28T08:07:01.120Z",
+      "source": "hook"
+    },
+    "ui/title_screen.gd": {
+      "description": "Declares GLIDE",
+      "tokens": 1694,
+      "hash": "53412fb108488c7c",
+      "size": 6352,
+      "mtimeMs": 1790552293493.0435,
+      "updatedAt": "2026-09-27T23:38:13.582Z",
+      "source": "hook"
+    },
+    "creatures/earthworm/great_worm.gd": {
+      "description": "Declares Phase",
+      "tokens": 2498,
+      "hash": "580b7a3eb75853c2",
+      "size": 9366,
+      "mtimeMs": 1790581074674.887,
+      "updatedAt": "2026-09-28T07:37:54.779Z",
+      "source": "hook"
+    },
+    "tests/_tmp_wormways.gd": {
+      "description": "",
+      "tokens": 892,
+      "hash": "69aeb8536e5a051e",
+      "size": 3345,
+      "mtimeMs": 1790579112080.9233,
+      "updatedAt": "2026-09-28T07:05:12.156Z",
+      "source": "hook"
+    },
+    "world/props/harvest.gd": {
+      "description": "Declares HAND",
+      "tokens": 1592,
+      "hash": "c331dea7fb9ba9e8",
+      "size": 5968,
+      "mtimeMs": 1790579900618.6753,
+      "updatedAt": "2026-09-28T07:18:20.719Z",
+      "source": "hook"
+    },
+    "tests/_tmp_great_worm.gd": {
+      "description": "",
+      "tokens": 773,
+      "hash": "42eae5b96d793de4",
+      "size": 2896,
+      "mtimeMs": 1790579930628.6987,
+      "updatedAt": "2026-09-28T07:18:50.734Z",
+      "source": "hook"
+    },
+    "world/props/item_models.gd": {
+      "description": "",
+      "tokens": 2318,
+      "hash": "ddb066e90d5d5220",
+      "size": 8689,
+      "mtimeMs": 1790579989144.823,
+      "updatedAt": "2026-09-28T07:19:49.240Z",
+      "source": "hook"
+    },
+    "world/shaders/outline_mask.gdshader": {
+      "description": "spatial: outline",
+      "tokens": 137,
+      "hash": "15240f76368a2fa8",
+      "size": 512,
+      "mtimeMs": 1790580196960.0322,
+      "updatedAt": "2026-09-28T07:23:17.056Z",
+      "source": "hook"
+    },
+    "world/shaders/outline_shell.gdshader": {
+      "description": "Declares spatial",
+      "tokens": 316,
+      "hash": "98112890e958c392",
+      "size": 1183,
+      "mtimeMs": 1790580197125.6228,
+      "updatedAt": "2026-09-28T07:23:17.204Z",
+      "source": "hook"
+    },
+    "world/props/outline.gd": {
+      "description": "Declares MASK",
+      "tokens": 420,
+      "hash": "61de73f9c88d2550",
+      "size": 1574,
+      "mtimeMs": 1790580197273.1577,
+      "updatedAt": "2026-09-28T07:23:17.352Z",
+      "source": "hook"
+    },
+    "world/lawn/grass_field.gd": {
+      "description": "Declares CELL",
+      "tokens": 2427,
+      "hash": "61d74220589f1f1d",
+      "size": 9101,
+      "mtimeMs": 1790580834630.6306,
+      "updatedAt": "2026-09-28T07:33:54.742Z",
+      "source": "hook"
+    },
+    "ui/target_prompt.gd": {
+      "description": "",
+      "tokens": 1069,
+      "hash": "749f01ead431bbf9",
+      "size": 4008,
+      "mtimeMs": 1790580921055.414,
+      "updatedAt": "2026-09-28T07:35:21.170Z",
+      "source": "hook"
+    },
+    "tests/_tmp_harvest.gd": {
+      "description": "",
+      "tokens": 878,
+      "hash": "98a073dce795d704",
+      "size": 3290,
+      "mtimeMs": 1790582374541.458,
+      "updatedAt": "2026-09-28T07:59:34.660Z",
+      "source": "hook"
+    },
+    "world/lawn/loose_finds.gd": {
+      "description": "Declares SEED",
+      "tokens": 847,
+      "hash": "09c07952468ab378",
+      "size": 3174,
+      "mtimeMs": 1790581540824.0469,
+      "updatedAt": "2026-09-28T07:45:40.940Z",
+      "source": "hook"
+    },
+    "world/shaders/grass.gdshader": {
+      "description": "Declares spatial",
+      "tokens": 1073,
+      "hash": "9c8f7dbf9d277c99",
+      "size": 4024,
+      "mtimeMs": 1790583218951.576,
+      "updatedAt": "2026-09-28T08:13:39.064Z",
+      "source": "hook"
+    },
+    "world/foliage_push.gd": {
+      "description": "",
+      "tokens": 160,
+      "hash": "678e722e3e15a0d3",
+      "size": 597,
+      "mtimeMs": 1790583314251.3665,
+      "updatedAt": "2026-09-28T08:15:14.395Z",
+      "source": "hook"
+    },
+    "tests/_tmp_plant.gd": {
+      "description": "",
+      "tokens": 1167,
+      "hash": "2dd066ec2b4b7771",
+      "size": 4376,
+      "mtimeMs": 1790619812384.6768,
+      "updatedAt": "2026-09-28T18:23:32.480Z",
+      "source": "hook"
+    },
+    "tests/_tmp_probe.gd": {
+      "description": "",
+      "tokens": 477,
+      "hash": "17690fa0af8973f3",
+      "size": 1788,
+      "mtimeMs": 1790584011421.0732,
+      "updatedAt": "2026-09-28T08:26:51.529Z",
+      "source": "hook"
+    },
+    "world/shaders/plantain.gdshader": {
+      "description": "Declares spatial",
+      "tokens": 1639,
+      "hash": "bc820a9a41d61f4a",
+      "size": 6144,
+      "mtimeMs": 1790584674331.586,
+      "updatedAt": "2026-09-28T08:37:54.473Z",
+      "source": "hook"
+    },
+    "world/shaders/plantain_spike.gdshader": {
+      "description": "Declares spatial",
+      "tokens": 884,
+      "hash": "0cbc5c32b3147c1a",
+      "size": 3312,
+      "mtimeMs": 1790584698321.2148,
+      "updatedAt": "2026-09-28T08:38:18.428Z",
+      "source": "hook"
+    },
+    "world/props/plantain.gd": {
+      "description": "Declares LEAF_SHADER",
+      "tokens": 4742,
+      "hash": "39a695b9272eaae2",
+      "size": 18146,
+      "mtimeMs": 1790584910857.802,
+      "updatedAt": "2026-09-28T08:41:50.967Z",
+      "source": "hook"
+    },
+    "tests/_tmp_gather.gd": {
+      "description": "",
+      "tokens": 666,
+      "hash": "e6f3be1fea941223",
+      "size": 2497,
+      "mtimeMs": 1790620819767.999,
+      "updatedAt": "2026-09-28T18:40:19.852Z",
       "source": "hook"
     }
   },

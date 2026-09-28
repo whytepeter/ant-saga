@@ -46,6 +46,41 @@ static func blade(height: float, width: float, bend: float, rows := 8, twist := 
 	return st.commit()
 
 
+## A blade pressed flat (grass something heavy lay on): it rises a little out
+## of its foot, bends over and lies along +Z on the soil, rippling where it
+## lies, its tip lifting a touch, its edges up a little from the midrib. UV as
+## `blade` (UV.y 0 at the foot to 1 at the tip).
+static func pressed_blade(length: float, width: float, rows := 12) -> ArrayMesh:
+	var st := SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var ring: Array[PackedVector3Array] = []
+	for i in rows + 1:
+		var t := float(i) / rows
+		var sheath := 1.0 - smoothstep(0.0, 0.1, t)
+		var w := width * 0.5 * (1.0 - 0.5 * sheath) * (1.0 - pow(smoothstep(0.55, 1.0, t), 1.4))
+		var y := 0.5 * sin(PI * clampf(t / 0.14, 0.0, 1.0)) + 0.1 * smoothstep(0.0, 0.1, t) \
+			+ 0.05 * sin(t * 19.0) * smoothstep(0.15, 0.3, t) + 0.3 * pow(smoothstep(0.75, 1.0, t), 2.0)
+		var c := Vector3(0.0, y, t * length)
+		ring.append(PackedVector3Array([c + Vector3(-w, 0.08, 0.0), c, c + Vector3(w, 0.08, 0.0)]))
+	var across := [0.0, 0.5, 1.0]
+	for side in 2:
+		st.set_smooth_group(side + 1)
+		for i in rows:
+			var t0 := float(i) / rows
+			var t1 := float(i + 1) / rows
+			var u0: float = across[side]
+			var u1: float = across[side + 1]
+			st.set_uv(Vector2(u0, t0)); st.add_vertex(ring[i][side])
+			st.set_uv(Vector2(u0, t1)); st.add_vertex(ring[i + 1][side])
+			st.set_uv(Vector2(u1, t0)); st.add_vertex(ring[i][side + 1])
+			st.set_uv(Vector2(u1, t0)); st.add_vertex(ring[i][side + 1])
+			st.set_uv(Vector2(u0, t1)); st.add_vertex(ring[i + 1][side])
+			st.set_uv(Vector2(u1, t1)); st.add_vertex(ring[i + 1][side + 1])
+	st.generate_normals()
+	st.generate_tangents()
+	return st.commit()
+
+
 ## A heap of soil round the foot of a tuft: a lumpy low dome (0.5 m high,
 ## 2 m across) whose rim dips below the ground, so it rises out of the terrain
 ## with no seam. Drawn with the ground's own material.

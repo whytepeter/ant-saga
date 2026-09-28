@@ -94,11 +94,28 @@ static func solid(parent: Node3D, v: Piece, xf: Transform3D, kind := "convex", l
 		body.collision_layer = layer
 		body.collision_mask = 0
 		var cs := CollisionShape3D.new()
-		cs.shape = v.shape(kind)
-		cs.transform = xf * v.fix
+		cs.shape = NatureModels.baked_shape(v, kind, xf * v.fix)
 		body.add_child(cs)
 		parent.add_child(body)
 	return mi
+
+
+## `v`'s collision with `to_world` baked into its points (a squashed, turned
+## apple collides as it looks: physics can't scale a shape unevenly itself).
+static func baked_shape(v: Piece, kind: String, to_world: Transform3D) -> Shape3D:
+	if kind == "trimesh":
+		var faces := v.mesh.get_faces()
+		for k in faces.size():
+			faces[k] = to_world * faces[k]
+		var concave := ConcavePolygonShape3D.new()
+		concave.set_faces(faces)
+		return concave
+	var pts := (v.shape("convex") as ConvexPolygonShape3D).points.duplicate()
+	for k in pts.size():
+		pts[k] = to_world * pts[k]
+	var convex := ConvexPolygonShape3D.new()
+	convex.points = pts
+	return convex
 
 
 ## A MultiMesh of `v` at world transforms (unit space to world, `fix` applied here).

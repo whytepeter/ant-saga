@@ -53,6 +53,8 @@ var companions: Array[Companion] = []
 var expedition: Expedition
 var clock: DayClock
 var tree_base: TreeBase
+## The earthworms' burrows under the lawn (the first rain opens them).
+var wormways: Wormways
 var route_guide: RouteGuide
 var story: LevelStory
 var hud: GameHud
@@ -80,6 +82,10 @@ func _ready() -> void:
 		tree_base.setup(layout)
 		tree_base.watch(player, ($WorldEnvironment as WorldEnvironment).environment)
 		add_child(tree_base)
+	if Wormways.available(layout):
+		wormways = Wormways.new()
+		wormways.setup(layout, player)
+		add_child(wormways)
 	if expedition_mode:
 		expedition = Expedition.new()
 		expedition.name = "Expedition"
@@ -166,6 +172,15 @@ func _setup_adventure() -> void:
 	life.name = "AmbientLife"
 	life.setup(layout, player)
 	add_child(life)
+	var foliage := FoliagePush.new()  # grass and leaves lean away as he walks through
+	foliage.name = "FoliagePush"
+	foliage.player = player
+	add_child(foliage)
+	Plantain.player = player  # (their leaves dip under him)
+	var worms := WormRising.new()  # rain brings the earthworms up (first through the Wormways' mouths)
+	worms.setup(layout, weather, player)
+	worms.wormways = wormways
+	add_child(worms)
 	var audio := GardenAudio.new()
 	audio.name = "GardenAudio"
 	audio.setup(player, clock, weather, layout, life, route_guide,
@@ -176,6 +191,10 @@ func _setup_adventure() -> void:
 	hud.setup(player, layout, clock, story.destination() if story != null else _colony_gate())
 	hud.survival = survival
 	add_child(hud)
+	if wormways != null:
+		wormways.clock = clock
+		if story == null:
+			_wormways_missions(weather)
 	info.visible = false
 	$HUD/Help.visible = false
 	if show_title and survival_mode and not GameSettings.title_seen and not GameSettings.testing():
@@ -441,7 +460,10 @@ func _physics_process(delta: float) -> void:
 				show_toast("Checkpoint · %s" % checkpoint["name"])
 			checkpoint_reached.emit(checkpoint["name"])
 
-	if p.y < FALL_LIMIT:
+	# (deep in the Wormways is under the lawn, not out of the world: only below
+	# the lowest burrow, or far outside any, counts as a fall)
+	var underground := wormways != null and wormways.cave_distance(p) < 6.0 and p.y > -110.0
+	if p.y < FALL_LIMIT and not underground:
 		respawn("Fell out of the world")  # (the Rut no longer sweeps him away: he swims)
 
 
@@ -511,6 +533,27 @@ func top_surface(xz: Array) -> Vector3:
 	var q := PhysicsRayQueryParameters3D.create(Vector3(x, 500, z), Vector3(x, -50, z), 1 | 4)
 	var hit := get_world_3d().direct_space_state.intersect_ray(q)
 	return hit.position if not hit.is_empty() else layout.ground_point(xz)
+
+
+## The Wormways' missions (world/wormways/missions.json): they start with the
+## first rain; the burrows, the finds and the Great Worm move them on.
+func _wormways_missions(weather: Weather) -> void:
+	var missions := Missions.new()
+	missions.name = "WormwaysMissions"
+	missions.data_path = "res://world/wormways/missions.json"
+	add_child(missions)
+	missions.changed.connect(hud.show_objective)
+	wormways.event.connect(missions.notify)
+	# gather:<item> steps count what reaches his pack (picked, cut or dropped by the worm)
+	var inventory := player.get_node_or_null("Inventory") as Inventory
+	if inventory != null:
+		inventory.item_added.connect(func(id: StringName, _count: int) -> void:
+			missions.notify("gather:" + String(id)))
+	var started := [false]
+	weather.rain_changed.connect(func(raining: bool) -> void:
+		if raining and not started[0]:
+			started[0] = true
+			missions.begin())
 
 
 func show_toast(text: String, seconds := 3.0) -> void:

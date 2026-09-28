@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-27T19:34:02.861Z
-> Files: 328 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-28T18:40:19.853Z
+> Files: 356 tracked | Anatomy hits: 0 | Misses: 0
 
 > Project structure index. Auto-maintained by OpenWolf hooks and daemon.
 > Run `openwolf scan` to generate, or wait for the first Claude Code session.
@@ -16,7 +16,7 @@
 - `CLAUDE.md` — OpenWolf (~814 tok)
 - `GEMINI.md` — OpenWolf (~75 tok)
 - `mcp_ports.cfg` (~11 tok)
-- `project.godot` (~2082 tok)
+- `project.godot` (~3922 tok)
 - `README.md` — Project documentation (~621 tok)
 
 ## .claude/agents/
@@ -149,6 +149,12 @@
 - `Meshy_AI_Amber_Ant_Scout_biped_Animation_Walking_withSkin_texture_0.png.import` (~331 tok)
 - `Meshy_AI_Amber_Ant_Scout_biped_Animation_Walking_withSkin.glb.import` (~349 tok)
 
+## creatures/earthworm/
+
+- `earthworm.gd` — Declares State (~3053 tok)
+- `great_worm.gd` — Declares Phase (~2498 tok)
+- `worm_rising.gd` — Declares MAX_NEAR (~2250 tok)
+
 ## creatures/ground_beetle/
 
 - `night_beetle.gd` — Declares State (~2384 tok)
@@ -172,7 +178,7 @@
 - `lawn_map.svg.import` (~275 tok)
 - `PLAN.md` — Plan: Level 1, The Compound Grass (~2578 tok)
 - `STORY.md` — Story: Ant Kingdom Saga (~3048 tok)
-- `SURVIVAL.md` — Survival: the game (design, 2026-09-27) (~2253 tok)
+- `SURVIVAL.md` — Survival: the game (design, 2026-09-27) (~2976 tok)
 - `WORLD_ASSETS.md` — World assets: the models the new map needs (2026-09-27) (~1299 tok)
 - `WORLD.md` — World Bible: Level 1, The Compound Grass (~3783 tok)
 
@@ -271,12 +277,18 @@
 - `_tmp_biomes.gd` (~379 tok)
 - `_tmp_env.gd` (~982 tok)
 - `_tmp_fp.gd` (~469 tok)
+- `_tmp_gather.gd` (~666 tok)
+- `_tmp_great_worm.gd` (~773 tok)
+- `_tmp_harvest.gd` (~878 tok)
+- `_tmp_plant.gd` (~1167 tok)
+- `_tmp_probe.gd` (~477 tok)
 - `_tmp_props.gd` (~537 tok)
 - `_tmp_spear_times.gd` (~316 tok)
 - `_tmp_survival_shot.gd` (~313 tok)
 - `_tmp_trowel.gd` (~325 tok)
-- `_tmp_ui.gd` (~404 tok)
+- `_tmp_ui.gd` (~619 tok)
 - `_tmp_weapons.gd` (~632 tok)
+- `_tmp_wormways.gd` (~892 tok)
 - `expedition_test.gd` (~3386 tok)
 - `fight_test.gd` (~970 tok)
 - `lawn_graybox_test.gd` (~4160 tok)
@@ -305,6 +317,7 @@
 - `polyhaven.py` — Download CC0 models and textures from Poly Haven (polyhaven.com). (~892 tok)
 - `process_sounds.py` — Make the game's sounds (assets/audio/*.ogg) from recorded CC0 sources. (~3133 tok)
 - `prop_sheet.gd` — Declares VIEWS (~787 tok)
+- `render_icons.gd` — Declares OUT (~2724 tok)
 - `render_portraits.gd` — Declares OUT (~960 tok)
 - `retarget_ant_heroes.gd` — Declares SOURCE_DIR (~2084 tok)
 - `world_facts.py` — Writes docs/narrative/world-facts.md: a short, readable summary of the garden (~1766 tok)
@@ -317,12 +330,13 @@
 - `garden_map.gd` — Declares RECT (~1868 tok)
 - `hud_glyphs.gd` — Declares CREAM (~733 tok)
 - `inventory_panel.gd` — Declares CREAM (~1378 tok)
-- `map_hud.gd` — Declares MINI (~1306 tok)
+- `map_hud.gd` — Declares MINI (~1019 tok)
 - `map_panel.gd` — Declares CREAM (~1448 tok)
-- `map.gdshader` — Declares canvas_item (~346 tok)
+- `map_screen.gd` — Declares MOST_PINS (~1980 tok)
+- `map.gdshader` — Declares canvas_item (~423 tok)
 - `meters.gd` — Declares WIDTH (~1479 tok)
 - `objective.gd` — Declares CREAM (~817 tok)
-- `pack_screen.gd` — Declares TABS (~6122 tok)
+- `pack_screen.gd` — Declares TABS (~6203 tok)
 - `pause_menu.gd` — Declares _Rule (~1537 tok)
 - `pickup_toasts.gd` — Declares LINE (~467 tok)
 - `settings_screen.gd` — Declares TABS (~2429 tok)
@@ -332,6 +346,8 @@
 - `sleek_tabs.gd` — Declares GAP (~787 tok)
 - `sleek.gd` — Declares CREAM (~1510 tok)
 - `subtitles.gd` — Declares CREAM (~1142 tok)
+- `target_prompt.gd` (~1069 tok)
+- `title_screen.gd` — Declares GLIDE (~1694 tok)
 - `underwater.gdshader` — Declares canvas_item (~262 tok)
 - `weapon_badge.gd` — Declares CREAM (~648 tok)
 
@@ -340,8 +356,9 @@
 - `ambient_life.gd` — Declares KINDS (~2654 tok)
 - `day_clock.gd` — Declares SUNRISE (~1957 tok)
 - `dialogue.gd` (~845 tok)
+- `foliage_push.gd` (~160 tok)
 - `garden_audio.gd` — Declares DIR (~3204 tok)
-- `grass_meshes.gd` (~620 tok)
+- `grass_meshes.gd` (~1982 tok)
 - `grass_meshes.gd.uid` (~6 tok)
 - `level_story.gd` — Declares IDLE_AFTER (~1658 tok)
 - `missions.gd` — Declares HINT_AFTER (~671 tok)
@@ -364,15 +381,17 @@
 - `apple_tree.gd` — Declares BARK (~5450 tok)
 - `dew_drops.gd` — Declares GROUP (~700 tok)
 - `dialogue.json` (~1408 tok)
-- `garden_dressing.gd` — CHUNK: collision (~3168 tok)
+- `garden_dressing.gd` — CHUNK: collision (~5597 tok)
+- `grass_field.gd` — Declares CELL (~2427 tok)
 - `lawn_builder.gd` — Declares WORLD_LAYER (~17893 tok)
 - `lawn_builder.gd.uid` (~6 tok)
 - `lawn_layout.gd` — Declares LAYOUT_PATH (~934 tok)
 - `lawn_layout.gd.uid` (~6 tok)
-- `lawn_level.gd` — Declares CHECKPOINT_RADIUS (~1543 tok)
+- `lawn_level.gd` — Declares CHECKPOINT_RADIUS (~6083 tok)
 - `lawn_level.gd.uid` (~6 tok)
 - `lawn.tscn` (~741 tok)
 - `layout.json` (~5947 tok)
+- `loose_finds.gd` — Declares SEED (~847 tok)
 - `missions.json` (~932 tok)
 - `soil_detail.gd` — Declares CHUNK (~3974 tok)
 - `tree_base.gd` — Declares MESH (~2564 tok)
@@ -396,15 +415,19 @@
 
 - `choppable.gd` — Declares CHOP_LAYER (~1806 tok)
 - `gather_field.gd` — Declares GROUP (~870 tok)
-- `gatherable.gd` (~1100 tok)
+- `gatherable.gd` (~1981 tok)
+- `harvest.gd` — Declares HAND (~1592 tok)
 - `haul.gd` — Declares AMODU_STRENGTH (~2366 tok)
 - `heavable.gd` — Declares Weight (~730 tok)
 - `heavable.gd.uid` (~6 tok)
-- `item_pickup.gd` — Declares GROUP (~640 tok)
+- `item_models.gd` (~2318 tok)
+- `item_pickup.gd` — Declares GROUP (~1442 tok)
 - `litter.gd` — Declares SHADER (~6906 tok)
 - `litter.gdshader_placeholder` (~4 tok)
-- `nature_models.gd` — Declares DIR (~1764 tok)
+- `nature_models.gd` — Declares DIR (~2200 tok)
+- `outline.gd` — Declares MASK (~420 tok)
 - `pickup_marker.gd` — Declares SHADER (~330 tok)
+- `plantain.gd` — Declares LEAF_SHADER (~4742 tok)
 - `seed_puff.gd` — Declares GROUP (~547 tok)
 - `spider_web.gd` — Declares SILK_SHADER (~3432 tok)
 - `weapon_pickup.gd` — Declares GROUP (~415 tok)
@@ -413,10 +436,16 @@
 ## world/shaders/
 
 - `creature.gdshader` — Declares spatial (~566 tok)
+- `earthworm.gdshader` — Declares spatial (~1282 tok)
 - `grain.gdshader` — Declares spatial (~728 tok)
+- `grass.gdshader` — Declares spatial (~1073 tok)
 - `ground.gdshader` — Declares spatial (~1636 tok)
+- `outline_mask.gdshader` — spatial: outline (~137 tok)
+- `outline_shell.gdshader` — Declares spatial (~316 tok)
 - `pickup_marker.gdshader` — Declares spatial (~713 tok)
-- `plant.gdshader` — Declares spatial (~759 tok)
+- `plant.gdshader` — Declares spatial (~920 tok)
+- `plantain_spike.gdshader` — Declares spatial (~884 tok)
+- `plantain.gdshader` — Declares spatial (~1639 tok)
 - `rain_splash.gdshader` — Declares spatial (~483 tok)
 - `silk_deform.gdshaderinc` — Shared by silk.gdshader and dew.gdshader: how an orb web's sheet moves, in (~349 tok)
 - `silk.gdshader` — Declares spatial (~854 tok)
@@ -424,3 +453,8 @@
 - `tree_base.gdshader` — Declares spatial (~1085 tok)
 - `water.gdshader` — Declares spatial (~1543 tok)
 - `weathered.gdshader` — Declares spatial (~1115 tok)
+- `wormways.gdshader` — Declares spatial (~803 tok)
+
+## world/wormways/
+
+- `wormways.gd` — Declares MESH (~5486 tok)

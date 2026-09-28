@@ -433,7 +433,7 @@
       "error_message": "Significant refactor of sleek.gd",
       "file": "ui/sleek.gd",
       "root_cause": "2 lines replaced/restructured",
-      "fix": "Rewrote 5→3 lines (2 removed) | Also: for ring: Array in [[0.0, 1.0], [0.62, 0.85], [1.0; pass",
+      "fix": "Rewrote 5\u21923 lines (2 removed) | Also: for ring: Array in [[0.0, 1.0], [0.62, 0.85], [1.0; pass",
       "tags": [
         "auto-detected",
         "refactor",
@@ -449,7 +449,7 @@
       "error_message": "Significant refactor of game_hud.gd",
       "file": "ui/game_hud.gd",
       "root_cause": "20 lines replaced/restructured",
-      "fix": "Rewrote 21→7 lines (20 removed) | Also: var grid := GridContainer.new(); grid.columns = 5",
+      "fix": "Rewrote 21\u21927 lines (20 removed) | Also: var grid := GridContainer.new(); grid.columns = 5",
       "tags": [
         "auto-detected",
         "refactor",
@@ -563,7 +563,7 @@
       "timestamp": "2026-09-28T07:05:12.136Z",
       "error_message": "Missing await",
       "file": "tests/_tmp_wormways.gd",
-      "root_cause": "Async call without await — returned Promise instead of value",
+      "root_cause": "Async call without await \u2014 returned Promise instead of value",
       "fix": "Added await to async call | Also: func _walk_3d(target: Vector3, seconds: float) -> void:; for f in int(seconds * 60.0):",
       "tags": [
         "auto-detected",
@@ -580,7 +580,7 @@
       "error_message": "Significant refactor of great_worm.gd",
       "file": "creatures/earthworm/great_worm.gd",
       "root_cause": "6 lines replaced/restructured",
-      "fix": "Rewrote 11→36 lines (6 removed) | Also: ## Back the way it came (burned, or done): it pull; var back := (_from - _head)",
+      "fix": "Rewrote 11\u219236 lines (6 removed) | Also: ## Back the way it came (burned, or done): it pull; var back := (_from - _head)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -628,7 +628,7 @@
       "error_message": "Significant refactor of nature_models.gd",
       "file": "world/props/nature_models.gd",
       "root_cause": "2 lines replaced/restructured",
-      "fix": "Rewrote 10→27 lines (2 removed) | Also: cs.shape = v.shape(kind); cs.transform = xf * v.fix",
+      "fix": "Rewrote 10\u219227 lines (2 removed) | Also: cs.shape = v.shape(kind); cs.transform = xf * v.fix",
       "tags": [
         "auto-detected",
         "refactor",
@@ -698,6 +698,71 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-09-28T08:35:38.101Z"
+    },
+    {
+      "error_message": "Plantain: he stood on air above the leaves, ~18 m up; couldn't walk between or under them",
+      "file": "world/lawn/garden_dressing.gd",
+      "root_cause": "COLLISION 'plantain': 'convex' wrapped one hull round the whole Meshy rosette (leaves and spikes): a dome over the plant.",
+      "fix": "world/props/plantain.gd grows it in code: every leaf an AnimatableBody3D of thin convex slabs (two per few stations, one per half of the folded blade), dipping under him and swaying; spikes are WindSway bodies with capsules.",
+      "tags": [
+        "collision",
+        "convex",
+        "foliage",
+        "plantain"
+      ],
+      "id": "bug-047",
+      "timestamp": "2026-09-28T18:45:39.000Z",
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-28T18:45:39.000Z"
+    },
+    {
+      "error_message": "Trying to cast a freed object (Plantain._physics_process) after a leaf was cut",
+      "file": "world/props/plantain.gd",
+      "root_cause": "A cut leaf's body is freed (its mesh's tree_exiting frees it) but stays in _leaves; `leaf['body'] as AnimatableBody3D` on a freed object errors before is_instance_valid runs.",
+      "fix": "Check is_instance_valid(leaf['body']) before casting.",
+      "tags": [
+        "gdscript",
+        "freed",
+        "cast"
+      ],
+      "id": "bug-048",
+      "timestamp": "2026-09-28T18:45:39.000Z",
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-28T18:45:39.000Z"
+    },
+    {
+      "error_message": "Wormways mission steps gather:<item> never finished for things that spill as pickups (the Great Worm's calcite)",
+      "file": "world/lawn/lawn_level.gd",
+      "root_cause": "The missions listened to GatherField.gathered on the first field in the group only; there are several fields, and dropped ItemPickups don't go through any.",
+      "fix": "Listen to the player's Inventory.item_added instead (counts whatever reaches his pack).",
+      "tags": [
+        "missions",
+        "signals",
+        "inventory"
+      ],
+      "id": "bug-049",
+      "timestamp": "2026-09-28T18:45:39.000Z",
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-28T18:45:39.000Z"
+    },
+    {
+      "error_message": "Tree-grounds grass: walked straight through it, couldn't chop it, a blade grew up through an apple",
+      "file": "world/lawn/tree_grounds.gd",
+      "root_cause": "TreeGrounds drew its grass as bare MultiMeshes (no body, not in GrassField) and placed it before the apples, stones and ferns.",
+      "fix": "The builder registers it with GrassField (_grass_body boxes, choppable) after GrassField.reset; TreeGrounds plans the blades first and plants them last, skipping _keep_out circles.",
+      "tags": [
+        "grass",
+        "collision",
+        "GrassField"
+      ],
+      "id": "bug-050",
+      "timestamp": "2026-09-28T18:45:39.000Z",
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-28T18:45:39.000Z"
     }
   ]
 }

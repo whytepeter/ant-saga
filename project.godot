@@ -213,3 +213,7 @@ water_level={
 "type": "float",
 "value": -1000.0
 }
+player_position={
+"type": "vec3",
+"value": Vector3(0, -1000, 0)
+}

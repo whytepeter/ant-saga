@@ -163,10 +163,23 @@ func cave_distance(p: Vector3) -> float:
 	return best
 
 
+## Other caves that darken the light and light his lantern the same way (the
+## Wormways): each takes a point and gives 0..1 like cave_factor.
+static var other_caves: Array[Callable] = []
+
+
 ## 0 outside, rising to 1 once p is inside a cave and 20 m from any opening.
 func cave_factor(p: Vector3) -> float:
+	var other := 0.0
+	for c: Callable in other_caves:
+		if c.is_valid():
+			other = maxf(other, float(c.call(p)))
 	if p.x > -320.0:
-		return 0.0
+		return other
+	return maxf(_own_cave_factor(p), other)
+
+
+func _own_cave_factor(p: Vector3) -> float:
 	var inside := 1.0 - smoothstep(0.0, 3.0, cave_distance(p))  # the baked walls are roughened a metre or so
 	if inside <= 0.0:
 		return 0.0

@@ -24,6 +24,9 @@ const BUST := "bust"
 const SPECS := {
 	# picked up by hand
 	"sprout": {"name": "Sprig", "tool": HAND, "drops": {"sprig": 1}, "gesture": "pull"},
+	# grass pressed flat where he woke (lawn_builder): pulled up by hand, the way
+	# Grounded's first plant fibre comes off the ground
+	"pressed_grass": {"name": "Pressed grass", "tool": HAND, "drops": {"fibre": 1}, "gesture": "pull"},
 	"moss_clump": {"name": "Moss", "tool": HAND, "drops": {"fibre": 1}, "gesture": "pull"},
 	"pebblet": {"name": "Pebble", "tool": HAND, "drops": {"pebble": 1}},
 	# chopped
@@ -38,7 +41,10 @@ const SPECS := {
 	"bark_chips": {"name": "Bark chip", "tool": CHOP, "tier": 1, "hits": 2, "stages": 2, "drops": {"bark": 1}},
 	"twig": {"name": "Fallen twig", "tool": CHOP, "tier": 1, "hits": 6, "stages": 3, "drops": {"twig": 1}},
 	"eraser": {"name": "Eraser", "tool": CHOP, "tier": 1, "hits": 4, "stages": 2, "drops": {"rubber": 1}},
-	"plantain": {"name": "Plantain", "tool": CHOP, "tier": 1, "hits": 3, "stages": 3, "drops": {"fibre": 1}},
+	# a plantain (Plantain) comes apart like Grounded 2's weeds, piece by piece:
+	# each leaf cuts away whole, each seed head off its stalk
+	"plantain_leaf": {"name": "Plantain leaf", "tool": CHOP, "tier": 1, "hits": 1, "stages": 1, "drops": {"leaf": 1, "fibre": 1}},
+	"plantain_seeds": {"name": "Plantain seed head", "tool": CHOP, "tier": 1, "hits": 1, "stages": 1, "drops": {"grass_seeds": 2}},
 	"weed_rosette": {"name": "Weed", "tool": CHOP, "tier": 1, "hits": 2, "stages": 2, "drops": {"fibre": 1}},
 	"nettle": {"name": "Nettle", "tool": CHOP, "tier": 1, "hits": 3, "stages": 3, "drops": {"fibre": 1}},
 	"thistle": {"name": "Thistle", "tool": CHOP, "tier": 1, "hits": 3, "stages": 3, "drops": {"fibre": 1}},
@@ -79,7 +85,7 @@ static func chip_colour(s: Dictionary) -> Color:
 		return Color(0.52, 0.38, 0.24)
 	if id == "sap":
 		return Color(0.95, 0.65, 0.2)
-	if id in ["grass", "fallen_grass", "fallen_leaf", "clover", "plantain", "weed_rosette", "nettle", "thistle", "fern"]:
+	if id in ["grass", "fallen_grass", "fallen_leaf", "clover", "plantain_leaf", "plantain_seeds", "pressed_grass", "weed_rosette", "nettle", "thistle", "fern"]:
 		return Color(0.5, 0.64, 0.28) if id != "fallen_leaf" else Color(0.72, 0.58, 0.28)
 	return Color(0.62, 0.48, 0.3)
 

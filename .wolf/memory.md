@@ -411,3 +411,125 @@ description: chronological action log per session, consolidated weekly
 | 20:15 | Created ui/pickup_toasts.gd | — | ~467 |
 | 20:34 | Created ui/underwater.gdshader | — | ~262 |
 | 20:34 | Created ui/underwater.gdshader | — | ~262 |
+| 20:40 | Created tests/_tmp_ui.gd | — | ~619 |
+| 20:40 | Created tests/_tmp_ui.gd | — | ~619 |
+| 20:41 | Created world/shaders/earthworm.gdshader | — | ~1282 |
+| 20:41 | Created world/shaders/earthworm.gdshader | — | ~1282 |
+| 00:13 | Created tools/render_icons.gd | — | ~2724 |
+| 00:13 | Created tools/render_icons.gd | — | ~2724 |
+| 00:13 | Created creatures/earthworm/earthworm.gd | — | ~2702 |
+| 00:13 | Created creatures/earthworm/earthworm.gd | — | ~2702 |
+| 00:15 | Created creatures/earthworm/worm_rising.gd | — | ~2001 |
+| 00:15 | Created creatures/earthworm/worm_rising.gd | — | ~2001 |
+| 00:16 | Edited ui/pack_screen.gd | 2→2 lines | ~50 |
+| 00:16 | Edited ui/pack_screen.gd | 2→2 lines | ~50 |
+| 00:16 | Edited ui/pack_screen.gd | 3→6 lines | ~69 |
+| 00:16 | Edited ui/pack_screen.gd | 3→6 lines | ~69 |
+| 00:28 | Edited world/lawn/lawn_level.gd | 7→10 lines | ~118 |
+| 00:28 | Edited world/lawn/lawn_level.gd | 7→10 lines | ~118 |
+| 00:31 | Created ui/map.gdshader | — | ~423 |
+| 00:31 | Created ui/map.gdshader | — | ~423 |
+| 00:32 | Created ui/map_screen.gd | — | ~1980 |
+| 00:32 | Created ui/map_screen.gd | — | ~1980 |
+| 00:33 | Created world/shaders/wormways.gdshader | — | ~803 |
+| 00:33 | Created world/shaders/wormways.gdshader | — | ~803 |
+| 00:34 | Created ui/map_hud.gd | — | ~1019 |
+| 00:34 | Created ui/map_hud.gd | — | ~1019 |
+| 00:36 | Created world/wormways/wormways.gd | — | ~4271 |
+| 00:36 | Created world/wormways/wormways.gd | — | ~4271 |
+| 00:38 | Created ui/title_screen.gd | — | ~1694 |
+| 00:38 | Created ui/title_screen.gd | — | ~1694 |
+| 00:52 | Created creatures/earthworm/great_worm.gd | — | ~2247 |
+| 00:52 | Created creatures/earthworm/great_worm.gd | — | ~2247 |
+| 08:04 | Edited world/wormways/wormways.gd | modified is_instance_valid() | ~95 |
+| 08:04 | Edited world/wormways/wormways.gd | modified is_instance_valid() | ~95 |
+| 08:05 | Edited tests/_tmp_wormways.gd | modified size() | ~192 |
+| 08:05 | Edited tests/_tmp_wormways.gd | modified size() | ~192 |
+| 08:05 | Edited tests/_tmp_wormways.gd | modified _walk_3d() | ~130 |
+| 08:05 | Edited tests/_tmp_wormways.gd | modified _walk_3d() | ~130 |
+| 08:18 | Created world/props/harvest.gd | — | ~1592 |
+| 08:18 | Created world/props/harvest.gd | — | ~1592 |
+| 08:18 | Created tests/_tmp_great_worm.gd | — | ~773 |
+| 08:18 | Created tests/_tmp_great_worm.gd | — | ~773 |
+| 08:19 | Created world/props/item_models.gd | — | ~2318 |
+| 08:19 | Created world/props/item_models.gd | — | ~2318 |
+| 08:21 | Created world/props/item_pickup.gd | — | ~1442 |
+| 08:21 | Created world/props/item_pickup.gd | — | ~1442 |
+| 08:21 | Edited docs/SURVIVAL.md | expanded (+7 lines) | ~555 |
+| 08:21 | Edited docs/SURVIVAL.md | expanded (+7 lines) | ~555 |
+| 08:23 | Created world/shaders/outline_mask.gdshader | — | ~137 |
+| 08:23 | Created world/shaders/outline_mask.gdshader | — | ~137 |
+| 08:23 | Created world/shaders/outline_shell.gdshader | — | ~316 |
+| 08:23 | Created world/shaders/outline_shell.gdshader | — | ~316 |
+| 08:23 | Created world/props/outline.gd | — | ~420 |
+| 08:23 | Created world/props/outline.gd | — | ~420 |
+| 08:26 | Created world/props/gatherable.gd | — | ~1981 |
+| 08:26 | Created world/props/gatherable.gd | — | ~1981 |
+| 08:33 | Created world/lawn/grass_field.gd | — | ~2427 |
+| 08:33 | Created world/lawn/grass_field.gd | — | ~2427 |
+| 08:35 | Created ui/target_prompt.gd | — | ~1069 |
+| 08:35 | Created ui/target_prompt.gd | — | ~1069 |
+| 08:37 | Edited creatures/earthworm/great_worm.gd | added 2 condition(s) | ~359 |
+| 08:37 | Edited creatures/earthworm/great_worm.gd | added 2 condition(s) | ~359 |
+| 08:39 | Created tests/_tmp_harvest.gd | — | ~734 |
+| 08:39 | Created tests/_tmp_harvest.gd | — | ~734 |
+| 08:41 | Edited creatures/earthworm/earthworm.gd | modified _crawl() | ~163 |
+| 08:41 | Edited creatures/earthworm/earthworm.gd | modified _crawl() | ~163 |
+| 08:41 | Edited creatures/earthworm/earthworm.gd | modified go() | ~46 |
+| 08:41 | Edited creatures/earthworm/earthworm.gd | modified go() | ~46 |
+| 08:41 | Edited creatures/earthworm/earthworm.gd | modified _nearest_on_body() | ~83 |
+| 08:41 | Edited creatures/earthworm/earthworm.gd | modified _nearest_on_body() | ~83 |
+| 08:42 | Edited creatures/earthworm/worm_rising.gd | 2→3 lines | ~33 |
+| 08:42 | Edited creatures/earthworm/worm_rising.gd | 2→3 lines | ~33 |
+| 08:45 | Created world/lawn/loose_finds.gd | — | ~847 |
+| 08:45 | Created world/lawn/loose_finds.gd | — | ~847 |
+| 08:47 | Edited world/lawn/lawn_level.gd | 2→5 lines | ~94 |
+| 08:47 | Edited world/lawn/lawn_level.gd | 2→5 lines | ~94 |
+| 08:59 | Created tests/_tmp_harvest.gd | — | ~878 |
+| 08:59 | Created tests/_tmp_harvest.gd | — | ~878 |
+| 09:07 | Edited world/wormways/wormways.gd | 6→8 lines | ~86 |
+| 09:07 | Edited world/wormways/wormways.gd | 6→8 lines | ~86 |
+| 09:11 | Edited world/props/nature_models.gd | modified baked_shape() | ~242 |
+| 09:11 | Edited world/props/nature_models.gd | modified baked_shape() | ~242 |
+| 09:13 | Edited project.godot | 4→8 lines | ~31 |
+| 09:13 | Edited project.godot | 4→8 lines | ~31 |
+| 09:13 | Edited world/shaders/grass.gdshader | expanded (+7 lines) | ~161 |
+| 09:13 | Edited world/shaders/grass.gdshader | expanded (+7 lines) | ~161 |
+| 09:13 | Edited world/shaders/grass.gdshader | 3→4 lines | ~24 |
+| 09:13 | Edited world/shaders/grass.gdshader | 3→4 lines | ~24 |
+| 09:15 | Edited world/shaders/plant.gdshader | expanded (+8 lines) | ~144 |
+| 09:15 | Edited world/shaders/plant.gdshader | expanded (+8 lines) | ~144 |
+| 09:15 | Edited world/shaders/plant.gdshader | 2→5 lines | ~47 |
+| 09:15 | Edited world/shaders/plant.gdshader | 2→5 lines | ~47 |
+| 09:15 | Created world/foliage_push.gd | — | ~160 |
+| 09:15 | Created world/foliage_push.gd | — | ~160 |
+| 09:19 | Edited world/lawn/lawn_level.gd | 1→5 lines | ~70 |
+| 09:19 | Edited world/lawn/lawn_level.gd | 1→5 lines | ~70 |
+| 09:20 | Created tests/_tmp_plant.gd | — | ~750 |
+| 09:20 | Created tests/_tmp_plant.gd | — | ~750 |
+| 09:26 | Created tests/_tmp_probe.gd | — | ~477 |
+| 09:26 | Created tests/_tmp_probe.gd | — | ~477 |
+| 09:37 | Created world/shaders/plantain.gdshader | — | ~1639 |
+| 09:37 | Created world/shaders/plantain.gdshader | — | ~1639 |
+| 09:38 | Created world/shaders/plantain_spike.gdshader | — | ~884 |
+| 09:38 | Created world/shaders/plantain_spike.gdshader | — | ~884 |
+| 09:41 | Created world/props/plantain.gd | — | ~4742 |
+| 09:41 | Created world/props/plantain.gd | — | ~4742 |
+| 18:34 | Session end: 96 writes across 34 files (_tmp_env.gd, polyhaven.py, silk_deform.gdshaderinc, silk.gdshader, spider_web.gd) | 129 reads | ~122015 tok |
+| 18:34 | Session end: 96 writes across 34 files (_tmp_env.gd, polyhaven.py, silk_deform.gdshaderinc, silk.gdshader, spider_web.gd) | 129 reads | ~122015 tok |
+| 18:34 | Session end: 128 writes across 54 files (_tmp_trowel.gd, garden_dressing.gd, player.gd, _tmp_props.gd, survival.gd) | 143 reads | ~155398 tok |
+| 18:34 | Session end: 128 writes across 54 files (_tmp_trowel.gd, garden_dressing.gd, player.gd, _tmp_props.gd, survival.gd) | 143 reads | ~155398 tok |
+| 18:57 | Session end: 96 writes across 34 files (_tmp_env.gd, polyhaven.py, silk_deform.gdshaderinc, silk.gdshader, spider_web.gd) | 129 reads | ~122015 tok |
+| 18:57 | Session end: 96 writes across 34 files (_tmp_env.gd, polyhaven.py, silk_deform.gdshaderinc, silk.gdshader, spider_web.gd) | 129 reads | ~122015 tok |
+| 19:22 | Edited world/lawn/garden_dressing.gd | 4→9 lines | ~107 |
+| 19:22 | Edited world/lawn/garden_dressing.gd | 4→9 lines | ~107 |
+| 19:22 | Edited world/lawn/lawn_level.gd | 2→3 lines | ~28 |
+| 19:22 | Edited world/lawn/lawn_level.gd | 2→3 lines | ~28 |
+| 19:23 | Created tests/_tmp_plant.gd | — | ~1167 |
+| 19:23 | Created tests/_tmp_plant.gd | — | ~1167 |
+| 19:29 | Edited world/lawn/lawn_level.gd | 5→5 lines | ~79 |
+| 19:29 | Edited world/lawn/lawn_level.gd | 5→5 lines | ~79 |
+| 19:30 | Edited world/grass_meshes.gd | modified pressed_blade() | ~460 |
+| 19:30 | Edited world/grass_meshes.gd | modified pressed_blade() | ~460 |
+| 19:40 | Created tests/_tmp_gather.gd | — | ~666 |
+| 19:40 | Created tests/_tmp_gather.gd | — | ~666 |

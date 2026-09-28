@@ -3452,5 +3452,531 @@
       }
     ],
     "fallen_leaves": 150
+  },
+  "wormways": {
+    "note": "The Wormways: earthworm burrows under the lawn (docs/SURVIVAL.md). Baked by tools/bake_wormways.py (Blender) into assets/world/wormways.glb, placed by world/wormways/wormways.gd. Points are [x, y, z], y absolute (the lawn is near 0). Entrances open in the lawn (holes in the ground's collision and mesh); they're plugged with old casts until the first rain washes them out. A 5 mm burrow is 1.8 m across here; the Great Worm's are 8 m.",
+    "entrances": [
+      {
+        "id": "blade_forest_burrow",
+        "name": "Blade Forest burrow",
+        "pos": [
+          -40,
+          2.0,
+          -170
+        ],
+        "radius": 2.2
+      },
+      {
+        "id": "capstone_burrow",
+        "name": "Capstone burrow",
+        "pos": [
+          -40,
+          0.45,
+          40
+        ],
+        "radius": 2.2
+      },
+      {
+        "id": "hose_run_burrow",
+        "name": "Hose Run burrow",
+        "pos": [
+          170,
+          -0.2,
+          -60
+        ],
+        "radius": 2.2
+      }
+    ],
+    "shaft": {
+      "id": "old_shaft",
+      "name": "The old shaft",
+      "pos": [
+        80,
+        0.6,
+        0
+      ],
+      "radius": 2.6,
+      "plug": 5.0,
+      "note": "The Great Worm's old way up, long since plugged by a stone. Heave the stone out and daylight falls into the lair."
+    },
+    "chambers": [
+      {
+        "id": "midden",
+        "name": "The Midden",
+        "center": [
+          -60,
+          -12,
+          -110
+        ],
+        "radii": [
+          16,
+          7,
+          13
+        ],
+        "floor": -17.0,
+        "note": "Where the worms drag leaves down to rot: leaf ends and slime."
+      },
+      {
+        "id": "root_hollow",
+        "name": "Root Hollow",
+        "center": [
+          -150,
+          -13,
+          -20
+        ],
+        "radii": [
+          18,
+          8,
+          14
+        ],
+        "floor": -18.0,
+        "note": "Under the Flower Bed: roots hang through the roof."
+      },
+      {
+        "id": "flint_seam",
+        "name": "The Flint Seam",
+        "center": [
+          10,
+          -20,
+          -50
+        ],
+        "radii": [
+          14,
+          7,
+          12
+        ],
+        "floor": -25.0,
+        "note": "Stones bedded in the clay: flint."
+      },
+      {
+        "id": "lair",
+        "name": "The Great Worm's lair",
+        "center": [
+          70,
+          -42,
+          -10
+        ],
+        "radii": [
+          38,
+          15,
+          30
+        ],
+        "floor": -52.0,
+        "note": "Deep and wide, its walls slick; the Great Worm lives here."
+      }
+    ],
+    "tunnels": [
+      {
+        "id": "t_blade",
+        "radius": 1.8,
+        "points": [
+          [
+            -40,
+            4.0,
+            -170
+          ],
+          [
+            -40,
+            -3.0,
+            -170
+          ],
+          [
+            -43,
+            -7,
+            -158
+          ],
+          [
+            -48,
+            -10,
+            -140
+          ],
+          [
+            -54,
+            -12.5,
+            -125
+          ],
+          [
+            -58,
+            -13,
+            -118
+          ]
+        ]
+      },
+      {
+        "id": "t_capstone",
+        "radius": 1.8,
+        "points": [
+          [
+            -40,
+            3.0,
+            40
+          ],
+          [
+            -40,
+            -3.5,
+            40
+          ],
+          [
+            -46,
+            -7,
+            30
+          ],
+          [
+            -62,
+            -9.5,
+            16
+          ],
+          [
+            -95,
+            -11.5,
+            4
+          ],
+          [
+            -128,
+            -13,
+            -10
+          ],
+          [
+            -140,
+            -14,
+            -16
+          ]
+        ]
+      },
+      {
+        "id": "t_midden_roots",
+        "radius": 1.7,
+        "points": [
+          [
+            -68,
+            -14,
+            -104
+          ],
+          [
+            -95,
+            -15,
+            -80
+          ],
+          [
+            -125,
+            -15,
+            -50
+          ],
+          [
+            -142,
+            -15,
+            -30
+          ]
+        ]
+      },
+      {
+        "id": "t_midden_flint",
+        "radius": 1.7,
+        "points": [
+          [
+            -48,
+            -14,
+            -104
+          ],
+          [
+            -25,
+            -17,
+            -85
+          ],
+          [
+            -5,
+            -20,
+            -65
+          ],
+          [
+            4,
+            -22,
+            -56
+          ]
+        ]
+      },
+      {
+        "id": "t_hose",
+        "radius": 1.8,
+        "points": [
+          [
+            170,
+            3.0,
+            -60
+          ],
+          [
+            170,
+            -4.0,
+            -60
+          ],
+          [
+            162,
+            -7.5,
+            -58
+          ],
+          [
+            148,
+            -10,
+            -55
+          ],
+          [
+            110,
+            -14,
+            -52
+          ],
+          [
+            60,
+            -19,
+            -50
+          ],
+          [
+            22,
+            -21,
+            -50
+          ]
+        ]
+      },
+      {
+        "id": "t_great",
+        "radius": 4.0,
+        "points": [
+          [
+            16,
+            -23,
+            -46
+          ],
+          [
+            30,
+            -30,
+            -35
+          ],
+          [
+            42,
+            -37,
+            -25
+          ],
+          [
+            52,
+            -41,
+            -18
+          ]
+        ]
+      },
+      {
+        "id": "t_shaft",
+        "radius": 2.6,
+        "points": [
+          [
+            80,
+            -30,
+            -2
+          ],
+          [
+            80,
+            -14,
+            -0.5
+          ],
+          [
+            80,
+            3.5,
+            0
+          ]
+        ]
+      },
+      {
+        "id": "t_deep",
+        "radius": 4.5,
+        "points": [
+          [
+            104,
+            -48,
+            -18
+          ],
+          [
+            128,
+            -57,
+            -28
+          ],
+          [
+            150,
+            -69,
+            -44
+          ]
+        ]
+      }
+    ],
+    "finds": [
+      [
+        "glow_spores",
+        [
+          -60,
+          -16.5,
+          -112
+        ],
+        2
+      ],
+      [
+        "glow_spores",
+        [
+          -150,
+          -17.5,
+          -18
+        ],
+        2
+      ],
+      [
+        "glow_spores",
+        [
+          10,
+          -24.5,
+          -52
+        ],
+        2
+      ],
+      [
+        "glow_spores",
+        [
+          -100,
+          -16.5,
+          -76
+        ],
+        1
+      ],
+      [
+        "glow_spores",
+        [
+          110,
+          -15.5,
+          -52
+        ],
+        1
+      ],
+      [
+        "glow_spores",
+        [
+          50,
+          -51.5,
+          -24
+        ],
+        2
+      ],
+      [
+        "worm_slime",
+        [
+          -50,
+          -12,
+          -128
+        ],
+        1
+      ],
+      [
+        "worm_slime",
+        [
+          -120,
+          -15,
+          -46
+        ],
+        1
+      ],
+      [
+        "worm_slime",
+        [
+          140,
+          -9.5,
+          -55
+        ],
+        1
+      ],
+      [
+        "flint",
+        [
+          4,
+          -24,
+          -44
+        ],
+        2
+      ],
+      [
+        "flint",
+        [
+          18,
+          -23.5,
+          -58
+        ],
+        2
+      ],
+      [
+        "flint",
+        [
+          -2,
+          -23.5,
+          -52
+        ],
+        2
+      ],
+      [
+        "clay",
+        [
+          -20,
+          -18.5,
+          -80
+        ],
+        2
+      ],
+      [
+        "clay",
+        [
+          80,
+          -17.5,
+          -51
+        ],
+        2
+      ],
+      [
+        "root_sap",
+        [
+          -156,
+          -10,
+          -24
+        ],
+        1
+      ],
+      [
+        "root_sap",
+        [
+          -142,
+          -10.5,
+          -14
+        ],
+        1
+      ],
+      [
+        "root_sap",
+        [
+          -150,
+          -9.5,
+          -8
+        ],
+        1
+      ],
+      [
+        "iron_pin",
+        [
+          -64,
+          -16.2,
+          -106
+        ],
+        1
+      ],
+      [
+        "beetle_shell",
+        [
+          92,
+          -51,
+          4
+        ],
+        1
+      ]
+    ]
   }
 }

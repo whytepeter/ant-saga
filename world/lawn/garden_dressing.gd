@@ -100,6 +100,8 @@ static func build(parent: Node3D, layout: LawnLayout) -> void:
 					continue
 				var x := cx + rng.randf_range(-1.0, 1.0)
 				var z := cz + rng.randf_range(-1.0, 1.0)
+				if Wormways.near_mouth(layout, x, z, 2.0):
+					continue  # (nothing lies in a burrow mouth)
 				var id: String = rule[0]
 				var size := rng.randf_range(float(rule[3][0]), float(rule[3][1]))
 				# solid pieces stay clear of the routes, and so does clover, so a trail
@@ -129,6 +131,11 @@ static func build(parent: Node3D, layout: LawnLayout) -> void:
 		_drape(parent, layout, String(d["id"]), d["xf"], float(d["vis"]))
 	var bodies := {}  # chunk -> StaticBody3D
 	for id: String in placed:
+		if id == "plantain":  # grown in code, every leaf its own solid body (Plantain)
+			for xf: Transform3D in placed[id]:
+				Plantain.grow(parent, layout, xf.origin, xf.basis.get_scale().x, xf.basis.get_euler().y,
+					hash(Vector2i(roundi(xf.origin.x), roundi(xf.origin.z))), float(vis[id]))
+			continue
 		var prop := GardenProps.get_prop(id)
 		if prop == null:
 			continue

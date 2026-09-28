@@ -1,0 +1,18 @@
+{
+  "note": "The Wormways' missions (world/missions.gd, shown under the compass): they start with the first rain. A step is done when its event happens: burrow_opened, wormways_in, lair_found (Wormways); gather:<item> (GatherField); worm_struck, worm_burned, worm_driven_off (GreatWorm); shaft_opened (the old shaft's stone heaved off). An event that finishes a later step skips ahead.",
+  "missions": [
+    {"id": "when_it_rains", "title": "When It Rains", "steps": [
+      {"text": "It's raining: watch the ground", "done_on": "burrow_opened", "hint": ["Amodu", "The ground's moving... something's coming up."]},
+      {"text": "Go down one of the worms' burrows", "done_on": "wormways_in", "hint": ["Amodu", "Those holes the worms came out of go somewhere."]},
+      {"text": "Find light: glowing spores grow in the dark", "done_on": "gather:glow_spores", "hint": ["Amodu", "It's so dark down here. Something's glowing over there."]},
+      {"text": "Search the burrows for flint", "done_on": "gather:flint", "hint": ["Amodu", "Stones in the clay... black flint. That would make an edge."]}
+    ]},
+    {"id": "great_worm", "title": "The Great Worm", "steps": [
+      {"text": "Follow the wide burrow down", "done_on": "lair_found", "hint": ["Amodu", "That tunnel's too big for these worms. What made it?"]},
+      {"text": "Something huge is listening. Move softly", "done_on": "worm_struck", "hint": ["Amodu", "The walls are trembling."]},
+      {"text": "Worms hate daylight. Heave the stone off the old shaft", "done_on": "shaft_opened", "hint": ["Amodu", "There was a stone in a hole up on the lawn, near the Bare Patch..."]},
+      {"text": "Lure the Great Worm into the light", "done_on": "worm_driven_off", "hint": ["Amodu", "Make it come for me across the sunlight. Then jump clear."]},
+      {"text": "Take what it left behind", "done_on": "gather:calcite", "hint": ["Amodu", "It dropped something where the light falls."]}
+    ]}
+  ]
+}

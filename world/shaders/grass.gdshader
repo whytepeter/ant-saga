@@ -14,6 +14,7 @@ uniform vec3 mid_color : source_color = vec3(0.27, 0.5, 0.12);
 uniform vec3 dry_base : source_color = vec3(0.4, 0.32, 0.15);
 uniform vec3 dry_tip : source_color = vec3(0.8, 0.58, 0.26);
 uniform float veins = 13.0;
+uniform float vein_strength = 1.0;
 uniform vec3 tip_color : source_color = vec3(0.72, 0.8, 0.3);
 uniform vec3 backlight_color : source_color = vec3(0.55, 0.7, 0.12);
 uniform float wind_strength = 1.4;
@@ -22,7 +23,10 @@ uniform vec2 wind_dir = vec2(0.8, 0.6);
 uniform float fade_near = 1.8;
 uniform float fade_far = 3.6;
 uniform float tint_scale = 2.2;
+// how far blades lean out of Amodu's way (0: blades lying flat stay put)
+uniform float push_strength = 1.0;
 global uniform float rain;
+global uniform vec3 player_position;
 
 varying float v_height;
 varying vec3 v_tint;
@@ -38,6 +42,13 @@ void vertex() {
 	float sway = (sin(TIME * wind_speed + phase) * 0.7 + sin(TIME * wind_speed * 2.3 + phase * 1.7) * 0.3) * gust;
 	vec3 world_off = vec3(wind_dir.x, 0.0, wind_dir.y) * sway * wind_strength * v_height * v_height;
 	world_off.y = -abs(sway) * 0.15 * v_height * v_height * wind_strength;
+	// Amodu brushing past: the blade leans away from him (FoliagePush)
+	vec3 away = origin - player_position;
+	away.y = 0.0;
+	float near = (1.0 - smoothstep(0.8, 3.2, length(away))) * push_strength;
+	near *= 1.0 - smoothstep(2.0, 6.0, abs(origin.y - player_position.y));
+	world_off += normalize(away + vec3(0.001, 0.0, 0.0)) * near * 2.2 * v_height;
+	world_off.y -= near * 0.6 * v_height * v_height;
 	VERTEX += inverse(mat3(MODEL_MATRIX)) * world_off;
 }
 
@@ -65,7 +76,7 @@ void fragment() {
 	col = mix(col, dry_tip * 0.75, smoothstep(0.9, 1.0, h) * 0.45 * (1.0 - v_dry));
 	// fine parallel veins, a lighter midrib and paler margins
 	// veins fade once they're finer than a couple of pixels (no shimmer far away)
-	float vein_fade = 1.0 - smoothstep(0.2, 0.5, fwidth(UV.x * veins));
+	float vein_fade = (1.0 - smoothstep(0.2, 0.5, fwidth(UV.x * veins))) * vein_strength;
 	float vein = cos(UV.x * veins * 6.2832) * vein_fade;
 	float rib = 1.0 - smoothstep(0.0, 0.05, abs(UV.x - 0.5));
 	float margin = 1.0 - smoothstep(0.0, 0.07, min(UV.x, 1.0 - UV.x));

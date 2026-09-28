@@ -27,6 +27,11 @@ var layout: LawnLayout
 var ground_material: Material
 var grass_material: Material
 var grass_meshes: Array[ArrayMesh] = []
+## The grass as the builder hands it to GrassField (solid and choppable like
+## the lawn's): its two MultiMeshes, and their blades' transforms and colours.
+var grass_multimeshes: Array = []
+var grass_xforms: Array = []
+var grass_colors: Array = []
 
 var _spec: Dictionary
 var _rect := Rect2()  # x0, z0 .. x1, z1
@@ -36,6 +41,8 @@ var _noise := FastNoiseLite.new()
 var _fine := FastNoiseLite.new()
 var _puddles: Array[Dictionary] = []  # {c: Vector2, r: float}
 var _rng := RandomNumberGenerator.new()
+## Where no grass may grow up through something solid: (x, z, radius).
+var _keep_out: Array[Vector3] = []
 
 
 func setup(l: LawnLayout, ground_mat: Material, grass_mat: Material, blades: Array[ArrayMesh]) -> void:
@@ -74,6 +81,7 @@ func _ready() -> void:
 	_build_ladder()
 	_build_door()
 	_build_dressing()
+	_plant_grass()
 
 
 ## Ground height at x/z: the bank round the trunk, then soil that rises and dips
@@ -294,22 +302,48 @@ func _build_grass() -> void:
 					(colors[v] as Array[Color]).append(tint)
 			z += 4.0
 		x += 4.0
+	grass_xforms = xforms  # (planted once everything solid has its place: _plant_grass)
+	grass_colors = colors
+
+
+## The grass, now that everything solid is placed: none of it grows up through
+## an apple, a stone or a fern's stem.
+func _plant_grass() -> void:
+	if grass_meshes.is_empty() or grass_xforms.is_empty():
+		return
 	for v in 2:
+		var list: Array[Transform3D] = grass_xforms[v]
+		var tints: Array[Color] = grass_colors[v]
+		var keep: Array[Transform3D] = []
+		var keep_tints: Array[Color] = []
+		for i in list.size():
+			if not _kept_out(list[i].origin):
+				keep.append(list[i])
+				keep_tints.append(tints[i])
+		grass_xforms[v] = keep
+		grass_colors[v] = keep_tints
 		var mm := MultiMesh.new()
 		mm.transform_format = MultiMesh.TRANSFORM_3D
 		mm.use_colors = true
 		mm.mesh = grass_meshes[v]
-		var list: Array[Transform3D] = xforms[v]
-		mm.instance_count = list.size()
-		for i in list.size():
-			mm.set_instance_transform(i, list[i])
-			mm.set_instance_color(i, (colors[v] as Array[Color])[i])
+		mm.instance_count = keep.size()
+		for i in keep.size():
+			mm.set_instance_transform(i, keep[i])
+			mm.set_instance_color(i, keep_tints[i])
 		var mmi := MultiMeshInstance3D.new()
 		mmi.name = "Grass"
 		mmi.multimesh = mm
 		mmi.material_override = grass_material
 		mmi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		add_child(mmi)
+		grass_multimeshes.append(mm)
+
+
+func _kept_out(o: Vector3) -> bool:
+	for k in _keep_out:
+		if Vector2(o.x - k.x, o.z - k.y).length() < k.z:
+			return true
+	return false
 
 
 # ── places ────────────────────────────────────────────────────────────────────
@@ -348,6 +382,7 @@ func _build_orchard() -> void:
 		var mat: Material = fresh if rot < 0.3 else (rotten if rot < 0.75 else wet)
 		var mi := NatureModels.solid(self, v, xf, "convex", WORLD_LAYER | CLIMBABLE_LAYER, [mat])
 		mi.name = "Windfall"
+		_keep_out.append(Vector3(p.x, p.y, d * 0.55))
 		GardenDressing.forage.append({"pos": ground, "radius": d * 0.6, "name": "rotten apple" if rot >= 0.3 else "apple"})
 		if rot >= 0.3 and k % 2 == 0:
 			_flies(ground + Vector3.UP * d * 0.8)
@@ -619,6 +654,7 @@ func _build_dressing() -> void:
 			base.add_child(cs)
 			add_child(base)
 			GatherField.of(get_parent()).add_spec("fern", ground, cyl.radius + 2.0, null, -1, cs, mi)
+			_keep_out.append(Vector3(ground.x, ground.z, cyl.radius + 1.0))
 		mi.name = String(d["model"])
 		mi.visibility_range_end = float(d.get("seen", 700.0))
 		mi.visibility_range_end_margin = 60.0
@@ -639,6 +675,7 @@ func _build_dressing() -> void:
 		var mi := NatureModels.solid(self, v, xf, "convex", WORLD_LAYER | CLIMBABLE_LAYER)
 		mi.name = "Stone"
 		var stone_body := get_child(get_child_count() - 1) as StaticBody3D
+		_keep_out.append(Vector3(ground.x, ground.z, size * 0.5))
 		GatherField.of(get_parent()).add_spec("stone", ground, size * 0.5, null, -1,
 			stone_body.get_child(0) as CollisionShape3D, mi)
 		# small stones: only near, and no shadow past the first cascade's worth
