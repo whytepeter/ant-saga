@@ -22,11 +22,10 @@ const BUST := "bust"
 ##   drops   what each piece spills (item id -> count); a hand pick gives it
 ##   gesture how he takes it by hand (Player.play_gather): "pick" or "pull"
 const SPECS := {
-	# picked up by hand
+	# picked up by hand: what Grounded leaves lying loose (plant fibre, sprigs,
+	# pebblets, grass seeds); a leaf or a blade of grass is never taken whole
 	"sprout": {"name": "Sprig", "tool": HAND, "drops": {"sprig": 1}, "gesture": "pull"},
-	# grass pressed flat where he woke (lawn_builder): pulled up by hand, the way
-	# Grounded's first plant fibre comes off the ground
-	"pressed_grass": {"name": "Pressed grass", "tool": HAND, "drops": {"fibre": 1}, "gesture": "pull"},
+	"plant_fibre": {"name": "Plant fibre", "tool": HAND, "drops": {"fibre": 1}},
 	"moss_clump": {"name": "Moss", "tool": HAND, "drops": {"fibre": 1}, "gesture": "pull"},
 	"pebblet": {"name": "Pebble", "tool": HAND, "drops": {"pebble": 1}},
 	# chopped
@@ -85,7 +84,7 @@ static func chip_colour(s: Dictionary) -> Color:
 		return Color(0.52, 0.38, 0.24)
 	if id == "sap":
 		return Color(0.95, 0.65, 0.2)
-	if id in ["grass", "fallen_grass", "fallen_leaf", "clover", "plantain_leaf", "plantain_seeds", "pressed_grass", "weed_rosette", "nettle", "thistle", "fern"]:
+	if id in ["grass", "fallen_grass", "fallen_leaf", "clover", "plantain_leaf", "plantain_seeds", "weed_rosette", "nettle", "thistle", "fern"]:
 		return Color(0.5, 0.64, 0.28) if id != "fallen_leaf" else Color(0.72, 0.58, 0.28)
 	return Color(0.62, 0.48, 0.3)
 
@@ -134,12 +133,33 @@ static func best_tool(inventory: Inventory, tool: String, tier: int) -> Dictiona
 	return best
 
 
+## What the weapon in his hand does to a thing that needs `tool` at `tier`, the
+## way Grounded goes (a thing to chop shows only while he holds something that
+## chops): {"weapon", "tier", "power"}, with "weak" if it's the right kind of
+## tool but not strong enough; {} if it's no use for it (fists, a spear).
+static func held_tool(inventory: Inventory, tool: String, tier: int) -> Dictionary:
+	if inventory == null or tool == HAND:
+		return {}
+	var w := Weapons.KNIFE if inventory.knife_out() else inventory.equipped
+	var t: Dictionary = Weapons.tool(w)
+	if not t.has(tool):
+		return {}
+	var spec_t: Array = t[tool]
+	var out := {"weapon": w, "tier": int(spec_t[0]), "power": float(spec_t[1])}
+	if int(spec_t[0]) < tier:
+		out["weak"] = true
+	return out
+
+
 ## The prompt for a thing that takes `s` (a spec), for this inventory:
-## {"name", "verb", "ok", "need", "hand"}.
+## {"name", "verb", "ok", "need", "hand"}. Not ok when what he holds is too
+## weak for it (a toadstool: "Needs a stronger axe").
 static func prompt_for(s: Dictionary, inventory: Inventory) -> Dictionary:
 	var tool := String(s.get("tool", HAND))
 	var out := {"name": String(s.get("name", "")), "verb": verb(tool), "ok": true, "need": "", "hand": tool == HAND}
-	if tool != HAND and best_tool(inventory, tool, int(s.get("tier", 1))).is_empty():
-		out["ok"] = false
-		out["need"] = need_text(tool, int(s.get("tier", 1)))
+	if tool != HAND:
+		var held := held_tool(inventory, tool, int(s.get("tier", 1)))
+		if held.is_empty() or held.has("weak"):
+			out["ok"] = false
+			out["need"] = need_text(tool, int(s.get("tier", 1)))
 	return out

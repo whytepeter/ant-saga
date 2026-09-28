@@ -579,3 +579,89 @@ description: chronological action log per session, consolidated weekly
 | 21:13 | Edited tests/player_movement_test.gd | modified _test_step_up() | ~296 |
 | 21:14 | Edited player/player.gd | 9→12 lines | ~227 |
 | 21:14 | Edited player/player.gd | 9→12 lines | ~227 |
+| 21:41 | Session end: 108 writes across 37 files (_tmp_env.gd, polyhaven.py, silk_deform.gdshaderinc, silk.gdshader, spider_web.gd) | 134 reads | ~127391 tok |
+| 21:41 | Session end: 108 writes across 37 files (_tmp_env.gd, polyhaven.py, silk_deform.gdshaderinc, silk.gdshader, spider_web.gd) | 134 reads | ~127391 tok |
+
+## Session: 2026-09-28 21:41
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-09-28 21:41
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 22:00 | Session end: 174 writes across 62 files (_tmp_trowel.gd, garden_dressing.gd, player.gd, _tmp_props.gd, survival.gd) | 161 reads | ~171553 tok |
+| 22:00 | Session end: 174 writes across 62 files (_tmp_trowel.gd, garden_dressing.gd, player.gd, _tmp_props.gd, survival.gd) | 161 reads | ~171553 tok |
+
+## Session: 2026-09-28 22:01
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-09-28 22:01
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 22:54 | Edited world/props/harvest.gd | woke() → loose() | ~127 |
+| 22:54 | Edited world/props/harvest.gd | woke() → loose() | ~127 |
+| 22:54 | Edited world/props/harvest.gd | inline fix | ~38 |
+| 22:54 | Edited world/props/harvest.gd | inline fix | ~38 |
+| 22:54 | Edited world/props/harvest.gd | modified held_tool() | ~374 |
+| 22:54 | Edited world/props/harvest.gd | modified held_tool() | ~374 |
+| 22:55 | Edited player/player.gd | modified get_nodes_in_group() | ~197 |
+| 22:55 | Edited player/player.gd | modified get_nodes_in_group() | ~197 |
+| 22:55 | Edited player/player.gd | added 1 condition(s) | ~245 |
+| 22:55 | Edited player/player.gd | added 1 condition(s) | ~245 |
+| 22:55 | Edited player/player.gd | modified harvest_swing() | ~280 |
+| 22:55 | Edited player/player.gd | modified harvest_swing() | ~280 |
+| 22:55 | Edited world/props/choppable.gd | 4→7 lines | ~75 |
+| 22:55 | Edited world/props/choppable.gd | 4→7 lines | ~75 |
+| 22:56 | Edited world/lawn/lawn_builder.gd | fibre() → loose() | ~65 |
+| 22:56 | Edited world/lawn/lawn_builder.gd | fibre() → loose() | ~65 |
+| 22:56 | Edited world/lawn/lawn_builder.gd | reduced (-8 lines) | ~38 |
+| 22:56 | Edited world/lawn/lawn_builder.gd | reduced (-8 lines) | ~38 |
+| 22:57 | Edited world/lawn/loose_finds.gd | expanded (+9 lines) | ~339 |
+| 22:57 | Edited world/lawn/loose_finds.gd | expanded (+9 lines) | ~339 |
+| 22:57 | Edited world/lawn/loose_finds.gd | modified _fibre() | ~1036 |
+| 22:57 | Edited world/lawn/loose_finds.gd | modified _fibre() | ~1036 |
+| 22:58 | Edited world/lawn/garden_dressing.gd | maxf() → stem_radius() | ~34 |
+| 22:58 | Edited world/lawn/garden_dressing.gd | maxf() → stem_radius() | ~34 |
+| 22:58 | Edited world/lawn/garden_dressing.gd | modified stem_radius() | ~191 |
+| 22:58 | Edited world/lawn/garden_dressing.gd | modified stem_radius() | ~191 |
+| 22:58 | Edited world/props/plantain.gd | maxf() → look() | ~87 |
+| 22:58 | Edited world/props/plantain.gd | maxf() → look() | ~87 |
+| 23:00 | Edited player/held_weapon.gd | 2→3 lines | ~66 |
+| 23:00 | Edited player/held_weapon.gd | 2→3 lines | ~66 |
+| 23:00 | Edited player/held_weapon.gd | 3→4 lines | ~88 |
+| 23:00 | Edited player/held_weapon.gd | 3→4 lines | ~88 |
+| 23:00 | Edited player/player.gd | modified is_upper_playing() | ~96 |
+| 23:00 | Edited player/player.gd | modified is_upper_playing() | ~96 |
+| 23:00 | Edited player/player.gd | AnimationNodeBlendTree() → clip() | ~41 |
+| 23:00 | Edited player/player.gd | AnimationNodeBlendTree() → clip() | ~41 |
+| 23:01 | Edited tests/survival_test.gd | modified find_children() | ~520 |
+| 23:01 | Edited tests/survival_test.gd | modified find_children() | ~520 |
+| 23:01 | Edited tests/survival_test.gd | modified get_nodes_in_group() | ~34 |
+| 23:01 | Edited tests/survival_test.gd | modified get_nodes_in_group() | ~34 |
+| 23:03 | Created world/shaders/pellets.gdshader | — | ~728 |
+| 23:03 | Created world/shaders/pellets.gdshader | — | ~728 |
+| 23:04 | Created world/shaders/glass_bead.gdshader | — | ~440 |
+| 23:04 | Created world/shaders/glass_bead.gdshader | — | ~440 |
+| 23:04 | Created world/shaders/matchwood.gdshader | — | ~645 |
+| 23:04 | Created tests/_tmp_fixes.gd | — | ~1790 |
+| 23:04 | Created tests/_tmp_fixes.gd | — | ~1790 |
+| 23:04 | Created world/shaders/matchwood.gdshader | — | ~645 |
+| 23:04 | Created world/shaders/knit.gdshader | — | ~402 |
+| 23:04 | Created world/shaders/knit.gdshader | — | ~402 |
+| 23:04 | Created world/shaders/fissure.gdshader | — | ~734 |
+| 23:04 | Created world/shaders/fissure.gdshader | — | ~734 |
+| 23:04 | Edited tests/survival_test.gd | 3→3 lines | ~49 |
+| 23:04 | Edited tests/survival_test.gd | 3→3 lines | ~49 |
+| 23:07 | Created world/shaders/pit.gdshader | — | ~462 |
+| 23:07 | Created world/shaders/pit.gdshader | — | ~462 |
+| 23:09 | Created tests/_tmp_climb.gd | — | ~1191 |
+| 23:09 | Created tests/_tmp_climb.gd | — | ~1191 |
+| 23:10 | Created world/lawn/landmarks.gd | — | ~11500 |
+| 23:10 | Created world/lawn/landmarks.gd | — | ~11500 |
+| 23:15 | Created tests/_tmp_landmarks.gd | — | ~1134 |
+| 23:15 | Created tests/_tmp_landmarks.gd | — | ~1134 |

@@ -69,6 +69,8 @@ budget_tokens: 2000
 
 - [2026-09-28] He couldn't walk onto a paperclip lying on the floor (a 0.2 m wire): the body rides over only a few centimetres and climbing starts at chest height, so everything in between blocked him. Low lips need a step-up (Player.step_height); check new low props by walking into them.
 
+- [2026-09-28] Chop prompts showed with bare fists and from 13 m (a thistle's whole spread counted as reach), and the pressed grass at spawn was a pickup. Grounded shows a thing to chop only while the tool for it is in his hand, reach is to the stem, and only loose finds (plant fibre, sprigs, pebblets, grass seeds) are picked up by hand; leaves and grass blades are never taken whole.
+
 ## Decision Log
 
 <!-- Significant technical decisions with rationale. Why X was chosen over Y. -->

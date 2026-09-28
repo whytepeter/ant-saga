@@ -2135,9 +2135,9 @@ func _build_grass(parent: Node3D) -> void:
 			# shrank): here and there a tuft lies bent over at the foot, its blades
 			# together, combed out from the middle, full length and pale from the
 			# dark under him, with bare soil between (a mat of them everywhere,
-			# short and crossing, read as a heap of leaves). He pulls them up by
-			# hand for fibre (Harvest "pressed_grass"), the way Grounded's first
-			# fibre comes off the ground.
+			# short and crossing, read as a heap of leaves). Scenery: as in
+			# Grounded, a blade of grass is never taken whole; the fibre he picks
+			# up lies loose (LooseFinds).
 			if surf == LawnLayout.Surface.FLATTENED and rng.randf() < 0.22:
 				var x := cx + rng.randf_range(-1.0, 1.0)
 				var z := cz + rng.randf_range(-1.0, 1.0)
@@ -2199,14 +2199,6 @@ func _build_grass(parent: Node3D) -> void:
 		if not (bucket["flat"] as Array).is_empty():
 			var flat := _multimesh(parent, pressed_mesh, flat_mat, bucket["flat"], bucket["flat_colors"], false)
 			flat.visibility_range_end = 260.0
-			if physics:
-				var field := GatherField.of(parent)
-				var list: Array = bucket["flat"]
-				for fi in list.size():
-					var fx: Transform3D = list[fi]
-					var along := fx.basis.z * PRESSED_LENGTH  # foot to tip
-					field.add_spec("pressed_grass", fx.origin + along * 0.5, 2.0, flat.multimesh, fi, null, null,
-						atan2(along.x, along.z), along.length() * 0.8)
 		if not (bucket["collars"] as Array).is_empty():
 			var heaps := _multimesh(parent, collar_mesh, collar_mat, bucket["collars"], bucket["collar_colors"], false)
 			heaps.visibility_range_end = 160.0

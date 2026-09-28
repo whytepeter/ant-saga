@@ -57,6 +57,10 @@ const TARGET_REACH := 2.4
 ## Held E on a pickup sweeps up everything within this (m), after this long (s).
 const SWEEP_RADIUS := 5.0
 const SWEEP_HOLD := 0.45
+## Clips that need both his hands: his weapon is put away while they play
+## (HeldWeapon) and comes back after. (A cut with the knife keeps it out.)
+const HANDS_BUSY := ["grab", "pull_fibre", "gather_crouch", "pick_up", "walk_pick_up", "run_pick_up", "collect",
+	"collect_crouch", "pull_plant", "kneel_drink", "stand_drink", "drink_cupped", "eat_bite", "craft"]
 ## The bones an upper-body clip moves (play_upper): the chest, arms and head.
 const UPPER_BONES := ["Spine", "LeftShoulder", "LeftArm", "LeftForeArm", "LeftHand", "RightShoulder", "RightArm",
 	"RightForeArm", "RightHand", "neck", "Head"]
@@ -178,6 +182,11 @@ var _coyote_left := 0.0
 var _jump_buffer_left := 0.0
 var _climb_normal := Vector3.ZERO
 var _climb_cooldown := 0.0
+## How far he leans in toward what he climbs (the model, not the body; see
+## _update_climb_lean).
+var _climb_lean := 0.0
+## The clip playing on his upper body (play_upper).
+var _upper_clip := ""
 var _mantling := false
 var _playback: AnimationNodeStateMachinePlayback
 ## The prop held overhead, if any.
@@ -367,6 +376,7 @@ func _physics_process(delta: float) -> void:
 		_last_dry = global_position
 		swim_left = minf(swim_left + swim_range / swim_recover * delta, swim_range)
 	_update_carried()
+	_update_climb_lean(delta)
 
 
 # ── walking, jumping, crawling ────────────────────────────────────────────────
@@ -891,6 +901,33 @@ func _process_climbing(delta: float) -> void:
 	anim_tree.set("parameters/sm/climb/speed/scale", rate * (1.0 if sideways or climb_input.y >= 0.0 else -1.0))
 
 
+## Climbing, his body is held off the wall by its capsule and the clip's hands
+## (made for a flat wall) stop short of it, and on a thin stem they close on air
+## either side of it: he leans in (the model, not the body) by a little, and by
+## more the more the surface curves away beside where he faces it, up to 0.22 m.
+func _update_climb_lean(delta: float) -> void:
+	var want := 0.0
+	if state == State.CLIMB:
+		var space := get_world_3d().direct_space_state
+		var chest := global_position + Vector3.UP * 1.1
+		var side := (-_climb_normal).cross(Vector3.UP).normalized()
+		var centre := _wall_depth(space, chest)
+		if centre < INF:
+			var deeper := 0.0
+			for s: float in [-0.22, 0.22]:
+				deeper += minf(_wall_depth(space, chest + side * s) - centre, 0.3)
+			want = clampf(0.1 + deeper * 0.8, 0.0, 0.22)
+	_climb_lean = move_toward(_climb_lean, want, delta * 0.8)
+
+
+## How far ahead of `from` the climbed surface is, into it (INF: nothing
+## within a metre).
+func _wall_depth(space: PhysicsDirectSpaceState3D, from: Vector3) -> float:
+	var ray := PhysicsRayQueryParameters3D.create(from, from - _climb_normal, WORLD_LAYER | CLIMBABLE_LAYER, [get_rid()])
+	var hit := space.intersect_ray(ray)
+	return from.distance_to(hit["position"] as Vector3) if not hit.is_empty() else INF
+
+
 func _leave_climb() -> void:
 	_climb_cooldown = 0.35
 	_set_state(State.AIR)
@@ -952,19 +989,21 @@ func _find_target() -> Object:
 		if sc < best_score:
 			best_score = sc
 			best = w
+	# a thing to chop or smash shows only while he holds something that does it
 	for c: Choppable in get_tree().get_nodes_in_group(&"choppables"):
 		if c.collision_layer == 0 or c.is_gone():
 			continue
 		var sc := _target_score(c.aim_point(here), c.reach_radius, here, look_flat)
-		if sc < best_score:
+		if sc < best_score and (_takes_by_hand(c) or not _tool_for(c).is_empty()):
 			best_score = sc
 			best = c
-	var blade := GrassField.nearest_blade(here, look_flat, TARGET_REACH)
-	if blade != null:
-		var sc := _target_score(blade.aim_point(here), blade.reach_radius(), here, look_flat)
-		if sc < best_score:
-			best_score = sc
-			best = blade
+	if not Harvest.held_tool(get_node_or_null("Inventory") as Inventory, Harvest.CHOP, 1).is_empty():
+		var blade := GrassField.nearest_blade(here, look_flat, TARGET_REACH)
+		if blade != null:
+			var sc := _target_score(blade.aim_point(here), blade.reach_radius(), here, look_flat)
+			if sc < best_score:
+				best_score = sc
+				best = blade
 	return best
 
 
@@ -985,6 +1024,20 @@ func _takes_by_hand(t: Object) -> bool:
 	if t is ItemPickup or t is WeaponPickup:
 		return true
 	return t is Gatherable and (t as Gatherable).is_hand()
+
+
+## What E would cut or smash `t` with: the weapon in his hand (Harvest.held_tool,
+## "weak" if it's too weak for it), or for silk his knife, which is always at his
+## hip whatever he's holding. {} if nothing will do: then it isn't shown at all.
+func _tool_for(t: Object) -> Dictionary:
+	var inventory := get_node_or_null("Inventory") as Inventory
+	var need: Array = t.call("harvest_tool")
+	var held := Harvest.held_tool(inventory, String(need[0]), int(need[1]))
+	if (held.is_empty() or held.has("weak")) and t is Choppable and (t as Choppable).kind == "silk" \
+			and inventory != null and inventory.has_knife:
+		var knife: Array = Weapons.tool(Weapons.KNIFE)["chop"]
+		held = {"weapon": Weapons.KNIFE, "tier": int(knife[0]), "power": float(knife[1])}
+	return held
 
 
 ## Outlines `t` and tells the HUD what it is and what E does.
@@ -1028,9 +1081,8 @@ func _handle_take(t: Object) -> void:
 		_hold_e = -1.0
 
 
-## E on something to chop or smash: with the right tool he has (the knife out
-## of his belt, or the axe or hammer to his hand), a swing at it; without one,
-## the HUD says what it needs.
+## E on something to chop or smash: a swing at it with what he holds (for silk
+## the knife out of his belt); a tool too weak for it, the HUD says what it needs.
 func harvest_swing(t: Object) -> void:
 	if action_lock > 0.0 or t == null:
 		return
@@ -1038,8 +1090,8 @@ func harvest_swing(t: Object) -> void:
 	var need: Array = t.call("harvest_tool")
 	var tool := String(need[0])
 	var tier := int(need[1])
-	var best := Harvest.best_tool(inventory, tool, tier)
-	if best.is_empty():
+	var best := _tool_for(t)
+	if best.is_empty() or best.has("weak"):
 		flash_hint(Harvest.need_text(tool, tier), 1.6)
 		return
 	var at: Vector3 = t.call("aim_point", global_position)
@@ -1052,16 +1104,13 @@ func harvest_swing(t: Object) -> void:
 	var impact := -1.0
 	if w == Weapons.KNIFE:
 		if inventory.equipped != Weapons.KNIFE:
-			inventory.draw_knife(1.1)  # out of his belt for the cut
+			inventory.draw_knife(1.1)  # out of his belt for the silk
 		clip = "knife_slash"
 		speed = 2.2
 		impact = 0.88 / speed
-	else:
-		if inventory.equipped != w:
-			inventory.equip(w)
-		if tool == Harvest.BUST:
-			clip = "axe_heavy"
-			speed = 1.35
+	elif tool == Harvest.BUST:
+		clip = "axe_heavy"
+		speed = 1.35
 	if impact < 0.0:
 		impact = float(_times.get(clip, 0.4)) / speed
 	if first_person:
@@ -1660,7 +1709,7 @@ func _travel(node: String) -> void:
 ## reaching down on the way down; a long fall turns into flailing.
 func _process(delta: float) -> void:
 	# draw the model between physics steps
-	var offset := visual_position() - global_position
+	var offset := visual_position() - global_position - _climb_normal * _climb_lean
 	_explorer.position = _explorer_base + model.global_transform.basis.inverse() * offset
 	_update_puff()
 	_update_fingers()
@@ -1852,6 +1901,7 @@ func play_upper(clip: String, speed := 1.0, fade := 0.15) -> void:
 	if not ANIMATIONS.has_animation(clip):
 		return
 	var root := anim_tree.tree_root as AnimationNodeBlendTree
+	_upper_clip = clip
 	(root.get_node("upper_clip") as AnimationNodeAnimation).animation = clip
 	var shot := root.get_node("upper") as AnimationNodeOneShot
 	shot.fadein_time = fade
@@ -1861,6 +1911,12 @@ func play_upper(clip: String, speed := 1.0, fade := 0.15) -> void:
 
 func is_upper_playing() -> bool:
 	return bool(anim_tree.get("parameters/upper/active"))
+
+
+## A clip that needs both his hands (picking up, pulling, drinking, eating,
+## making something) is playing: his weapon goes to his back or hip first.
+func hands_busy() -> bool:
+	return current_action() in HANDS_BUSY or (is_upper_playing() and _upper_clip in HANDS_BUSY)
 
 
 ## Eating, drinking or using something from his pack (Inventory.use_slot).

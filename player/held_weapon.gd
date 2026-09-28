@@ -32,8 +32,9 @@ const HOLSTERS := {
 	"hip": ["Hips", Vector3(15.0, 0.0, 180.0), 90.0, Vector3(-0.17, 0.06, -0.03)],
 	# the hammer crosses the axe, head over his left shoulder
 	"back_left": ["Spine", Vector3(0.0, 0.0, -25.0), 180.0, Vector3(-0.12, -0.28, -0.2)],
-	# the spear slung diagonally, butt by his right hip, point above his left shoulder
-	"back_long": ["Spine", Vector3(0.0, 0.0, -16.0), 180.0, Vector3(-0.12, -0.5, -0.23)],
+	# the spear slung diagonally, butt by his right hip, point out past his left
+	# shoulder, well clear of his head (lying flat to swim, it would run through it)
+	"back_long": ["Spine", Vector3(0.0, 0.0, -35.0), 180.0, Vector3(-0.16, -0.45, -0.22)],
 }
 
 ## Seen through his eyes his arms are up in a guard (HideHead), so the weapon
@@ -90,9 +91,10 @@ func _process(delta: float) -> void:
 	id = inventory.equipped if inventory.equipped != Weapons.FISTS else &""
 	if inventory.knife_out():
 		id = Weapons.KNIFE
-	# in hand only when his hands are free to fight
+	# in hand only when his hands are free to fight: put away while he picks
+	# something up, drinks, eats or makes something, and back after
 	in_hand = id != &"" and player.state in [Player.State.GROUND, Player.State.AIR] \
-		and player.carried == null and player.puff == null and player.hauling == null
+		and player.carried == null and player.puff == null and player.hauling == null and not player.hands_busy()
 
 
 func _add(weapon: StringName) -> void:

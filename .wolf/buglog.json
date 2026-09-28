@@ -934,6 +934,201 @@
       ],
       "occurrences": 1,
       "last_seen": "2026-09-28T20:17:48.000Z"
+    },
+    {
+      "id": "bug-061",
+      "timestamp": "2026-09-28T21:54:07.651Z",
+      "error_message": "Incorrect value in code",
+      "file": "world/props/harvest.gd",
+      "root_cause": "Had \"pressed_grass\"",
+      "fix": "Changed to \"weed_rosette\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "gd"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-09-28T21:54:07.706Z"
+    },
+    {
+      "id": "bug-062",
+      "timestamp": "2026-09-28T21:54:07.823Z",
+      "error_message": "Significant refactor of harvest.gd",
+      "file": "world/props/harvest.gd",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 9\u219230 lines (2 removed) | Also: ## {\"name\", \"verb\", \"ok\", \"need\", \"hand\"}.; if tool != HAND and best_tool(inventory, tool, int",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "gd"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-09-28T21:54:07.876Z"
+    },
+    {
+      "id": "bug-063",
+      "timestamp": "2026-09-28T21:55:28.453Z",
+      "error_message": "Null/undefined access in player.gd",
+      "file": "player/player.gd",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check) | Also: ## What E would cut or smash `t` with: the weapon in his han; ## \"weak\" if it's too weak for it), or for silk his knife, w",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "gd"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-09-28T21:55:28.502Z"
+    },
+    {
+      "id": "bug-064",
+      "timestamp": "2026-09-28T21:55:46.470Z",
+      "error_message": "Null/undefined access in choppable.gd",
+      "file": "world/props/choppable.gd",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check) | Also: if inventory != null and inventory.has_knife:  # his knife, ; p[\"ok\"] = true",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "gd"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-09-28T21:55:46.519Z"
+    },
+    {
+      "id": "bug-065",
+      "timestamp": "2026-09-28T21:57:17.454Z",
+      "error_message": "Significant refactor of loose_finds.gd",
+      "file": "world/lawn/loose_finds.gd",
+      "root_cause": "6 lines replaced/restructured",
+      "fix": "Rewrote 18\u219227 lines (6 removed) | Also: ## Grounded: pebbles (pebblets, knee-high to him) ; ## bare soil, the ants' roads and the flattened ho",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "gd"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-09-28T21:57:17.480Z"
+    },
+    {
+      "id": "bug-066",
+      "timestamp": "2026-09-28T21:58:43.156Z",
+      "error_message": "Significant refactor of plantain.gd",
+      "file": "world/props/plantain.gd",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 4\u21925 lines (2 removed) | Also: # the stalk as two capsules, the spike as a third; for seg: Array in [[0, halfway, 0.4], [halfway, sp",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "gd"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-09-28T21:58:43.183Z"
+    },
+    {
+      "id": "bug-067",
+      "timestamp": "2026-09-28T22:00:34.848Z",
+      "error_message": "Significant refactor of held_weapon.gd",
+      "file": "player/held_weapon.gd",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 3\u21924 lines (2 removed) | Also: # in hand only when his hands are free to fight; and player.carried == null and player.puff == null",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "gd"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-09-28T22:00:34.875Z"
+    },
+    {
+      "id": "bug-068",
+      "timestamp": "2026-09-28T22:01:40.062Z",
+      "error_message": "Missing await",
+      "file": "tests/survival_test.gd",
+      "root_cause": "Async call without await \u2014 returned Promise instead of value",
+      "fix": "Added await to async call | Also: # Grounded's loose finds: plant fibre lies about; a blade of; var fibres := 0",
+      "tags": [
+        "auto-detected",
+        "async-fix",
+        "gd"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-09-28T22:01:40.110Z"
+    },
+    {
+      "id": "bug-069",
+      "timestamp": "2026-09-28T22:04:50.435Z",
+      "error_message": "Incorrect value in code",
+      "file": "tests/survival_test.gd",
+      "root_cause": "Had \"HeldWeapon\"",
+      "fix": "Changed to 's grab over)\n\tvar held := player.get_node(\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "gd"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-09-28T22:04:50.468Z"
+    },
+    {
+      "id": "bug-070",
+      "timestamp": "2026-09-28T22:17:34.000Z",
+      "error_message": "'Thistle \u00b7 Chop' shown with nothing near to chop, and chop prompts shown while holding bare fists",
+      "file": "world/lawn/garden_dressing.gd",
+      "root_cause": "Tall plants were registered with reach size*0.45 (a 25 m thistle reachable ~13 m from its stem), and targets considered every tool he carried, not the one in his hand.",
+      "fix": "Stem plants register with their stem radius + 0.3 (GardenDressing.stem_radius); Player._find_target shows a chop/smash target only when Harvest.held_tool (the weapon in hand) can do it; silk still takes his hip knife.",
+      "tags": [
+        "harvest",
+        "prompt",
+        "reach",
+        "tools"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-28T22:17:34.000Z"
+    },
+    {
+      "id": "bug-071",
+      "timestamp": "2026-09-28T22:17:34.000Z",
+      "error_message": "Climbing a plantain seed spike or a stem, he isn't touching it",
+      "file": "player/player.gd",
+      "root_cause": "Stem collision was fatter than the visual (0.4 m minimum radius on 0.26 m stalks); the capsule (r 0.35) holds him off the surface and the climb clip's hands, made for a flat wall, stop ~0.15 m short and close on air beside thin stems.",
+      "fix": "Spike capsules and STEMS cylinders as thick as they look; Player._update_climb_lean leans the model in 0.1 m plus more where the surface curves away (three chest rays), up to 0.22 m.",
+      "tags": [
+        "climbing",
+        "collision",
+        "animation"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-28T22:17:34.000Z"
+    },
+    {
+      "id": "bug-072",
+      "timestamp": "2026-09-28T22:17:34.000Z",
+      "error_message": "Swimming, the spear on his back goes through his head",
+      "file": "player/held_weapon.gd",
+      "root_cause": "The back_long holster slung the spear only 16 degrees off vertical, so its point rose past his head; prone in the water it ran through it.",
+      "fix": "back_long at 35 degrees, butt further right: the point clears his left shoulder. Weapons also go to the holster while a hands-busy clip plays (Player.HANDS_BUSY).",
+      "tags": [
+        "weapons",
+        "holster",
+        "swimming"
+      ],
+      "related_bugs": [
+        "bug-021"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-09-28T22:17:34.000Z"
     }
   ]
 }

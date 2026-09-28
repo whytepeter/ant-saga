@@ -142,6 +142,9 @@ func prompt(inventory: Inventory) -> Dictionary:
 	var p := Harvest.prompt_for({"name": display_name.capitalize(), "tool": need[0], "tier": need[1]}, inventory)
 	if kind == "silk":
 		p["verb"] = "Cut"
+		if inventory != null and inventory.has_knife:  # his knife, whatever he's holding
+			p["ok"] = true
+			p["need"] = ""
 	return p
 
 

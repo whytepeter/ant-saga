@@ -270,14 +270,37 @@ func _test_harvest() -> void:
 	var before := inv.count(&"pebble")
 	_check("a pebble picked up by hand goes in the pack", pebblet != null and pebblet.take(player) and inv.count(&"pebble") == before + 1,
 		"pebbles %d" % inv.count(&"pebble"))
-	# bare hands: nothing to smash or chop with
+	# Grounded's loose finds: plant fibre lies about; a blade of grass is never taken whole
+	var fibres := 0
+	var pressed := 0
+	for f: Node in level.find_children("*", "GatherField", true, false):
+		for e: Dictionary in f.get("_entries"):
+			var id := String((e["spec"] as Dictionary).get("id", ""))
+			fibres += 1 if id == "plant_fibre" else 0
+			pressed += 1 if id == "pressed_grass" else 0
+	_check("plant fibre lies about to pick up, pressed grass doesn't", fibres > 150 and pressed == 0,
+		"%d bundles, %d pressed blades to take" % [fibres, pressed])
+	# a thing to chop or smash shows only with a tool for it in his hand
 	var bare := Inventory.new()
-	var p := Harvest.prompt_for(Harvest.spec("pebbles"), bare)
-	_check("bare hands can't smash a stone, and it says so", not bool(p["ok"]) and String(p["need"]) == "Needs a hammer", str(p))
-	var chop_p := Harvest.prompt_for(Harvest.spec("grass"), bare)
-	_check("nor chop grass", not bool(chop_p["ok"]) and String(chop_p["need"]).begins_with("Needs an axe"), str(chop_p))
+	_check("bare hands can't smash a stone", Harvest.held_tool(bare, Harvest.BUST, 1).is_empty()
+		and not bool(Harvest.prompt_for(Harvest.spec("pebbles"), bare)["ok"]), "")
+	_check("nor chop grass", Harvest.held_tool(bare, Harvest.CHOP, 1).is_empty(), "")
 	bare.free()
 	inv.add_weapon(Weapons.AXE, false)
+	_check("an axe on his back shows nothing to chop", inv.equipped == Weapons.FISTS
+		and Harvest.held_tool(inv, Harvest.CHOP, 1).is_empty(), "in hand: %s" % inv.equipped)
+	inv.equip(Weapons.AXE)
+	_check("the axe in his hand does", not Harvest.held_tool(inv, Harvest.CHOP, 1).is_empty(), "")
+	# with a weapon out he puts it away to pick something up, and takes it back
+	await _frames(120)  # (the pebble's grab over)
+	var held := player.get_node("HeldWeapon") as HeldWeapon
+	var out_before := held.in_hand
+	player.play_gather("pick")
+	await _frames(10)
+	var put_away := not held.in_hand and player.hands_busy()
+	await _frames(120)
+	_check("he puts his weapon away to pick something up, then takes it back", out_before and put_away and held.in_hand,
+		"out %s, away %s, back %s" % [out_before, put_away, held.in_hand])
 	# fell a grass stalk and chop it up
 	var blade := GrassField.nearest_blade(player.global_position, Vector2(0, -1), 40.0)
 	_check("grass stalks to chop", blade != null and GrassField.count() > 10000, "%d blades" % GrassField.count())
@@ -335,6 +358,7 @@ func _test_harvest() -> void:
 		_check("killed, it leaves its fuzz", fuzz == 2, "%d fuzz" % fuzz)
 		combat.health = combat.max_health
 	# clear up for what follows
+	inv.equip(Weapons.FISTS)
 	for it: Node in get_nodes_in_group(ItemPickup.GROUP):
 		it.queue_free()
 	for i in inv.slots.size():

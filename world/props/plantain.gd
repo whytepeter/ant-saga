@@ -322,10 +322,11 @@ func _grow_spike(size: float, rng: RandomNumberGenerator, vis_end: float, field:
 	body.add_child(mi)
 	mi.tree_exiting.connect(body.queue_free)
 	field.add_spec("plantain_seeds", position + pts[4], 1.4, null, -1, null, mi)  # cut at the foot
-	# the stalk as two capsules, the spike as a third
+	# the stalk as two capsules, the spike as a third, as thick as they look (he
+	# climbs them with his hands on them, not held off by a fatter capsule)
 	var spike_at := int(foot * n)
 	var halfway := floori(spike_at / 2.0)
-	for seg: Array in [[0, halfway, 0.4], [halfway, spike_at, 0.4], [spike_at, n, maxf(r_spike, 0.4)]]:
+	for seg: Array in [[0, halfway, r_stalk * 1.1], [halfway, spike_at, r_stalk], [spike_at, n, r_spike]]:
 		var a := pts[int(seg[0])]
 		var b := pts[int(seg[1])]
 		var r: float = seg[2]

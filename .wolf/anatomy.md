@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-28T20:14:42.328Z
-> Files: 358 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-28T22:15:35.852Z
+> Files: 368 tracked | Anatomy hits: 0 | Misses: 0
 
 > Project structure index. Auto-maintained by OpenWolf hooks and daemon.
 > Run `openwolf scan` to generate, or wait for the first Claude Code session.
@@ -205,13 +205,13 @@
 - `camera_rig.gd.uid` (~6 tok)
 - `crafting.gd` — Declares PATH (~960 tok)
 - `finger_curl.gd` — Declares SIDES (~675 tok)
-- `held_weapon.gd` — Declares HAND_EULER (~2335 tok)
+- `held_weapon.gd` — Declares HAND_EULER (~2387 tok)
 - `hide_head.gd` — Declares ARM_FORWARD (~548 tok)
 - `inventory.gd` (~2361 tok)
 - `items.gd` — Declares PATH (~594 tok)
 - `player_audio.gd` — Declares SETS (~1805 tok)
 - `player_combat.gd` — Declares CREATURES_LAYER (~3147 tok)
-- `player.gd` — Declares State (~21978 tok)
+- `player.gd` — Declares State (~22670 tok)
 - `player.gd.uid` (~6 tok)
 - `player.tscn` (~732 tok)
 - `survival.gd` — Declares FULL (~1962 tok)
@@ -276,12 +276,15 @@
 - `_tmp_backdrop.gd` (~295 tok)
 - `_tmp_biomes.gd` (~379 tok)
 - `_tmp_bones.gd` (~418 tok)
+- `_tmp_climb.gd` (~1191 tok)
 - `_tmp_env.gd` (~982 tok)
+- `_tmp_fixes.gd` (~1790 tok)
 - `_tmp_fp.gd` (~469 tok)
 - `_tmp_gather.gd` (~666 tok)
 - `_tmp_great_worm.gd` (~773 tok)
 - `_tmp_harvest.gd` (~878 tok)
 - `_tmp_hollow.gd` (~1700 tok)
+- `_tmp_landmarks.gd` — Declares IDS (~1134 tok)
 - `_tmp_plant.gd` (~1167 tok)
 - `_tmp_probe.gd` (~477 tok)
 - `_tmp_props.gd` (~537 tok)
@@ -300,7 +303,7 @@
 - `lookdev_tour.gd` — Declares SHOTS (~588 tok)
 - `player_movement_test.gd` — Declares PlaygroundScript (~3131 tok)
 - `player_movement_test.gd.uid` (~6 tok)
-- `survival_test.gd` (~1547 tok)
+- `survival_test.gd` (~5704 tok)
 - `visual_tour.gd` (~759 tok)
 - `visual_tour.gd.uid` (~6 tok)
 
@@ -383,9 +386,10 @@
 - `apple_tree.gd` — Declares BARK (~5450 tok)
 - `dew_drops.gd` — Declares GROUP (~700 tok)
 - `dialogue.json` (~1408 tok)
-- `garden_dressing.gd` — CHUNK: collision (~5553 tok)
+- `garden_dressing.gd` — CHUNK: collision (~5656 tok)
 - `grass_field.gd` — Declares CELL (~2427 tok)
-- `lawn_builder.gd` — Declares WORLD_LAYER (~27695 tok)
+- `landmarks.gd` — Declares WORLD_LAYER (~11500 tok)
+- `lawn_builder.gd` — Declares WORLD_LAYER (~27596 tok)
 - `lawn_builder.gd.uid` (~6 tok)
 - `lawn_layout.gd` — Declares LAYOUT_PATH (~934 tok)
 - `lawn_layout.gd.uid` (~6 tok)
@@ -393,7 +397,7 @@
 - `lawn_level.gd.uid` (~6 tok)
 - `lawn.tscn` (~741 tok)
 - `layout.json` (~5947 tok)
-- `loose_finds.gd` — Declares SEED (~847 tok)
+- `loose_finds.gd` — Declares SEED (~1963 tok)
 - `missions.json` (~932 tok)
 - `soil_detail.gd` — Declares CHUNK (~3974 tok)
 - `tree_base.gd` — Declares MESH (~2564 tok)
@@ -415,10 +419,10 @@
 
 ## world/props/
 
-- `choppable.gd` — Declares CHOP_LAYER (~1806 tok)
+- `choppable.gd` — Declares CHOP_LAYER (~2518 tok)
 - `gather_field.gd` — Declares GROUP (~870 tok)
 - `gatherable.gd` (~1981 tok)
-- `harvest.gd` — Declares HAND (~1592 tok)
+- `harvest.gd` — Declares HAND (~2185 tok)
 - `haul.gd` — Declares AMODU_STRENGTH (~2366 tok)
 - `heavable.gd` — Declares Weight (~730 tok)
 - `heavable.gd.uid` (~6 tok)
@@ -429,7 +433,7 @@
 - `nature_models.gd` — Declares DIR (~2200 tok)
 - `outline.gd` — Declares MASK (~420 tok)
 - `pickup_marker.gd` — Declares SHADER (~330 tok)
-- `plantain.gd` — Declares LEAF_SHADER (~4742 tok)
+- `plantain.gd` — Declares LEAF_SHADER (~4585 tok)
 - `seed_puff.gd` — Declares GROUP (~547 tok)
 - `spider_web.gd` — Declares SILK_SHADER (~3432 tok)
 - `weapon_pickup.gd` — Declares GROUP (~575 tok)
@@ -439,12 +443,18 @@
 
 - `creature.gdshader` — Declares spatial (~566 tok)
 - `earthworm.gdshader` — Declares spatial (~1282 tok)
+- `fissure.gdshader` — Declares spatial (~734 tok)
+- `glass_bead.gdshader` — Declares spatial (~440 tok)
 - `grain.gdshader` — Declares spatial (~728 tok)
 - `grass.gdshader` — Declares spatial (~1073 tok)
 - `ground.gdshader` — Declares spatial (~1636 tok)
+- `knit.gdshader` — Declares spatial (~402 tok)
+- `matchwood.gdshader` — Declares spatial (~645 tok)
 - `outline_mask.gdshader` — spatial: outline (~137 tok)
 - `outline_shell.gdshader` — Declares spatial (~316 tok)
+- `pellets.gdshader` — Declares spatial (~728 tok)
 - `pickup_marker.gdshader` — Declares spatial (~713 tok)
+- `pit.gdshader` — Declares spatial (~462 tok)
 - `plant.gdshader` — Declares spatial (~920 tok)
 - `plantain_spike.gdshader` — Declares spatial (~884 tok)
 - `plantain.gdshader` — Declares spatial (~1639 tok)

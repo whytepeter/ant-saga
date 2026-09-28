@@ -164,7 +164,7 @@ static func build(parent: Node3D, layout: LawnLayout) -> void:
 				for xf: Transform3D in chunks[key]:
 					var size := xf.basis.get_scale().x
 					var stem := CylinderShape3D.new()
-					stem.radius = maxf(float(STEMS[id][0]) * size, 0.4)
+					stem.radius = stem_radius(id, size)
 					stem.height = float(STEMS[id][1]) * size
 					shapes.append(_add_shape(body, stem, Transform3D(Basis(), xf.origin + Vector3.UP * stem.height * 0.5)))
 			if id in GATHER:
@@ -174,9 +174,17 @@ static func build(parent: Node3D, layout: LawnLayout) -> void:
 					var xf: Transform3D = list[k]
 					var size := xf.basis.get_scale().x
 					var long := id in ["fallen_leaf", "twig"]  # cut anywhere along it
-					field.add_spec(id, xf.origin, size * 0.45, mmi.multimesh, k, shapes[k] if k < shapes.size() else null,
+					# a tall plant is taken at its stem, not anywhere under its leaves
+					var reach := stem_radius(id, size) + 0.3 if STEMS.has(id) else size * 0.45
+					field.add_spec(id, xf.origin, reach, mmi.multimesh, k, shapes[k] if k < shapes.size() else null,
 						null, xf.basis.get_euler().y, size if long else 0.0)
 	_tree_heroes(parent, layout, rng)
+
+
+## A tall plant's stem radius (m) at `size`: as thick as it looks, so he climbs
+## it with his hands on it (not held off it by a fatter cylinder).
+static func stem_radius(id: String, size: float) -> float:
+	return maxf(float(STEMS[id][0]) * size, 0.22)
 
 
 ## Each area's own plants and things lying about (layout "biomes"): scattered
