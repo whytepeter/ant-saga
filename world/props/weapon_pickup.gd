@@ -16,11 +16,12 @@ func _ready() -> void:
 	var prop := GardenProps.get_prop(String(info.get("model", "")))
 	if prop != null:
 		var length := float(info.get("length", 0.6))
+		var slim := float(info.get("slim", 1.0))
 		# lying on its side, turned any which way
 		var rng := RandomNumberGenerator.new()
 		rng.seed = hash(String(weapon))
 		var lying := Basis(Vector3.UP, rng.randf() * TAU) * Basis(Vector3.BACK, deg_to_rad(90.0))
-		add_child(GardenProps.instance(prop, Transform3D(lying.scaled(Vector3.ONE * length), Vector3.UP * length * 0.06)))
+		add_child(GardenProps.instance(prop, Transform3D(lying.scaled_local(Vector3(slim, 1.0, slim) * length), Vector3.UP * length * 0.06 * slim)))
 	var marker := PickupMarker.new()
 	marker.height = 1.6
 	marker.reach = 70.0

@@ -14,6 +14,9 @@ const CHUNK := 60.0
 const BLADE_HEIGHT := 24.0  # nominal blade mesh; instances scale 0.6–1.7
 const BLADE_WIDTH := 1.9
 const PRESSED_LENGTH := 13.0  # the pressed-flat blade mesh, foot to tip
+## Of the hollow's cells that roll for pressed grass, the share that get a tuft
+## lying flat: a few dozen fans of it, bare soil between.
+const PRESSED_SHARE := 0.08
 const TUFT_SIZE := 3.0  # blades per tuft, on average
 
 const COLORS := {
@@ -1735,20 +1738,8 @@ func _build_patio(parent: Node3D) -> void:
 		row += 1
 	# the sand-and-moss joints between them, a few metres down
 	_slab(parent, [float(xr[0]), edge_z, float(xr[1]), wall_z, top - 5.0], "joint")
-	# moss cushions along the edge and in the joints (Poly Haven's moss)
-	var mosses := NatureModels.variants("moss_01")
-	for k in 34 if not mosses.is_empty() else 0:
-		var v := mosses[k % mosses.size()]
-		var mx := rng.randf_range(-900.0, 900.0)
-		var mz := edge_z + (0.5 if k % 3 != 0 else rng.randf_range(0.0, 1.0) * (wall_z - edge_z))
-		if k % 3 == 0:  # in a joint between slabs
-			mz = wall_z - round((wall_z - mz) / slab) * slab
-		var sz := rng.randf_range(8.0, 20.0)
-		var mi := NatureModels.instance(v, Transform3D(Basis(Vector3.UP, rng.randf() * TAU).scaled(Vector3.ONE * sz),
-			Vector3(mx, top - sz * 0.12, mz)), NatureModels.cutout_materials(v))
-		mi.visibility_range_end = 400.0
-		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-		parent.add_child(mi)
+	# (no moss cushions: Poly Haven's moss scan, blown up 8-20 m, read as heaps
+	# of crumpled olive foil along the patio edge)
 
 	# the trowel: a steel blade from the grass up onto the slabs
 	var t: Dictionary = patio["trowel"]
@@ -2141,32 +2132,37 @@ func _build_grass(parent: Node3D) -> void:
 				(collar_bucket["collars"] as Array).append(Transform3D(heap, Vector3(crown.x, ground - 0.05, crown.y)))
 				(collar_bucket["collar_colors"] as Array).append(SURFACE_WEIGHTS[surf])
 			# grass pressed flat in the hollow he wakes in (where he lay when he
-			# shrank): a mat of blades bent over at the foot, lying out from the
-			# middle and crossing, pale from the dark under him. He pulls them up by
+			# shrank): here and there a tuft lies bent over at the foot, its blades
+			# together, combed out from the middle, full length and pale from the
+			# dark under him, with bare soil between (a mat of them everywhere,
+			# short and crossing, read as a heap of leaves). He pulls them up by
 			# hand for fibre (Harvest "pressed_grass"), the way Grounded's first
 			# fibre comes off the ground.
 			if surf == LawnLayout.Surface.FLATTENED and rng.randf() < 0.22:
 				var x := cx + rng.randf_range(-1.0, 1.0)
 				var z := cz + rng.randf_range(-1.0, 1.0)
 				var out := Vector2(x, z) - hollow_c
-				var yaw := atan2(out.x, out.y) + rng.randf_range(-0.4, 0.4)
+				var yaw := atan2(out.x, out.y) + rng.randf_range(-0.4, 0.4) * 0.5
 				var length_scale := rng.randf_range(0.45, 0.65)
 				rng.randf_range(0.7, 1.0)  # (kept, so the rest of the lawn keeps its layout)
-				for b in flat_rng.randi_range(2, 3):
-					var p := Vector2(x, z) + Vector2(flat_rng.randf_range(-1.4, 1.4), flat_rng.randf_range(-1.4, 1.4))
-					var turn := yaw + flat_rng.randf_range(-0.6, 0.6)
-					var length := BLADE_HEIGHT * length_scale * flat_rng.randf_range(0.8, 1.15)
-					# lying on the slope from foot to tip, so he stands on them, not in them
-					var base_h := layout.height_at(p.x, p.y)
-					var tip_h := layout.height_at(p.x + sin(turn) * length, p.y + cos(turn) * length)
-					var basis := Basis(Vector3.UP, turn) * Basis(Vector3.RIGHT, -atan2(tip_h - base_h, length))
-					basis = basis.scaled_local(Vector3(flat_rng.randf_range(0.7, 1.0), 1.0, length / PRESSED_LENGTH))
-					var bucket := _chunk(chunks, p.x, p.y)
-					(bucket["flat"] as Array).append(Transform3D(basis, Vector3(p.x, base_h - 0.05, p.y)))
-					var tint: Color = greens[flat_rng.randi() % greens.size()]
-					var roll := flat_rng.randf()
-					tint.a = 0.0 if roll < 0.05 else (0.6 if roll < 0.3 else 1.0)  # straw, drying, still green
-					(bucket["flat_colors"] as Array).append(tint)
+				if flat_rng.randf() < PRESSED_SHARE:
+					var lying := flat_rng.randi_range(2, 4)
+					var spread := flat_rng.randf_range(0.08, 0.16)
+					for b in lying:
+						var p := Vector2(x, z) + Vector2(flat_rng.randf_range(-0.4, 0.4), flat_rng.randf_range(-0.4, 0.4))
+						var turn := yaw + spread * (b - (lying - 1) * 0.5) + flat_rng.randf_range(-0.04, 0.04)
+						var length := BLADE_HEIGHT * (length_scale + 0.35) * flat_rng.randf_range(0.9, 1.1)
+						# lying on the slope from foot to tip, so he stands on them, not in them
+						var base_h := layout.height_at(p.x, p.y)
+						var tip_h := layout.height_at(p.x + sin(turn) * length, p.y + cos(turn) * length)
+						var basis := Basis(Vector3.UP, turn) * Basis(Vector3.RIGHT, -atan2(tip_h - base_h, length))
+						basis = basis.scaled_local(Vector3(flat_rng.randf_range(0.75, 0.95), 1.0, length / PRESSED_LENGTH))
+						var bucket := _chunk(chunks, p.x, p.y)
+						(bucket["flat"] as Array).append(Transform3D(basis, Vector3(p.x, base_h - 0.05, p.y)))
+						# all one bleached green, a little drier here and there
+						var tint := Color(0.5, 0.5, 0.44) * flat_rng.randf_range(0.92, 1.08)
+						tint.a = flat_rng.randf_range(0.6, 1.0)
+						(bucket["flat_colors"] as Array).append(tint)
 
 	var mat := _grass_material()
 	GrassField.reset(parent, mat, BLADE_HEIGHT)  # the blades he can chop (Harvest "grass")

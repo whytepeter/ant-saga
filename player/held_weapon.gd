@@ -118,22 +118,40 @@ func _place() -> void:
 		var holder: Node3D = _meshes[w]
 		var info := Weapons.info(w)
 		var length := float(info.get("length", 0.6))
+		var slim := float(info.get("slim", 1.0))
 		if w == id and in_hand:
 			var pose := _skeleton.global_transform * _skeleton.get_bone_global_pose(_hand)
 			pose.basis = pose.basis.orthonormalized()
 			var grip := float(info.get("grip", GRIP))
 			var spin := float(info.get("hand_spin", HAND_SPIN))
 			var rest: Vector3 = info.get("rest_euler", HAND_EULER)
-			if player != null and player.first_person:
+			var first_person := player != null and player.first_person
+			if first_person:
 				rest = first_person_euler
-			var local := hand_transform(length, rest, grip, spin)
+			var held := pose * hand_transform(length, rest, grip, spin, slim)
 			if _swing > 0.0:
-				var swing: Vector3 = info.get("swing_euler", SWING_EULER)
-				local = local.interpolate_with(hand_transform(length, swing, grip, spin), _swing)
-			holder.global_transform = pose * local
+				var swung: Transform3D
+				if info.get("aim", false) and not first_person:
+					swung = _aimed(pose, length, grip, slim)
+				else:
+					var swing: Vector3 = info.get("swing_euler", SWING_EULER)
+					swung = pose * hand_transform(length, swing, grip, spin, slim)
+				held = held.interpolate_with(swung, _swing)
+			holder.global_transform = held
 		else:
 			var spec: Array = HOLSTERS[String(info.get("holster", "back"))]
-			holder.global_transform = _body_frame(String(spec[0])) * _stowed(spec, length)
+			holder.global_transform = _body_frame(String(spec[0])) * _stowed(spec, length, slim)
+
+
+## A stab ("aim": the spear): the shaft through his fist, pointing where he
+## faces and a little down, whatever the clip does with his wrist.
+func _aimed(hand: Transform3D, length: float, grip: float, slim: float) -> Transform3D:
+	var ahead := player.model.global_basis.z
+	ahead.y = 0.0
+	ahead = (ahead.normalized() + Vector3.DOWN * 0.1).normalized()
+	var side := Vector3.UP.cross(ahead).normalized()
+	var basis := Basis(side, ahead, side.cross(ahead)).scaled_local(Vector3(slim, 1.0, slim) * length)
+	return Transform3D(basis, hand * HAND_OFFSET - basis * Vector3(0.0, grip, 0.0))
 
 
 ## Where the handle is across a weapon model (unit space, pivot at the butt):
@@ -154,14 +172,15 @@ static func handle_centre(prop: GardenProps.Prop) -> Vector3:
 
 
 ## The weapon's pivot in the hand bone's (unscaled) frame. `grip` is how far up
-## the handle (0 butt, 1 top) his fist closes; `spin` turns it about the handle.
-static func hand_transform(length: float, euler := HAND_EULER, grip := GRIP, spin := HAND_SPIN) -> Transform3D:
-	var basis := (_euler(euler) * Basis(Vector3.UP, deg_to_rad(spin))).scaled(Vector3.ONE * length)
+## the handle (0 butt, 1 top) his fist closes; `spin` turns it about the handle;
+## `slim` thins it across the handle (a spear's shaft and point).
+static func hand_transform(length: float, euler := HAND_EULER, grip := GRIP, spin := HAND_SPIN, slim := 1.0) -> Transform3D:
+	var basis := (_euler(euler) * Basis(Vector3.UP, deg_to_rad(spin))).scaled_local(Vector3(slim, 1.0, slim) * length)
 	return Transform3D(basis, HAND_OFFSET - basis * Vector3(0.0, grip, 0.0))
 
 
-static func _stowed(spec: Array, length: float) -> Transform3D:
-	var basis := (_euler(spec[1]) * Basis(Vector3.UP, deg_to_rad(float(spec[2])))).scaled(Vector3.ONE * length)
+static func _stowed(spec: Array, length: float, slim := 1.0) -> Transform3D:
+	var basis := (_euler(spec[1]) * Basis(Vector3.UP, deg_to_rad(float(spec[2])))).scaled_local(Vector3(slim, 1.0, slim) * length)
 	return Transform3D(basis, spec[3])
 
 

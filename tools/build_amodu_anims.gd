@@ -91,6 +91,28 @@ const SWINGS := {
 	"pull_fibre": ["pull_plant", 0.6, 3.7, 2.2],
 	"gather_crouch": ["collect", 0.5, 4.3, 2.0],
 }
+## Spear stabs, Grounded's way (one-handed and quick): a body clip's legs, hips
+## and torso, with the right arm driven by two-bone IK along a stab (drawn back
+## to `chamber`, driven straight out to `point`, held, then eased back into the
+## clip's own arm) and, where the clip's left arm is no good, the left in a
+## guard that swings back as he strikes. Offsets are from the shoulder in arm
+## lengths, in the model's frame (he faces +Z, +X is his left):
+##   [body clip, from, to, drawn by, struck by, held till (source s),
+##    chamber, point, left guard, left thrown back (or null: the clip's own)]
+## The blow lands in times[<name>] (seconds into the clip), when the arm is out.
+const STABS := {
+	# quick stabs from the shoulder on the boxer's jab (its step in, its turn)
+	"spear_stab_1": ["jab_right", 0.15, 1.3, 0.36, 0.56, 0.7, Vector3(-0.25, -0.35, -0.15), Vector3(-0.02, -0.12, 0.97),
+		null, null],
+	"spear_stab_2": ["jab_right", 0.15, 1.3, 0.36, 0.56, 0.7, Vector3(-0.2, 0.15, -0.3), Vector3(0.0, -0.3, 0.95),
+		null, null],
+	# the third, harder: a lunging step (the old two-handed clip's legs)
+	"spear_stab_3": ["spear_jab", 0.3, 1.75, 0.62, 0.86, 1.05, Vector3(-0.25, -0.25, -0.45), Vector3(-0.02, -0.1, 1.0),
+		Vector3(0.25, -0.75, 0.35), Vector3(0.4, -0.6, -0.35)],
+	# held: drawn right back past his ear like a javelin, then a long lunge
+	"spear_charged": ["spear_thrust", 0.1, 1.9, 0.55, 0.85, 1.1, Vector3(-0.2, 0.2, -0.65), Vector3(-0.02, -0.12, 1.0),
+		Vector3(0.25, -0.2, 0.75), Vector3(0.4, -0.65, -0.3)],
+}
 ## Standing clips whose arms hang out from the body with bent-back wrists (open
 ## hands read as claws) and locked-straight elbows: [degrees the arms swing in
 ## toward the body, how far the wrists ease back toward straight, degrees the
@@ -177,6 +199,7 @@ func _run() -> void:
 		clip.loop_mode = Animation.LOOP_NONE
 		lib.add_animation(key, clip)
 		meta_times[key] = float(spec[3]) - float(spec[1])
+	_author_stabs(lib, meta_times)
 	_mark_hands(lib, meta_times)
 
 	var speeds := {}
@@ -375,6 +398,83 @@ func _relax_arms(anim: Animation, adduct_deg: float, wrist: float, elbow_deg := 
 	for track: int in edits:
 		for e: Array in edits[track]:
 			anim.track_set_key_value(track, int(e[0]), e[1])
+
+
+## The spear stabs (STABS): each a slice of its body clip with the arms re-keyed.
+func _author_stabs(lib: AnimationLibrary, times: Dictionary) -> void:
+	for key: String in STABS:
+		var spec: Array = STABS[key]
+		if not lib.has_animation(String(spec[0])):
+			push_warning("no body clip %s for %s" % [spec[0], key])
+			continue
+		var from := float(spec[1])
+		var clip := _slice(lib.get_animation(String(spec[0])), from, float(spec[2]), "flat_xz")
+		clip.loop_mode = Animation.LOOP_NONE
+		var drawn := float(spec[3]) - from
+		var struck := float(spec[4]) - from
+		var held := float(spec[5]) - from
+		var arms: Array[String] = ["Right"]
+		if spec[8] != null:
+			arms.append("Left")
+		var edits: Array = []  # [track, key, Quaternion]
+		var keys := clip.track_get_key_count(_rotation_track(clip, "RightArm"))
+		for k in keys:
+			var t := clip.track_get_key_time(_rotation_track(clip, "RightArm"), k)
+			_pose_at(clip, t)
+			# how much of the arm is the stab's: easing in as he draws back, all of
+			# it through the blow, easing back into the clip's own as he recovers
+			var weight := smoothstep(0.0, drawn, t) if t < held else 1.0 - smoothstep(held, clip.length, t)
+			# the stab: at the chamber until drawn, driven out fast, held there
+			var out := 0.0 if t <= drawn else (1.0 - pow(1.0 - clampf((t - drawn) / (struck - drawn), 0.0, 1.0), 3.0))
+			for side: String in arms:
+				var s := _bone_global(side + "Arm")
+				var reach := s.distance_to(_bone_global(side + "ForeArm")) + _bone_global(side + "ForeArm").distance_to(_bone_global(side + "Hand"))
+				var i := 6 if side == "Right" else 8
+				var target := s + (spec[i] as Vector3).lerp(spec[i + 1] as Vector3, out) * reach
+				var out_side := -1.0 if side == "Right" else 1.0  # elbows out, down and back
+				var pole := s + Vector3(0.7 * out_side, -0.7, -0.5) * reach
+				var turns := _two_bone(side, target, pole)
+				var bones := [side + "Arm", side + "ForeArm"]
+				for b in 2:
+					var track := _rotation_track(clip, String(bones[b]))
+					var own: Quaternion = clip.track_get_key_value(track, k)
+					edits.append([track, k, own.slerp(turns[b], weight).normalized()])
+		for e: Array in edits:
+			clip.track_set_key_value(int(e[0]), int(e[1]), e[2])
+		lib.add_animation(key, clip)
+		times[key] = struck
+
+
+## Two-bone IK at the pose the skeleton is in: the local rotations of `side`'s
+## upper arm and forearm that put the hand at `target` (skeleton space), the
+## elbow bending toward `pole`; the hand keeps its own turn on the forearm.
+func _two_bone(side: String, target: Vector3, pole: Vector3) -> Array[Quaternion]:
+	var arm := _skeleton.find_bone(side + "Arm")
+	var fore := _skeleton.find_bone(side + "ForeArm")
+	var ga := _skeleton.get_bone_global_pose(arm)
+	var gf := _skeleton.get_bone_global_pose(fore)
+	var s := ga.origin
+	var e := gf.origin
+	var h := _skeleton.get_bone_global_pose(_skeleton.find_bone(side + "Hand")).origin
+	var a := s.distance_to(e)
+	var b := e.distance_to(h)
+	var c := clampf(s.distance_to(target), absf(a - b) + 0.001, a + b - 0.001)
+	var d := (target - s).normalized()
+	var x := (a * a - b * b + c * c) / (2.0 * c)
+	var bend := (pole - s) - d * (pole - s).dot(d)
+	bend = bend.normalized() if bend.length() > 0.0001 else Vector3.DOWN
+	var elbow := s + d * x + bend * sqrt(maxf(a * a - x * x, 0.0))
+	var turn_a := Quaternion((e - s).normalized(), (elbow - s).normalized())
+	var arm_q := turn_a * ga.basis.get_rotation_quaternion()
+	var turn_f := Quaternion((turn_a * (h - e)).normalized(), (s + d * c - elbow).normalized())
+	var fore_q := turn_f * turn_a * gf.basis.get_rotation_quaternion()
+	var parent_q := _skeleton.get_bone_global_pose(_skeleton.get_bone_parent(arm)).basis.get_rotation_quaternion()
+	return [(parent_q.inverse() * arm_q).normalized(), (arm_q.inverse() * fore_q).normalized()]
+
+
+## A bone's place in the posed skeleton (skeleton space).
+func _bone_global(bone: String) -> Vector3:
+	return _skeleton.get_bone_global_pose(_skeleton.find_bone(bone)).origin
 
 
 func _rotation_track(anim: Animation, bone: String) -> int:

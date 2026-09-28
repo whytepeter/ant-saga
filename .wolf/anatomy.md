@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-28T18:40:19.853Z
-> Files: 356 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-28T20:14:42.328Z
+> Files: 358 tracked | Anatomy hits: 0 | Misses: 0
 
 > Project structure index. Auto-maintained by OpenWolf hooks and daemon.
 > Run `openwolf scan` to generate, or wait for the first Claude Code session.
@@ -205,17 +205,17 @@
 - `camera_rig.gd.uid` (~6 tok)
 - `crafting.gd` — Declares PATH (~960 tok)
 - `finger_curl.gd` — Declares SIDES (~675 tok)
-- `held_weapon.gd` — Declares HAND_EULER (~1661 tok)
+- `held_weapon.gd` — Declares HAND_EULER (~2335 tok)
 - `hide_head.gd` — Declares ARM_FORWARD (~548 tok)
 - `inventory.gd` (~2361 tok)
 - `items.gd` — Declares PATH (~594 tok)
 - `player_audio.gd` — Declares SETS (~1805 tok)
 - `player_combat.gd` — Declares CREATURES_LAYER (~3147 tok)
-- `player.gd` — Declares State (~18236 tok)
+- `player.gd` — Declares State (~21978 tok)
 - `player.gd.uid` (~6 tok)
 - `player.tscn` (~732 tok)
 - `survival.gd` — Declares FULL (~1962 tok)
-- `weapons.gd` — Declares FISTS (~804 tok)
+- `weapons.gd` — Declares FISTS (~2275 tok)
 
 ## player/explorer/
 
@@ -275,11 +275,13 @@
 - `_anim_shots.gd` (~635 tok)
 - `_tmp_backdrop.gd` (~295 tok)
 - `_tmp_biomes.gd` (~379 tok)
+- `_tmp_bones.gd` (~418 tok)
 - `_tmp_env.gd` (~982 tok)
 - `_tmp_fp.gd` (~469 tok)
 - `_tmp_gather.gd` (~666 tok)
 - `_tmp_great_worm.gd` (~773 tok)
 - `_tmp_harvest.gd` (~878 tok)
+- `_tmp_hollow.gd` (~1700 tok)
 - `_tmp_plant.gd` (~1167 tok)
 - `_tmp_probe.gd` (~477 tok)
 - `_tmp_props.gd` (~537 tok)
@@ -296,7 +298,7 @@
 - `lawn_tour.gd` (~1087 tok)
 - `lawn_tour.gd.uid` (~6 tok)
 - `lookdev_tour.gd` — Declares SHOTS (~588 tok)
-- `player_movement_test.gd` — Declares PlaygroundScript (~2118 tok)
+- `player_movement_test.gd` — Declares PlaygroundScript (~3131 tok)
 - `player_movement_test.gd.uid` (~6 tok)
 - `survival_test.gd` (~1547 tok)
 - `visual_tour.gd` (~759 tok)
@@ -306,7 +308,7 @@
 
 - `add_finger_bones.gd` — Declares HANDS (~3683 tok)
 - `bake_tree_base.py` — Bake the apple tree's base (world/lawn/layout.json "tree_base") into (~3132 tok)
-- `build_amodu_anims.gd` — Declares HIPS (~4455 tok)
+- `build_amodu_anims.gd` — Declares HIPS (~8085 tok)
 - `build_explorer_anims.gd` — Declares SRC (~2578 tok)
 - `build_explorer_anims.gd.uid` (~6 tok)
 - `clip_sheet.gd` — Declares COLS (~972 tok)
@@ -381,9 +383,9 @@
 - `apple_tree.gd` — Declares BARK (~5450 tok)
 - `dew_drops.gd` — Declares GROUP (~700 tok)
 - `dialogue.json` (~1408 tok)
-- `garden_dressing.gd` — CHUNK: collision (~5597 tok)
+- `garden_dressing.gd` — CHUNK: collision (~5553 tok)
 - `grass_field.gd` — Declares CELL (~2427 tok)
-- `lawn_builder.gd` — Declares WORLD_LAYER (~17893 tok)
+- `lawn_builder.gd` — Declares WORLD_LAYER (~27695 tok)
 - `lawn_builder.gd.uid` (~6 tok)
 - `lawn_layout.gd` — Declares LAYOUT_PATH (~934 tok)
 - `lawn_layout.gd.uid` (~6 tok)
@@ -430,7 +432,7 @@
 - `plantain.gd` — Declares LEAF_SHADER (~4742 tok)
 - `seed_puff.gd` — Declares GROUP (~547 tok)
 - `spider_web.gd` — Declares SILK_SHADER (~3432 tok)
-- `weapon_pickup.gd` — Declares GROUP (~415 tok)
+- `weapon_pickup.gd` — Declares GROUP (~575 tok)
 - `wind_sway.gd` — Declares WIND_DIR (~366 tok)
 
 ## world/shaders/

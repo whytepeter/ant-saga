@@ -71,7 +71,7 @@ const COLLISION := {"pebbles": "convex", "twig": "convex", "fallen_leaf": "conve
 	"soil_clods": "convex", "snail_shell": "convex", "pot_shard": "trimesh", "eraser": "convex", "button": "convex",
 	"cone_mushrooms": "convex", "inky_cap": "convex", "rotten_apple": "convex", "plant_label": "convex",
 	"homework_sheet": "trimesh", "garden_glove": "trimesh", "toy_dinosaur": "trimesh", "bendy_straw": "trimesh",
-	"tennis_ball": "convex", "lego_brick": "convex", "moss_clump": "convex", "paperclip": "convex",
+	"tennis_ball": "convex", "lego_brick": "convex", "moss_clump": "convex", "paperclip": "trimesh",
 	"bark_chips": "convex", "weed_rosette": "convex"}
 const TOADSTOOL_SPOTS := [[-300, -112], [-331, -62], [-228, 24], [-318, 42], [-292, -152], [-210, -95]]
 

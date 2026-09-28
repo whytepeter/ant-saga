@@ -533,3 +533,49 @@ description: chronological action log per session, consolidated weekly
 | 19:30 | Edited world/grass_meshes.gd | modified pressed_blade() | ~460 |
 | 19:40 | Created tests/_tmp_gather.gd | — | ~666 |
 | 19:40 | Created tests/_tmp_gather.gd | — | ~666 |
+| 19:50 | Edited world/lawn/garden_dressing.gd | modified harvests() | ~147 |
+| 19:50 | Edited world/lawn/garden_dressing.gd | modified harvests() | ~147 |
+| 19:50 | Edited world/lawn/garden_dressing.gd | 5→5 lines | ~83 |
+| 19:50 | Edited world/lawn/garden_dressing.gd | 5→5 lines | ~83 |
+| 19:50 | Edited world/lawn/garden_dressing.gd | inline fix | ~26 |
+| 19:50 | Edited world/lawn/garden_dressing.gd | inline fix | ~26 |
+| 19:53 | Edited world/lawn/garden_dressing.gd | modified _near_route() | ~62 |
+| 19:53 | Edited world/lawn/garden_dressing.gd | modified _near_route() | ~62 |
+| 20:31 | Created tests/_tmp_hollow.gd | — | ~1700 |
+| 20:32 | Created tests/_tmp_hollow.gd | — | ~1700 |
+| 20:40 | Created tests/_tmp_bones.gd | — | ~418 |
+| 20:40 | Created tests/_tmp_bones.gd | — | ~418 |
+| 20:45 | Edited world/lawn/lawn_builder.gd | reduced (-12 lines) | ~55 |
+| 20:45 | Edited world/lawn/lawn_builder.gd | reduced (-12 lines) | ~55 |
+| 20:47 | Edited world/lawn/lawn_builder.gd | 2→5 lines | ~64 |
+| 20:47 | Edited world/lawn/lawn_builder.gd | 2→5 lines | ~64 |
+| 20:47 | Edited world/lawn/lawn_builder.gd | modified in() | ~562 |
+| 20:47 | Edited world/lawn/lawn_builder.gd | modified in() | ~562 |
+| 20:49 | Edited player/player.gd | modified jumping() | ~66 |
+| 20:49 | Edited player/player.gd | modified jumping() | ~66 |
+| 20:49 | Edited player/player.gd | modified _step_up() | ~38 |
+| 20:49 | Edited player/player.gd | modified _step_up() | ~38 |
+| 20:49 | Edited player/player.gd | modified _step_up() | ~565 |
+| 20:49 | Edited player/player.gd | modified _step_up() | ~565 |
+| 20:51 | Edited player/held_weapon.gd | modified _aimed() | ~478 |
+| 20:51 | Edited player/held_weapon.gd | modified _aimed() | ~478 |
+| 20:51 | Edited player/held_weapon.gd | scaled() → scaled_local() | ~210 |
+| 20:51 | Edited player/held_weapon.gd | scaled() → scaled_local() | ~210 |
+| 20:53 | Edited world/props/weapon_pickup.gd | 6→7 lines | ~119 |
+| 20:53 | Edited world/props/weapon_pickup.gd | 6→7 lines | ~119 |
+| 20:55 | Edited tools/build_amodu_anims.gd | modified way() | ~431 |
+| 20:55 | Edited tools/build_amodu_anims.gd | modified way() | ~431 |
+| 20:55 | Edited tools/build_amodu_anims.gd | 3→4 lines | ~39 |
+| 20:55 | Edited tools/build_amodu_anims.gd | 3→4 lines | ~39 |
+| 20:56 | Edited tools/build_amodu_anims.gd | modified _author_stabs() | ~1073 |
+| 20:56 | Edited tools/build_amodu_anims.gd | modified _author_stabs() | ~1073 |
+| 20:56 | Edited player/weapons.gd | expanded (+6 lines) | ~386 |
+| 20:56 | Edited player/weapons.gd | expanded (+6 lines) | ~386 |
+| 20:57 | Edited tools/build_amodu_anims.gd | 1→3 lines | ~22 |
+| 20:57 | Edited tools/build_amodu_anims.gd | 1→3 lines | ~22 |
+| 21:13 | Edited tests/player_movement_test.gd | 3→5 lines | ~39 |
+| 21:13 | Edited tests/player_movement_test.gd | 3→5 lines | ~39 |
+| 21:13 | Edited tests/player_movement_test.gd | modified _test_step_up() | ~296 |
+| 21:13 | Edited tests/player_movement_test.gd | modified _test_step_up() | ~296 |
+| 21:14 | Edited player/player.gd | 9→12 lines | ~227 |
+| 21:14 | Edited player/player.gd | 9→12 lines | ~227 |

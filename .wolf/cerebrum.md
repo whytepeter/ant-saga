@@ -61,6 +61,14 @@ budget_tokens: 2000
 
 - [2026-09-26] Proposed that a just-shrunk Amodu jams a pebble under the rolling can (a Know moment). The user rejected it: seconds after shrinking he doesn't know his abilities. Check a beat against the character's state of mind and what he knows at that moment, not just physics.
 
+- [2026-09-28] Carpeted Backpack Hollow with ~1,800 pressed grass blades (2–3 layers, short, crossing, green/yellow/orange); the user asked "why are there this much leaves here". Ground cover leaves bare soil between pieces (tens, not thousands) and reads as its real shape at a glance: full-length blades, combed one way, one colour.
+
+- [2026-09-28] Scattered Poly Haven's moss scan blown up to 8–20 m along the patio; fine scanned detail at ×360 reads as heaps of crumpled olive foil, and the user asked to remove it. Don't scale a small scan up to building size; build big plants in code or pick models made at that scale.
+
+- [2026-09-28] The spear was two-handed text-to-motion clips (both arms stretched out, open hands) and held along the forearm; the user wanted it like Grounded. Grounded's spears are one-handed, fast, three stabs (100/100/125%) and a held charge. Check a weapon's real moveset before making clips; the handle goes across the palm (through the fist), never along the forearm.
+
+- [2026-09-28] He couldn't walk onto a paperclip lying on the floor (a 0.2 m wire): the body rides over only a few centimetres and climbing starts at chest height, so everything in between blocked him. Low lips need a step-up (Player.step_height); check new low props by walking into them.
+
 ## Decision Log
 
 <!-- Significant technical decisions with rationale. Why X was chosen over Y. -->

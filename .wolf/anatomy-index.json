@@ -1,13 +1,13 @@
 {
   "version": 1,
   "meta": {
-    "lastScanned": "2026-09-28T18:40:19.853Z",
-    "fileCount": 356,
+    "lastScanned": "2026-09-28T20:14:42.328Z",
+    "fileCount": 358,
     "hits": 0,
     "misses": 0,
-    "renderedHash": "9de60adec10f5e4f4f9f37ebb60bad02573d9168b1687c5fd64eec7793fffa01",
-    "storeUpdatedAt": "2026-09-28T18:40:19.863Z",
-    "rootHash": "1220d64dfd5f8de6"
+    "renderedHash": "bb32e450d3b8b63c6064538bf8980353f9b2726bcf3052e795353021d1c043dd",
+    "storeUpdatedAt": "2026-09-28T20:14:42.344Z",
+    "rootHash": "3d717f7a7a6eff63"
   },
   "files": {
     ".gitattributes": {
@@ -1461,11 +1461,11 @@
     },
     "player/player.gd": {
       "description": "Declares State",
-      "tokens": 18236,
-      "hash": "56beb09c97abcb84",
-      "size": 69318,
-      "mtimeMs": 1790536395764.6396,
-      "updatedAt": "2026-09-27T19:13:15.863Z",
+      "tokens": 21978,
+      "hash": "a4da985174a6f3b4",
+      "size": 83399,
+      "mtimeMs": 1790626482177.1855,
+      "updatedAt": "2026-09-28T20:14:42.326Z",
       "source": "hook"
     },
     "player/player.gd.uid": {
@@ -1551,12 +1551,12 @@
     },
     "tests/player_movement_test.gd": {
       "description": "Declares PlaygroundScript",
-      "tokens": 2118,
-      "hash": "2d428afb3e153ce3",
-      "size": 8222,
-      "mtimeMs": 1790372758959.2158,
-      "updatedAt": "2026-09-25T22:20:40.438Z",
-      "source": "scan"
+      "tokens": 3131,
+      "hash": "bac1ebce8eb5437e",
+      "size": 12019,
+      "mtimeMs": 1790626419200.1223,
+      "updatedAt": "2026-09-28T20:13:39.334Z",
+      "source": "hook"
     },
     "tests/player_movement_test.gd.uid": {
       "description": "",
@@ -1891,11 +1891,11 @@
     },
     "world/lawn/lawn_builder.gd": {
       "description": "Declares WORLD_LAYER",
-      "tokens": 17893,
-      "hash": "106d0cdfe690af1a",
-      "size": 68353,
-      "mtimeMs": 1790409878125.8828,
-      "updatedAt": "2026-09-26T08:04:38.219Z",
+      "tokens": 27695,
+      "hash": "066cdb71aa6fbc9d",
+      "size": 105235,
+      "mtimeMs": 1790624854411.3323,
+      "updatedAt": "2026-09-28T19:47:34.492Z",
       "source": "hook"
     },
     "world/lawn/lawn_builder.gd.uid": {
@@ -2152,11 +2152,11 @@
     },
     "world/lawn/garden_dressing.gd": {
       "description": "CHUNK: collision",
-      "tokens": 5597,
-      "hash": "43b4c8a0283e733e",
-      "size": 20987,
-      "mtimeMs": 1790619754628.4253,
-      "updatedAt": "2026-09-28T18:22:34.745Z",
+      "tokens": 5553,
+      "hash": "b168ff186894e65e",
+      "size": 20824,
+      "mtimeMs": 1790621610445.6382,
+      "updatedAt": "2026-09-28T18:53:30.544Z",
       "source": "hook"
     },
     "tests/lookdev_tour.gd": {
@@ -2197,11 +2197,11 @@
     },
     "tools/build_amodu_anims.gd": {
       "description": "Declares HIPS",
-      "tokens": 4455,
-      "hash": "688dcc60f47c74cf",
-      "size": 17076,
-      "mtimeMs": 1790387485182.891,
-      "updatedAt": "2026-09-26T01:51:25.312Z",
+      "tokens": 8085,
+      "hash": "87dd1ba9418b5656",
+      "size": 30832,
+      "mtimeMs": 1790625464202.7266,
+      "updatedAt": "2026-09-28T19:57:44.306Z",
       "source": "hook"
     },
     "world/shaders/rain_splash.gdshader": {
@@ -2809,11 +2809,11 @@
     },
     "player/weapons.gd": {
       "description": "Declares FISTS",
-      "tokens": 804,
-      "hash": "2a4b278901a1412e",
-      "size": 3016,
-      "mtimeMs": 1790424822225.8264,
-      "updatedAt": "2026-09-26T12:13:42.347Z",
+      "tokens": 2275,
+      "hash": "a4838f162e81e632",
+      "size": 8532,
+      "mtimeMs": 1790625405043.0203,
+      "updatedAt": "2026-09-28T19:56:45.176Z",
       "source": "hook"
     },
     "player/inventory.gd": {
@@ -2827,11 +2827,11 @@
     },
     "player/held_weapon.gd": {
       "description": "Declares HAND_EULER",
-      "tokens": 1661,
-      "hash": "2596b9e181fa0a1a",
-      "size": 6226,
-      "mtimeMs": 1790435134976.599,
-      "updatedAt": "2026-09-26T15:05:35.097Z",
+      "tokens": 2335,
+      "hash": "86cea2b0f31c92a0",
+      "size": 8755,
+      "mtimeMs": 1790625110215.3552,
+      "updatedAt": "2026-09-28T19:51:50.311Z",
       "source": "hook"
     },
     "ui/hud_glyphs.gd": {
@@ -2863,11 +2863,11 @@
     },
     "world/props/weapon_pickup.gd": {
       "description": "Declares GROUP",
-      "tokens": 415,
-      "hash": "881d609dc0e51377",
-      "size": 1553,
-      "mtimeMs": 1790425855865.144,
-      "updatedAt": "2026-09-26T12:30:55.997Z",
+      "tokens": 575,
+      "hash": "dc6c6649c4764635",
+      "size": 2156,
+      "mtimeMs": 1790625185194.0315,
+      "updatedAt": "2026-09-28T19:53:05.313Z",
       "source": "hook"
     },
     "tools/add_finger_bones.gd": {
@@ -4019,6 +4019,24 @@
       "size": 2497,
       "mtimeMs": 1790620819767.999,
       "updatedAt": "2026-09-28T18:40:19.852Z",
+      "source": "hook"
+    },
+    "tests/_tmp_hollow.gd": {
+      "description": "",
+      "tokens": 1700,
+      "hash": "6ce9bbcc6329bc17",
+      "size": 6375,
+      "mtimeMs": 1790623919871.9365,
+      "updatedAt": "2026-09-28T19:31:59.989Z",
+      "source": "hook"
+    },
+    "tests/_tmp_bones.gd": {
+      "description": "",
+      "tokens": 418,
+      "hash": "37061a8feb3dcfdf",
+      "size": 1566,
+      "mtimeMs": 1790624438110.7363,
+      "updatedAt": "2026-09-28T19:40:38.226Z",
       "source": "hook"
     }
   },

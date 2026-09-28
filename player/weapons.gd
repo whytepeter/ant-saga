@@ -122,23 +122,29 @@ const ALL := {
 		"glyph": "spear",
 		"model": "thorn_spear",
 		"holster": "back_long",
-		# a knapped stone point on a long straight stem: reach, so he can fight
-		# big things from outside their bite; held a third of the way up
-		"length": 1.4,  # a little shorter than he is tall
-		"grip": 0.34,
-		"rest_euler": Vector3(180.0, 0.0, 0.0),  # upright like a staff, point up
-		# attacking, it points forward out of his fists, along his arms
-		"swing_euler": Vector3(0.0, 0.0, 0.0),
-		# two-handed spear moves (Meshy text-to-motion): each drives the point
-		# fully forward about 0.87 s into the clip
+		# a knapped stone point on a slender straight stem, two thirds of his
+		# height, held in one hand near its middle the way Grounded's spears
+		# are: reach, so he can fight big things from outside their bite
+		"length": 1.2,
+		"slim": 0.8,  # thinner across than the model: a slender shaft and point
+		"grip": 0.42,
+		"rest_euler": Vector3(-100.0, 0.0, 0.0),  # at his side, point forward and a little up
+		# stabbing, the shaft runs out of his fist where he faces (HeldWeapon)
+		"aim": true,
+		# Grounded's spear: three quick one-handed stabs, the third harder
+		# (100/100/125%), and held, a drawn-back lunging stab. The stabs are his
+		# right arm driven along each one (tools/build_amodu_anims.gd STABS),
+		# the blow landing when it's out (times)
 		"light": [
-			{"kind": &"light", "clip": "spear_jab", "speed": 1.8, "impact": 0.87 / 1.8, "lock": 0.5, "recover": 0.62,
-				"lunge": 2.0, "reach": 2.6, "radius": 1.0, "damage": 1.4, "chop": 0.5},
-			{"kind": &"light", "clip": "spear_thrust", "speed": 1.5, "impact": 0.87 / 1.5, "lock": 0.6, "recover": 0.75,
-				"lunge": 2.6, "reach": 2.8, "radius": 1.0, "damage": 1.8, "chop": 0.5},
+			{"kind": &"light", "clip": "spear_stab_1", "speed": 1.6, "lock": 0.35, "recover": 0.42,
+				"lunge": 1.2, "reach": 2.4, "radius": 0.9, "damage": 1.4, "chop": 0.5},
+			{"kind": &"light", "clip": "spear_stab_2", "speed": 1.6, "lock": 0.35, "recover": 0.42,
+				"lunge": 1.2, "reach": 2.4, "radius": 0.9, "damage": 1.4, "chop": 0.5},
+			{"kind": &"light", "clip": "spear_stab_3", "speed": 1.4, "lock": 0.5, "recover": 0.62,
+				"lunge": 2.2, "reach": 2.6, "radius": 1.0, "damage": 1.75, "chop": 0.5},
 		],
-		"heavy": {"kind": &"heavy", "clip": "spear_lunge", "speed": 1.25, "impact": 0.87 / 1.25, "lock": 0.9, "recover": 1.1,
-			"lunge": 5.5, "reach": 3.2, "radius": 1.2, "damage": 3.4, "chop": 0.5},
+		"heavy": {"kind": &"heavy", "clip": "spear_charged", "speed": 1.2, "lock": 0.85, "recover": 1.0,
+			"lunge": 4.0, "reach": 2.9, "radius": 1.1, "damage": 3.4, "chop": 0.5},
 		"block": "two_hand_parry",
 		"tool": {},  # a weapon, not a tool
 	},

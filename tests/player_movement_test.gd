@@ -31,6 +31,8 @@ func _run() -> void:
 	await _test_running_jumps()
 	await _test_step(1.0, true)
 	await _test_step(2.0, false)
+	await _test_step_up(0.3, true)
+	await _test_step_up(0.7, false)
 	await _test_crawl()
 	await _test_climb()
 	await _test_lift_and_throw()
@@ -214,6 +216,32 @@ func _test_step(height: float, should_clear: bool) -> void:
 	_release_all()
 	_check("jump onto %.1f m step" % height, landed_on_top == should_clear,
 		"%s" % ("landed on top" if landed_on_top else "did not land on top"))
+
+
+## Walking into a low lip (a paperclip's wire, a flat stone's edge) he steps up
+## onto it without jumping (Player.step_height); a thigh-high one stops him.
+func _test_step_up(height: float, should_step: bool) -> void:
+	var lip := StaticBody3D.new()
+	var shape := CollisionShape3D.new()
+	var box := BoxShape3D.new()
+	box.size = Vector3(3.0, height, 1.5)
+	shape.shape = box
+	lip.add_child(shape)
+	lip.position = Vector3(11.0, height / 2.0, -6.0)
+	root.add_child(lip)
+	await _reset(Vector3(11.0, 0, -1.0))
+	Input.action_press("move_forward")
+	var on_top := false
+	for f in _seconds(2.0):
+		await physics_frame
+		if player.is_on_floor() and player.global_position.y > height - 0.05 and absf(player.global_position.z + 6.0) < 0.75:
+			on_top = true
+			break
+	_release_all()
+	lip.queue_free()
+	await _frames(2)
+	_check(("walk up a %.1f m lip" if should_step else "stopped by a %.1f m lip") % height, on_top == should_step,
+		"on top" if on_top else "stayed below")
 
 
 func _test_crawl() -> void:

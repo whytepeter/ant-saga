@@ -784,6 +784,156 @@
       ],
       "occurrences": 1,
       "last_seen": "2026-09-28T18:55:29.000Z"
+    },
+    {
+      "id": "bug-052",
+      "timestamp": "2026-09-28T19:45:53.392Z",
+      "error_message": "Significant refactor of lawn_builder.gd",
+      "file": "world/lawn/lawn_builder.gd",
+      "root_cause": "14 lines replaced/restructured",
+      "fix": "Rewrote 16\u21924 lines (14 removed) | Also: # moss cushions along the edge and in the joints (; var mosses := NatureModels.variants(\"moss_01\")",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "gd"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-09-28T19:45:53.431Z"
+    },
+    {
+      "id": "bug-051",
+      "timestamp": "2026-09-28T19:49:35.792Z",
+      "error_message": "Null/undefined access in player.gd",
+      "file": "player/player.gd",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check) | Also: ## Walking into something low (a paperclip's wire, the edge ; ## its top is within step_height, with room over him and fla",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "gd"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-09-28T19:49:35.835Z"
+    },
+    {
+      "id": "bug-054",
+      "timestamp": "2026-09-28T19:51:50.034Z",
+      "error_message": "Significant refactor of held_weapon.gd",
+      "file": "player/held_weapon.gd",
+      "root_cause": "5 lines replaced/restructured",
+      "fix": "Rewrote 20\u219238 lines (5 removed) | Also: if player != null and player.first_person:; var local := hand_transform(length, rest, grip, sp",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "gd"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-09-28T19:51:50.076Z"
+    },
+    {
+      "id": "bug-055",
+      "timestamp": "2026-09-28T19:56:45.145Z",
+      "error_message": "Significant refactor of weapons.gd",
+      "file": "player/weapons.gd",
+      "root_cause": "15 lines replaced/restructured",
+      "fix": "Rewrote 17\u219223 lines (15 removed) | Also: # a knapped stone point on a long straight stem: r; # big things from outside their bite; held a third",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "gd"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-09-28T19:56:45.190Z"
+    },
+    {
+      "id": "bug-056",
+      "timestamp": "2026-09-28T19:57:44.292Z",
+      "error_message": "Null/undefined access in build_amodu_anims.gd",
+      "file": "tools/build_amodu_anims.gd",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check) | Also: var arms: Array[String] = [\"Right\"]; if spec[8] != null:",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "gd"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-09-28T19:57:44.320Z"
+    },
+    {
+      "id": "bug-057",
+      "timestamp": "2026-09-28T20:13:39.300Z",
+      "error_message": "Missing await",
+      "file": "tests/player_movement_test.gd",
+      "root_cause": "Async call without await \u2014 returned Promise instead of value",
+      "fix": "Added await to async call | Also: ## Walking into a low lip (a paperclip's wire, a flat stone'; ## onto it without jumping (Player.step_height); a thigh-hig",
+      "tags": [
+        "auto-detected",
+        "async-fix",
+        "gd"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-09-28T20:13:39.350Z"
+    },
+    {
+      "id": "bug-058",
+      "timestamp": "2026-09-28T20:14:42.291Z",
+      "error_message": "Significant refactor of player.gd",
+      "file": "player/player.gd",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 9\u219212 lines (2 removed) | Also: if lift < 0.01 or lift > step_height:; if top.is_empty() or (top[\"normal\"] as Vector3).an",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "gd"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-09-28T20:14:42.348Z"
+    },
+    {
+      "id": "bug-059",
+      "timestamp": "2026-09-28T20:17:48.000Z",
+      "error_message": "Can't walk onto the paperclip lying in Backpack Hollow (a 0.2 m steel wire); he stops dead against it",
+      "file": "player/player.gd",
+      "root_cause": "CharacterBody3D only rides over lips of a few centimetres (capsule r 0.35, 45 degree floor) and WallRay starts a climb only at 1.1 m, so anything 0.1-1.1 m high blocked him. The paperclip's convex hull also filled its loops into a solid plate.",
+      "fix": "Player._step_up (step_height 0.45 m): when a steep contact blocks this frame's move, test room above, a clear path at the raised height and a floor to land on, then lift him; the edge's own height (contact point) must be within step_height or he would climb taller things a corner at a time. Paperclip collision is its trimesh (the wire). player_movement_test: walk up a 0.3 m lip, stopped by a 0.7 m one.",
+      "tags": [
+        "movement",
+        "collision",
+        "step-up",
+        "paperclip",
+        "litter"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-28T20:17:48.000Z"
+    },
+    {
+      "id": "bug-060",
+      "timestamp": "2026-09-28T20:17:48.000Z",
+      "error_message": "The spear is too big and not fitted to his hand; its attack animations look wrong (arms stretched out like a sleepwalker)",
+      "file": "player/held_weapon.gd",
+      "root_cause": "rest_euler (180,0,0) and swing_euler (0,0,0) ran the shaft along his forearm and fingers instead of through his fist; 1.4 m long at full thickness; the moves were two-handed Meshy text-to-motion clips with open hands reaching forward, while Grounded's spears are one-handed quick stabs.",
+      "fix": "Spear 1.2 m, slim 0.8, gripped at 0.42, carried at his side point forward (rest_euler -100); 'aim' points the shaft where he faces through his fist while stabbing (HeldWeapon._aimed). New clips built by tools/build_amodu_anims.gd STABS: body clips (jab_right, the old spear clips' legs) with the arms driven by two-bone IK: three stabs (100/100/125%) and a javelin-drawn charged stab.",
+      "tags": [
+        "weapons",
+        "spear",
+        "animation",
+        "ik",
+        "grip"
+      ],
+      "related_bugs": [
+        "bug-017"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-09-28T20:17:48.000Z"
     }
   ]
 }

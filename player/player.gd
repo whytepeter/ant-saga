@@ -94,6 +94,9 @@ const CRAWL_HEIGHT := 0.6
 @export var coyote_time := 0.12
 @export var jump_buffer_time := 0.12
 @export var crawl_anim_max_rate := 2.2
+## The highest lip he walks up without climbing or jumping (a paperclip's
+## wire, a flat stone's edge, a root): about knee height (m).
+@export var step_height := 0.45
 
 @export_group("Heave")
 @export var reach := 1.4
@@ -475,7 +478,8 @@ func _process_walking(delta: float) -> void:
 		stop_action()
 
 	var was_airborne := not is_on_floor()
-	move_and_slide()
+	if not _step_up(delta):
+		move_and_slide()
 	_apply_push()
 	if not is_on_floor():
 		_air_time += delta
@@ -488,6 +492,46 @@ func _process_walking(delta: float) -> void:
 	if not forced:
 		_try_start_climb(dir)
 	_update_locomotion_animation(Vector3(velocity.x, 0.0, velocity.z).length())
+
+
+## Walking into something low (a paperclip's wire, the edge of a flat stone): if
+## its top is within step_height, with room over him and flat enough to stand
+## on, he steps up onto it with this frame's move (the body only rides over a
+## lip of a few centimetres, and WallRay only starts a climb from chest
+## height). True when he stepped: the move is done.
+func _step_up(delta: float) -> bool:
+	if state != State.GROUND or not is_on_floor() or velocity.y > 0.0 or _pushing != null:
+		return false
+	var motion := Vector3(velocity.x, 0.0, velocity.z) * delta
+	if motion.length() < 0.002:
+		return false
+	var from := global_transform
+	var blocked := KinematicCollision3D.new()
+	if not test_move(from, motion, blocked) or blocked.get_normal().angle_to(up_direction) <= floor_max_angle:
+		return false  # nothing in the way, or a slope he walks up anyway
+	if blocked.get_collider() is RigidBody3D or blocked.get_collider() is CharacterBody3D:
+		return false  # things he pushes, creatures
+	var rise := up_direction * (step_height + 0.05)
+	if test_move(from, rise) or test_move(from.translated(rise), motion):
+		return false  # no room over his head, or taller than a step (climb it or jump)
+	var over := from.translated(rise + motion)
+	var land := KinematicCollision3D.new()
+	if not test_move(over, -rise, land):
+		return false
+	var lift := (over.origin + land.get_travel() - from.origin).dot(up_direction)
+	# the edge itself no higher than a step (a lift can be less: resting on the
+	# corner of something taller, frame after frame, would climb it)
+	if lift < 0.01 or (land.get_position() - from.origin).dot(up_direction) > step_height:
+		return false
+	# somewhere he can stand just past the edge, not the curved side of a stone
+	var ahead := land.get_position() + motion.normalized() * 0.1
+	var ray := PhysicsRayQueryParameters3D.create(ahead + up_direction * 0.3, ahead - up_direction * 0.3, collision_mask, [get_rid()])
+	var top := get_world_3d().direct_space_state.intersect_ray(ray)
+	if top.is_empty() or (top["normal"] as Vector3).angle_to(up_direction) > floor_max_angle \
+			or ((top["position"] as Vector3) - from.origin).dot(up_direction) > step_height:
+		return false
+	global_position = over.origin + land.get_travel()
+	return true
 
 
 ## A running jump with jump still held keeps pushing off: up to run_leap_height
