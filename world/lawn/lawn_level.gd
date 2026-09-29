@@ -149,6 +149,9 @@ func _setup_adventure() -> void:
 	survival.clock = clock
 	player.add_child(survival)
 	survival.sleep_requested.connect(_sleep)
+	var builder := Builder.new()  # building (the pack's Build tab): shelters, fires, a raft
+	builder.setup(player, layout, survival)
+	player.add_child(builder)
 	if survival_mode:
 		# he wakes with his stone knife at his hip: a tool for gathering first
 		# (fibre, silk), a weak weapon second; the axe is the first thing he makes
@@ -157,6 +160,10 @@ func _setup_adventure() -> void:
 	finds.name = "LooseFinds"
 	finds.setup(layout)
 	add_child(finds)
+	var sap := SapFinds.new()  # resin, for the torch: droplets by the twig and the roots
+	sap.name = "SapFinds"
+	sap.setup(layout)
+	add_child(sap)
 	var dew := DewDrops.new()
 	dew.name = "DewDrops"
 	dew.clock = clock

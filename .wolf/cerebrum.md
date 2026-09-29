@@ -43,6 +43,9 @@ budget_tokens: 2000
 - Blender 5.2 is installed and runs headless (`Blender -b --factory-startup --python ...`); its Python has fast booleans and voxel remesh. Use it for baked organic geometry (tools/bake_tree_base.py); plain python3 has no numpy.
 - Water that reads the screen texture renders in the transparent pass, so the engine's SSR never reaches it: trace reflections in the shader.
 - Long hero props (roots) placed near hollow geometry can pierce interiors; test cave walk-throughs with the autopilot.
+- A MultiMesh with visibility_range_end is culled by the camera's distance to the middle of ALL its instances: one batch spread over the garden vanished everywhere far from the centre (the loose fibre and pebbles were invisible at spawn, 2026-09-29). Chunk MultiMeshes by area (LooseFinds._draw_patched).
+- The terrain's collision (layout.heights) can sit up to ~0.8 m off TreeBase.ground_height/height_at on bumpy soil; things that must sit on the soil should be placed by a ray down after the physics has the terrain (SapFinds._ground), or on the other session's mesh_height_at.
+- A subclass of Gatherable can't declare its own static `make(...)` with other arguments (GDScript: "signature doesn't match the parent"); name it `create`. A compile error in any script PlayerCombat uses breaks the whole game for every session: check new class_name scripts with `--check-only` before wiring them in.
 
 ## Do-Not-Repeat
 

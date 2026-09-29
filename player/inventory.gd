@@ -173,6 +173,8 @@ func use_slot(i: int) -> bool:
 	if i < 0 or i >= slots.size() or slots[i].is_empty():
 		return false
 	var id := StringName(slots[i]["id"])
+	if Items.kind(id) == "light":
+		return _light(i)
 	var fx := Items.effects(id)
 	if fx.is_empty():
 		return false
@@ -192,6 +194,27 @@ func use_slot(i: int) -> bool:
 	changed.emit()
 	if player != null:
 		player.play_use(id)
+	return true
+
+
+## Lights the torch in slot `i`: it goes to his left hand, burning (HeldTorch).
+func _light(i: int) -> bool:
+	if player == null:
+		return false
+	var id := StringName(slots[i]["id"])
+	var torch := player.get_node_or_null("HeldTorch") as HeldTorch
+	if torch == null:
+		torch = HeldTorch.new()
+		torch.name = "HeldTorch"
+		player.add_child(torch)
+		torch.setup(player)
+	torch.light()
+	slots[i]["count"] = int(slots[i]["count"]) - 1
+	if int(slots[i]["count"]) <= 0:
+		slots[i] = {}
+	_recount()
+	item_used.emit(id)
+	changed.emit()
 	return true
 
 

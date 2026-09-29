@@ -9,6 +9,8 @@ extends SceneTree
 ##   Godot --path . -s tools/render_icons.gd [-- id id ...]
 ##
 ## Writes assets/ui/icons/<id>.png (then reimport: Godot --headless --import).
+## Buildings (data/buildings.json) come out as build_<id>.png, from their
+## models (BuildModels); pass "build_<id>" to render just one.
 
 const OUT := "res://assets/ui/icons/"
 const SIZE := 256
@@ -36,6 +38,12 @@ func _run() -> void:
 			print("%-14s no model" % id)
 			continue
 		await _shoot(id, node)
+	# the buildings (the pack's Build tab): build_<id>.png
+	for b: Dictionary in Buildings.all():
+		var shot := "build_" + String(b["id"])
+		if not want.is_empty() and not shot in want:
+			continue
+		await _shoot(shot, BuildModels.make(String(b["id"]), false))
 	quit()
 
 

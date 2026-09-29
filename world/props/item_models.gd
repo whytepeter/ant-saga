@@ -85,14 +85,22 @@ static func made(shape: String) -> Node3D:
 				n.add_child(_mesh(ring, cord, Transform3D(Basis(Vector3.RIGHT, 0.12 * i), Vector3(0, i * 0.075, 0))))
 			lift = Vector3(0, 0.05, 0)
 		"silk":
-			var silk := _mat(Color(0.95, 0.94, 0.9), 0.3, 1.0, 0.15)
-			for i in 5:
+			# a wound ball of spider silk: a pearly core with strands wrapped
+			# round it every which way, shaded so it reads as a ball, not a symbol
+			var core := SphereMesh.new()
+			core.radius = 0.3
+			core.height = 0.6
+			n.add_child(_mesh(core, _mat(Color(0.5, 0.54, 0.58), 0.4), Transform3D.IDENTITY))
+			var strand := _mat(Color(0.8, 0.82, 0.8), 0.25)
+			strand.rim_enabled = true
+			strand.rim = 0.5
+			for i in 9:
 				var ring := TorusMesh.new()
 				ring.inner_radius = 0.3
-				ring.outer_radius = 0.35
-				var b := Basis(Vector3.UP, i * 0.63) * Basis(Vector3.RIGHT, 0.4 + i * 0.5)
-				n.add_child(_mesh(ring, silk, Transform3D(b, Vector3.ZERO)))
-			lift = Vector3(0, 0.35, 0)
+				ring.outer_radius = 0.335
+				var b := Basis(Vector3.UP, i * 0.71) * Basis(Vector3.RIGHT, 0.3 + i * 0.37)
+				n.add_child(_mesh(ring, strand, Transform3D(b, Vector3.ZERO)))
+			lift = Vector3(0, 0.34, 0)
 		"rubber":
 			var chunk := CapsuleMesh.new()
 			chunk.radius = 0.22
@@ -107,11 +115,25 @@ static func made(shape: String) -> Node3D:
 			n.add_child(_mesh(blob, _mat(Color(0.55, 0.72, 0.35), 0.1, 0.85, 0.2), Transform3D.IDENTITY))
 			lift = Vector3(0, 0.2, 0)
 		"sap":
-			var drop := SphereMesh.new()
-			drop.radius = 0.36
-			drop.height = 0.55
-			n.add_child(_mesh(drop, _mat(Color(0.95, 0.62, 0.18), 0.08, 0.9, 0.35), Transform3D.IDENTITY))
-			lift = Vector3(0, 0.22, 0)
+			# a glob of amber sap: a fat drop slumped on itself, a smaller
+			# bead run off it, glossy and lit from inside
+			var amber := _mat(Color(0.74, 0.3, 0.03), 0.06, 0.9, 0.3)
+			amber.metallic_specular = 1.0
+			amber.rim_enabled = true
+			amber.rim = 0.4
+			var glob := SphereMesh.new()
+			glob.radius = 0.4
+			glob.height = 0.8
+			n.add_child(_mesh(glob, amber, Transform3D(Basis.IDENTITY.scaled(Vector3(1.0, 0.62, 0.9)), Vector3.ZERO)))
+			var top := SphereMesh.new()
+			top.radius = 0.24
+			top.height = 0.48
+			n.add_child(_mesh(top, amber, Transform3D(Basis.IDENTITY, Vector3(-0.06, 0.2, 0.02))))
+			var bead := SphereMesh.new()
+			bead.radius = 0.13
+			bead.height = 0.24
+			n.add_child(_mesh(bead, amber, Transform3D(Basis.IDENTITY, Vector3(0.42, -0.1, 0.12))))
+			lift = Vector3(0, 0.25, 0)
 		"honeydew":
 			var dew := SphereMesh.new()
 			dew.radius = 0.36

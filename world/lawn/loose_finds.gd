@@ -25,6 +25,8 @@ const FIBRE_SEED := 4411
 const FIBRE_CLUSTERS := 170
 const FIBRE_NEAR_START := 30
 const FIBRE_SHAPES := 3
+## Drawn in patches this wide (m): see _draw_patched.
+const PATCH := 60.0
 
 var layout: LawnLayout
 
@@ -41,10 +43,7 @@ func _ready() -> void:
 	rng.seed = SEED
 	var bounds: Array = layout.data["meta"]["playable_bounds"]
 	var spawn := LawnLayout.xz(layout.data["spawn"]["pos"])
-	var xforms: Array[Array] = []  # per stone shape
-	for v in stones.size():
-		xforms.append([])
-	var placed: Array[Array] = []  # [shape, index, world transform, size]
+	var placed: Array[Array] = []  # [shape, world transform, where, size]
 	for c in CLUSTERS + NEAR_START:
 		var at := Vector2.ZERO
 		var tries := 0
@@ -66,28 +65,52 @@ func _ready() -> void:
 			var turn := Basis(Vector3.UP, rng.randf() * TAU)
 			var ground := TreeBase.ground_height(layout, p.x, p.y) - size * 0.08  # (the tree's raised ground too)
 			var xf := Transform3D(turn.scaled(Vector3.ONE * size), Vector3(p.x, ground, p.y)) * piece.fix
-			(xforms[shape] as Array).append(xf)
-			placed.append([shape, (xforms[shape] as Array).size() - 1, Vector3(p.x, ground, p.y), size])
-	var mms: Array[MultiMesh] = []
+			placed.append([shape, xf, Vector3(p.x, ground, p.y), size])
+	var meshes: Array[Mesh] = []
 	for v in stones.size():
-		var list: Array = xforms[v]
+		meshes.append(stones[v].mesh)
+	var field := GatherField.of(get_parent())
+	for p: Array in _draw_patched(placed, meshes, null, "Pebblets", 140.0, true):
+		field.add_spec("pebblet", p[2], maxf(float(p[3]) * 0.7, 0.5), p[4], int(p[5]))
+	_fibre(field, spawn, bounds)
+
+
+## Draws `placed` ([shape, transform, where, size]) with one MultiMesh per shape
+## per PATCH of ground: a visibility range is measured to the middle of all a
+## MultiMesh's instances, so one spread over the whole garden is culled from
+## most of it (they could be picked up but not seen). Returns each entry with
+## its MultiMesh and index in it appended.
+func _draw_patched(placed: Array[Array], meshes: Array[Mesh], mat: Material, node_name: String, vis_end: float,
+		shadows: bool) -> Array[Array]:
+	var groups := {}  # Vector3i(shape, patch x, patch z) -> Array[int] (indices into placed)
+	for i in placed.size():
+		var at: Vector3 = placed[i][2]
+		var key := Vector3i(int(placed[i][0]), floori(at.x / PATCH), floori(at.z / PATCH))
+		if not groups.has(key):
+			groups[key] = [] as Array[int]
+		(groups[key] as Array[int]).append(i)
+	var out: Array[Array] = []
+	for key: Vector3i in groups:
+		var members: Array[int] = groups[key]
 		var mm := MultiMesh.new()
 		mm.transform_format = MultiMesh.TRANSFORM_3D
-		mm.mesh = stones[v].mesh
-		mm.instance_count = list.size()
-		for k in list.size():
-			mm.set_instance_transform(k, list[k])
+		mm.mesh = meshes[key.x]
+		mm.instance_count = members.size()
+		for k in members.size():
+			var entry: Array = placed[members[k]]
+			mm.set_instance_transform(k, entry[1])
+			out.append(entry + [mm, k])
 		var mmi := MultiMeshInstance3D.new()
-		mmi.name = "Pebblets"
+		mmi.name = node_name
 		mmi.multimesh = mm
-		mmi.visibility_range_end = 140.0
-		mmi.visibility_range_end_margin = 14.0
+		if mat != null:
+			mmi.material_override = mat
+		if not shadows:
+			mmi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		mmi.visibility_range_end = vis_end
+		mmi.visibility_range_end_margin = vis_end * 0.1
 		add_child(mmi)
-		mms.append(mm)
-	var field := GatherField.of(get_parent())
-	for p: Array in placed:
-		field.add_spec("pebblet", p[2], maxf(float(p[3]) * 0.7, 0.5), mms[int(p[0])], int(p[1]))
-	_fibre(field, spawn, bounds)
+	return out
 
 
 ## Bundles of plant fibre (its own random stream, so the pebbles stay put).
@@ -98,10 +121,7 @@ func _fibre(field: GatherField, spawn: Vector2, bounds: Array) -> void:
 	mat.vertex_color_use_as_albedo = true
 	mat.cull_mode = BaseMaterial3D.CULL_DISABLED
 	mat.roughness = 0.85
-	var xforms: Array[Array] = []
-	for v in FIBRE_SHAPES:
-		xforms.append([])
-	var placed: Array[Array] = []  # [shape, index, where, size]
+	var placed: Array[Array] = []  # [shape, transform, where, size]
 	for c in FIBRE_CLUSTERS + FIBRE_NEAR_START:
 		var at := Vector2.ZERO
 		for _try in 20:
@@ -119,28 +139,12 @@ func _fibre(field: GatherField, spawn: Vector2, bounds: Array) -> void:
 			var size := rng.randf_range(1.8, 2.6)
 			var ground := TreeBase.ground_height(layout, p.x, p.y) + 0.02
 			var xf := Transform3D(Basis(Vector3.UP, rng.randf() * TAU).scaled(Vector3.ONE * size), Vector3(p.x, ground, p.y))
-			(xforms[shape] as Array).append(xf)
-			placed.append([shape, (xforms[shape] as Array).size() - 1, Vector3(p.x, ground, p.y), size])
-	var mms: Array[MultiMesh] = []
+			placed.append([shape, xf, Vector3(p.x, ground, p.y), size])
+	var meshes: Array[Mesh] = []
 	for v in FIBRE_SHAPES:
-		var list: Array = xforms[v]
-		var mm := MultiMesh.new()
-		mm.transform_format = MultiMesh.TRANSFORM_3D
-		mm.mesh = fibre_mesh(FIBRE_SEED + v)
-		mm.instance_count = list.size()
-		for k in list.size():
-			mm.set_instance_transform(k, list[k])
-		var mmi := MultiMeshInstance3D.new()
-		mmi.name = "PlantFibre"
-		mmi.multimesh = mm
-		mmi.material_override = mat
-		mmi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-		mmi.visibility_range_end = 120.0
-		mmi.visibility_range_end_margin = 12.0
-		add_child(mmi)
-		mms.append(mm)
-	for p: Array in placed:
-		field.add_spec("plant_fibre", p[2], maxf(float(p[3]) * 0.4, 0.6), mms[int(p[0])], int(p[1]))
+		meshes.append(fibre_mesh(FIBRE_SEED + v))
+	for p: Array in _draw_patched(placed, meshes, mat, "PlantFibre", 120.0, false):
+		field.add_spec("plant_fibre", p[2], maxf(float(p[3]) * 0.4, 0.6), p[4], int(p[5]))
 
 
 ## A bundle of plant fibre lying on the ground, the way Grounded shows it: a

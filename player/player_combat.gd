@@ -86,7 +86,7 @@ func _physics_process(delta: float) -> void:
 
 	var free_hands := player.carried == null and player.hauling == null
 	var can_fight := player.input_enabled and not knocked and not player.downed and free_hands \
-		and player.state == Player.State.GROUND
+		and player.state == Player.State.GROUND and not Builder.active  # (the mouse places a blueprint)
 	_process_block(delta, can_fight)
 	_process_attack(delta, can_fight and not blocking)
 	if player.input_enabled and not knocked and Input.is_action_just_pressed("dodge"):

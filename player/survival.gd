@@ -219,6 +219,12 @@ func _find_target() -> Dictionary:
 	return food if hunger <= thirst else drink
 
 
+## One more place he can sleep ({"name", "pos": [x, z], "radius"}): a shelter
+## he's built (Builder).
+func add_shelter(sh: Dictionary) -> void:
+	_shelters.append(sh)
+
+
 ## The shelter he's in, or {}.
 func shelter_here() -> Dictionary:
 	var p := player.global_position

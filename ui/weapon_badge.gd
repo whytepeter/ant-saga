@@ -42,7 +42,7 @@ func _draw() -> void:
 	var c := Vector2(w * 0.5, h * 0.42)
 	var id := inventory.equipped
 	var info := Weapons.info(id)
-	HudGlyphs.draw(self, String(info["glyph"]), c, 30.0, Color(CREAM, alpha))
+	_weapon(id, c, 64.0, 30.0, alpha)
 	# the neighbours, only while it's bright after a switch
 	var order := inventory.combat_cycle()
 	if lit > 0.0 and order.size() > 1:
@@ -51,8 +51,7 @@ func _draw() -> void:
 			var other: StringName = order[posmod(i + side, order.size())]
 			if other == id:
 				continue
-			HudGlyphs.draw(self, String(Weapons.info(other)["glyph"]), c + Vector2(side * 46.0, 2.0), 18.0,
-				Color(CREAM, 0.4 * lit * _shown))
+			_weapon(other, c + Vector2(side * 50.0, 2.0), 38.0, 18.0, 0.45 * lit * _shown)
 	# the name under an amber hairline
 	var label := String(info["name"])
 	var fs := 15
@@ -61,3 +60,13 @@ func _draw() -> void:
 	var at := Vector2(c.x - tw * 0.5, h * 0.66 + 18.0)
 	draw_string_outline(font, at, label, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, 4, Color(0, 0, 0, 0.6 * alpha))
 	draw_string(font, at, label, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, Color(CREAM, alpha))
+
+
+## A weapon at `c`: its picture (the item icon, `s` across), or for bare fists
+## (no item) its glyph, `glyph_s` across.
+func _weapon(id: StringName, c: Vector2, s: float, glyph_s: float, alpha: float) -> void:
+	var tex := Items.icon(id)
+	if tex != null:
+		draw_texture_rect(tex, Rect2(c - Vector2(s, s) * 0.5, Vector2(s, s)), false, Color(1, 1, 1, alpha))
+	else:
+		HudGlyphs.draw(self, String(Weapons.info(id)["glyph"]), c, glyph_s, Color(CREAM, alpha))

@@ -1,0 +1,14 @@
+{
+  "_about": "What Amodu can build (world/build/), the way Grounded does it: pick one in the pack's Build tab, a see-through blueprint follows where he looks (wheel turns it, click places it, right-click cancels), then E at the blueprint hands in the materials; the last one in and it stands. A building shows in the Build tab the first time he holds any of its materials. needs: item id -> count. size: its footprint [width, height, depth] in metres (Amodu is 1.8 m). on: 'ground' or 'water'. does: shelter (sleep there from 18:00, you wake there, night hunters keep out; radius m), light (a fire: light at night, and the night hunters keep out of it; radius m), raft (E to paddle it: W/S forward and back, A/D turn, E again to step off).",
+  "buildings": [
+    {"id": "lean_to", "name": "Lean-to", "group": "Shelter", "needs": {"sprig": 4, "leaf": 3, "twine": 2},
+      "size": [4.6, 3.0, 3.6], "on": "ground", "does": {"shelter": 3.4},
+      "desc": "A leaf roof on a sprig frame. Sleep under it from dusk, wake there after, and the night hunters leave you be."},
+    {"id": "campfire", "name": "Campfire", "group": "Fire and light", "needs": {"pebble": 5, "twig": 2, "fibre": 2},
+      "size": [2.6, 1.2, 2.6], "on": "ground", "does": {"light": 9.0},
+      "desc": "A ring of stones round a fire of twigs. Light through the night, and the night hunters won't come into it."},
+    {"id": "leaf_raft", "name": "Leaf raft", "group": "Water", "needs": {"leaf": 4, "twig": 4, "twine": 3},
+      "size": [5.2, 3.4, 3.4], "on": "water", "does": {"raft": true},
+      "desc": "A dry leaf on twig floats, lashed with twine, with a leaf for a sail. Build it on the water's edge and paddle across the Rut."}
+  ]
+}

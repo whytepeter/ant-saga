@@ -1129,6 +1129,58 @@
       ],
       "occurrences": 1,
       "last_seen": "2026-09-28T22:17:34.000Z"
+    },
+    {
+      "error_message": "Loose pebbles and plant fibre invisible near spawn (and over most of the garden), though E still picked them up",
+      "file": "world/lawn/loose_finds.gd",
+      "root_cause": "One MultiMeshInstance per shape spread over the whole \u00b1360 m garden with visibility_range_end 120-140; Godot measures the range to the middle of the instance's AABB (near 0,0,0), so the batch is culled once the camera is ~140 m from the garden's centre (spawn is ~210 m out)",
+      "fix": "Batch per shape per 60 m patch (LooseFinds._draw_patched); same in SapFinds. Any MultiMesh with a visibility range must be chunked by area",
+      "tags": [
+        "multimesh",
+        "visibility_range",
+        "culling",
+        "loose_finds",
+        "rendering"
+      ],
+      "id": "bug-089",
+      "timestamp": "2026-09-28T23:58:54.000Z",
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-28T23:58:54.000Z"
+    },
+    {
+      "error_message": "Resin had no source: the torch could never be crafted",
+      "file": "world/lawn/sap_finds.gd",
+      "root_cause": "Harvest had a 'sap' spec (drops resin) but nothing registered it; Sap Falls' resin runs were 40-150 m up the trunk, out of reach",
+      "fix": "SapFinds: hand-picked sap droplets (and chop-apart clumps) by the fallen twig near spawn, along every root's foot and at Sap Falls, placed on the terrain's collision by raycast after two physics frames",
+      "tags": [
+        "resin",
+        "sap",
+        "torch",
+        "crafting",
+        "gathering"
+      ],
+      "id": "bug-090",
+      "timestamp": "2026-09-28T23:58:54.000Z",
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-28T23:58:54.000Z"
+    },
+    {
+      "error_message": "A crafted Resin torch did nothing when used",
+      "file": "player/inventory.gd",
+      "root_cause": "use_slot only handled items with food/water/heal; 'light' items had no behaviour",
+      "fix": "Inventory._light: a 'light' item lights HeldTorch (player/held_torch.gd) in the left hand: flame, sparks, flickering OmniLight, 300 s burn, out in water",
+      "tags": [
+        "torch",
+        "light",
+        "inventory"
+      ],
+      "id": "bug-091",
+      "timestamp": "2026-09-28T23:58:54.000Z",
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-28T23:58:54.000Z"
     }
   ]
 }

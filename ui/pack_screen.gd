@@ -10,11 +10,14 @@ extends SleekScreen
 ##             weapon, picked, becomes his second.
 ##   CRAFTING  the recipes he's learned, grouped. The focused one shows what it
 ##             needs against what he has; hold Enter (or the mouse) to make it.
+##   BUILD     what he can build (Builder), grouped, with what each needs;
+##             Enter (or a click) takes out its blueprint to place, as in
+##             Grounded: the materials go in at the blueprint.
 ##
 ## The world keeps going while it's open (it's a survival game); Amodu stands
 ## still.
 
-const TABS := ["Pack", "Crafting"]
+const TABS := ["Pack", "Crafting", "Build"]
 const SLOT := 74.0
 const GAP := 10.0
 const COLS := 4
@@ -35,6 +38,9 @@ var _pack_title: Label
 var _detail: _Detail
 var _recipes: VBoxContainer
 var _recipe_detail: _Detail
+var _build_page: Control
+var _builds: VBoxContainer
+var _build_detail: _Detail
 var _slots: Array[_Slot] = []
 var _took_input := false
 var _hold := 0.0
@@ -111,6 +117,18 @@ func _build() -> void:
 	_recipe_detail.size = Vector2(RIGHT_W, 520.0)
 	_craft_page.add_child(_recipe_detail)
 
+	# ── build page ──
+	_build_page = _page(board)
+	_builds = VBoxContainer.new()
+	_builds.position = Vector2(-LEFT_W - 30.0, 0.0)
+	_builds.custom_minimum_size = Vector2(LEFT_W - 14.0, 0)
+	_builds.add_theme_constant_override("separation", 2)
+	_build_page.add_child(_builds)
+	_build_detail = _Detail.new()
+	_build_detail.position = Vector2(30.0, 0.0)
+	_build_detail.size = Vector2(RIGHT_W, 520.0)
+	_build_page.add_child(_build_detail)
+
 	var foot := Sleek.hints([["Esc", "Close"], ["Q/E", "Tabs"], ["Enter", "Use · craft"], ["Backspace", "Drop"]])
 	foot.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM)
 	foot.offset_top = -58.0
@@ -144,6 +162,11 @@ func setup(p: Player) -> void:
 func first_focus() -> Control:
 	if _tabs.current == 0:
 		return _slots[0] if not _slots.is_empty() else null
+	if _tabs.current == 2:
+		for c: Node in _builds.get_children():
+			if c is _BuildRow:
+				return c as Control
+		return null
 	return _recipes.get_child(1) as Control if _recipes.get_child_count() > 1 else null
 
 
@@ -153,6 +176,7 @@ func open() -> void:
 	_fill_body()
 	_fill_pack()
 	_fill_recipes()
+	_fill_builds()
 	_show_tab()
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	if player != null and player.input_enabled:
@@ -185,6 +209,7 @@ func open_crafting() -> void:
 func _show_tab() -> void:
 	_pack_page.visible = _tabs.current == 0
 	_craft_page.visible = _tabs.current == 1
+	_build_page.visible = _tabs.current == 2
 	_holding = false
 	_hold = 0.0
 	if is_open:
@@ -217,6 +242,10 @@ func _unhandled_input(event: InputEvent) -> void:
 				(event as InputEventKey).physical_keycode in [KEY_BACKSPACE, KEY_DELETE]:
 			_drop(slot)
 			get_viewport().set_input_as_handled()
+	elif _tabs.current == 2 and focus is _BuildRow:
+		if event.is_action_pressed("ui_accept"):
+			_choose_build((focus as _BuildRow).build_id)
+			get_viewport().set_input_as_handled()
 	elif _tabs.current == 1 and focus is _RecipeRow:
 		if event.is_action_pressed("ui_accept"):
 			_holding = true
@@ -247,6 +276,9 @@ func _process(delta: float) -> void:
 		else:
 			_hold = move_toward(_hold, 0.0, delta * 3.0)
 		_show_recipe(row.recipe_id if row != null else "")
+	elif _tabs.current == 2:
+		var brow := focus as _BuildRow
+		_show_build(brow.build_id if brow != null else "")
 	else:
 		_show_slot(focus as _Slot)
 
@@ -341,6 +373,8 @@ func _show_slot(s: _Slot) -> void:
 	var hint := ""
 	if not fx.is_empty():
 		hint = "Enter · " + ("Eat" if fx.has("food") else ("Drink" if fx.has("water") else "Use"))
+	elif Items.kind(id) == "light":
+		hint = "Enter · Light it"
 	hint += ("    " if hint != "" else "") + "Backspace · Drop"
 	_detail.show_thing(Items.icon(id), "", Items.item_name(id), "%s · %d" % [Items.kind(id).capitalize(), int(slot["count"])],
 		Items.about(id), lines, hint, _flash)
@@ -365,8 +399,10 @@ func _use(s: _Slot) -> void:
 			inventory.set_secondary(s.weapon)
 			_fill_body()
 		return
+	var lighting := s.index < inventory.slots.size() and not inventory.slots[s.index].is_empty() \
+		and Items.kind(StringName(inventory.slots[s.index]["id"])) == "light"
 	if inventory.use_slot(s.index):
-		_flash_line("Done")
+		_flash_line("Lit" if lighting else "Done")
 
 
 func _drop(s: _Slot) -> void:
@@ -453,6 +489,73 @@ func _craft(id: String) -> void:
 		if player != null:
 			player.play_craft()
 		_refresh()
+
+
+# ── the build page ────────────────────────────────────────────────────────────
+
+func _builder() -> Builder:
+	return Builder.of(player)
+
+
+func _fill_builds() -> void:
+	for c: Node in _builds.get_children():
+		_builds.remove_child(c)
+		c.queue_free()
+	var b := _builder()
+	if b == null:
+		return
+	var group := ""
+	for info: Dictionary in Buildings.all():
+		var id := String(info["id"])
+		if not b.is_known(id):
+			continue
+		if String(info.get("group", "")) != group:
+			group = String(info.get("group", ""))
+			var t := Sleek.title(group, 13, 3)
+			t.custom_minimum_size = Vector2(0, 30)
+			t.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
+			_builds.add_child(t)
+		var row := _BuildRow.new()
+		row.build_id = id
+		row.screen = self
+		row.custom_minimum_size = Vector2(LEFT_W - 14.0, 52.0)
+		_builds.add_child(row)
+	var hidden := Buildings.all().size() - b.known.size()
+	if b.known.is_empty():
+		_builds.add_child(Sleek.label("Nothing to build yet.", 17, Sleek.DIM, 3))
+		var tip := Sleek.label("Gather things: a building shows here once you hold any of its materials.", 15, Sleek.DIM, 3)
+		tip.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		tip.custom_minimum_size = Vector2(LEFT_W - 30.0, 0)
+		_builds.add_child(tip)
+	elif hidden > 0:
+		var more := Sleek.label("%d more to find: gather new things" % hidden, 15, Sleek.DIM, 3)
+		more.custom_minimum_size = Vector2(0, 40)
+		more.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
+		_builds.add_child(more)
+
+
+func _show_build(id: String) -> void:
+	if id == "":
+		_build_detail.show_thing(null, "", "", "", "", [], "", "")
+		return
+	var info := Buildings.info(id)
+	var needs: Array[String] = []
+	var n: Dictionary = info.get("needs", {})
+	for item: String in n:
+		needs.append("%s|%s|%d|%d" % [item, Items.item_name(StringName(item)), inventory.count(StringName(item)), int(n[item])])
+	var b := _builder()
+	var ready := b != null and b.has_all(id)
+	var hint := "Enter · Place the blueprint" + ("" if ready else "  (materials go in there)")
+	_build_detail.show_thing(Buildings.icon(id), "diamond" if Buildings.icon(id) == null else "", String(info.get("name", id)),
+		"Build · " + String(info.get("group", "")), String(info.get("desc", "")), [], hint, _flash, needs, 0.0, true)
+
+
+func _choose_build(id: String) -> void:
+	var b := _builder()
+	if b == null:
+		return
+	close()
+	b.start(id)
 
 
 # ── pieces ────────────────────────────────────────────────────────────────────
@@ -582,6 +685,49 @@ class _RecipeRow extends Control:
 			grab_focus()
 			pressed_down = mb.pressed
 			accept_event()
+
+
+## One building he can build: its picture, its name, an amber dot when he has
+## everything it needs on him (he can place the blueprint either way).
+class _BuildRow extends Control:
+	var build_id := ""
+	var screen: PackScreen
+	var _lit := 0.0
+
+	func _init() -> void:
+		focus_mode = Control.FOCUS_ALL
+		mouse_filter = Control.MOUSE_FILTER_STOP
+		mouse_entered.connect(func() -> void: grab_focus())
+
+	func _process(delta: float) -> void:
+		var want := 1.0 if has_focus() else 0.0
+		if _lit != want:
+			_lit = move_toward(_lit, want, delta * 8.0)
+			queue_redraw()
+
+	func _draw() -> void:
+		var h := size.y
+		if _lit > 0.0:
+			HudGlyphs.band(self, Rect2(Vector2.ZERO, size), 0.5 * _lit)
+			HudGlyphs.diamond(self, Vector2(14.0, h * 0.5), 5.0 * _lit, Color(1.0, 0.85, 0.45, _lit))
+		var tex := Buildings.icon(build_id)
+		if tex != null:
+			draw_texture_rect(tex, Rect2(Vector2(52.0, h * 0.5) - Vector2.ONE * h * 0.42, Vector2.ONE * h * 0.84), false)
+		else:
+			HudGlyphs.draw(self, "", Vector2(52.0, h * 0.5), h * 0.5, Sleek.CREAM)
+		var b := screen._builder() if screen != null else null
+		var ready := b != null and b.has_all(build_id)
+		Sleek.draw_text(self, Vector2(84.0, h * 0.5 + 7.0), String(Buildings.info(build_id).get("name", build_id)), 19,
+			Color(Sleek.CREAM, lerpf(0.7, 1.0, _lit) * (1.0 if ready else 0.8)))
+		if ready:
+			draw_circle(Vector2(size.x - 22.0, h * 0.5), 4.5, Color(0, 0, 0, 0.5))
+			draw_circle(Vector2(size.x - 22.0, h * 0.5), 3.5, Sleek.AMBER)
+
+	func _gui_input(event: InputEvent) -> void:
+		var mb := event as InputEventMouseButton
+		if mb != null and mb.pressed and mb.button_index == MOUSE_BUTTON_LEFT and screen != null:
+			accept_event()
+			screen._choose_build(build_id)
 
 
 ## The right-hand side: a big icon, the name, what kind it is, what it's for,
