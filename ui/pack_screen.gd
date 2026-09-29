@@ -151,6 +151,7 @@ func _page(board: Control) -> Control:
 
 func setup(p: Player) -> void:
 	player = p
+	add_to_group(&"pack_screen")  # (a fire or a workbench opens it on crafting)
 	inventory = p.get_node_or_null("Inventory") as Inventory
 	crafting = p.get_node_or_null("Crafting") as Crafting
 	if inventory != null:
@@ -198,12 +199,24 @@ func close() -> void:
 
 
 ## Opens straight onto crafting (or turns to it, if the pack is open).
-func open_crafting() -> void:
+## `station` ("fire", "bench"): E at one; its recipes come first in view.
+func open_crafting(station := "") -> void:
 	if is_open:
 		_tabs.select(1)
-		return
-	_tabs.select(1, false)
-	open()
+	else:
+		_tabs.select(1, false)
+		open()
+	if station != "":
+		_focus_station.call_deferred(station)
+
+
+## Focuses the first recipe made at `station` (the list scrolls to it).
+func _focus_station(station: String) -> void:
+	for c: Node in _recipes.get_children():
+		var row := c as _RecipeRow
+		if row != null and String(Crafting.recipe(row.recipe_id).get("station", "hand")) == station:
+			row.grab_focus()
+			return
 
 
 func _show_tab() -> void:

@@ -7,6 +7,10 @@
     {"id": "thorn_spear", "makes": "thorn_spear", "count": 1, "needs": {"twig": 3, "pebble": 1, "twine": 2}, "station": "hand", "group": "Tools and weapons"},
     {"id": "torch", "makes": "torch", "count": 1, "needs": {"sprig": 1, "resin": 1, "fibre": 1}, "station": "hand", "group": "Tools and weapons"},
     {"id": "bandage", "makes": "bandage", "count": 1, "needs": {"clover": 2, "fibre": 1}, "station": "hand", "group": "Survival"},
+    {"id": "roast_meat", "makes": "roasted_meat", "count": 1, "needs": {"bug_meat": 1}, "station": "fire", "group": "Cooking"},
+    {"id": "roast_mushroom", "makes": "roasted_mushroom", "count": 1, "needs": {"mushroom": 2, "sprig": 1}, "station": "fire", "group": "Cooking"},
+    {"id": "woven_bag", "makes": "woven_bag", "count": 1, "needs": {"fibre": 8, "twine": 3, "leaf": 2}, "station": "bench", "group": "At the workbench"},
+    {"id": "clay_flask", "makes": "clay_flask", "count": 1, "needs": {"clay": 2, "twine": 1}, "station": "bench", "group": "At the workbench"},
     {"id": "leaf_saddle", "makes": "leaf_saddle", "count": 1, "needs": {"leaf": 2, "twine": 3, "mite_fuzz": 2}, "station": "hand", "group": "Bug friends"}
   ]
 }

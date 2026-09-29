@@ -22,6 +22,8 @@ static func make(id: String, live := true) -> Node3D:
 			_campfire(n, live)
 		"leaf_raft":
 			_raft(n)
+		"workbench":
+			_workbench(n)
 	return n
 
 
@@ -44,6 +46,16 @@ static func shapes(id: String) -> Array[CollisionShape3D]:
 			ring.radius = 1.25
 			ring.height = 0.6
 			out.append(_shape(ring, Transform3D(Basis.IDENTITY, Vector3(0, 0.3, 0))))
+		"workbench":
+			var top := BoxShape3D.new()
+			top.size = Vector3(3.0, 0.32, 1.8)
+			out.append(_shape(top, Transform3D(Basis.IDENTITY, Vector3(0, 1.1, 0))))
+			for x: float in [-1.22, 1.22]:
+				for z: float in [-0.62, 0.62]:
+					var leg := CylinderShape3D.new()
+					leg.radius = 0.13
+					leg.height = 1.0
+					out.append(_shape(leg, Transform3D(Basis.IDENTITY, Vector3(x, 0.5, z))))
 		"leaf_raft":
 			var deck := BoxShape3D.new()
 			deck.size = Vector3(2.6, 0.5, 4.6)
@@ -156,6 +168,42 @@ static func _campfire(n: Node3D, live: bool) -> void:
 		light.shadow_enabled = true
 		light.position = Vector3(0, 1.3, 0)
 		n.add_child(light)
+
+
+# ── the workbench ─────────────────────────────────────────────────────────────
+# Four twig legs and two rails, a top of twigs laid side by side and lashed,
+# a flat pebble on it to work against and a coil of twine.
+
+static func _workbench(n: Node3D) -> void:
+	var twig := GardenProps.get_prop("twig")
+	var cord := _cord()
+	if twig != null:
+		for x: float in [-1.22, 1.22]:
+			for z: float in [-0.62, 0.62]:
+				_stick(n, twig, Vector3(x * 1.04, -0.1, z * 1.06), Vector3(x, 1.02, z), 0.22)
+		for z: float in [-0.62, 0.62]:
+			_stick(n, twig, Vector3(-1.5, 0.98, z), Vector3(1.5, 0.98, z), 0.18)
+		for k in 7:
+			var z := -0.75 + k * 0.25
+			_stick(n, twig, Vector3(-1.5, 1.14, z), Vector3(1.5, 1.14, z + 0.02 * sin(k * 2.3)), 0.25)
+		for x: float in [-1.22, 1.22]:
+			for z: float in [-0.62, 0.62]:
+				n.add_child(_lash(cord, Vector3(x, 1.0, z), 0.16))
+	var stones := NatureModels.variants("namaqualand_stones_01")
+	if not stones.is_empty():
+		var anvil := stones[1 % stones.size()]
+		n.add_child(NatureModels.instance(anvil, Transform3D(Basis(Vector3.UP, 0.6).scaled(Vector3(0.95, 0.32, 0.8)),
+			Vector3(0.62, 1.24, 0.12))))
+	for k in 4:  # a coil of twine
+		var ring := TorusMesh.new()
+		ring.inner_radius = 0.2
+		ring.outer_radius = 0.27
+		var mi := MeshInstance3D.new()
+		mi.mesh = ring
+		mi.material_override = cord
+		mi.position = Vector3(-0.8, 1.29 + k * 0.05, -0.25)
+		mi.rotation = Vector3(0.05 * k, k * 0.7, 0.0)
+		n.add_child(mi)
 
 
 # ── the raft ──────────────────────────────────────────────────────────────────

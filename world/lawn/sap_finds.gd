@@ -226,6 +226,7 @@ static func drop_mesh() -> ArrayMesh:
 	small.radial_segments = 10
 	small.rings = 5
 	st.append_from(small, 0, Transform3D(Basis.IDENTITY.scaled(Vector3(1.0, 0.7, 1.0)), Vector3(0.3, 0.05, 0.12)))
+	st.index()  # (drawn many times over: shared vertices)
 	return st.commit()
 
 
@@ -245,4 +246,5 @@ static func clump_mesh(seed_value: int) -> ArrayMesh:
 		s.rings = 8
 		var squash := Vector3(1.0, rng.randf_range(0.6, 0.8), rng.randf_range(0.85, 1.0))
 		st.append_from(s, 0, Transform3D(Basis.IDENTITY.scaled(squash), at))
+	st.index()  # (drawn many times over: shared vertices)
 	return st.commit()

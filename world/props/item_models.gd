@@ -252,6 +252,86 @@ static func made(shape: String) -> Node3D:
 				n.add_child(_mesh(strap, _mat(Color(0.72, 0.62, 0.4)),
 					Transform3D(Basis(Vector3.BACK, PI * 0.5).scaled(Vector3(1.0, 0.7, 1.0)), Vector3(x, 0.02, 0))))
 			lift = Vector3(0, 0.05, 0)
+		"roast_meat":
+			# a chunk of bug meat roasted brown, charred at the edges
+			var chunk := SphereMesh.new()
+			chunk.radius = 0.38
+			chunk.height = 0.5
+			chunk.radial_segments = 9
+			chunk.rings = 5
+			var roast := _mat(Color(0.55, 0.3, 0.14), 0.45)
+			n.add_child(_mesh(chunk, roast, Transform3D(Basis(Vector3.UP, 0.5).scaled(Vector3(1.25, 0.8, 0.9)), Vector3.ZERO)))
+			var char_mat := _mat(Color(0.16, 0.09, 0.05), 0.7)
+			for k in 3:  # grill marks
+				var mark := BoxMesh.new()
+				mark.size = Vector3(0.06, 0.03, 0.62)
+				n.add_child(_mesh(mark, char_mat, Transform3D(Basis(Vector3.UP, 0.5 + 0.9),
+					Basis(Vector3.UP, 0.5) * Vector3(-0.2 + k * 0.2, 0.2, 0.0))))
+			lift = Vector3(0, 0.2, 0)
+		"skewer":
+			# a sprig through three mushroom caps, browned
+			var stick := CylinderMesh.new()
+			stick.top_radius = 0.025
+			stick.bottom_radius = 0.03
+			stick.height = 1.1
+			var tilt := Basis(Vector3.BACK, deg_to_rad(-40.0))
+			n.add_child(_mesh(stick, _mat(Color(0.42, 0.55, 0.24), 0.7), Transform3D(tilt, Vector3.ZERO)))
+			var cap_mat := _mat(Color(0.62, 0.42, 0.24), 0.5)
+			for k in 3:
+				var cap := SphereMesh.new()
+				cap.radius = 0.15
+				cap.height = 0.18
+				cap.is_hemisphere = true
+				n.add_child(_mesh(cap, cap_mat, Transform3D(tilt * Basis(Vector3.RIGHT, PI * 0.5), tilt * Vector3(0, -0.05 + k * 0.22, 0))))
+			lift = Vector3(0, 0.45, 0)
+		"bag":
+			# a sack of woven fibre, drawn shut with twine
+			var sack := SphereMesh.new()
+			sack.radius = 0.4
+			sack.height = 0.9
+			var weave := _mat(Color(0.7, 0.66, 0.4), 0.9)
+			n.add_child(_mesh(sack, weave, Transform3D(Basis.IDENTITY.scaled(Vector3(1.0, 0.85, 0.8)), Vector3(0, 0.38, 0))))
+			var cord := _mat(Color(0.5, 0.36, 0.2))
+			var tie := TorusMesh.new()
+			tie.inner_radius = 0.1
+			tie.outer_radius = 0.15
+			n.add_child(_mesh(tie, cord, Transform3D(Basis.IDENTITY, Vector3(0, 0.74, 0))))
+			var neck := CylinderMesh.new()
+			neck.top_radius = 0.16
+			neck.bottom_radius = 0.1
+			neck.height = 0.18
+			n.add_child(_mesh(neck, weave, Transform3D(Basis.IDENTITY, Vector3(0, 0.84, 0))))
+			for k in 4:  # the weave's bands
+				var band := TorusMesh.new()
+				band.inner_radius = 0.33 - absf(k - 1.5) * 0.05
+				band.outer_radius = band.inner_radius + 0.03
+				n.add_child(_mesh(band, _mat(Color(0.58, 0.54, 0.3), 0.9), Transform3D(Basis.IDENTITY, Vector3(0, 0.18 + k * 0.15, 0))))
+		"flask", "flask_full":
+			# a round clay flask with a neck and a stopper; full, the water shows
+			var clay := _mat(Color(0.66, 0.38, 0.24), 0.8)
+			var body := SphereMesh.new()
+			body.radius = 0.36
+			body.height = 0.66
+			n.add_child(_mesh(body, clay, Transform3D(Basis.IDENTITY, Vector3(0, 0.33, 0))))
+			var neck := CylinderMesh.new()
+			neck.top_radius = 0.1
+			neck.bottom_radius = 0.14
+			neck.height = 0.26
+			n.add_child(_mesh(neck, clay, Transform3D(Basis.IDENTITY, Vector3(0, 0.74, 0))))
+			var cord := TorusMesh.new()
+			cord.inner_radius = 0.12
+			cord.outer_radius = 0.16
+			n.add_child(_mesh(cord, _mat(Color(0.5, 0.36, 0.2)), Transform3D(Basis.IDENTITY, Vector3(0, 0.66, 0))))
+			if shape == "flask_full":
+				var cork := CylinderMesh.new()
+				cork.top_radius = 0.09
+				cork.bottom_radius = 0.08
+				cork.height = 0.14
+				n.add_child(_mesh(cork, _mat(Color(0.45, 0.3, 0.16), 0.9), Transform3D(Basis.IDENTITY, Vector3(0, 0.92, 0))))
+				var drop := SphereMesh.new()
+				drop.radius = 0.08
+				drop.height = 0.14
+				n.add_child(_mesh(drop, _mat(Color(0.55, 0.78, 0.95), 0.05, 0.85, 0.3), Transform3D(Basis.IDENTITY, Vector3(0.2, 0.6, 0.24))))
 		"calcite":
 			# chalky pearls
 			var chalk := _mat(Color(0.93, 0.92, 0.86), 0.55)

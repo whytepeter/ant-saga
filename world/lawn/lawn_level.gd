@@ -208,6 +208,11 @@ func _setup_adventure() -> void:
 			_wormways_missions(weather)
 	info.visible = false
 	$HUD/Help.visible = false
+	var saves: SaveGame = null
+	if survival_mode:
+		saves = SaveGame.new()  # his camp, pack and day kept (autosaves; Continue on the title)
+		saves.level = self
+		add_child(saves)
 	if show_title and survival_mode and not GameSettings.title_seen and not GameSettings.testing():
 		# the title over the live garden first; he gets up when you start
 		GameSettings.title_seen = true
@@ -217,13 +222,17 @@ func _setup_adventure() -> void:
 		title.player = player
 		title.hud = hud
 		title.clock = clock
+		title.saves = saves
 		# low in the grass beside where he wakes: the dandelion, a butterfly, the sky
 		title.from = layout.ground_point([20, -170], 18.0)
 		title.look = layout.ground_point([-110, -170], 40.0)
 		title.started.connect(player.wake_up)
+		title.started.connect(func() -> void: saves.started = true)
 		add_child(title)
 	else:
 		player.wake_up()
+		if saves != null:
+			saves.started = true
 	if story == null:
 		return
 	story.dialogue.line_shown.connect(hud.show_line)

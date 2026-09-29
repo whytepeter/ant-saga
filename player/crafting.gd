@@ -4,17 +4,23 @@ extends Node
 ## shows up the first time he holds any of its ingredients (the way Grounded
 ## teaches recipes); making one takes its ingredients out of the pack
 ## (Inventory) and puts the result in, or on his body if it's a weapon.
-## Recipes at a fire or a bench need one close by (they come with building).
+## Recipes at a fire or a bench need one close by (a campfire or a workbench
+## he's built: Building joins group "stations" with its "station" meta).
+## An "upgrade" item (the woven bag) isn't kept: made once, it changes him.
 
 signal learned(recipe_id: String)
 signal crafted(recipe_id: String)
 
 const PATH := "res://data/recipes.json"
+## How near a fire or a workbench he must be to use it (m, from its middle).
+const STATION_REACH := 6.0
 
 static var _recipes: Array[Dictionary] = []
 
 ## Recipe ids he has learned.
 var known := {}
+## Upgrades he's made (item id -> true): each only once.
+var upgrades := {}
 var inventory: Inventory
 
 
@@ -87,14 +93,19 @@ func blocker(id: String) -> String:
 	var w := Items.weapon(makes)
 	if w != &"" and inventory.has_weapon(w):
 		return "You already have one"
+	if Items.kind(makes) == "upgrade" and upgrades.has(String(makes)):
+		return "You already have one"
 	match String(r.get("station", "hand")):
 		"fire":
-			return "Needs a fire close by"
+			if not station_near("fire"):
+				return "Needs a fire close by"
 		"bench":
-			return "Needs a workbench close by"
+			if not station_near("bench"):
+				return "Needs a workbench close by"
 	if not missing(id).is_empty():
 		return "Not enough materials"
-	if w == &"" and inventory.room_after(r.get("needs", {}) as Dictionary, makes) < int(r.get("count", 1)):
+	if w == &"" and Items.kind(makes) != "upgrade" \
+			and inventory.room_after(r.get("needs", {}) as Dictionary, makes) < int(r.get("count", 1)):
 		return "No room in the pack"
 	return ""
 
@@ -114,10 +125,37 @@ func make(id: String) -> bool:
 	var w := Items.weapon(makes)
 	if w != &"":
 		inventory.add_weapon(w, false)
+	elif Items.kind(makes) == "upgrade":
+		apply_upgrade(String(makes))
 	else:
 		inventory.add_item(makes, int(r.get("count", 1)))
 	crafted.emit(id)
 	return true
+
+
+## A fire or a workbench ("fire", "bench") he's standing by.
+func station_near(kind: String) -> bool:
+	var me := get_parent() as Node3D
+	if me == null or not me.is_inside_tree():
+		return false
+	for n: Node in get_tree().get_nodes_in_group(&"stations"):
+		var s := n as Node3D
+		if s != null and String(s.get_meta("station", "")) == kind \
+				and s.global_position.distance_to(me.global_position) < STATION_REACH + float(s.get_meta("radius", 1.5)):
+			return true
+	return false
+
+
+## What an upgrade does to him (the woven bag: four more pack slots).
+func apply_upgrade(id: String) -> void:
+	if upgrades.has(id):
+		return
+	upgrades[id] = true
+	match id:
+		"woven_bag":
+			inventory.pack_size += 4
+			inventory._fit_slots()
+			inventory.changed.emit()
 
 
 func _on_item_added(id: StringName, _count: int) -> void:

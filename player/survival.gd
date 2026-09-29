@@ -93,6 +93,29 @@ func _ready() -> void:
 	combat = player.get_node_or_null("Combat") as PlayerCombat
 	if combat != null:
 		combat.knocked_out.connect(_on_knocked_out)
+	# clay flasks (the workbench): drinking at the Rut fills the empty ones he
+	# carries; a flask drunk from the pack leaves him the empty flask
+	var inventory := player.get_node_or_null("Inventory") as Inventory
+	if inventory != null:
+		consumed.connect(func(what: String) -> void:
+			if what == "water":
+				fill_flasks(inventory))
+		inventory.item_used.connect(func(id: StringName) -> void:
+			if id == &"flask_water":
+				inventory.add_item(&"clay_flask", 1))
+
+
+## Fills every empty flask he carries (at the Rut). How many it filled.
+func fill_flasks(inventory: Inventory) -> int:
+	var n := inventory.count(&"clay_flask")
+	if n <= 0:
+		return 0
+	inventory.remove_item(&"clay_flask", n)
+	var left := inventory.add_item(&"flask_water", n)
+	if left > 0:
+		inventory.add_item(&"clay_flask", left)
+	player.flash_hint("Filled %d flask%s" % [n - left, "" if n - left == 1 else "s"], 1.6)
+	return n - left
 
 
 func _physics_process(delta: float) -> void:

@@ -5,8 +5,10 @@ extends CanvasLayer
 ## the seed heads, the sky) while the grass sways and the bugs fly, and the
 ## game's name and a short menu sit
 ## on a soft dark band at the left, in the HUD's style (Sleek). New game glides
-## the camera down to Amodu and hands over; Settings opens the settings; Quit
-## quits. The HUD, his hunger and thirst, and the clock wait until he starts.
+## the camera down to Amodu and hands over; Continue (when there's a save,
+## SaveGame) first puts back his camp, pack and day, then glides down to him
+## where he was; Settings opens the settings; Quit quits. The HUD, his hunger
+## and thirst, and the clock wait until he starts.
 
 signal started
 
@@ -16,6 +18,8 @@ var level: Node3D
 var player: Player
 var hud: CanvasLayer
 var clock: DayClock
+## The save (null for none): Continue loads it.
+var saves: SaveGame
 ## Where the camera drifts and what it looks at.
 var from := Vector3(20.0, 18.0, -170.0)
 var look := Vector3(-110.0, 40.0, -170.0)
@@ -91,7 +95,12 @@ func _build() -> void:
 	_rows.add_theme_constant_override("separation", 2)
 	_rows.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	col.add_child(_rows)
-	_first = _row("New game", _start)
+	var saved := SaveGame.read() if saves != null else {}
+	if not saved.is_empty():
+		_first = _row("Continue  ·  " + SaveGame.summary(saved), _continue)
+		_row("New game", _start)
+	else:
+		_first = _row("New game", _start)
 	var settings_row := _row("Settings", func() -> void: _settings.open())
 	_row("Quit", func() -> void: get_tree().quit())
 	var foot := Sleek.hints([["Enter", "Choose"]])
@@ -135,6 +144,18 @@ func _place_camera() -> void:
 	var target := look + Vector3(0.0, sin(_t * 0.04) * 3.0, sin(_t * 0.05) * 8.0)
 	_cam.global_position = from + sway
 	_cam.look_at(target)
+
+
+## Continue: his camp, pack and day come back (SaveGame), then the camera
+## glides down to him where he was.
+func _continue() -> void:
+	if _gliding or saves == null:
+		return
+	saves.load_game()
+	# (his camera follows him to where he was before the glide aims at it)
+	await get_tree().process_frame
+	await get_tree().process_frame
+	_start()
 
 
 ## New game: the menu fades, the camera glides down to Amodu's own camera,

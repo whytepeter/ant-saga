@@ -167,7 +167,8 @@ func _ask_first(what: String) -> void:
 		_ask_text.text = "Start over from the very beginning? Everything he's gathered and made is lost."
 		_ask_yes.text = "Start over"
 	else:
-		_ask_text.text = "Quit the game? Nothing is saved yet."
+		_ask_text.text = "Quit the game? Your camp, your pack and the day are saved: Continue on the title takes you back." \
+			if _saves() != null else "Quit the game? Nothing is saved yet."
 		_ask_yes.text = "Quit"
 	_ask_yes.queue_redraw()
 	_ask_yes.grab_focus.call_deferred()
@@ -186,11 +187,22 @@ func _cancel_ask() -> void:
 
 func _confirmed() -> void:
 	if _asking == "quit":
+		var saves := _saves()
+		if saves != null and not GameSettings.testing():
+			saves.save()
 		get_tree().quit()
 		return
+	# start over: the save goes too, so it doesn't come back on Continue
+	if _saves() != null and not GameSettings.testing():
+		SaveGame.erase()
 	get_tree().paused = false
 	restart_requested.emit()
 	get_tree().reload_current_scene()
+
+
+## The survival save (SaveGame), or null in story mode.
+func _saves() -> SaveGame:
+	return get_tree().get_first_node_in_group(&"save_game") as SaveGame
 
 
 ## "Day 2 · 14:20 · Blade Forest"

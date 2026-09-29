@@ -1,5 +1,5 @@
 {
-  "_about": "Every item Amodu can carry (player/items.gd). kind: material, food, tool, weapon, light. stack: most in one pack slot. food/water/heal: what eating, drinking or using it gives (0-100 scale). weapon: the Weapons id a crafted weapon becomes (it goes on his body, not in the pack). icon: the model its icon is rendered from (tools/render_icons.gd): a garden prop id, 'nature:<id>' for a Poly Haven model, 'weapon:<id>', or 'made:<shape>' for a shape the tool builds. The world's gathering (the environment session) emits these ids.",
+  "_about": "Every item Amodu can carry (player/items.gd). kind: material, food, tool, weapon, light, upgrade (made once, it changes him: the woven bag). stack: most in one pack slot. food/water/heal: what eating, drinking or using it gives (0-100 scale). weapon: the Weapons id a crafted weapon becomes (it goes on his body, not in the pack). icon: the model its icon is rendered from (tools/render_icons.gd): a garden prop id, 'nature:<id>' for a Poly Haven model, 'weapon:<id>', or 'made:<shape>' for a shape the tool builds. The world's gathering (the environment session) emits these ids.",
   "leaf": {"name": "Leaf", "kind": "material", "stack": 20, "desc": "A tough green leaf. Roofs, wraps and bedding.", "icon": "fallen_leaf"},
   "clover": {"name": "Clover leaf", "kind": "material", "stack": 20, "desc": "Soft three-part leaf, picked by hand. Good for bandages.", "icon": "clover"},
   "fibre": {"name": "Grass fibre", "kind": "material", "stack": 30, "desc": "Stringy fibre cut from grass. Twist it into twine.", "icon": "made:fibre"},
@@ -30,6 +30,11 @@
   "apple_chunk": {"name": "Apple chunk", "kind": "food", "stack": 10, "desc": "Juicy windfall apple. Food and a little water.", "icon": "apple", "food": 12, "water": 6},
   "strawberry": {"name": "Wild strawberry", "kind": "food", "stack": 10, "desc": "Sweet and wet. Food and water.", "icon": "wild_strawberry", "food": 10, "water": 8},
   "sugar": {"name": "Sugar crystal", "kind": "food", "stack": 10, "desc": "A crystal of sugar from a spill. A burst of energy.", "icon": "sugar_crystal", "food": 14},
+  "roasted_meat": {"name": "Roasted bug meat", "kind": "food", "stack": 10, "desc": "Bug meat cooked over a fire. Far more filling than raw.", "icon": "made:roast_meat", "food": 24},
+  "roasted_mushroom": {"name": "Mushroom skewer", "kind": "food", "stack": 10, "desc": "Mushroom roasted on a sprig over a fire. Filling, and a little water in it.", "icon": "made:skewer", "food": 18, "water": 4},
+  "woven_bag": {"name": "Woven bag", "kind": "upgrade", "stack": 1, "desc": "A bag of woven fibre on your back: four more pack slots. Made at the workbench, once.", "icon": "made:bag"},
+  "clay_flask": {"name": "Clay flask", "kind": "tool", "stack": 5, "desc": "An empty clay flask. Drink at the Rut and it fills too.", "icon": "made:flask"},
+  "flask_water": {"name": "Flask of water", "kind": "food", "stack": 5, "desc": "Water carried in a clay flask. Drink it anywhere; the flask stays.", "icon": "made:flask_full", "water": 35},
   "bandage": {"name": "Leaf bandage", "kind": "tool", "stack": 5, "desc": "Clover wrapped with fibre. Heals when you use it.", "icon": "made:bandage", "heal": 30},
   "torch": {"name": "Resin torch", "kind": "light", "stack": 3, "desc": "A twig with resin on the end. Light in the dark.", "icon": "made:torch"},
   "stone_knife": {"name": "Stone knife", "kind": "weapon", "stack": 1, "desc": "Always at your hip. Cuts fibre, silk and vines.", "icon": "weapon:stone_knife", "weapon": "stone_knife"},

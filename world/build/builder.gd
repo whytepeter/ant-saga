@@ -253,19 +253,36 @@ func _tag(n: Node3D, id: String) -> void:
 
 ## The blueprint's last material is in: the building stands in its place.
 func complete(bp: Blueprint) -> void:
-	var b := Building.make(bp.building_id)
-	b.transform = bp.global_transform
+	var b := stand(bp.building_id, bp.global_transform)
+	bp.queue_free()
+	player.flash_hint("Built: " + String(Buildings.info(bp.building_id).get("name", "")), 2.0)
+	built.emit(b)
+
+
+## Puts up the finished `id` at `xf` (a completed blueprint, or a saved camp):
+## it stands, and does what it does (a shelter, a fire, a station, a raft).
+func stand(id: String, xf: Transform3D) -> Node3D:
+	var b := Building.make(id)
+	b.transform = xf
 	_count += 1
-	_tag(b, bp.building_id)
+	_tag(b, id)
 	if b is LeafRaft:
 		(b as LeafRaft).layout = layout
 		(b as LeafRaft).player = player
-	bp.get_parent().add_child(b)
-	bp.queue_free()
+	player.get_parent().add_child(b)
 	if b is Building:
 		_register(b as Building)
-	player.flash_hint("Built: " + String(Buildings.info(bp.building_id).get("name", "")), 2.0)
-	built.emit(b)
+	return b
+
+
+## Lays a blueprint of `id` at `xf` with `given` already in it (a saved camp).
+func lay(id: String, xf: Transform3D, given: Dictionary) -> Blueprint:
+	var bp := Blueprint.create(id, self)
+	bp.transform = xf
+	bp.given = given.duplicate()
+	_tag(bp, id)
+	player.get_parent().add_child(bp)
+	return bp
 
 
 ## A shelter he can sleep in (Survival, the map); a shelter or a fire the
