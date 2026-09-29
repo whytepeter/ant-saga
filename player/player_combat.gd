@@ -61,7 +61,6 @@ var _since_damage := 99.0
 var _chain := 0
 var _since_swing := 99.0
 
-var _block_visual: MeshInstance3D
 var _charge_ring: MeshInstance3D
 
 @onready var player: Player = get_parent()
@@ -69,7 +68,6 @@ var _charge_ring: MeshInstance3D
 
 func _ready() -> void:
 	health = max_health
-	_build_block_visual()
 	_build_charge_ring()
 
 
@@ -86,7 +84,7 @@ func _physics_process(delta: float) -> void:
 
 	var free_hands := player.carried == null and player.hauling == null
 	var can_fight := player.input_enabled and not knocked and not player.downed and free_hands \
-		and player.state == Player.State.GROUND and not Builder.active  # (the mouse places a blueprint)
+		and player.state == Player.State.GROUND and not Builder.active and player.riding == null  # (the mouse places a blueprint; block is the ridden bug's shell)
 	_process_block(delta, can_fight)
 	_process_attack(delta, can_fight and not blocking)
 	if player.input_enabled and not knocked and Input.is_action_just_pressed("dodge"):
@@ -209,11 +207,13 @@ func _strike(move: Dictionary) -> void:
 		if thing == null or hit_any.has(thing):
 			continue
 		hit_any[thing] = true
-		var how: String = tool.keys()[0]
+		# (what the thing needs, if this tool does it: an axe hews a twig, chops grass)
+		var need: Array = thing.harvest_tool()
+		var how: String = String(need[0]) if tool.has(need[0]) else String(tool.keys()[0])
 		var t: Array = tool[how]
 		# a blade's cut is its move's "chop" (the axe's heavy swing 2, charged 3;
 		# the knife 0.5); a hammer's heavy smash counts twice
-		var power := float(move.get("chop", float(t[1]))) if how == Harvest.CHOP \
+		var power := float(move.get("chop", float(t[1]))) if how in [Harvest.CHOP, Harvest.HEW] \
 			else float(t[1]) * (2.0 if kind == &"heavy" else 1.0)
 		thing.hit(how, int(t[0]), power, player.global_position, player)
 
@@ -260,7 +260,6 @@ func _process_block(delta: float, can_block: bool) -> void:
 	if want != blocking:
 		blocking = want
 		player.speed_scale = 0.35 if blocking else 1.0
-		_block_visual.visible = blocking
 		# with a weapon he raises it across himself (held nearly still)
 		var pose := String(_weapon().get("block", ""))
 		if pose != "" and blocking:
@@ -296,6 +295,8 @@ func is_invulnerable() -> bool:
 
 ## Applies an enemy's blow from `from`. Returns the damage actually taken.
 func take_hit(damage: float, from: Vector3, kind: StringName, attacker: Node3D) -> float:
+	if player.riding != null:
+		return player.riding.take_hit(damage, from, kind, attacker)  # the bug he rides takes it (BugFriend)
 	if is_invulnerable():
 		return 0.0
 	var to_attacker := from - player.global_position
@@ -303,15 +304,18 @@ func take_hit(damage: float, from: Vector3, kind: StringName, attacker: Node3D) 
 	to_attacker = to_attacker.normalized()
 	var frontal := _facing().dot(to_attacker) > 0.25
 	if blocking and frontal:
+		# where the blow meets his guard: a flash, flecks flying, a knock (ImpactFx)
+		var guard := player.global_position + Vector3.UP * 1.2 + to_attacker * 0.6
 		if _block_time <= perfect_block_window:
 			blocked.emit(true)
 			player.dash(-to_attacker * 3.0, 0.15, 20.0)
-			_flash_block()
+			ImpactFx.block_hit(player.get_parent(), guard, -to_attacker, true)
 			if attacker != null and attacker.has_method("parried"):
 				attacker.call("parried", player)
 			return 0.0
 		damage *= block_damage_factor
 		blocked.emit(false)
+		ImpactFx.block_hit(player.get_parent(), guard, -to_attacker, false)
 		player.dash(-to_attacker * 7.0, 0.3, 20.0)
 	else:
 		player.stop_action()
@@ -356,7 +360,6 @@ func knock_out() -> void:
 		return
 	knocked = true
 	blocking = false
-	_block_visual.visible = false
 	_pending.clear()
 	player.set_downed(true)
 	knocked_out.emit()
@@ -399,31 +402,3 @@ func _build_charge_ring() -> void:
 	_charge_ring.position.y = 0.06
 	_charge_ring.visible = false
 	player.get_node("Model").add_child(_charge_ring)
-
-
-## A translucent arc in front of Amodu while he blocks.
-func _build_block_visual() -> void:
-	_block_visual = MeshInstance3D.new()
-	var disc := CylinderMesh.new()
-	disc.top_radius = 0.75
-	disc.bottom_radius = 0.75
-	disc.height = 0.04
-	disc.radial_segments = 24
-	_block_visual.mesh = disc
-	var mat := StandardMaterial3D.new()
-	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	mat.albedo_color = Color(1.0, 0.8, 0.35, 0.28)
-	_block_visual.material_override = mat
-	_block_visual.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	_block_visual.position = Vector3(0.0, 1.05, 0.6)
-	_block_visual.rotation = Vector3(PI / 2.0, 0.0, 0.0)
-	_block_visual.visible = false
-	player.get_node("Model").add_child(_block_visual)
-
-
-func _flash_block() -> void:
-	var mat := _block_visual.material_override as StandardMaterial3D
-	mat.albedo_color = Color(1.0, 1.0, 1.0, 0.85)
-	var tween := create_tween()
-	tween.tween_property(mat, "albedo_color", Color(1.0, 0.8, 0.35, 0.28), 0.3)

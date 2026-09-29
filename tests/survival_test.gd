@@ -62,6 +62,7 @@ func _run() -> void:
 	await _test_dew_cycle()
 	await _test_sleep()
 	await _test_beetle()
+	await _test_bug_friend()
 
 	print("\n%s" % ("PASS" if failures == 0 else "%d failure(s)" % failures))
 	quit(failures)
@@ -503,6 +504,102 @@ func _test_beetle() -> void:
 	_check("at dawn it goes back under", beetle.state == NightBeetle.State.HIDDEN, beetle.state_name())
 	beetle.queue_free()
 	clock.running = true
+
+
+## A ladybird won over with food (BugFriends): it follows him, he saddles and rides it.
+func _test_bug_friend() -> void:
+	_set_time(10.0)
+	var life := level.get_node("AmbientLife") as AmbientLife
+	var friends := level.get_node("BugFriends") as BugFriends
+	var inv := player.get_node("Inventory") as Inventory
+	var craft := player.get_node("Crafting") as Crafting
+	var combat := player.get_node("Combat") as PlayerCombat
+	var c := life.nearest("ladybug", player.global_position, 99999.0)
+	_check("wild ladybirds about", not c.is_empty(), "")
+	if c.is_empty():
+		return
+	var node: Node3D = c["node"]
+	c["wait"] = 99.0
+	player.teleport(node.global_position + Vector3(0.0, 0.3, float(c["size"]) * 0.4 + 1.8), PI)
+	await _frames(5)
+	_check("with nothing it likes, it only says what it eats", friends.offer(player).begins_with("A wild ladybird"), friends.offer(player))
+	inv.add_item(&"bug_meat", 3)
+	_check("with bug meat, E feeds it", friends.offer(player).begins_with("E · Feed the ladybird"), friends.offer(player))
+	friends.act(player)
+	await _frames(10)
+	_check("it eats from his hand", int(c.get("trust", 0)) == 1 and inv.count(&"bug_meat") == 2 and friends.friend == null,
+		"trust %d" % int(c.get("trust", 0)))
+	friends.act(player)
+	await _frames(10)
+	friends.act(player)
+	await _frames(10)
+	var f := friends.friend
+	_check("three feeds and it's his friend", f != null and life.nearest("ladybug", f.global_position, 0.5).is_empty(), "")
+	if f == null:
+		return
+	player.teleport(player.global_position + Vector3(14.0, 0.0, 0.0), 0.0)
+	await _frames(_frames_for(5.0))
+	var off := f.global_position.distance_to(player.global_position)
+	_check("it follows him", off < 7.0, "%.1f m off" % off)
+	# Q from far off: it comes flying
+	player.teleport(player.global_position + Vector3(0.0, 0.0, 45.0), 0.0)
+	await _frames(3)
+	player.call_workers()
+	for i in _frames_for(10.0):
+		await physics_frame
+		off = f.global_position.distance_to(player.global_position)
+		if off < 7.0:
+			break
+	_check("Q calls it to him", off < 7.0, "%.1f m off" % off)
+	# a saddle, made at Tab
+	inv.add_item(&"leaf", 2)
+	inv.add_item(&"twine", 3)
+	inv.add_item(&"mite_fuzz", 2)
+	_check("a leaf saddle can be made", craft.is_known("leaf_saddle") and craft.make("leaf_saddle") and inv.count(&"leaf_saddle") == 1,
+		craft.blocker("leaf_saddle"))
+	player.teleport(f.global_position + Vector3(0.0, 0.3, f.size * 0.4 + 1.2), PI)
+	await _frames(5)
+	friends.act(player)
+	await _frames(3)
+	_check("E puts the saddle on it", bool(f.get_meta(&"saddled", false)) and inv.count(&"leaf_saddle") == 0, friends.offer(player))
+	friends.act(player)
+	await _frames(5)
+	_check("and E rides it", player.riding == f and f.rider == player, "")
+	var start := f.global_position
+	Input.action_press("move_forward")
+	await _frames(_frames_for(2.5))
+	var on_seat := player.global_position.distance_to(f.seat().origin + Vector3.DOWN * Player.RIDE_HIP)
+	_check("he steers it, sitting on its back", start.distance_to(f.global_position) > 8.0 and on_seat < 0.5,
+		"%.1f m, %.2f m off the seat" % [start.distance_to(f.global_position), on_seat])
+	Input.action_press("jump")
+	await physics_frame
+	await physics_frame
+	Input.action_release("jump")
+	var low := f.global_position.y
+	var peak := low
+	for i in _frames_for(1.5):
+		await physics_frame
+		peak = maxf(peak, f.global_position.y)
+	Input.action_release("move_forward")
+	_check("Space flies a hop", peak - low > 4.0, "%.1f m up" % (peak - low))
+	await _frames(_frames_for(1.5))
+	combat.health = combat.max_health
+	player.take_hit(5.0, f.global_position + Vector3.FORWARD * 2.0, &"light", life)
+	await _frames(2)
+	_check("blows land on it, not him", f.hp < f.max_hp and combat.health == combat.max_health, "ladybird %.0f" % f.hp)
+	Input.action_press("interact")
+	await physics_frame
+	await physics_frame
+	Input.action_release("interact")
+	await _frames(20)
+	_check("E gets him off, on the ground beside it", player.riding == null and f.rider == null and player.is_on_floor(),
+		Player.State.keys()[player.state])
+	f.take_hit(999.0, f.global_position + Vector3.FORWARD, &"heavy", life)
+	await _frames(_frames_for(6.0))
+	_check("beaten, it flies home to mend", f.is_away() and not f.visible, "")
+	f.set("_away_left", 0.01)
+	await _frames(_frames_for(4.0))
+	_check("and comes back mended", not f.is_away() and f.visible and f.hp == f.max_hp, "")
 
 
 func _frames_for(seconds: float) -> int:

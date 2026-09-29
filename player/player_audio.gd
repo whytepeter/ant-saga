@@ -18,6 +18,8 @@ const SETS := {
 }
 ## Loudness of each surface's steps, relative (dB).
 const SET_GAIN := {"soil": 0.0, "leaf": -3.0, "grass": -4.0, "wood": -2.0, "hollow": -3.0, "wade": -2.0}
+## Surfaces with no steps of their own, and whose steps they borrow.
+const STEP_SET := {"fungus": "grass", "stone": "wood"}
 const STROKES := ["stroke_0", "stroke_1", "stroke_2", "stroke_3"]
 const JUMPS := ["jump_0", "jump_1", "jump_2"]
 const LANDS := ["land_0", "land_1"]
@@ -142,14 +144,29 @@ func _physics_process(delta: float) -> void:
 	_last_state = state
 
 
-## What he's standing on: soil, leaf, grass, wood, hollow, or wade (in the Rut's shallows).
+## Which set of steps he makes on what he's standing on (fungus is soft, a
+## pebble knocks like wood).
 func _underfoot() -> String:
+	var surface := underfoot()
+	return String(STEP_SET.get(surface, surface))
+
+
+## What he's standing on: soil, leaf, grass, wood, hollow, fungus, stone, or
+## wade (in the Rut's shallows). A shape can say what it is (a "surface" meta,
+## as the garden's merged scatter bodies do); otherwise the body's name tells.
+func underfoot() -> String:
 	var space := player.get_world_3d().direct_space_state
 	var from := player.global_position + Vector3.UP * 0.3
 	var query := PhysicsRayQueryParameters3D.create(from, from + Vector3.DOWN * 1.2, 1, [player.get_rid()])
 	var hit := space.intersect_ray(query)
 	if hit.is_empty():
 		return "soil"
+	var body := hit["collider"] as CollisionObject3D
+	if body != null and int(hit["shape"]) >= 0:
+		var owner_id := body.shape_find_owner(int(hit["shape"]))
+		var shape_node := body.shape_owner_get_owner(owner_id) if owner_id >= 0 else null
+		if shape_node != null and shape_node.has_meta(&"surface"):
+			return String(shape_node.get_meta(&"surface"))
 	var body_name := String((hit["collider"] as Node).name)
 	if body_name == "Ground" and layout != null:
 		# (only the Rut's own bed and muddy edge are wet: other dips in the lawn

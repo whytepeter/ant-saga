@@ -9,6 +9,9 @@ shader_type spatial;
 //           as it swings forward; the body bobs. `walk` (per instance, 0..1)
 //           scales it, so a standing bug stands still (ladybird, mite)
 // `phase` is per instance, so a swarm doesn't beat in lockstep.
+// cut_on: a killed bug cut in two (ImpactFx.split): everything past the plane
+// through `cut_point` along `cut_normal` (mesh space) is gone (ImpactFx caps
+// the cut with goo).
 
 render_mode diffuse_burley, specular_schlick_ggx, cull_disabled;
 
@@ -37,8 +40,14 @@ uniform float stride = 0.12;
 instance uniform float phase = 0.0;
 instance uniform float walk = 0.0;
 instance uniform float step_rate = 3.0;
+instance uniform float hurt = 0.0;  // 1 just struck (a red flash), fading to 0
+uniform bool cut_on = false;
+uniform vec3 cut_point = vec3(0.0);
+uniform vec3 cut_normal = vec3(1.0, 0.0, 0.0);
+varying vec3 v_obj;
 
 void vertex() {
+	v_obj = VERTEX;
 	vec3 d = VERTEX - center;
 	float s = dot(d, span_axis);
 	if (mode == 1) {
@@ -68,6 +77,9 @@ void vertex() {
 }
 
 void fragment() {
+	if (cut_on && dot(v_obj - cut_point, cut_normal) > 0.0) {
+		discard;
+	}
 	vec4 c = texture(albedo_tex, UV);
 	ALBEDO = c.rgb;
 	if (has_orm) {
@@ -80,4 +92,6 @@ void fragment() {
 	if (has_normal) {
 		NORMAL_MAP = texture(normal_tex, UV).rgb;
 	}
+	ALBEDO = mix(ALBEDO, vec3(1.0, 0.22, 0.15), hurt * 0.55);
+	EMISSION = vec3(0.7, 0.12, 0.06) * hurt;
 }

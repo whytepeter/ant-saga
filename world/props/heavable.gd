@@ -37,6 +37,7 @@ var _bites_at_start := 0
 var thrown_by: Node3D
 var thrown_left := 0.0
 var _last_velocity := Vector3.ZERO
+var _last_impact := 0
 
 var weight: Weight:
 	get:
@@ -214,9 +215,19 @@ func thrown(by: Node3D) -> void:
 
 
 func _on_body_entered(body: Node) -> void:
-	if thrown_left <= 0.0 or body == thrown_by or not body.has_method("take_hit"):
+	if body == thrown_by:
 		return
-	if _last_velocity.length() < HIT_SPEED:
+	var speed := _last_velocity.length()
+	# a stone flung or dropped from high strikes with a thud, dust and chips flying
+	if speed >= HIT_SPEED and Time.get_ticks_msec() - _last_impact > 250 and (thrown_left > 0.0 or speed > 9.0):
+		_last_impact = Time.get_ticks_msec()
+		var dir := _last_velocity.normalized()
+		var at := global_position + dir * size * 0.45
+		var hard := body.has_method("take_hit") or (body is StaticBody3D and not String(body.name).begins_with("Ground"))
+		ImpactFx.rock_hit(get_parent(), at, -dir, speed, maxf(size, 0.6), hard)
+	if thrown_left <= 0.0 or not body.has_method("take_hit"):
+		return
+	if speed < HIT_SPEED:
 		return
 	thrown_left = 0.0  # one hit per throw
 	body.call("take_hit", 1.0, global_position, &"throw", thrown_by)

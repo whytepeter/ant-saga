@@ -35,5 +35,6 @@
   "stone_knife": {"name": "Stone knife", "kind": "weapon", "stack": 1, "desc": "Always at your hip. Cuts fibre, silk and vines.", "icon": "weapon:stone_knife", "weapon": "stone_knife"},
   "stone_axe": {"name": "Stone axe", "kind": "weapon", "stack": 1, "desc": "Chops grass and stems, and fights well.", "icon": "weapon:stone_axe", "weapon": "stone_axe"},
   "stone_hammer": {"name": "Stone hammer", "kind": "weapon", "stack": 1, "desc": "Slow and heavy. Cracks shells and stone.", "icon": "weapon:stone_hammer", "weapon": "stone_hammer"},
-  "thorn_spear": {"name": "Spear", "kind": "weapon", "stack": 1, "desc": "Long reach. Keeps big things at a distance.", "icon": "weapon:thorn_spear", "weapon": "thorn_spear"}
+  "thorn_spear": {"name": "Spear", "kind": "weapon", "stack": 1, "desc": "Long reach. Keeps big things at a distance.", "icon": "weapon:thorn_spear", "weapon": "thorn_spear"},
+  "leaf_saddle": {"name": "Leaf saddle", "kind": "tool", "stack": 1, "desc": "A padded leaf to strap on a ladybird you've befriended, so you can ride it.", "icon": "made:saddle"}
 }

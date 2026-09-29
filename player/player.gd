@@ -78,6 +78,8 @@ const WORLD_LAYER := 1
 const CLIMBABLE_LAYER := 1 << 2
 const GRASS_LAYER_BIT := 5  # physics layer 5, "grass"
 const STAND_HEIGHT := 1.8
+## Riding: how far below the saddle his feet's origin sits (the ride pose's hips).
+const RIDE_HIP := 0.62
 const CRAWL_HEIGHT := 0.6
 
 @export_group("Speeds (m/s)")
@@ -205,6 +207,8 @@ var _flash_until := 0
 var _flash_text := ""
 ## The haul Amodu is holding up with the ants, if any.
 var hauling: Haul
+## The bug friend he's riding (BugFriend: it moves, he sits on it), if any.
+var riding: BugFriend
 ## Seconds during which movement input is ignored (attacks, staggers).
 var action_lock := 0.0
 ## Multiplies ground speed (blocking slows him down).
@@ -348,6 +352,9 @@ func _physics_process(delta: float) -> void:
 	_prev_position = global_position
 	if _mantling:
 		return
+	if riding != null:
+		_process_riding()
+		return
 	_jump_buffer_left = maxf(_jump_buffer_left - delta, 0.0)
 	_climb_cooldown = maxf(_climb_cooldown - delta, 0.0)
 	action_lock = maxf(action_lock - delta, 0.0)
@@ -380,6 +387,11 @@ func _physics_process(delta: float) -> void:
 
 
 # ── walking, jumping, crawling ────────────────────────────────────────────────
+
+## The move keys (or stick) as they are, camera-relative x/y (a ridden bug steers by them).
+func move_input() -> Vector2:
+	return _move_input()
+
 
 func _move_input() -> Vector2:
 	return Input.get_vector("move_left", "move_right", "move_forward", "move_back") if _can_act() else Vector2.ZERO
@@ -660,10 +672,18 @@ func _track_landing(was_airborne: bool) -> void:
 	_leaping = false
 	_air_peak = global_position.y
 	_air_time = 0.0
+	# what flies up is what he landed on, as much as the drop he took (ImpactFx)
+	ImpactFx.landing(get_parent(), global_position, fall, _underfoot())
 	if fall >= slam_min_fall:
 		slam(fall)
 	elif air_time > 0.3 and fall > 0.4 and carried == null and Vector2(velocity.x, velocity.z).length() < walk_speed:
 		play_action("land_hop", 1.4)  # a standing hop lands on bent knees; on the run he runs on
+
+
+## What's under his feet (PlayerAudio.underfoot: soil, fungus, stone...).
+func _underfoot() -> String:
+	var own := get_node_or_null("PlayerAudio") as PlayerAudio
+	return own.underfoot() if own != null else "soil"
 
 
 ## Landing shockwave: every creature near him takes a heavy blow (a pill bug curls up).
@@ -679,7 +699,6 @@ func slam(fall: float) -> void:
 		var target := hit["collider"] as Node3D
 		if target != null and target.has_method("take_hit"):
 			target.call("take_hit", 2.0, global_position, &"heavy", self)
-	_ground_ring(Color(0.8, 0.62, 0.42, 0.7), slam_radius, 0.4)
 	play_action("land_heavy", 1.3)
 	slammed.emit(global_position, fall)
 
@@ -882,8 +901,11 @@ func _process_climbing(delta: float) -> void:
 	if _is_climbable_hit(wall_ray):
 		_climb_normal = _climb_normal.slerp(wall_ray.get_collision_normal(), clampf(10.0 * delta, 0.0, 1.0)).normalized()
 		if climb_input.y > 0.1 and not ledge_ray.is_colliding():
-			_mantle(up)
-			return
+			if _mantle(up):
+				return
+			# nothing to pull up onto: he stays at the top, holding on
+			global_position -= up * climb_input.y * speed * delta
+			climb_input.y = 0.0
 	elif not _mantling:
 		_leave_climb()
 		return
@@ -933,15 +955,22 @@ func _leave_climb() -> void:
 	_set_state(State.AIR)
 
 
-## Pulls Amodu up over the top edge: find the top surface just past the wall and move onto it.
-func _mantle(up: Vector3) -> void:
+## Pulls Amodu up over the top edge: find the top surface just past the wall
+## (a little further in too: a ladder's top sits out from the deck it hangs
+## from) and move onto it. False: nothing up there to stand on (a stem's tip, a
+## rope's end), so he holds on at the top rather than letting go.
+func _mantle(up: Vector3) -> bool:
 	var space := get_world_3d().direct_space_state
-	var over := global_position + up * (STAND_HEIGHT + 0.6) - _climb_normal * 0.7
-	var query := PhysicsRayQueryParameters3D.create(over, over + Vector3.DOWN * (STAND_HEIGHT + 1.0), WORLD_LAYER | CLIMBABLE_LAYER, [get_rid()])
-	var hit := space.intersect_ray(query)
+	var hit := {}
+	for reach: float in [0.7, 1.05, 1.4]:
+		var over := global_position + up * (STAND_HEIGHT + 0.6) - _climb_normal * reach
+		var query := PhysicsRayQueryParameters3D.create(over, over + Vector3.DOWN * (STAND_HEIGHT + 1.0), WORLD_LAYER | CLIMBABLE_LAYER, [get_rid()])
+		hit = space.intersect_ray(query)
+		if not hit.is_empty() and (hit["normal"] as Vector3).y > 0.6:
+			break
+		hit = {}
 	if hit.is_empty():
-		_leave_climb()
-		return
+		return false
 	_mantling = true
 	var tween := create_tween()
 	var top: Vector3 = hit.position + Vector3.UP * 0.05
@@ -952,6 +981,7 @@ func _mantle(up: Vector3) -> void:
 		velocity = Vector3.ZERO
 		_climb_cooldown = 0.35
 		_set_state(State.GROUND))
+	return true
 
 
 # ── harvest: pick up, chop, smash (Grounded's way) ──────────────────────────
@@ -1171,6 +1201,15 @@ func _process_heave_input() -> void:
 		_clear_target()
 		_set_hint(("Worn out: get to the bank!" if swim_left <= 0.0 else "Getting tired: head for the bank")
 			if state == State.SWIM and swim_left < swim_range * 0.4 else "")
+		return
+	# a wild bug to win over with food, or his friend to saddle and ride (BugFriends)
+	var friends := get_tree().get_first_node_in_group(BugFriends.GROUP) as BugFriends
+	var offer := friends.offer(self) if friends != null else ""
+	if offer != "":
+		_clear_target()
+		_set_hint(offer)
+		if Input.is_action_just_pressed("interact"):
+			friends.act(self)
 		return
 	var bug := flippable_in_reach()
 	if bug != null:
@@ -1526,6 +1565,55 @@ func take_hit(damage: float, from: Vector3, kind: StringName, attacker: Node3D) 
 		combat.call("take_hit", damage, from, kind, attacker)
 
 
+# ── riding a bug friend ───────────────────────────────────────────────────────
+
+## Up onto `friend`'s back (BugFriends: a saddled friend, E).
+func mount(friend: BugFriend) -> void:
+	if riding != null or carried != null or hauling != null:
+		return
+	riding = friend
+	friend.rider = self
+	add_collision_exception_with(friend)
+	friend.add_collision_exception_with(self)
+	velocity = Vector3.ZERO
+	_pushing = null
+	_clear_target()
+	stop_action()
+	_sync_animation_state()
+
+
+## Off its back, down beside it.
+func dismount() -> void:
+	var friend := riding
+	if friend == null:
+		return
+	riding = null
+	friend.rider = null
+	friend.shelled = false
+	remove_collision_exception_with(friend)
+	friend.remove_collision_exception_with(self)
+	var side := friend.global_basis.x.normalized()
+	var at := friend.global_position + side * (friend.size * 0.45 + 0.9)
+	var hit := get_world_3d().direct_space_state.intersect_ray(PhysicsRayQueryParameters3D.create(
+		at + Vector3.UP * 3.0, at + Vector3.DOWN * 6.0, collision_mask & ~(1 << 3), [get_rid(), friend.get_rid()]))
+	teleport((hit["position"] as Vector3) + Vector3.UP * 0.05 if not hit.is_empty() else at + Vector3.UP * 0.5, friend.rotation.y)
+	_set_hint("")
+	_sync_animation_state()
+
+
+## Sitting on it: he goes where it goes; E (or C) gets him off.
+func _process_riding() -> void:
+	var seat := riding.seat()
+	global_position = seat.origin + Vector3.DOWN * RIDE_HIP
+	model.rotation.y = riding.rotation.y
+	velocity = Vector3.ZERO
+	if downed or (_can_act() and (Input.is_action_just_pressed("interact") or Input.is_action_just_pressed("crawl"))):
+		dismount()
+		return
+	_set_hint("E · Get off    Space · Fly    Hold block · Shell    %s %d/%d" % [riding.display_name().capitalize(),
+		ceili(riding.hp), ceili(riding.max_hp)])
+
+
 ## Lies down (knocked out) or gets back up.
 func set_downed(on: bool) -> void:
 	downed = on
@@ -1690,6 +1778,9 @@ func _sync_animation_state() -> void:
 	if state != State.AIR:
 		_jumped = false  # a jump the ceiling stopped
 	if _playback == null or downed:
+		return
+	if riding != null:
+		_travel("ride")
 		return
 	var target: String = {State.GROUND: "ground", State.AIR: "air", State.CRAWL: "crawl", State.CLIMB: "climb",
 		State.SWIM: "swim"}[state]
@@ -2121,7 +2212,8 @@ func _build_animation_tree() -> void:
 	climb.connect_node("output", 0, "speed")
 	sm.add_node("climb", climb)
 	sm.add_node("down", _clip("death"))
-	var names := ["ground", "air", "crawl", "climb", "down", "swim"]
+	sm.add_node("ride", _clip(_pick("ride_insect", "idle")))  # astride a bug friend
+	var names := ["ground", "air", "crawl", "climb", "down", "swim", "ride"]
 	for a: String in names:
 		for b: String in names:
 			if a != b:

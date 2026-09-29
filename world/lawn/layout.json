@@ -2734,14 +2734,6 @@
   },
   "pickups": [
     {
-      "weapon": "thorn_spear",
-      "pos": [
-        62,
-        96
-      ],
-      "note": "Beat 6: left by the gate guards at the Colony Gate, where the pill bugs roam (reach helps against them)."
-    },
-    {
       "weapon": "stone_hammer",
       "pos": [
         222,

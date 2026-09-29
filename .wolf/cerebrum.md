@@ -43,9 +43,11 @@ budget_tokens: 2000
 - Blender 5.2 is installed and runs headless (`Blender -b --factory-startup --python ...`); its Python has fast booleans and voxel remesh. Use it for baked organic geometry (tools/bake_tree_base.py); plain python3 has no numpy.
 - Water that reads the screen texture renders in the transparent pass, so the engine's SSR never reaches it: trace reflections in the shader.
 - Long hero props (roots) placed near hollow geometry can pierce interiors; test cave walk-throughs with the autopilot.
+- Performance (2026-09-29): the game is GPU-bound on the M2 Pro (Metal, Forward+). MSAA at any sample count cost about a third of the frame over the lawn, so SMAA is the default AA (MSAA 4× only on Ultra). Grass is the biggest world cost: blade meshes must be indexed (`st.index()`), and chunks away from the camera draw without the discard and with the 3-row blade (GrassShadows). SSAO/DOF/shadow-split tweaks measured ~0.
 - A MultiMesh with visibility_range_end is culled by the camera's distance to the middle of ALL its instances: one batch spread over the garden vanished everywhere far from the centre (the loose fibre and pebbles were invisible at spawn, 2026-09-29). Chunk MultiMeshes by area (LooseFinds._draw_patched).
 - The terrain's collision (layout.heights) can sit up to ~0.8 m off TreeBase.ground_height/height_at on bumpy soil; things that must sit on the soil should be placed by a ray down after the physics has the terrain (SapFinds._ground), or on the other session's mesh_height_at.
 - A subclass of Gatherable can't declare its own static `make(...)` with other arguments (GDScript: "signature doesn't match the parent"); name it `create`. A compile error in any script PlayerCombat uses breaks the whole game for every session: check new class_name scripts with `--check-only` before wiring them in.
+- Measuring: `tests/perf_bench.gd` (windowed). macOS stops drawing a covered window (it keeps it on top); other sessions' Godot runs make timings swing ±5 ms, so compare variants interleaved in one process (median and best of short blocks), never across runs.
 
 ## Do-Not-Repeat
 
@@ -73,6 +75,12 @@ budget_tokens: 2000
 - [2026-09-28] He couldn't walk onto a paperclip lying on the floor (a 0.2 m wire): the body rides over only a few centimetres and climbing starts at chest height, so everything in between blocked him. Low lips need a step-up (Player.step_height); check new low props by walking into them.
 
 - [2026-09-28] Chop prompts showed with bare fists and from 13 m (a thistle's whole spread counted as reach), and the pressed grass at spawn was a pickup. Grounded shows a thing to chop only while the tool for it is in his hand, reach is to the stem, and only loose finds (plant fibre, sprigs, pebblets, grass seeds) are picked up by hand; leaves and grass blades are never taken whole.
+
+- [2026-09-29] Landing threw soil clods on every surface (even a mushroom) and a fixed puff on small drops; the user asked for effects that match what he lands on and scale with the drop, then to tune them down. Landing effects: nothing from ordinary jumps (under 3 m), made of the surface (PlayerAudio.underfoot), modest even from a power jump.
+
+- [2026-09-29] The knife cut a fallen twig; at his size a twig is a log. Wood needs an axe (Harvest.HEW); the knife cuts soft things only. Check each tool against what the thing is at ×360, not its real-world name.
+
+- [2026-09-29] Chopped things just shrank and bugs just flipped over; the user wants Grounded 2's feel: bits of the material fly on every blow, pieces break away, standing things topple and crash, soft bugs splash goo when hit and burst in two in a pool of it. Aggressive bugs come for him (with a telegraphed bite); timid ones run.
 
 ## Decision Log
 

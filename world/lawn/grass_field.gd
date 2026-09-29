@@ -153,7 +153,8 @@ class Blade extends RefCounted:
 		var wear := float(GrassField._wear.get(code, 0.0)) + power
 		GrassField._wear[code] = wear
 		GrassField._shudder(code)
-		Choppable.chips_at(GrassField._parent, aim_point(from), Color(0.5, 0.64, 0.28), 12)
+		ImpactFx.harvest_blow(GrassField._parent, aim_point(from), "plant", 1.2, from - GrassField._origin(code),
+			Color(0.72, 0.6, 0.3) if _dry() else Color(0.5, 0.64, 0.28))
 		if wear + 0.001 >= float(Harvest.spec("grass")["hits"]):
 			GrassField._fell(code, from, by)
 		return true
@@ -219,6 +220,9 @@ static func _fell(code: int, from: Vector3, by: Node3D) -> void:
 	var t := holder.create_tween()
 	t.tween_method(func(a: float) -> void: holder.basis = Basis(axis, a), 0.0, 1.5, 1.1) \
 		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	t.tween_callback(func() -> void:  # the crash where it comes down
+		ImpactFx.harvest_fall(_parent, xf.origin, away, length, "plant",
+			Color(0.72, 0.6, 0.3) if colour.a < 0.5 else Color(0.5, 0.64, 0.28)))
 	t.tween_method(func(a: float) -> void: holder.basis = Basis(axis, a), 1.5, 1.38, 0.12).set_ease(Tween.EASE_OUT)
 	t.tween_method(func(a: float) -> void: holder.basis = Basis(axis, a), 1.38, 1.47, 0.15).set_ease(Tween.EASE_IN)
 	t.tween_callback(func() -> void: _lying(holder, xf.origin, away, length))

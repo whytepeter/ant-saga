@@ -716,9 +716,11 @@ static func _lookout(parent: Node3D, layout: LawnLayout, g: Vector3) -> void:
 		loop.material_override = _mat("silk")
 		loop.position = deck_at + Vector3.UP * y
 		parent.add_child(loop)
-	# the ladder: two silk ropes, rungs of grass stem lashed across them
-	var top := deck_at + Vector3(0.0, -0.2, 3.3)
-	var foot := Vector3(top.x, layout.height_at(top.x, top.z + 0.6) - 0.2, top.z + 0.6)
+	# the ladder: two silk ropes, rungs of grass stem lashed across them, hung
+	# from the deck's own rim (the flake is irregular) and up to its top, so the
+	# climb ends with the deck's floor right in front of him to pull up onto
+	var top := deck_at + Vector3(0.0, 0.2, _rim_reach(deck.mesh, Vector2(0.0, 1.0)))
+	var foot := Vector3(top.x, layout.height_at(top.x, top.z) - 0.2, top.z)  # hanging straight down
 	for s: float in [-0.6, 0.6]:
 		_strand(parent, top + Vector3(s, 0, 0), foot + Vector3(s, 0, 0), 0.08, 0.0)
 	var rungs := int((top.y - foot.y) / 0.75)
@@ -742,7 +744,20 @@ static func _lookout(parent: Node3D, layout: LawnLayout, g: Vector3) -> void:
 	parent.add_child(ladder)
 	var slab := BoxShape3D.new()
 	slab.size = Vector3(1.4, top.y - foot.y, 0.3)
-	_add_shape(ladder, slab, Transform3D(Basis(), (top + foot) * 0.5))
+	_add_shape(ladder, slab, Transform3D(Basis(), Vector3(top.x, (top.y + foot.y) * 0.5, top.z)))
+
+
+## How far from the middle of a _slab `mesh` its rim is, along `dir` (flat).
+static func _rim_reach(mesh: Mesh, dir: Vector2) -> float:
+	var verts: PackedVector3Array = mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX]
+	var best := 0.0
+	for i in range(0, verts.size() - 2, 3):
+		var a := Vector2(verts[i + 1].x, verts[i + 1].z)
+		var b := Vector2(verts[i + 2].x, verts[i + 2].z)
+		var hit: Variant = Geometry2D.segment_intersects_segment(Vector2.ZERO, dir * 100.0, a, b)
+		if hit != null:
+			best = maxf(best, (hit as Vector2).length())
+	return best
 
 
 # ── pieces ────────────────────────────────────────────────────────────────────

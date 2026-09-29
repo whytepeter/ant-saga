@@ -231,6 +231,27 @@ static func made(shape: String) -> Node3D:
 				var dir := Vector3(rng.randf_range(-1, 1), rng.randf_range(-0.6, 1), rng.randf_range(-1, 1)).normalized()
 				n.add_child(_mesh(tuft, red, Transform3D(Basis.IDENTITY, dir * 0.24)))
 			lift = Vector3(0, 0.3, 0)
+		"saddle":
+			# a leaf folded over into a pad, lashed with two twine straps
+			var pad := SphereMesh.new()
+			pad.radius = 0.5
+			pad.height = 0.5
+			pad.is_hemisphere = true
+			n.add_child(_mesh(pad, _mat(Color(0.42, 0.58, 0.26), 0.8),
+				Transform3D(Basis.IDENTITY.scaled(Vector3(1.0, 0.55, 0.72)), Vector3.ZERO)))
+			var rib := CylinderMesh.new()
+			rib.top_radius = 0.025
+			rib.bottom_radius = 0.025
+			rib.height = 1.0
+			n.add_child(_mesh(rib, _mat(Color(0.62, 0.7, 0.36), 0.8),
+				Transform3D(Basis(Vector3.BACK, PI * 0.5), Vector3(0, 0.27, 0))))
+			for x: float in [-0.2, 0.2]:
+				var strap := TorusMesh.new()
+				strap.inner_radius = 0.34
+				strap.outer_radius = 0.38
+				n.add_child(_mesh(strap, _mat(Color(0.72, 0.62, 0.4)),
+					Transform3D(Basis(Vector3.BACK, PI * 0.5).scaled(Vector3(1.0, 0.7, 1.0)), Vector3(x, 0.02, 0))))
+			lift = Vector3(0, 0.05, 0)
 		"calcite":
 			# chalky pearls
 			var chalk := _mat(Color(0.93, 0.92, 0.86), 0.55)

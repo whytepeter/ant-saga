@@ -3,9 +3,11 @@ extends RefCounted
 ## How the garden comes apart, the way Grounded does it. Small loose things
 ## (pebbles, sprigs, a tuft of fibre, the pieces other things drop) are picked
 ## up by hand. Everything else needs a tool: chopped with an axe or the knife
-## (grass, leaves, weeds, mushrooms, twigs), or smashed with a hammer (stones,
-## pot shards, amber). Each tool has a tier, and a tough thing (a toadstool)
-## needs a better one. Fists harvest nothing.
+## (grass, leaves, weeds, mushrooms), hewn with an axe only (wood: a fallen
+## twig is a log to him, a bark chip a slab; the knife's little blade only
+## scratches it), or smashed with a hammer (stones, pot shards, amber). Each
+## tool has a tier, and a tough thing (a toadstool) needs a better one. Fists
+## harvest nothing.
 ##
 ## Nothing big comes away whole: a thing takes `hits` blows (at an axe's
 ## strength; the knife cuts at half) and breaks into `stages` pieces, each
@@ -13,11 +15,12 @@ extends RefCounted
 
 const HAND := "hand"
 const CHOP := "chop"
+const HEW := "hew"  # wood: the axe, never the knife
 const BUST := "bust"
 
 ## What each kind of thing is (by its model or kind id).
 ##   name    what the prompt calls it
-##   tool    HAND, CHOP or BUST;  tier  the tool's tier it needs
+##   tool    HAND, CHOP, HEW or BUST;  tier  the tool's tier it needs
 ##   hits    blows to take it all;  stages  pieces it breaks into
 ##   drops   what each piece spills (item id -> count); a hand pick gives it
 ##   gesture how he takes it by hand (Player.play_gather): "pick" or "pull"
@@ -37,8 +40,9 @@ const SPECS := {
 	"inky_cap": {"name": "Inky cap", "tool": CHOP, "tier": 1, "hits": 2, "stages": 2, "drops": {"mushroom": 1}},
 	"glow_mushroom": {"name": "Glow mushroom", "tool": CHOP, "tier": 1, "hits": 2, "stages": 2, "drops": {"glow_spores": 1}},
 	"toadstools": {"name": "Toadstool", "tool": CHOP, "tier": 2, "hits": 8, "stages": 4, "drops": {"mushroom": 2}},
-	"bark_chips": {"name": "Bark chip", "tool": CHOP, "tier": 1, "hits": 2, "stages": 2, "drops": {"bark": 1}},
-	"twig": {"name": "Fallen twig", "tool": CHOP, "tier": 1, "hits": 6, "stages": 3, "drops": {"twig": 1}},
+	# hewn: wood, the axe's work
+	"bark_chips": {"name": "Bark chip", "tool": HEW, "tier": 1, "hits": 2, "stages": 2, "drops": {"bark": 1}},
+	"twig": {"name": "Fallen twig", "tool": HEW, "tier": 1, "hits": 6, "stages": 3, "drops": {"twig": 1}},
 	"eraser": {"name": "Eraser", "tool": CHOP, "tier": 1, "hits": 4, "stages": 2, "drops": {"rubber": 1}},
 	# a plantain (Plantain) comes apart like Grounded 2's weeds, piece by piece:
 	# each leaf cuts away whole, each seed head off its stalk
@@ -89,9 +93,27 @@ static func chip_colour(s: Dictionary) -> Color:
 	return Color(0.62, 0.48, 0.3)
 
 
+## What a thing is made of, for what flies off a blow and how it breaks
+## (ImpactFx.harvest_*): wood, plant, leaf, fungus, stone, amber, sap, rubber.
+static func material(s: Dictionary) -> String:
+	var id := String(s.get("id", ""))
+	match String(s.get("tool", "")):
+		BUST:
+			return "amber" if id == "amber" else "stone"
+		HEW:
+			return "wood"
+	if id in ["cone_mushrooms", "inky_cap", "toadstools", "glow_mushroom"]:
+		return "fungus"
+	if id == "fallen_leaf":
+		return "leaf"
+	if id in ["sap", "eraser"]:
+		return "sap" if id == "sap" else "rubber"
+	return "plant"
+
+
 static func verb(tool: String) -> String:
 	match tool:
-		CHOP:
+		CHOP, HEW:
 			return "Chop"
 		BUST:
 			return "Smash"
@@ -103,6 +125,8 @@ static func need_text(tool: String, tier: int) -> String:
 	match tool:
 		CHOP:
 			return "Needs an axe or the knife" if tier <= 1 else "Needs a stronger axe"
+		HEW:
+			return "Needs an axe" if tier <= 1 else "Needs a stronger axe"
 		BUST:
 			return "Needs a hammer" if tier <= 1 else "Needs a stronger hammer"
 	return ""

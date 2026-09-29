@@ -2,13 +2,15 @@ class_name GardenMap
 extends RefCounted
 ## The garden drawn as a map, for the minimap and the full map (MapHud): the
 ## lawn painted from the bake (surface colour, grass density, hill shading),
-## the patio slabs and the back step, and everything outside the garden (the
-## vegetable beds, the fence, the house) dark. Plus the places worth naming,
-## and which parts Amodu has explored.
+## the tree grounds west of it (leaf litter, the Moor, the puddles, the root
+## bank and the trunk), the patio slabs and the back step, the driveway kerb
+## and the vegetable patch's edging, and everything past them (the beds, the
+## fence, the house) dark. Plus the places worth naming, and which parts
+## Amodu has explored.
 ##
 ## Map space: x east, z south (north up), in metres; RECT is what the map shows.
 
-const RECT := Rect2(-360.0, -360.0, 720.0, 1010.0)  # x, z, width, depth: the lawn and the patio
+const RECT := Rect2(-720.0, -390.0, 1220.0, 1040.0)  # x, z, width, depth: tree grounds, lawn, kerb, patio
 const PX := 2.0  # metres per pixel before smoothing
 const FOG_CELL := 10.0  # metres per explored-map cell
 const REVEAL := 70.0  # metres around him that count as seen
@@ -25,6 +27,12 @@ const SURFACE_COLOURS := {
 	LawnLayout.Surface.ANT_ROAD: Color(0.64, 0.52, 0.36),
 }
 const OUTSIDE := Color(0.08, 0.075, 0.065)
+const LITTER := Color(0.5, 0.36, 0.2)
+const TREE_SOIL := Color(0.4, 0.32, 0.22)
+const TREE_GRASS := Color(0.3, 0.42, 0.18)
+const BARK := Color(0.24, 0.18, 0.13)
+const CONCRETE := Color(0.55, 0.54, 0.51)
+const TIMBER := Color(0.42, 0.3, 0.18)
 const SLAB := Color(0.63, 0.6, 0.55)
 const JOINT := Color(0.42, 0.4, 0.36)
 
@@ -88,6 +96,8 @@ func areas() -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
 	for a: Dictionary in layout.items("areas"):
 		out.append({"name": String(a["name"]), "at": LawnLayout.xz(a["center"])})
+	for a: Dictionary in layout.data.get("tree_grounds", {}).get("areas", []):
+		out.append({"name": String(a["name"]), "at": LawnLayout.xz(a["center"])})
 	return out
 
 
@@ -97,6 +107,9 @@ func places() -> Array[Dictionary]:
 		var item := layout.item("landmarks", String(p[0]))
 		if not item.is_empty():
 			out.append({"name": String(p[1]), "at": LawnLayout.xz(item["pos"])})
+	var tree := layout.item("skyline", "apple_tree")
+	if not tree.is_empty():
+		out.append({"name": "Apple tree", "at": LawnLayout.xz(tree["pos"])})
 	var patio: Dictionary = layout.data.get("patio", {})
 	if patio.has("trowel"):
 		out.append({"name": "Trowel", "at": LawnLayout.xz(patio["trowel"]["to"])})
@@ -146,6 +159,26 @@ func _paint() -> Image:
 	var joint := float(patio.get("joint", 3.6))
 	var step: Array = patio.get("step", {}).get("rect", [])
 	var n := layout.size
+	var tg: Dictionary = layout.data.get("tree_grounds", {})
+	var tg_rect := Rect2()
+	if tg.has("bounds"):
+		var b: Array = tg["bounds"]
+		tg_rect = Rect2(float(b[0]), float(b[1]), float(b[2]) - float(b[0]), float(b[3]) - float(b[1]))
+	var trunk := Vector2.INF
+	var trunk_r := 0.0
+	if layout.data.has("tree_base"):
+		var t: Dictionary = layout.data["tree_base"]["trunk"]
+		trunk = LawnLayout.xz(t["center"])
+		trunk_r = float(t["radius"])
+	# the kerb and the edging (layout boundaries' boxes): [rect, colour]
+	var walls: Array[Array] = []
+	for bd: Dictionary in layout.items("boundaries"):
+		var kind := String(bd.get("kind", ""))
+		if not kind in ["driveway_kerb", "veg_bed_edging"]:
+			continue
+		for bx: Array in bd.get("boxes", []):
+			walls.append([Rect2(float(bx[0]), float(bx[1]), float(bx[2]) - float(bx[0]), float(bx[3]) - float(bx[1])),
+				CONCRETE if kind == "driveway_kerb" else TIMBER])
 	for py in h:
 		var z := RECT.position.y + py * PX
 		for px in w:
@@ -160,6 +193,8 @@ func _paint() -> Image:
 				col = JOINT if jx or jz else SLAB
 				if step.size() == 4 and x >= float(step[0]) and x <= float(step[2]) and z >= float(step[1]):
 					col = col.darkened(0.12)
+			elif x < -360.0 and tg_rect.has_point(Vector2(x, z)):
+				col = _tree_ground(tg, trunk, trunk_r, x, z)
 			else:
 				var i := int(round((x - layout.origin) / layout.cell))
 				var j := int(round((z - layout.origin) / layout.cell))
@@ -175,6 +210,40 @@ func _paint() -> Image:
 					var hd := layout.heights[mini(j + 1, n - 1) * n + i]
 					var shade := clampf(1.0 + ((hl - hr) + (hu - hd)) * 0.06, 0.72, 1.28)
 					col = Color(col.r * shade, col.g * shade, col.b * shade)
+			for wall: Array in walls:
+				if (wall[0] as Rect2).has_point(Vector2(x, z)):
+					col = wall[1] as Color
+					break
 			img.set_pixel(px, py, col)
 	img.resize(w * 2, h * 2, Image.INTERPOLATE_CUBIC)
 	return img
+
+
+## The tree grounds at x/z (TreeGrounds paints them the same way): leaf litter
+## thick near the trunk and on the Moor, thin shaded grass further out, mud and
+## water at the puddles, the root bank lit from the north-west, the trunk.
+func _tree_ground(tg: Dictionary, trunk: Vector2, trunk_r: float, x: float, z: float) -> Color:
+	var p := Vector2(x, z)
+	var r := p.distance_to(trunk) if trunk != Vector2.INF else INF
+	if r < trunk_r:
+		return BARK
+	var litter := smoothstep(380.0, 180.0, r)
+	for a: Dictionary in tg.get("areas", []):
+		if String(a["id"]) == "leaf_litter_moor":
+			var c := LawnLayout.xz(a["center"])
+			var rr := LawnLayout.xz(a["radii"])
+			litter = maxf(litter, smoothstep(1.0, 0.6, Vector2((x - c.x) / rr.x, (z - c.y) / rr.y).length()))
+	var col := TREE_GRASS.lerp(LITTER, litter)
+	for pd: Dictionary in tg.get("puddles", []):
+		var d := p.distance_to(LawnLayout.xz(pd["pos"]))
+		var pr := float(pd["radius"])
+		if d < pr * 0.8:
+			return SURFACE_COLOURS[LawnLayout.Surface.WATER] as Color
+		col = col.lerp(TREE_SOIL.darkened(0.2), smoothstep(pr * 1.7, pr * 0.8, d))
+	# the bank heaved up round the trunk, shaded like the lawn's hills
+	var hl := TreeBase.ground_height(layout, x - 2.0, z)
+	var hr := TreeBase.ground_height(layout, x + 2.0, z)
+	var hu := TreeBase.ground_height(layout, x, z - 2.0)
+	var hd := TreeBase.ground_height(layout, x, z + 2.0)
+	var shade := clampf(1.0 + ((hl - hr) + (hu - hd)) * 0.06, 0.72, 1.28)
+	return Color(col.r * shade, col.g * shade, col.b * shade)

@@ -433,7 +433,7 @@
       "error_message": "Significant refactor of sleek.gd",
       "file": "ui/sleek.gd",
       "root_cause": "2 lines replaced/restructured",
-      "fix": "Rewrote 5\u21923 lines (2 removed) | Also: for ring: Array in [[0.0, 1.0], [0.62, 0.85], [1.0; pass",
+      "fix": "Rewrote 5→3 lines (2 removed) | Also: for ring: Array in [[0.0, 1.0], [0.62, 0.85], [1.0; pass",
       "tags": [
         "auto-detected",
         "refactor",
@@ -449,7 +449,7 @@
       "error_message": "Significant refactor of game_hud.gd",
       "file": "ui/game_hud.gd",
       "root_cause": "20 lines replaced/restructured",
-      "fix": "Rewrote 21\u21927 lines (20 removed) | Also: var grid := GridContainer.new(); grid.columns = 5",
+      "fix": "Rewrote 21→7 lines (20 removed) | Also: var grid := GridContainer.new(); grid.columns = 5",
       "tags": [
         "auto-detected",
         "refactor",
@@ -563,7 +563,7 @@
       "timestamp": "2026-09-28T07:05:12.136Z",
       "error_message": "Missing await",
       "file": "tests/_tmp_wormways.gd",
-      "root_cause": "Async call without await \u2014 returned Promise instead of value",
+      "root_cause": "Async call without await — returned Promise instead of value",
       "fix": "Added await to async call | Also: func _walk_3d(target: Vector3, seconds: float) -> void:; for f in int(seconds * 60.0):",
       "tags": [
         "auto-detected",
@@ -580,7 +580,7 @@
       "error_message": "Significant refactor of great_worm.gd",
       "file": "creatures/earthworm/great_worm.gd",
       "root_cause": "6 lines replaced/restructured",
-      "fix": "Rewrote 11\u219236 lines (6 removed) | Also: ## Back the way it came (burned, or done): it pull; var back := (_from - _head)",
+      "fix": "Rewrote 11→36 lines (6 removed) | Also: ## Back the way it came (burned, or done): it pull; var back := (_from - _head)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -628,7 +628,7 @@
       "error_message": "Significant refactor of nature_models.gd",
       "file": "world/props/nature_models.gd",
       "root_cause": "2 lines replaced/restructured",
-      "fix": "Rewrote 10\u219227 lines (2 removed) | Also: cs.shape = v.shape(kind); cs.transform = xf * v.fix",
+      "fix": "Rewrote 10→27 lines (2 removed) | Also: cs.shape = v.shape(kind); cs.transform = xf * v.fix",
       "tags": [
         "auto-detected",
         "refactor",
@@ -791,7 +791,7 @@
       "error_message": "Significant refactor of lawn_builder.gd",
       "file": "world/lawn/lawn_builder.gd",
       "root_cause": "14 lines replaced/restructured",
-      "fix": "Rewrote 16\u21924 lines (14 removed) | Also: # moss cushions along the edge and in the joints (; var mosses := NatureModels.variants(\"moss_01\")",
+      "fix": "Rewrote 16→4 lines (14 removed) | Also: # moss cushions along the edge and in the joints (; var mosses := NatureModels.variants(\"moss_01\")",
       "tags": [
         "auto-detected",
         "refactor",
@@ -823,7 +823,7 @@
       "error_message": "Significant refactor of held_weapon.gd",
       "file": "player/held_weapon.gd",
       "root_cause": "5 lines replaced/restructured",
-      "fix": "Rewrote 20\u219238 lines (5 removed) | Also: if player != null and player.first_person:; var local := hand_transform(length, rest, grip, sp",
+      "fix": "Rewrote 20→38 lines (5 removed) | Also: if player != null and player.first_person:; var local := hand_transform(length, rest, grip, sp",
       "tags": [
         "auto-detected",
         "refactor",
@@ -839,7 +839,7 @@
       "error_message": "Significant refactor of weapons.gd",
       "file": "player/weapons.gd",
       "root_cause": "15 lines replaced/restructured",
-      "fix": "Rewrote 17\u219223 lines (15 removed) | Also: # a knapped stone point on a long straight stem: r; # big things from outside their bite; held a third",
+      "fix": "Rewrote 17→23 lines (15 removed) | Also: # a knapped stone point on a long straight stem: r; # big things from outside their bite; held a third",
       "tags": [
         "auto-detected",
         "refactor",
@@ -870,7 +870,7 @@
       "timestamp": "2026-09-28T20:13:39.300Z",
       "error_message": "Missing await",
       "file": "tests/player_movement_test.gd",
-      "root_cause": "Async call without await \u2014 returned Promise instead of value",
+      "root_cause": "Async call without await — returned Promise instead of value",
       "fix": "Added await to async call | Also: ## Walking into a low lip (a paperclip's wire, a flat stone'; ## onto it without jumping (Player.step_height); a thigh-hig",
       "tags": [
         "auto-detected",
@@ -887,7 +887,7 @@
       "error_message": "Significant refactor of player.gd",
       "file": "player/player.gd",
       "root_cause": "2 lines replaced/restructured",
-      "fix": "Rewrote 9\u219212 lines (2 removed) | Also: if lift < 0.01 or lift > step_height:; if top.is_empty() or (top[\"normal\"] as Vector3).an",
+      "fix": "Rewrote 9→12 lines (2 removed) | Also: if lift < 0.01 or lift > step_height:; if top.is_empty() or (top[\"normal\"] as Vector3).an",
       "tags": [
         "auto-detected",
         "refactor",
@@ -957,7 +957,7 @@
       "error_message": "Significant refactor of harvest.gd",
       "file": "world/props/harvest.gd",
       "root_cause": "2 lines replaced/restructured",
-      "fix": "Rewrote 9\u219230 lines (2 removed) | Also: ## {\"name\", \"verb\", \"ok\", \"need\", \"hand\"}.; if tool != HAND and best_tool(inventory, tool, int",
+      "fix": "Rewrote 9→30 lines (2 removed) | Also: ## {\"name\", \"verb\", \"ok\", \"need\", \"hand\"}.; if tool != HAND and best_tool(inventory, tool, int",
       "tags": [
         "auto-detected",
         "refactor",
@@ -1005,7 +1005,7 @@
       "error_message": "Significant refactor of loose_finds.gd",
       "file": "world/lawn/loose_finds.gd",
       "root_cause": "6 lines replaced/restructured",
-      "fix": "Rewrote 18\u219227 lines (6 removed) | Also: ## Grounded: pebbles (pebblets, knee-high to him) ; ## bare soil, the ants' roads and the flattened ho",
+      "fix": "Rewrote 18→27 lines (6 removed) | Also: ## Grounded: pebbles (pebblets, knee-high to him) ; ## bare soil, the ants' roads and the flattened ho",
       "tags": [
         "auto-detected",
         "refactor",
@@ -1021,7 +1021,7 @@
       "error_message": "Significant refactor of plantain.gd",
       "file": "world/props/plantain.gd",
       "root_cause": "2 lines replaced/restructured",
-      "fix": "Rewrote 4\u21925 lines (2 removed) | Also: # the stalk as two capsules, the spike as a third; for seg: Array in [[0, halfway, 0.4], [halfway, sp",
+      "fix": "Rewrote 4→5 lines (2 removed) | Also: # the stalk as two capsules, the spike as a third; for seg: Array in [[0, halfway, 0.4], [halfway, sp",
       "tags": [
         "auto-detected",
         "refactor",
@@ -1037,7 +1037,7 @@
       "error_message": "Significant refactor of held_weapon.gd",
       "file": "player/held_weapon.gd",
       "root_cause": "2 lines replaced/restructured",
-      "fix": "Rewrote 3\u21924 lines (2 removed) | Also: # in hand only when his hands are free to fight; and player.carried == null and player.puff == null",
+      "fix": "Rewrote 3→4 lines (2 removed) | Also: # in hand only when his hands are free to fight; and player.carried == null and player.puff == null",
       "tags": [
         "auto-detected",
         "refactor",
@@ -1052,7 +1052,7 @@
       "timestamp": "2026-09-28T22:01:40.062Z",
       "error_message": "Missing await",
       "file": "tests/survival_test.gd",
-      "root_cause": "Async call without await \u2014 returned Promise instead of value",
+      "root_cause": "Async call without await — returned Promise instead of value",
       "fix": "Added await to async call | Also: # Grounded's loose finds: plant fibre lies about; a blade of; var fibres := 0",
       "tags": [
         "auto-detected",
@@ -1082,7 +1082,7 @@
     {
       "id": "bug-070",
       "timestamp": "2026-09-28T22:17:34.000Z",
-      "error_message": "'Thistle \u00b7 Chop' shown with nothing near to chop, and chop prompts shown while holding bare fists",
+      "error_message": "'Thistle · Chop' shown with nothing near to chop, and chop prompts shown while holding bare fists",
       "file": "world/lawn/garden_dressing.gd",
       "root_cause": "Tall plants were registered with reach size*0.45 (a 25 m thistle reachable ~13 m from its stem), and targets considered every tool he carried, not the one in his hand.",
       "fix": "Stem plants register with their stem radius + 0.3 (GardenDressing.stem_radius); Player._find_target shows a chop/smash target only when Harvest.held_tool (the weapon in hand) can do it; silk still takes his hip knife.",
@@ -1131,9 +1131,268 @@
       "last_seen": "2026-09-28T22:17:34.000Z"
     },
     {
+      "id": "bug-073",
+      "timestamp": "2026-09-28T23:08:39.803Z",
+      "error_message": "Null/undefined access in perf_bench.gd",
+      "file": "tests/perf_bench.gd",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check) | Also: # every system under the level, one at a time: stop its proc; for n: Node in level.get_children():",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "gd"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-09-28T23:08:39.848Z"
+    },
+    {
+      "id": "bug-074",
+      "timestamp": "2026-09-28T23:09:15.402Z",
+      "error_message": "Significant refactor of landmarks.gd",
+      "file": "world/lawn/landmarks.gd",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 3→5 lines (2 removed) | Also: # the ladder: two silk ropes, rungs of grass stem ; var top := deck_at + Vector3(0.0, -0.2, 3.3)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "gd"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-09-28T23:09:15.536Z"
+    },
+    {
+      "id": "bug-075",
+      "timestamp": "2026-09-28T23:09:15.886Z",
+      "error_message": "Null/undefined access in landmarks.gd",
+      "file": "world/lawn/landmarks.gd",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check) | Also: _add_shape(ladder, slab, Transform3D(Basis(), Vector3(top.x,; ## How far from the middle of a _slab `mesh` its rim is, alo",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "gd"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-09-28T23:09:15.923Z"
+    },
+    {
+      "id": "bug-076",
+      "timestamp": "2026-09-28T23:09:45.249Z",
+      "error_message": "Significant refactor of player.gd",
+      "file": "player/player.gd",
+      "root_cause": "6 lines replaced/restructured",
+      "fix": "Rewrote 10→17 lines (6 removed) | Also: ## Pulls Amodu up over the top edge: find the top ; func _mantle(up: Vector3) -> void:",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "gd"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-09-28T23:09:45.300Z"
+    },
+    {
+      "id": "bug-077",
+      "timestamp": "2026-09-28T23:13:05.050Z",
+      "error_message": "Null/undefined access in weapon_badge.gd",
+      "file": "ui/weapon_badge.gd",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check) | Also: ## A weapon at `c`: its picture (the item icon, `s` across),; ## (no item) its glyph, `glyph_s` across.",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "gd"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-09-28T23:13:05.088Z"
+    },
+    {
+      "id": "bug-078",
+      "timestamp": "2026-09-28T23:14:05.172Z",
+      "error_message": "Significant refactor of item_models.gd",
+      "file": "world/props/item_models.gd",
+      "root_cause": "5 lines replaced/restructured",
+      "fix": "Rewrote 6→20 lines (5 removed) | Also: var drop := SphereMesh.new(); drop.radius = 0.36 | Also: var silk := _mat(Color(0.95, 0.94, 0.9), 0.3, 1.0,; for i in 5:",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "gd"
+      ],
+      "related_bugs": [],
+      "occurrences": 4,
+      "last_seen": "2026-09-28T23:14:23.254Z"
+    },
+    {
+      "id": "bug-079",
+      "timestamp": "2026-09-28T23:26:47.979Z",
+      "error_message": "Significant refactor of held_torch.gd",
+      "file": "player/held_torch.gd",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 4→4 lines (2 removed) | Also: g.set_color(0, Color(1, 1, 1, 1)); g.set_color(1, Color(1, 1, 1, 0))",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "gd"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-09-28T23:26:48.020Z"
+    },
+    {
+      "id": "bug-080",
+      "timestamp": "2026-09-28T23:27:01.838Z",
+      "error_message": "Wrong return value",
+      "file": "player/inventory.gd",
+      "root_cause": "Was returning: false",
+      "fix": "Now returns: _light(i)",
+      "tags": [
+        "auto-detected",
+        "return-value",
+        "gd"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-09-28T23:27:01.896Z"
+    },
+    {
+      "id": "bug-081",
+      "timestamp": "2026-09-28T23:34:36.052Z",
+      "error_message": "Missing await",
+      "file": "world/lawn/sap_finds.gd",
+      "root_cause": "Async call without await — returned Promise instead of value",
+      "fix": "Added await to async call | Also: var _drop_spots: Array[Vector2] = []; var _clump_spots: Array[Vector3] = []  # (x, radius, z)",
+      "tags": [
+        "auto-detected",
+        "async-fix",
+        "gd"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-09-28T23:34:36.090Z"
+    },
+    {
+      "id": "bug-082",
+      "timestamp": "2026-09-28T23:36:40.572Z",
+      "error_message": "Null/undefined access in sap_finds.gd",
+      "file": "world/lawn/sap_finds.gd",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check) | Also: # clear of the model Choppable.twig draws (wider than its 3.; var half := 1.6",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "gd"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-09-28T23:36:40.582Z"
+    },
+    {
+      "id": "bug-083",
+      "timestamp": "2026-09-28T23:48:37.341Z",
+      "error_message": "Null/undefined access in _tmp_sap_torch.gd",
+      "file": "tests/_tmp_sap_torch.gd",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check) | Also: var mmi := level.get_node(\"SapFinds/SapDrops\") as MultiMeshI; print(\"SAP mmi=%s count=%d surfaces=%d aabb=%s first=%s vis=",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "gd"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-09-28T23:48:37.388Z"
+    },
+    {
+      "id": "bug-084",
+      "timestamp": "2026-09-28T23:50:13.662Z",
+      "error_message": "Incorrect value in code",
+      "file": "tests/_tmp_sap_torch.gd",
+      "root_cause": "Had \"SAP at=%s ground=%s tool=%s\"",
+      "fix": "Changed to \"collider\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "gd"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-09-28T23:50:13.692Z"
+    },
+    {
+      "id": "bug-085",
+      "timestamp": "2026-09-28T23:52:21.393Z",
+      "error_message": "Significant refactor of sap_finds.gd",
+      "file": "world/lawn/sap_finds.gd",
+      "root_cause": "10 lines replaced/restructured",
+      "fix": "Rewrote 20→30 lines (10 removed) | Also: if _drops.is_empty():; return",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "gd"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-09-28T23:52:21.429Z"
+    },
+    {
+      "error_message": "Near the top of the lookout's rope ladder he pops up, falls back, grabs on and repeats",
+      "file": "player/player.gd",
+      "root_cause": "The ladder hung 0.2 m below the deck, 0.3 m out from its irregular rim; the mantle probe looked 0.7 m past him for a floor, landed in the gap between ladder and deck and found nothing, and the failure path let go with his climbing speed still upward",
+      "fix": "Ladder hangs straight down from the deck's real rim (_rim_reach) up to its top; _mantle probes 0.7/1.05/1.4 m in for an upward-facing floor; with nothing to pull onto he holds at the top instead of letting go",
+      "tags": [
+        "climb",
+        "mantle",
+        "ladder",
+        "lookout"
+      ],
+      "id": "bug-086",
+      "timestamp": "2026-09-28T23:57:59.000Z",
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-28T23:57:59.000Z"
+    },
+    {
+      "error_message": "Landing on a mushroom (or anything) threw soil clods; the landing effect didn't scale with the drop",
+      "file": "world/fx/impact_fx.gd",
+      "root_cause": "_track_landing always called ImpactFx.dust_burst (soil dust + clods) with a fixed puff for 2.2-4 m drops and power >= 0.2 for slams, whatever was underfoot",
+      "fix": "ImpactFx.landing(fall, surface): PlayerAudio.underfoot() (merged scatter shapes carry a 'surface' meta: fungus, stone, leaf...) picks spores / grit / crumbs / dust; nothing under a 3 m drop, size and clods scale with the drop (toned down on request)",
+      "tags": [
+        "fx",
+        "landing",
+        "surface",
+        "player"
+      ],
+      "id": "bug-087",
+      "timestamp": "2026-09-28T23:57:59.000Z",
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-28T23:57:59.000Z"
+    },
+    {
+      "error_message": "The knife could cut a fallen twig (a log at his size)",
+      "file": "world/props/harvest.gd",
+      "root_cause": "Twigs and bark chips needed only CHOP tier 1, and the knife's tool is chop tier 1",
+      "fix": "New tool kind Harvest.HEW for wood; only the axe has it (Weapons tool 'hew'); Choppable twig and the twig/bark_chips specs need HEW; PlayerCombat passes the kind the thing needs when the weapon has it",
+      "tags": [
+        "harvest",
+        "knife",
+        "axe",
+        "tools"
+      ],
+      "id": "bug-088",
+      "timestamp": "2026-09-28T23:57:59.000Z",
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-28T23:57:59.000Z"
+    },
+    {
       "error_message": "Loose pebbles and plant fibre invisible near spawn (and over most of the garden), though E still picked them up",
       "file": "world/lawn/loose_finds.gd",
-      "root_cause": "One MultiMeshInstance per shape spread over the whole \u00b1360 m garden with visibility_range_end 120-140; Godot measures the range to the middle of the instance's AABB (near 0,0,0), so the batch is culled once the camera is ~140 m from the garden's centre (spawn is ~210 m out)",
+      "root_cause": "One MultiMeshInstance per shape spread over the whole ±360 m garden with visibility_range_end 120-140; Godot measures the range to the middle of the instance's AABB (near 0,0,0), so the batch is culled once the camera is ~140 m from the garden's centre (spawn is ~210 m out)",
       "fix": "Batch per shape per 60 m patch (LooseFinds._draw_patched); same in SapFinds. Any MultiMesh with a visibility range must be chunked by area",
       "tags": [
         "multimesh",
@@ -1181,6 +1440,70 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-09-28T23:58:54.000Z"
+    },
+    {
+      "id": "bug-092",
+      "timestamp": "2026-09-29T00:16:15.801Z",
+      "error_message": "Null/undefined access in wormways.gd",
+      "file": "world/wormways/wormways.gd",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check) | Also: var cam := get_viewport().get_camera_3d(); var eye := cam.global_position if cam != null else player.gl",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "gd"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-09-29T00:16:15.847Z"
+    },
+    {
+      "id": "bug-093",
+      "timestamp": "2026-09-29T00:16:37.092Z",
+      "error_message": "Significant refactor of building.gd",
+      "file": "world/build/building.gd",
+      "root_cause": "4 lines replaced/restructured",
+      "fix": "Rewrote 7→3 lines (4 removed) | Also: # it goes up with a thump of dust; var s := Buildings.size(id)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "gd"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-09-29T00:16:37.137Z"
+    },
+    {
+      "id": "bug-094",
+      "timestamp": "2026-09-29T07:08:31.769Z",
+      "error_message": "Significant refactor of build_models.gd",
+      "file": "world/build/build_models.gd",
+      "root_cause": "14 lines replaced/restructured",
+      "fix": "Rewrote 20→25 lines (14 removed) | Also: # the glowing bed of coals; var coals := MeshInstance3D.new()",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "gd"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-09-29T07:08:31.801Z"
+    },
+    {
+      "id": "bug-095",
+      "timestamp": "2026-09-29T07:27:56.943Z",
+      "error_message": "Significant refactor of build_test.gd",
+      "file": "tests/build_test.gd",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 3→10 lines (2 removed) | Also: var box := mmi.multimesh.get_aabb(); widest = maxf(widest, maxf(box.size.x, box.size.z) | Also: for path: String in [\"LooseFinds\", \"SapFinds\"]:; for mmi: MultiMeshInstance3D in level.get_node(pat",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "gd"
+      ],
+      "related_bugs": [],
+      "occurrences": 4,
+      "last_seen": "2026-09-29T07:28:46.855Z"
     }
   ]
 }

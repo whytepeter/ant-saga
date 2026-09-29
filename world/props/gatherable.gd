@@ -5,11 +5,15 @@ extends Choppable
 ##   by hand   small loose things (a sprig, a tuft of moss, a pebble): E, a
 ##             reach down, and it's in his pack
 ##   a tool    everything else: chopped with an axe or the knife, or smashed
-##             with a hammer, blow by blow. Every `hits / stages` of wear a
-##             piece comes away: the thing shrinks and the piece's `drops`
+##             with a hammer, blow by blow, bits of it flying out of the cut.
+##             Every `hits / stages` of wear a piece breaks away (chunks of it
+##             thrown off, the thing a little smaller) and the piece's `drops`
 ##             spill onto the ground as pickups (ItemPickup) to collect; the
-##             last piece takes the rest of it. A leaf, a mushroom, a stone
-##             never comes away whole.
+##             last piece takes the rest of it: a standing thing (a mushroom, a
+##             weed) topples away from him and crashes down, a lying or low
+##             one (a leaf, a twig, a stone) breaks up where it lies
+##             (ImpactFx.harvest_*). A leaf, a mushroom, a stone never comes
+##             away whole.
 ##
 ## Fists do nothing to it; the wrong tool glances off and says what it needs.
 ## Placed by GardenDressing, TreeGrounds and others through GatherField, over
@@ -39,6 +43,7 @@ var _base_xf := Transform3D.IDENTITY
 var _base_scale := Vector3.ONE
 var _base_pos := Vector3.ZERO
 var _jiggle := 0.0
+var _blow_from := Vector3.ZERO
 
 
 ## A gatherable at `at` (world), about `radius` metres round, that is `s`
@@ -148,8 +153,8 @@ func hit(tool: String, tier: int, power: float, from: Vector3, by: Node3D) -> bo
 		_glance(by)
 		return false
 	_jiggle = 0.25
-	_chips(from)
-	_sound(true)
+	_blow_from = from
+	_chips(from)  # (and its sound: ImpactFx.harvest_blow)
 	var stages := maxi(int(spec.get("stages", 1)), 1)
 	var per_piece := float(spec.get("hits", 1.0)) / stages
 	wear += power
@@ -173,20 +178,53 @@ func chop(power: float, from: Vector3, by: Node3D) -> bool:
 	return hit(Harvest.CHOP, 1, power, from, by)
 
 
-## A piece comes away: its drops tumble out toward him.
+## A piece comes away: chunks of it thrown off, and its drops tumble out toward him.
 func _piece_off(by: Node3D) -> void:
 	var toward := (by.global_position if by != null else global_position) - global_position
 	var from := aim_point(by.global_position if by != null else global_position) + Vector3.UP * 0.8
 	for id: String in drops:
 		ItemPickup.spill(get_parent(), from, StringName(id), int(drops[id]), toward)
 	spilled.emit(drops)
+	if stage < maxi(int(spec.get("stages", 1)), 1):  # (the last piece: _take_away)
+		ImpactFx.harvest_break(get_parent(), _cut_point(_blow_from), Harvest.material(spec), _size() * 0.6, toward, chip_colour)
+
+
+## Bits of it flying out of the cut toward him (ImpactFx.harvest_blow).
+func _chips(from: Vector3) -> void:
+	ImpactFx.harvest_blow(get_parent(), _cut_point(from), Harvest.material(spec), _size(), from - global_position, chip_colour)
+
+
+## Where a blow from `from` bites: its near side, where the blade meets it.
+func _cut_point(from: Vector3) -> Vector3:
+	var at := aim_point(from)
+	var toward := from - at
+	toward.y = 0.0
+	if toward.length() > 0.01:
+		at += toward.normalized() * minf(reach_radius * 0.35, 1.0)
+	return at
+
+
+## How big it is now (m, its longest side).
+func _size() -> float:
+	var s := _picture_size()
+	return clampf(maxf(s.x, maxf(s.y, s.z)), 0.5, 8.0)
+
+
+## Its picture's size (m) as it stands now.
+func _picture_size() -> Vector3:
+	if multimesh != null and instance >= 0 and multimesh.mesh != null:
+		return multimesh.mesh.get_aabb().size * multimesh.get_instance_transform(instance).basis.get_scale()
+	var mi := visual_node as MeshInstance3D
+	if mi != null and is_instance_valid(mi) and mi.mesh != null:
+		return mi.mesh.get_aabb().size * mi.global_basis.get_scale()
+	return Vector3.ONE * reach_radius * 1.5
 
 
 ## The picture at its size for the pieces taken (a little smaller each piece),
 ## `wobble` metres to the side while it shakes from a blow.
 func _show_stage(wobble := 0.0) -> void:
 	var stages := maxi(int(spec.get("stages", 1)), 1)
-	var k := 1.0 - 0.55 * float(stage) / stages
+	var k := 1.0 - 0.4 * float(stage) / stages
 	if multimesh != null and instance >= 0:
 		var b := _base_xf.basis.scaled_local(Vector3(k, k, k))
 		multimesh.set_instance_transform(instance, Transform3D(b, _base_xf.origin + _base_xf.basis.x.normalized() * wobble))
@@ -195,20 +233,74 @@ func _show_stage(wobble := 0.0) -> void:
 		visual_node.position = _base_pos + Vector3(wobble, 0.0, 0.0)
 
 
-## Gone: the last of it shrinks away (the picture), its collision off.
+## Gone: its collision off, and the picture comes down the way the thing
+## would. A standing thing (a mushroom, a weed, a fern) topples away from him,
+## crashes and sinks into the ground; a lying or low one (a leaf, a twig, a
+## bark chip, a stone) breaks up where it lies, chunks flying.
 func _take_away() -> void:
+	_jiggle = 0.0
 	if solid != null:
 		solid.set_deferred("disabled", true)
+	var size := _picture_size()
+	var material := Harvest.material(spec)
+	var away := global_position - _blow_from
+	away.y = 0.0
+	away = away.normalized() if away.length() > 0.01 else Vector3.FORWARD
+	if length <= 0.0 and size.y > 0.8 * maxf(size.x, size.z) and not material in ["stone", "amber"]:
+		_topple(away, size.y, material)
+	else:
+		ImpactFx.harvest_break(get_parent(), global_position + Vector3.UP * minf(size.y * 0.5, 1.5), material,
+			maxf(size.x, size.z), -away, chip_colour)
+		_crumble()
+
+
+## Down it goes, away from him, pivoting on its foot; the crash; then it sinks.
+func _topple(away: Vector3, height: float, material: String) -> void:
+	var axis := Vector3.UP.cross(away).normalized()
+	var t := create_tween()
 	if multimesh != null and instance >= 0:
 		var xf := multimesh.get_instance_transform(instance)
-		var t := create_tween()
-		t.tween_method(func(k: float) -> void:
-			multimesh.set_instance_transform(instance, Transform3D(xf.basis.scaled(Vector3.ONE * maxf(1.0 - k, 0.0001)), xf.origin)),
-			0.0, 1.0, 0.35).set_ease(Tween.EASE_IN)
+		var lay := func(a: float, drop: float) -> void:
+			multimesh.set_instance_transform(instance, Transform3D(Basis(axis, a) * xf.basis, xf.origin + Vector3.DOWN * drop))
+		t.tween_method(func(a: float) -> void: lay.call(a, 0.0), 0.0, 1.5, 0.7).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+		t.tween_callback(func() -> void: ImpactFx.harvest_fall(get_parent(), xf.origin, away, height, material, chip_colour))
+		t.tween_method(func(a: float) -> void: lay.call(a, 0.0), 1.5, 1.38, 0.12).set_ease(Tween.EASE_OUT)
+		t.tween_method(func(a: float) -> void: lay.call(a, 0.0), 1.38, 1.5, 0.15).set_ease(Tween.EASE_IN)
+		t.tween_interval(1.4)
+		t.tween_method(func(d: float) -> void: lay.call(1.5, d), 0.0, maxf(height * 0.35, 0.6), 1.2).set_ease(Tween.EASE_IN)
+		t.tween_callback(func() -> void:
+			multimesh.set_instance_transform(instance, Transform3D(Basis().scaled(Vector3.ONE * 0.0001), xf.origin)))
 		t.tween_callback(queue_free)
 	elif visual_node != null and is_instance_valid(visual_node):
-		var t := create_tween()
-		t.tween_property(visual_node, "scale", Vector3.ONE * 0.001, 0.35).set_ease(Tween.EASE_IN)
+		var node := visual_node
+		var b0 := node.basis
+		var p0 := node.position
+		var parent3d := node.get_parent_node_3d()
+		var local_axis := (parent3d.global_basis.inverse() * axis).normalized() if parent3d != null else axis
+		t.tween_method(func(a: float) -> void: node.basis = Basis(local_axis, a) * b0, 0.0, 1.5, 0.7) \
+			.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+		t.tween_callback(func() -> void: ImpactFx.harvest_fall(get_parent(), global_position, away, height, material, chip_colour))
+		t.tween_interval(1.5)
+		t.tween_property(node, "position", p0 + Vector3.DOWN * maxf(height * 0.35, 0.6), 1.2).set_ease(Tween.EASE_IN)
+		t.tween_callback(node.queue_free)
+		t.tween_callback(queue_free)
+	else:
+		queue_free()
+
+
+## Broken up where it lies: what's left slumps into the ground as the chunks fly.
+func _crumble() -> void:
+	var t := create_tween()
+	if multimesh != null and instance >= 0:
+		var xf := multimesh.get_instance_transform(instance)
+		t.tween_method(func(k: float) -> void:
+			var squash := Vector3(1.0 + 0.2 * k, maxf(1.0 - k, 0.0001), 1.0 + 0.2 * k)
+			multimesh.set_instance_transform(instance, Transform3D(xf.basis.scaled_local(squash * maxf(1.0 - k * k, 0.0001)), xf.origin)),
+			0.0, 1.0, 0.3).set_ease(Tween.EASE_IN)
+		t.tween_callback(queue_free)
+	elif visual_node != null and is_instance_valid(visual_node):
+		var s0 := visual_node.scale
+		t.tween_property(visual_node, "scale", Vector3(s0.x * 1.2, s0.y * 0.001, s0.z * 1.2), 0.3).set_ease(Tween.EASE_IN)
 		t.tween_callback(visual_node.queue_free)
 		t.tween_callback(queue_free)
 	else:

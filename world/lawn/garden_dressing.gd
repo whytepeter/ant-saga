@@ -73,6 +73,13 @@ const COLLISION := {"pebbles": "convex", "twig": "convex", "fallen_leaf": "conve
 	"homework_sheet": "trimesh", "garden_glove": "trimesh", "toy_dinosaur": "trimesh", "bendy_straw": "trimesh",
 	"tennis_ball": "convex", "lego_brick": "convex", "moss_clump": "convex", "paperclip": "trimesh",
 	"bark_chips": "convex", "weed_rosette": "convex"}
+## What the solid ones are made of, for what a landing or a step on them does
+## (PlayerAudio.underfoot reads it off the collision shape); the rest count as wood.
+const SURFACE := {"toadstools": "fungus", "bracket_fungus": "fungus", "cone_mushrooms": "fungus", "inky_cap": "fungus",
+	"pebbles": "stone", "pot_shard": "stone", "snail_shell": "stone", "fallen_leaf": "leaf", "weed_rosette": "leaf",
+	"homework_sheet": "leaf", "moss_clump": "grass", "garden_glove": "grass", "soil_clods": "soil", "rotten_apple": "soil",
+	"eraser": "hollow", "button": "hollow", "lego_brick": "hollow", "tennis_ball": "hollow", "toy_dinosaur": "hollow",
+	"bendy_straw": "hollow", "paperclip": "hollow"}
 const TOADSTOOL_SPOTS := [[-300, -112], [-331, -62], [-228, 24], [-318, 42], [-292, -152], [-210, -95]]
 
 
@@ -158,7 +165,9 @@ static func build(parent: Node3D, layout: LawnLayout) -> void:
 			if COLLISION.has(id):
 				var body := _chunk_body(parent, bodies, key, id in CLIMBABLE)
 				for xf: Transform3D in chunks[key]:
-					shapes.append(_add_shape(body, prop.shape(String(COLLISION[id])), xf * prop.fix))
+					var cs := _add_shape(body, prop.shape(String(COLLISION[id])), xf * prop.fix)
+					cs.set_meta(&"surface", SURFACE.get(id, "wood"))
+					shapes.append(cs)
 			elif STEMS.has(id):
 				var body := _chunk_body(parent, bodies, key, true)
 				for xf: Transform3D in chunks[key]:
@@ -280,6 +289,7 @@ static func _drape(parent: Node3D, layout: LawnLayout, id: String, xf: Transform
 		body.collision_mask = 0
 		var cs := CollisionShape3D.new()
 		cs.shape = mesh.create_trimesh_shape()
+		cs.set_meta(&"surface", SURFACE.get(id, "wood"))
 		body.add_child(cs)
 		parent.add_child(body)
 
@@ -412,4 +422,4 @@ static func _tree_heroes(parent: Node3D, layout: LawnLayout, rng: RandomNumberGe
 static func _hero(parent: Node3D, body: StaticBody3D, prop: GardenProps.Prop, xf: Transform3D) -> void:
 	parent.add_child(GardenProps.instance(prop, xf))
 	if COLLISION.has(prop.id):
-		_add_shape(body, prop.shape(String(COLLISION[prop.id])), xf * prop.fix)
+		_add_shape(body, prop.shape(String(COLLISION[prop.id])), xf * prop.fix).set_meta(&"surface", SURFACE.get(prop.id, "wood"))

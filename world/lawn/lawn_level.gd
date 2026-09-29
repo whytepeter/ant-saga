@@ -179,6 +179,10 @@ func _setup_adventure() -> void:
 	life.name = "AmbientLife"
 	life.setup(layout, player)
 	add_child(life)
+	var friends := BugFriends.new()  # a ladybird won over with food follows him, and he rides it
+	friends.name = "BugFriends"
+	friends.setup(player, life)
+	add_child(friends)
 	var foliage := FoliagePush.new()  # grass and leaves lean away as he walks through
 	foliage.name = "FoliagePush"
 	foliage.player = player

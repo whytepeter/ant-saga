@@ -45,12 +45,19 @@ const KINDS := {
 const SIZES := {"water_strider": 6.0}
 ## Ground crawlers: walking speed (m/s, staged), how far they wander per leg.
 const CRAWL := {"ladybug": [2.0, 14.0], "velvet_mite": [2.8, 9.0], "aphid": [1.2, 5.0]}
-## What he can kill: hit points, what it leaves, what it does when hit.
+## What he can kill: hit points, what it leaves, what it does when hit. The
+## way Grounded 2 and Smalland sort them: the timid ones ("flee") run from him
+## when he's hit them or comes charging within `wary` m (walk or creep up and
+## they stay put); the aggressive ones ("bite") come for him once he's within
+## `sight` m, crouch before each bite (his cue to block or dodge) and give up
+## when he's got far away.
 const PREY := {
-	"aphid": {"hp": 2.0, "drops": {"bug_meat": 1, "honeydew": 1}, "angry": "flee"},
-	"springtail": {"hp": 2.0, "drops": {"bug_meat": 1}, "angry": "flee"},
-	"velvet_mite": {"hp": 4.0, "drops": {"mite_fuzz": 2}, "angry": "bite", "bite": 4.0},
+	"aphid": {"hp": 2.0, "drops": {"bug_meat": 1, "honeydew": 1}, "angry": "flee", "wary": 4.5},
+	"springtail": {"hp": 2.0, "drops": {"bug_meat": 1}, "angry": "flee", "wary": 6.0},
+	"velvet_mite": {"hp": 4.0, "drops": {"mite_fuzz": 2}, "angry": "bite", "bite": 4.0, "sight": 14.0},
 }
+## What's inside them: the goo a blow splashes out (ImpactFx.goo_*).
+const GOO := {"aphid": Color(0.6, 0.78, 0.22), "springtail": Color(0.84, 0.8, 0.42), "velvet_mite": Color(0.96, 0.78, 0.18)}
 ## Seconds before a killed one's replacement turns up at its home.
 const RESPAWN := 150.0
 const CREATURES_LAYER := 1 << 3
@@ -196,6 +203,18 @@ func hit_critter(c: Dictionary, damage: float, from: Vector3, by: Node3D) -> flo
 		node.global_position += away.normalized() * 0.6
 	if float(c["hp"]) <= 0.0:
 		_kill(c, by)
+		return damage
+	# goo splashing out of the wound, and it flashes red
+	var kind := String(c["kind"])
+	var size := float(c["size"])
+	var centre := node.global_position + Vector3.UP * size * 0.25
+	ImpactFx.goo_hit(self, centre, (centre - from).normalized(), GOO.get(kind, Color(0.85, 0.8, 0.3)), size)
+	var mi := node.get_child(0) as GeometryInstance3D
+	if mi != null:
+		var t := create_tween()
+		t.tween_method(func(k: float) -> void:
+			if is_instance_valid(mi):
+				mi.set_instance_shader_parameter("hurt", k), 1.0, 0.0, 0.35)
 	return damage
 
 
@@ -217,7 +236,8 @@ func _knock_off_stalk(c: Dictionary) -> void:
 	c["arc"] = 0.5
 
 
-## Dead: it flips on its back, leaves its parts, and fades; another comes later.
+## Dead: it bursts, cut in two (ImpactFx.split) in a spreading pool of its goo,
+## leaves its parts, and after a while sinks away; another comes later.
 func _kill(c: Dictionary, by: Node3D) -> void:
 	c["dead"] = true
 	var node: Node3D = c["node"]
@@ -228,15 +248,81 @@ func _kill(c: Dictionary, by: Node3D) -> void:
 	var kind := String(c["kind"])
 	var drops: Dictionary = PREY[kind]["drops"]
 	var toward := (by.global_position if by != null else node.global_position) - node.global_position
+	var size := float(c["size"])
+	var goo: Color = GOO.get(kind, Color(0.85, 0.8, 0.3))
+	_squash(c, Vector3.ONE, 1.0)
+	ImpactFx.goo_burst(self, node.global_position + Vector3.UP * size * 0.25, goo, size)
+	var mi := node.get_child(0) as MeshInstance3D
+	if mi != null:
+		ImpactFx.split(mi, goo)
 	var t := create_tween()
-	t.tween_property(node, "rotation:z", PI, 0.3).set_trans(Tween.TRANS_BACK)
+	t.tween_interval(0.25)
 	t.tween_callback(func() -> void:
 		for id: String in drops:
 			ItemPickup.spill(self, node.global_position + Vector3.UP * 0.8, StringName(id), int(drops[id]), toward))
-	t.tween_interval(1.2)
-	t.tween_property(node, "scale", Vector3.ONE * 0.01, 0.6)
+	t.tween_interval(9.0)
+	t.tween_property(node, "global_position:y", node.global_position.y - size * 0.5, 1.5).set_ease(Tween.EASE_IN)
 	t.tween_callback(node.queue_free)
 	_respawns.append({"kind": kind, "home": c["home"], "at": _time + RESPAWN})
+
+
+# ── making friends (BugFriends) ───────────────────────────────────────────────
+
+## The nearest wild `kind` on the ground within `radius` m of `at` ({} if none).
+func nearest(kind: String, at: Vector3, radius: float) -> Dictionary:
+	var best := {}
+	var best_d := radius
+	for c: Dictionary in _critters:
+		if String(c["kind"]) != kind or bool(c.get("dead", false)) or float(c["hop_t"]) >= 0.0:
+			continue
+		var d := (c["node"] as Node3D).global_position.distance_to(at)
+		if d < best_d:
+			best_d = d
+			best = c
+	return best
+
+
+## It stops for `seconds`, facing `at` (he's feeding it).
+func calm(c: Dictionary, at: Vector3, seconds: float) -> void:
+	var node: Node3D = c["node"]
+	c["wait"] = seconds
+	c["target"] = node.global_position
+	var to := at - node.global_position
+	node.rotation.y = atan2(to.x, to.z) + float(c["yaw_offset"])
+	c["walk"] = 0.0
+	(node.get_child(0) as GeometryInstance3D).set_instance_shader_parameter("walk", 0.0)
+
+
+## Won over: it leaves the wild (its holder node is the caller's to take) and
+## another of its kind turns up at its home a while later.
+func adopt(c: Dictionary) -> Node3D:
+	_critters.erase(c)
+	_respawns.append({"kind": String(c["kind"]), "home": c["home"], "at": _time + RESPAWN})
+	return c["node"]
+
+
+## He's come running at it, within `radius` m.
+func _charged_at(c: Dictionary, radius: float) -> bool:
+	var body := focus as CharacterBody3D
+	if body == null or Vector2(body.velocity.x, body.velocity.z).length() < 6.0:
+		return false
+	return (c["node"] as Node3D).global_position.distance_to(body.global_position) < radius
+
+
+## Startled: up it goes, off a good way from him.
+func _fly_off(c: Dictionary) -> void:
+	var node: Node3D = c["node"]
+	var pos := node.global_position
+	var away := pos - focus.global_position
+	away.y = 0.0
+	away = away.normalized() if away.length() > 0.01 else Vector3.FORWARD
+	var land := pos + away.rotated(Vector3.UP, _rng.randf_range(-0.6, 0.6)) * _rng.randf_range(16.0, 26.0)
+	c["from"] = pos
+	c["target"] = Vector3(land.x, TreeBase.ground_height(layout, land.x, land.z), land.z)
+	c["hop_t"] = 0.0
+	c["hop_time"] = maxf(pos.distance_to(c["target"]) / 8.0, 1.0)
+	c["arc"] = _rng.randf_range(5.0, 9.0)
+	took_off.emit(node)
 
 
 ## The critters of one kind (their holder nodes), for GardenAudio to give voices.
@@ -296,6 +382,10 @@ func _move(c: Dictionary, delta: float, center: Vector3) -> void:
 	if kind == "aphid" and bool(c.get("perched", false)):
 		return  # they sit tight on the stalk, sucking sap
 	if kind in CRAWL or kind == "springtail":
+		if PREY.has(kind) and float(c.get("angry", 0.0)) <= 0.0:
+			_notice(c)
+		elif kind == "ladybug" and float(c["hop_t"]) < 0.0 and int(c.get("trust", 0)) == 0 and _charged_at(c, 6.0):
+			_fly_off(c)  # (one he's fed knows him)
 		if float(c.get("angry", 0.0)) > 0.0 and float(c["hop_t"]) < 0.0:
 			_riled(c, delta)
 			return
@@ -411,8 +501,47 @@ func _move_on_ground(c: Dictionary, delta: float, center: Vector3) -> void:
 		(node.get_child(0) as GeometryInstance3D).set_instance_shader_parameter("walk", w)
 
 
-## Hit and riled: a velvet mite chases whoever hit it and nips; springtails
-## spring away, aphids scuttle off. It calms down after a while.
+## Squashes (crouching to spring) or stretches (the lunge) its body toward
+## `to` (scale: x/z wide, y tall), by `rate` of the way. The model only: its
+## hit body (a physics shape) stays round.
+func _squash(c: Dictionary, to: Vector3, rate: float) -> void:
+	var mi := (c["node"] as Node3D).get_child(0) as Node3D
+	if mi == null:
+		return
+	if not c.has("model_xf"):
+		c["model_xf"] = mi.transform
+	var now: Vector3 = c.get("squash", Vector3.ONE)
+	now = now.lerp(to, clampf(rate, 0.0, 1.0))
+	c["squash"] = now
+	var base: Transform3D = c["model_xf"]
+	mi.transform = Transform3D(Basis.from_scale(now) * base.basis, base.origin * now)
+
+
+## Whether it's seen him: a mite within its `sight` comes for him; an aphid or
+## a springtail he comes running at within `wary` m bolts (walking or creeping
+## up, he can get close).
+func _notice(c: Dictionary) -> void:
+	if focus == null or not is_instance_valid(focus) or bool(focus.get("downed")):
+		return
+	var spec: Dictionary = PREY[String(c["kind"])]
+	var pos := (c["node"] as Node3D).global_position
+	var to := focus.global_position - pos
+	if absf(to.y) > 4.0:
+		return  # (up a stem, or below it on the ground: out of its world)
+	var dist := Vector2(to.x, to.z).length()
+	if spec.has("sight") and dist < float(spec["sight"]):
+		c["angry"] = 9.0
+		c["threat"] = focus
+	elif spec.has("wary") and dist < float(spec["wary"]):
+		var body := focus as CharacterBody3D
+		if body != null and Vector2(body.velocity.x, body.velocity.z).length() > 6.0:
+			c["angry"] = 3.0
+			c["threat"] = focus
+
+
+## Riled: a velvet mite chases him, crouches and lunges to nip (and gives up
+## once he's far off); springtails spring away, aphids scuttle off. It calms
+## down after a while.
 func _riled(c: Dictionary, delta: float) -> void:
 	var node: Node3D = c["node"]
 	var kind := String(c["kind"])
@@ -428,17 +557,41 @@ func _riled(c: Dictionary, delta: float) -> void:
 	var dir := to / maxf(dist, 0.001)
 	var heading := Vector3.ZERO
 	if String(PREY[kind]["angry"]) == "bite":
+		if dist > float(PREY[kind].get("sight", 14.0)) * 2.0 or bool(threat.get("downed")):
+			c["angry"] = 0.0  # he got away (or he's down): back to its business
+			c["atk"] = 0.0
+			_squash(c, Vector3.ONE, 1.0)
+			return
+		c["angry"] = maxf(float(c["angry"]), 2.0)  # (still after him while he's near)
 		c["nip"] = maxf(float(c.get("nip", 0.0)) - delta, 0.0)
-		if dist > 1.7:
-			pos += dir * 4.4 * delta
+		var atk := float(c.get("atk", 0.0))  # > 0: crouching to spring (s left); < 0: the lunge
+		if atk > 0.0:
+			atk -= delta
+			heading = dir * 0.01
+			_squash(c, Vector3(1.12, 0.78, 1.12), 14.0 * delta)
+			if atk <= 0.0:
+				atk = -0.2
+		elif atk < 0.0:
+			atk = minf(atk + delta, 0.0)
+			pos += dir * 9.0 * delta
 			heading = dir
-		elif float(c["nip"]) <= 0.0:
-			c["nip"] = 1.2
-			var combat := threat.get_node_or_null("Combat") as PlayerCombat
-			if combat != null:
-				combat.take_hit(float(PREY[kind].get("bite", 3.0)), pos, &"light", node)
+			_squash(c, Vector3(0.92, 1.14, 0.92), 18.0 * delta)
+			if atk >= 0.0:
+				c["nip"] = 1.4
+				if dist < 2.5:
+					var combat := threat.get_node_or_null("Combat") as PlayerCombat
+					if combat != null:
+						combat.take_hit(float(PREY[kind].get("bite", 3.0)), pos, &"light", node)
 		else:
-			heading = dir * 0.01  # face him between nips
+			_squash(c, Vector3.ONE, 10.0 * delta)
+			if dist > 1.8:
+				pos += dir * 4.4 * delta
+				heading = dir
+			elif float(c["nip"]) <= 0.0:
+				atk = 0.45  # crouch: the bite is coming
+			else:
+				heading = dir * 0.01  # face him between nips
+		c["atk"] = atk
 	elif kind == "springtail":
 		# a big spring away from him
 		var land := pos - dir * _rng.randf_range(6.0, 10.0)
@@ -450,8 +603,9 @@ func _riled(c: Dictionary, delta: float) -> void:
 		c["angry"] = maxf(float(c["angry"]) - 3.0, 0.0)
 		return
 	else:
-		pos -= dir * 3.0 * delta
-		heading = -dir
+		# scuttle off, jinking
+		heading = (-dir).rotated(Vector3.UP, sin(_time * 7.0 + float(c["seed"])) * 0.5)
+		pos += heading * 3.6 * delta
 	pos.y = TreeBase.ground_height(layout, pos.x, pos.z)
 	node.global_position = pos
 	if heading.length() > 0.001:

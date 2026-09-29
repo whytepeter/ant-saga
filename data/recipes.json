@@ -6,6 +6,7 @@
     {"id": "stone_hammer", "makes": "stone_hammer", "count": 1, "needs": {"pebble": 4, "sprig": 1, "twine": 2}, "station": "hand", "group": "Tools and weapons"},
     {"id": "thorn_spear", "makes": "thorn_spear", "count": 1, "needs": {"twig": 3, "pebble": 1, "twine": 2}, "station": "hand", "group": "Tools and weapons"},
     {"id": "torch", "makes": "torch", "count": 1, "needs": {"sprig": 1, "resin": 1, "fibre": 1}, "station": "hand", "group": "Tools and weapons"},
-    {"id": "bandage", "makes": "bandage", "count": 1, "needs": {"clover": 2, "fibre": 1}, "station": "hand", "group": "Survival"}
+    {"id": "bandage", "makes": "bandage", "count": 1, "needs": {"clover": 2, "fibre": 1}, "station": "hand", "group": "Survival"},
+    {"id": "leaf_saddle", "makes": "leaf_saddle", "count": 1, "needs": {"leaf": 2, "twine": 3, "mite_fuzz": 2}, "station": "hand", "group": "Bug friends"}
   ]
 }

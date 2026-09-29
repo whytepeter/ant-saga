@@ -131,9 +131,10 @@ func _process(delta: float) -> void:
 	_visual.transform = _base.translated_local(Vector3(sin(_shake * 90.0) * 0.12 * k, 0.0, 0.0))
 
 
-## What it takes (Harvest): [tool, tier]. Any blade cuts a twig or silk.
+## What it takes (Harvest): [tool, tier]. A twig is wood (the axe hews it; the
+## knife is too small); any blade cuts silk.
 func harvest_tool() -> Array:
-	return [Harvest.CHOP, 1]
+	return [Harvest.CHOP, 1] if kind == "silk" else [Harvest.HEW, 1]
 
 
 ## What the prompt says for him ({"name", "verb", "ok", "need", "hand"}).
@@ -188,8 +189,9 @@ func chop(power: float, from: Vector3, by: Node3D) -> bool:
 func _wear(power: float, from: Vector3, by: Node3D) -> bool:
 	health -= power
 	_shake = 0.25
-	_chips(from)
-	_sound(true)
+	_chips(from)  # (wood's knock comes with its splinters: ImpactFx.harvest_blow)
+	if kind == "silk":
+		_sound(true)
 	if health <= 0.0:
 		_fall(by)
 	return true
@@ -212,6 +214,9 @@ func _fall(by: Node3D) -> void:
 	for id: String in drops:
 		ItemPickup.spill(get_parent(), aim_point(by.global_position if by != null else global_position) + Vector3.UP * 1.0,
 			StringName(id), int(drops[id]), toward)
+	if kind != "silk":
+		ImpactFx.harvest_break(get_parent(), aim_point(by.global_position if by != null else global_position) + Vector3.UP * 0.5,
+			"wood", reach_radius * 2.0, toward, chip_colour)
 	if _visual == null:
 		queue_free()
 		return
@@ -231,12 +236,20 @@ func _fall(by: Node3D) -> void:
 	t.chain().tween_callback(queue_free)
 
 
-## A few bits flying off where the blade bit.
+## Bits flying off where the blade bit: silk flecks, or splinters and sawdust
+## out of the wood toward him.
 func _chips(from: Vector3) -> void:
-	var at := from
-	at.y = global_position.y + 0.8
-	chips_at(get_parent(), global_position.lerp(at, 0.3), Color(0.95, 0.95, 1.0) if kind == "silk" else chip_colour,
-		6 if kind == "silk" else 14)
+	if kind == "silk":
+		var at := from
+		at.y = global_position.y + 0.8
+		chips_at(get_parent(), global_position.lerp(at, 0.3), Color(0.95, 0.95, 1.0), 6)
+		return
+	var bite := aim_point(from)
+	var toward := from - bite
+	toward.y = 0.0
+	if toward.length() > 0.01:
+		bite += toward.normalized() * reach_radius * 0.6
+	ImpactFx.harvest_blow(get_parent(), bite + Vector3.UP * 0.4, "wood", reach_radius * 2.0, toward, chip_colour)
 
 
 ## Bits of `colour` bursting out at `at` (a blow landing), under `parent`.

@@ -16,7 +16,8 @@ extends RefCounted
 ##   damage   hit points taken off a creature
 ##   kind     &"light" or &"heavy" (a heavy blow knocks a pill bug into a ball)
 ## A weapon's "tool" says what it harvests (Harvest): the axe and the knife
-## chop, the hammer smashes, fists and the spear harvest nothing.
+## chop, only the axe hews wood, the hammer smashes, fists and the spear
+## harvest nothing.
 ##   chop     how much it cuts (roots, straw, silk); 0 for fists
 
 const FISTS := &"fists"
@@ -67,7 +68,7 @@ const ALL := {
 		"charged": {"kind": &"heavy", "clip": "axe_charged_swing", "speed": 1.0, "lock": 0.9, "recover": 1.1,
 			"lunge": 5.0, "reach": 1.9, "radius": 2.2, "damage": 6.0, "chop": 3.0},
 		"block": "axe_parry",
-		"tool": {"chop": [1, 1.0]},  # chops grass, leaves, weeds, mushrooms, twigs
+		"tool": {"chop": [1, 1.0], "hew": [1, 1.0]},  # chops grass, leaves, weeds, mushrooms; hews wood
 	},
 	&"stone_knife": {
 		"name": "Stone knife",
@@ -92,7 +93,7 @@ const ALL := {
 		"heavy": {"kind": &"heavy", "clip": "knife_thrust", "speed": 1.1, "lock": 0.6, "recover": 0.7,
 			"lunge": 5.0, "reach": 1.8, "radius": 1.1, "damage": 3.0, "chop": 0.5},
 		"block": "axe_parry",
-		"tool": {"chop": [1, 0.5]},  # chops like the axe, slowly (Grounded's dagger)
+		"tool": {"chop": [1, 0.5]},  # chops like the axe, slowly (Grounded's dagger); too small for wood
 	},
 	&"stone_hammer": {
 		"name": "Stone hammer",
