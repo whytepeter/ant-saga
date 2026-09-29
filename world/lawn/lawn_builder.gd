@@ -69,6 +69,7 @@ const SURFACE_WEIGHTS := [
 ]
 const GROUND_SHADER := preload("res://world/shaders/ground.gdshader")
 const GRASS_SHADER := preload("res://world/shaders/grass.gdshader")
+const GRASS_FAR_SHADER := preload("res://world/shaders/grass_far.gdshader")  # (no near dissolve)
 
 @export_tool_button("Rebuild graybox") var rebuild_action := rebuild
 @export var grass_enabled := true
@@ -77,6 +78,8 @@ var layout: LawnLayout
 var _materials := {}
 var _grass_bodies: Array[RID] = []
 var _grass_shapes: Array[RID] = []
+var _grass_lod: GrassShadows
+var _far_blades: Array[Mesh] = []  # the 3-row blades grass chunks draw far off
 
 
 func _ready() -> void:
@@ -93,6 +96,7 @@ func rebuild() -> void:
 		remove_child(old)
 		old.queue_free()
 	_free_grass_physics()
+	_grass_lod = null
 	layout = LawnLayout.load_default()
 	var root := Node3D.new()
 	root.name = "Generated"
@@ -116,6 +120,12 @@ func rebuild() -> void:
 			# the tree grounds' grass is solid and falls to his axe like the lawn's
 			var bucket := {"standing": grounds.grass_xforms, "clover": []}
 			GrassField.register(grounds.grass_multimeshes, grounds.grass_xforms, grounds.grass_colors, _grass_body(bucket))
+		if grounds != null and _grass_lod != null:
+			# the tree grounds' grass drops its dissolve and detail too, from afar
+			for c: Node in grounds.get_children():
+				var mmi := c as MultiMeshInstance3D
+				if mmi != null and mmi.multimesh in grounds.grass_multimeshes:
+					_grass_lod.add(mmi, false, _far_blades[grounds.grass_multimeshes.find(mmi.multimesh)])
 
 
 # ── helpers ───────────────────────────────────────────────────────────────────
@@ -1989,10 +1999,13 @@ func _build_grass(parent: Node3D) -> void:
 	# a soft shape on the ground, and it's drawn into every cascade
 	blade_meshes[0].shadow_mesh = GrassMeshes.blade(BLADE_HEIGHT, BLADE_WIDTH, 0.08, 3, 0.35)
 	blade_meshes[1].shadow_mesh = GrassMeshes.blade(BLADE_HEIGHT, BLADE_WIDTH * 0.8, 0.22, 3, -0.5)
-	# and only the chunks near the camera cast them (GrassShadows)
+	# and far off they're drawn as the blade, too (GrassShadows)
+	_far_blades = [blade_meshes[0].shadow_mesh, blade_meshes[1].shadow_mesh]
+	# only the chunks near the camera cast shadows, dissolve and draw full blades
 	var shadows := GrassShadows.new()
 	shadows.name = "GrassShadows"
 	parent.add_child(shadows)
+	_grass_lod = shadows
 	# per-blade tints around 0.45 grey (the grass shader supplies the greens):
 	# brighter, darker, sun-bleached yellow and cooler blue-green blades
 	var greens := [Color(0.45, 0.45, 0.45), Color(0.52, 0.5, 0.42), Color(0.38, 0.42, 0.4), Color(0.56, 0.52, 0.36),
@@ -2101,6 +2114,10 @@ func _build_grass(parent: Node3D) -> void:
 
 	var mat := _grass_material()
 	GrassField.reset(parent, mat, BLADE_HEIGHT)  # the blades he can chop (Harvest "grass")
+	shadows.near_material = mat
+	var far_mat := mat.duplicate() as ShaderMaterial
+	far_mat.shader = GRASS_FAR_SHADER
+	shadows.far_material = far_mat
 	var collar_mesh := GrassMeshes.soil_collar(rng)
 	var collar_mat := _ground_material()
 	var flat_mat := mat.duplicate() as ShaderMaterial  # blades pressed flat where he lay: pale, bruised, drying
@@ -2110,8 +2127,7 @@ func _build_grass(parent: Node3D) -> void:
 	flat_mat.set_shader_parameter("wind_strength", 0.04)
 	flat_mat.set_shader_parameter("push_strength", 0.0)  # (lying flat: nothing to push aside)
 	flat_mat.set_shader_parameter("vein_strength", 0.35)  # (pressed smooth)
-	flat_mat.set_shader_parameter("fade_near", 0.0)  # (and never in the way of the camera)
-	flat_mat.set_shader_parameter("fade_far", 0.01)
+	flat_mat.shader = GRASS_FAR_SHADER  # (lying flat: never in the way of the camera)
 	var pressed_mesh := GrassMeshes.pressed_blade(PRESSED_LENGTH, BLADE_WIDTH * 0.85)
 	var physics := not Engine.is_editor_hint() and is_inside_tree()
 	if physics:
@@ -2129,7 +2145,7 @@ func _build_grass(parent: Node3D) -> void:
 			if xforms.is_empty():
 				continue
 			var mmi := _multimesh(parent, blade_meshes[variant], mat, xforms, bucket["colors"][variant])
-			shadows.add(mmi)
+			shadows.add(mmi, true, _far_blades[variant])
 			mms[variant] = mmi.multimesh
 		if not (bucket["flat"] as Array).is_empty():
 			var flat := _multimesh(parent, pressed_mesh, flat_mat, bucket["flat"], bucket["flat_colors"], false)

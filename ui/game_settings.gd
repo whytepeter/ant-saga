@@ -10,10 +10,12 @@ extends RefCounted
 
 const PATH := "user://settings.cfg"
 ## Graphics presets (the Preset row): shadows, anti-aliasing, AO, glow, fog, detail.
+## Anti-aliasing (AA below): SMAA smooths the edges for next to nothing; MSAA
+## (any count) cost about a third of the frame over the lawn, so only Ultra has it.
 const PRESETS := {
 	0: {"shadows": 0, "aa": 1, "ao": 0, "glow": 1, "fog": 0, "detail": 0},  # low
-	1: {"shadows": 1, "aa": 2, "ao": 0, "glow": 1, "fog": 1, "detail": 1},  # medium
-	2: {"shadows": 1, "aa": 3, "ao": 1, "glow": 1, "fog": 1, "detail": 1},  # high: the game as made
+	1: {"shadows": 1, "aa": 5, "ao": 0, "glow": 1, "fog": 1, "detail": 1},  # medium
+	2: {"shadows": 1, "aa": 5, "ao": 1, "glow": 1, "fog": 1, "detail": 1},  # high: the game as made
 	3: {"shadows": 2, "aa": 3, "ao": 1, "glow": 1, "fog": 1, "detail": 2},  # ultra
 }
 const CUSTOM := 4
@@ -21,7 +23,7 @@ const DEFAULTS := {
 	"game": {"look_speed": 1.0, "invert_y": 0, "fov": 72.0, "subtitles": 1, "minimap": 1, "compass": 1,
 		"prompts": 1, "pace": 1},
 	"display": {"window": 0, "ui_size": 1, "vsync": 1, "fps": 1, "brightness": 1.0, "render_scale": 1.0},
-	"graphics": {"preset": 2, "shadows": 1, "aa": 3, "ao": 1, "glow": 1, "fog": 1, "detail": 1},
+	"graphics": {"preset": 2, "shadows": 1, "aa": 5, "ao": 1, "glow": 1, "fog": 1, "detail": 1},
 	"audio": {"master": 1.0, "effects": 1.0, "ambience": 1.0, "interface": 1.0},
 }
 ## Keys and buttons you can change: [action, what it does].
@@ -34,6 +36,8 @@ const REBINDABLE := [
 	["camera_view", "Camera view"], ["controls", "Controls card"],
 ]
 const WINDOW := ["Window", "Full screen"]
+## The Anti-aliasing row, by the index saved (SMAA came last, so older saves still read right).
+const AA := ["Off", "FXAA", "MSAA 2×", "MSAA 4×", "TAA", "SMAA"]
 const UI_SIZES := [0.85, 1.0, 1.15, 1.3]
 const FPS := [30, 60, 120, 0]
 const SHADOW_ATLAS := [2048, 4096, 8192]
@@ -201,7 +205,10 @@ static func _apply(section: String, key: String) -> void:
 		"display/render_scale":
 			if tree != null:
 				var s := float(v)
-				tree.root.scaling_3d_mode = Viewport.SCALING_3D_MODE_FSR if s < 0.99 else Viewport.SCALING_3D_MODE_BILINEAR
+				# sharpened back up by MetalFX on a Mac (Apple's own upscaler), FSR elsewhere
+				var up := Viewport.SCALING_3D_MODE_METALFX_SPATIAL \
+					if RenderingServer.get_current_rendering_driver_name() == "metal" else Viewport.SCALING_3D_MODE_FSR
+				tree.root.scaling_3d_mode = up if s < 0.99 else Viewport.SCALING_3D_MODE_BILINEAR
 				tree.root.scaling_3d_scale = s
 		"graphics/shadows":
 			var q := clampi(int(v), 0, 2)
@@ -210,10 +217,11 @@ static func _apply(section: String, key: String) -> void:
 				RenderingServer.SHADOW_QUALITY_SOFT_LOW, RenderingServer.SHADOW_QUALITY_SOFT_MEDIUM][q])
 		"graphics/aa":
 			if tree != null:
-				var a := clampi(int(v), 0, 4)  # off, FXAA, MSAA 2×, MSAA 4×, TAA
-				tree.root.screen_space_aa = Viewport.SCREEN_SPACE_AA_FXAA if a == 1 else Viewport.SCREEN_SPACE_AA_DISABLED
+				var a := clampi(int(v), 0, AA.size() - 1)  # (AA)
+				tree.root.screen_space_aa = Viewport.SCREEN_SPACE_AA_FXAA if a == 1 \
+					else (Viewport.SCREEN_SPACE_AA_SMAA if a == 5 else Viewport.SCREEN_SPACE_AA_DISABLED)
 				tree.root.msaa_3d = [Viewport.MSAA_DISABLED, Viewport.MSAA_DISABLED, Viewport.MSAA_2X,
-					Viewport.MSAA_4X, Viewport.MSAA_DISABLED][a]
+					Viewport.MSAA_4X, Viewport.MSAA_DISABLED, Viewport.MSAA_DISABLED][a]
 				tree.root.use_taa = a == 4
 		"graphics/ao":
 			var env := _environment()

@@ -53,6 +53,7 @@ python3 tools/lawn_layout.py check
 ```
 The game starts in **survival mode** (`survival_mode` on the level: Amodu alone, hunger and thirst, no story); the graybox test checks the world in it. Story mode's checks are parked in `tests/story_test.gd` (not in the everyday set; run it before story mode comes back).
 For visuals, run `tests/lawn_tour.gd` without `--headless`, passing `-- --out=<dir>`, and look at the screenshots.
+For performance, run `tests/perf_bench.gd` without `--headless` (`-- --ablate` or `--under=<node>` shows what each part costs); compare changes interleaved in one run, since other sessions' Godot runs make timings swing.
 
 ## Conventions
 - GDScript is strictly typed. Godot treats Variant inference as an error, so type loop variables and Dictionary/Array reads.

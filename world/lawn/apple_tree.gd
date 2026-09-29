@@ -313,6 +313,7 @@ static func leaf_mesh(arch := 0.12, curl := 0.0) -> ArrayMesh:
 		st.set_uv(p[1])
 		st.add_vertex(p[0])
 	st.generate_normals()
+	st.index()  # shared corners (thousands of leaves are drawn)
 	return st.commit()
 
 
@@ -380,6 +381,7 @@ func _make_leaf_card() -> ArrayMesh:
 		st.set_normal(Vector3.UP)
 		st.set_uv(q[i][1])
 		st.add_vertex(q[i][0])
+	st.index()
 	return st.commit()
 
 

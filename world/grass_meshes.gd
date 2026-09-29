@@ -43,6 +43,7 @@ static func blade(height: float, width: float, bend: float, rows := 8, twist := 
 			st.set_uv(Vector2(u1, t1)); st.add_vertex(b1)
 	st.generate_normals()
 	st.generate_tangents()  # the shader's vein ridges are a normal map
+	st.index()  # shared corners: 36 vertices a blade, not 96 (hundreds of thousands are drawn)
 	return st.commit()
 
 
@@ -78,6 +79,7 @@ static func pressed_blade(length: float, width: float, rows := 12) -> ArrayMesh:
 			st.set_uv(Vector2(u1, t1)); st.add_vertex(ring[i + 1][side + 1])
 	st.generate_normals()
 	st.generate_tangents()
+	st.index()
 	return st.commit()
 
 
@@ -140,6 +142,7 @@ static func mimosa(height: float, pinna_length: float) -> ArrayMesh:
 			st.add_vertex(c0); st.add_vertex(c1 + side * w); st.add_vertex(c1)
 			st.add_vertex(c0); st.add_vertex(c1); st.add_vertex(c1 - side * w)
 	st.generate_normals()
+	st.index()
 	return st.commit()
 
 
@@ -168,4 +171,5 @@ static func clover(height: float, leaf_radius: float) -> ArrayMesh:
 			var p1 := center + Vector3(sin(a1), 0.0, cos(a1)).rotated(Vector3.UP, TAU * k / 3.0 + PI) * leaf_radius
 			st.add_vertex(center); st.add_vertex(p0); st.add_vertex(p1)
 	st.generate_normals()
+	st.index()
 	return st.commit()

@@ -118,15 +118,15 @@ func _fill() -> void:
 			_slider("display", "brightness", "Brightness", 0.6, 1.5, 0.05, "%d%%", 100.0,
 				"Lighter or darker overall. The nights stay dark on purpose.")
 			_slider("display", "render_scale", "Render scale", 0.5, 1.0, 0.05, "%d%%", 100.0,
-				"Draws the 3D world smaller and sharpens it back up (FSR). Lower is faster.")
+				"Draws the 3D world smaller and sharpens it back up (MetalFX on a Mac, FSR elsewhere). Lower is faster.")
 			_defaults_row("display")
 		"Graphics":
 			_preset = _choice("graphics", "preset", "Preset", ["Low", "Medium", "High", "Ultra", "Custom"],
 				"Sets everything below at once. High is the game as it's meant to look.")
 			_graphics_rows["shadows"] = _choice("graphics", "shadows", "Shadows", ["Low", "Medium", "High"],
 				"How sharp and detailed the shadows are.")
-			_graphics_rows["aa"] = _choice("graphics", "aa", "Anti-aliasing", ["Off", "FXAA", "MSAA 2×", "MSAA 4×", "TAA"],
-				"Smooths jagged edges on grass and leaves. MSAA 4× is the sharpest.")
+			_graphics_rows["aa"] = _choice("graphics", "aa", "Anti-aliasing", GameSettings.AA,
+				"Smooths jagged edges on grass and leaves. SMAA costs next to nothing; MSAA 4× is the sharpest but slow.")
 			_graphics_rows["ao"] = _choice("graphics", "ao", "Ambient occlusion", OFF_ON,
 				"Soft shade where things meet the ground.")
 			_graphics_rows["glow"] = _choice("graphics", "glow", "Glow", OFF_ON, "Bright light blooms a little.")
