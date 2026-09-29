@@ -6,20 +6,24 @@ extends SceneTree
 ## objects and triangles. V-Sync and the frame cap are off. Needs a window:
 ##
 ##   Godot --path . -s tests/perf_bench.gd -- [--out=<file.json>] [--frames=240]
-##       [--spots=spawn,V2,...] [--ablate] [--under=GameHud]
+##       [--spots=spawn,V2,...] [--size=1920x1080] [--ablate] [--under=GameHud]
 ##
-## --ablate  switches effects and each system under the level off, one at a time,
-##           at the heaviest spot, and prints the frame without it.
-## --under=  the same for the children of one node (a path under the level).
+## --ablate  what each effect and each system under the level costs at the
+##           heaviest spot: each switched off and on in turn, several rounds.
+## --under=  the same for the children of one node (a path under the level),
+##           e.g. --spots=V2 --under=Graybox/Generated
 ## (Metal reports no GPU timings; a big "draw" with a small "rCPU" means GPU-bound.)
 
 const SETTLE := 90
+const ABLATE_ROUNDS := 5
+const BLOCK := 24  # frames in one ablation sample
 
 var frames := 240
 var out_path := ""
 var ablate := false
 var under := ""
 var only: PackedStringArray = []
+var size := Vector2i.ZERO  # the window, in pixels (--size); default: the project's
 var level: Node3D
 var player: Player
 var layout: LawnLayout
@@ -47,6 +51,9 @@ func _initialize() -> void:
 			frames = int(arg.trim_prefix("--frames="))
 		elif arg.begins_with("--spots="):
 			only = arg.trim_prefix("--spots=").split(",")
+		elif arg.begins_with("--size="):
+			var wh := arg.trim_prefix("--size=").split("x")
+			size = Vector2i(int(wh[0]), int(wh[1]))
 		elif arg.begins_with("--under="):
 			under = arg.trim_prefix("--under=")
 		elif arg == "--ablate":
@@ -69,6 +76,9 @@ func _run() -> void:
 	Engine.max_fps = 0
 	# macOS stops drawing a window that is covered: keep this one on top
 	DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_ALWAYS_ON_TOP, true)
+	if size != Vector2i.ZERO:
+		DisplayServer.window_set_size(size)
+		await _frames(10)
 	vp_rid = root.get_viewport_rid()
 	RenderingServer.viewport_set_measure_render_time(vp_rid, true)
 	physics_frame.connect(func() -> void:
@@ -211,7 +221,9 @@ func _measure(label: String) -> Dictionary:
 	return r
 
 
-## Switches one thing off at the heaviest measured spot, measures, switches it back.
+## What each thing costs at the heaviest spot: switched off and on in turn,
+## ROUNDS times round all of them (so a busy machine hits both sides alike),
+## the frame without it minus the frame with it, the median of the pairs.
 func _ablate() -> void:
 	var heaviest: Dictionary = results[0]
 	for r: Dictionary in results:
@@ -222,50 +234,79 @@ func _ablate() -> void:
 	for s: Dictionary in spots:
 		if s["name"] == heaviest["spot"]:
 			spot = s
-	print("\nablation at \"%s\" (each line: one thing off)" % spot["name"])
-	_header()
-	await _stand(spot, "baseline")
+	await _stand(spot, "ablation spot: " + String(spot["name"]))
+	var items: Array = []  # [label, Callable(on: bool)]
 	if ablate:
 		var sun := level.get_node("Sun") as DirectionalLight3D
 		var cam_attr := (level.get_node("WorldEnvironment") as WorldEnvironment).camera_attributes as CameraAttributesPractical
 		var msaa := root.msaa_3d
-		var toggles: Array = [
+		var ssaa := root.screen_space_aa
+		items.append_array([
 			["volumetric fog", func(on: bool) -> void: env.volumetric_fog_enabled = on],
 			["SSAO", func(on: bool) -> void: env.ssao_enabled = on],
 			["glow", func(on: bool) -> void: env.glow_enabled = on],
 			["depth of field", func(on: bool) -> void: cam_attr.dof_blur_far_enabled = on],
 			["sun shadows", func(on: bool) -> void: sun.shadow_enabled = on],
-			["MSAA", func(on: bool) -> void: root.msaa_3d = msaa if on else Viewport.MSAA_DISABLED],
+			["anti-aliasing", func(on: bool) -> void:
+				root.msaa_3d = msaa if on else Viewport.MSAA_DISABLED
+				root.screen_space_aa = ssaa if on else Viewport.SCREEN_SPACE_AA_DISABLED],
 			["half resolution", func(on: bool) -> void: root.scaling_3d_scale = 1.0 if on else 0.5],
-		]
-		for t: Array in toggles:
-			var f: Callable = t[1]
+		])
+	if ablate or under != "":
+		# every child: its processing stopped and hidden
+		var parent: Node = level if under == "" else level.get_node(under)
+		for n: Node in parent.get_children():
+			if n.name in [&"Player", &"Sun", &"WorldEnvironment", &"HUD"]:
+				continue
+			var scr := n.get_script() as Script
+			var child_name := String(n.name)
+			if child_name.begins_with("@"):
+				child_name = String(scr.get_global_name()) if scr != null else n.get_class()
+			var was_mode := n.process_mode
+			var has_visible := "visible" in n
+			var was_visible: bool = n.get("visible") if has_visible else true
+			items.append([child_name, func(on: bool) -> void:
+				n.process_mode = was_mode if on else Node.PROCESS_MODE_DISABLED
+				if has_visible:
+					n.set("visible", was_visible if on else false)])
+	var saved := {}  # label -> Array[float] (ms without it minus with it)
+	var stats := {}  # label -> [draw calls, triangles] without it
+	for rnd in ABLATE_ROUNDS:
+		for it: Array in items:
+			var f: Callable = it[1]
+			await _frames(6)
+			var with_ms := await _block()
 			f.call(false)
-			await _frames(30)
-			await _measure("- " + String(t[0]))
+			await _frames(6)
+			var without_ms := await _block()
+			stats[it[0]] = [RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_DRAW_CALLS_IN_FRAME),
+				RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_PRIMITIVES_IN_FRAME)]
 			f.call(true)
-	var parent: Node = level if under == "" else level.get_node(under)
-	if not ablate and under == "":
-		return
-	await _measure("baseline")
-	# every child, one at a time: stop its processing and hide it
-	for n: Node in parent.get_children():
-		if n.name in [&"Player", &"Sun", &"WorldEnvironment", &"HUD"]:
-			continue
-		var scr := n.get_script() as Script
-		var child_name := String(n.name)
-		if child_name.begins_with("@"):
-			child_name = String(scr.get_global_name()) if scr != null else n.get_class()
-		var was_mode := n.process_mode
-		n.process_mode = Node.PROCESS_MODE_DISABLED
-		var was_visible: bool = n.get("visible") if "visible" in n else true
-		if "visible" in n:
-			n.set("visible", false)
-		await _frames(30)
-		await _measure("- " + child_name)
-		n.process_mode = was_mode
-		if "visible" in n:
-			n.set("visible", was_visible)
+			var acc: Array = saved.get(it[0], [])
+			acc.append(without_ms - with_ms)
+			saved[it[0]] = acc
+	var base_draws := RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_DRAW_CALLS_IN_FRAME)
+	var base_prims := RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_PRIMITIVES_IN_FRAME)
+	var rows: Array = []
+	for label: String in saved:
+		var d: Array = saved[label]
+		d.sort()
+		rows.append([label, float(d[d.size() / 2]), float(d[0]), float(d[-1])])
+	rows.sort_custom(func(a: Array, b: Array) -> bool: return float(a[1]) < float(b[1]))
+	print("\nwhat each costs at \"%s\" (frame without it minus with it; median of %d pairs, range)" % [
+		spot["name"], ABLATE_ROUNDS])
+	for r: Array in rows:
+		var st: Array = stats[r[0]]
+		print("  %-26s %+7.2f ms  (%+6.2f .. %+6.2f)   draw calls %+5d   triangles %+6.2f M" % [String(r[0]).left(26),
+			r[1], r[2], r[3], int(st[0]) - base_draws, (int(st[1]) - base_prims) / 1e6])
+		results.append({"spot": "ablate " + String(r[0]), "saved_ms": -float(r[1])})
+
+
+## The mean frame (ms) over BLOCK frames.
+func _block() -> float:
+	var t0 := Time.get_ticks_usec()
+	await _frames(BLOCK)
+	return (Time.get_ticks_usec() - t0) / 1000.0 / BLOCK
 
 
 func _frames(n: int) -> void:

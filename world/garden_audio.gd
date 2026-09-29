@@ -56,14 +56,33 @@ var _cave := 0.0
 var _rng := RandomNumberGenerator.new()
 var _space_reverb: AudioEffectReverb
 var _beds_muffle: AudioEffectLowPassFilter
+static var _sounds := {}  # name -> AudioStream (sound)
 
 
-## A sound from assets/audio; beds and loops come back looping.
+## A sound from assets/audio; beds and loops come back looping. Each is kept
+## once loaded: a one-shot nothing holds on to any more would be dropped and
+## read from disk again at its next play (every footstep and blow, a hitch).
 static func sound(sound_name: String) -> AudioStream:
-	var s: AudioStream = load(DIR + sound_name + ".ogg")
+	var s: AudioStream = _sounds.get(sound_name)
+	if s != null:
+		return s
+	var path := DIR + sound_name + ".ogg"
+	if ResourceLoader.load_threaded_get_status(path) != ResourceLoader.THREAD_LOAD_INVALID_RESOURCE:
+		s = ResourceLoader.load_threaded_get(path) as AudioStream  # (warm() asked for it)
+	if s == null:
+		s = load(path)
 	if s is AudioStreamOggVorbis and (sound_name.begins_with("bed_") or sound_name.begins_with("loop_")):
 		(s as AudioStreamOggVorbis).loop = true
+	_sounds[sound_name] = s
 	return s
+
+
+## Loads every sound on a worker thread, so none is first read from disk the
+## moment it plays (a far-off mower is seconds of audio to unpack).
+static func warm() -> void:
+	for file: String in ResourceLoader.list_directory(DIR):
+		if file.ends_with(".ogg") and not _sounds.has(file.get_basename()):
+			ResourceLoader.load_threaded_request(DIR + file)
 
 
 ## The buses and their effects, made once (the project has only Master).
@@ -113,6 +132,7 @@ func setup(p: Player, c: DayClock, w: Weather, l: LawnLayout, a: AmbientLife, g:
 func _ready() -> void:
 	_rng.randomize()
 	ensure_buses()
+	warm()
 	_space_reverb = AudioServer.get_bus_effect(AudioServer.get_bus_index("Space"), 0) as AudioEffectReverb
 	_beds_muffle = AudioServer.get_bus_effect(AudioServer.get_bus_index("Beds"), 0) as AudioEffectLowPassFilter
 	for bed: String in ["bed_canopy", "bed_birds", "bed_heat", "bed_dusk", "bed_rain"]:

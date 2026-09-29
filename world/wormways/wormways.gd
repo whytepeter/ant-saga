@@ -23,6 +23,11 @@ const SHADER := preload("res://world/shaders/wormways.gdshader")
 const WORLD_LAYER := 1
 const CLIMBABLE_LAYER := 1 << 2
 const CAST_TEX := "res://assets/textures/brown_mud_03/brown_mud_03"
+## The tunnels (a quarter of a million triangles, drawn again into every shadow
+## cascade: 1.3 M a frame at spawn) are only drawn while the camera is under the
+## ground or this close to a way in: from anywhere else on the lawn nothing of
+## them can be seen.
+const SEE_IN := 80.0
 
 ## What each find looks like and gives: id -> [what it's called, blows, blade needed, gesture].
 const FINDS := {
@@ -56,6 +61,7 @@ var _shaft_at := Vector3.ZERO
 var _plug_stone: Heavable
 var _sun: SpotLight3D
 var _beam: MeshInstance3D
+var _tunnels_mi: MeshInstance3D
 var _rng := RandomNumberGenerator.new()
 
 
@@ -122,6 +128,7 @@ func _ready() -> void:
 	# the roof shadows the sun both ways round (it's seen from inside)
 	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_DOUBLE_SIDED
 	add_child(mi)
+	_tunnels_mi = mi
 	var body := StaticBody3D.new()
 	body.name = "Climb_wormways"
 	body.collision_layer = WORLD_LAYER | CLIMBABLE_LAYER
@@ -166,6 +173,11 @@ func _process(_delta: float) -> void:
 	if player == null:
 		return
 	_update_shaft()
+	var cam := get_viewport().get_camera_3d()
+	var eye := cam.global_position if cam != null else player.global_position
+	var see := _can_see_in(eye) or cave_factor(player.global_position) > 0.0
+	if _tunnels_mi != null and _tunnels_mi.visible != see:
+		_tunnels_mi.visible = see
 	var inside := cave_factor(player.global_position) > 0.3
 	if inside and not _was_in:
 		event.emit("wormways_in")
@@ -259,6 +271,7 @@ func _update_shaft() -> void:
 	var lit := 1.0 if shaft_open else 0.0
 	lit *= smoothstep(0.2, 0.5, day)
 	_sun.light_energy = lerpf(_sun.light_energy, 14.0 * lit, 0.05)
+	_sun.visible = lit > 0.0 or _sun.light_energy > 0.01  # (unlit, it needn't draw its shadow)
 	(_beam.material_override as StandardMaterial3D).albedo_color.a = lerpf(
 		(_beam.material_override as StandardMaterial3D).albedo_color.a, 0.07 * lit, 0.05)
 	if worm != null and is_instance_valid(worm):
@@ -313,6 +326,17 @@ func cave_distance(p: Vector3) -> float:
 		var r := Vector3(c["radii"][0], c["radii"][1], c["radii"][2])
 		best = minf(best, (((p - ctr) / r).length() - 1.0) * minf(r.x, minf(r.y, r.z)))
 	return best
+
+
+## True if the tunnels could be in view from `eye`: under the ground, or near
+## a way in (SEE_IN).
+func _can_see_in(eye: Vector3) -> bool:
+	if layout == null or eye.y < TreeBase.ground_height(layout, eye.x, eye.z) - 0.5:
+		return true
+	for o in _openings:
+		if o.distance_to(eye) < SEE_IN:
+			return true
+	return false
 
 
 ## 0 outside, rising to 1 once p is inside and 20 m from any opening (TreeBase
