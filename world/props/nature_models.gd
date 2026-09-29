@@ -26,7 +26,7 @@ class Piece:
 	## Collision in mesh space ("convex": a simplified hull, "trimesh": exact).
 	func shape(kind: String) -> Shape3D:
 		if not _shapes.has(kind):
-			_shapes[kind] = mesh.create_trimesh_shape() if kind == "trimesh" else mesh.create_convex_shape(true, true)
+			_shapes[kind] = mesh.create_trimesh_shape() if kind == "trimesh" else ShapeCache.convex(mesh)
 		return _shapes[kind]
 
 

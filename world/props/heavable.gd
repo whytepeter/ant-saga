@@ -142,7 +142,7 @@ static func _model_id(kind: String, prop_name: String) -> String:
 ## A convex hull of the model, placed as the mesh is (points `xf` * unit hull).
 static func _hull(model: String, prop: GardenProps.Prop, xf: Transform3D) -> ConvexPolygonShape3D:
 	if not _hulls.has(model):
-		var base := prop.mesh.create_convex_shape(true, true) as ConvexPolygonShape3D
+		var base := ShapeCache.convex(prop.mesh) as ConvexPolygonShape3D
 		var pts := PackedVector3Array()
 		for p in base.points:
 			pts.append(prop.fix * p)

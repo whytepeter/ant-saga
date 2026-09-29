@@ -6,12 +6,15 @@ extends SceneTree
 ## objects and triangles. V-Sync and the frame cap are off. Needs a window:
 ##
 ##   Godot --path . -s tests/perf_bench.gd -- [--out=<file.json>] [--frames=240]
-##       [--spots=spawn,V2,...] [--size=1920x1080] [--ablate] [--under=GameHud]
+##       [--spots=spawn,V2,...] [--size=1920x1080] [--ablate] [--under=GameHud] [--pacing]
 ##
 ## --ablate  what each effect and each system under the level costs at the
 ##           heaviest spot: each switched off and on in turn, several rounds.
 ## --under=  the same for the children of one node (a path under the level),
 ##           e.g. --spots=V2 --under=Graybox/Generated
+## --pacing  as played instead: V-Sync on and the 60 fps cap, the clock running,
+##           30 s at spawn in 10 s windows: frames that miss 60 Hz (>20 ms) and
+##           the worst (a hitch). Nothing should hitch past ~50 ms.
 ## (Metal reports no GPU timings; a big "draw" with a small "rCPU" means GPU-bound.)
 
 const SETTLE := 90
@@ -21,6 +24,7 @@ const BLOCK := 24  # frames in one ablation sample
 var frames := 240
 var out_path := ""
 var ablate := false
+var pacing := false
 var under := ""
 var only: PackedStringArray = []
 var size := Vector2i.ZERO  # the window, in pixels (--size); default: the project's
@@ -58,6 +62,8 @@ func _initialize() -> void:
 			under = arg.trim_prefix("--under=")
 		elif arg == "--ablate":
 			ablate = true
+		elif arg == "--pacing":
+			pacing = true
 	_run.call_deferred()
 
 
@@ -112,6 +118,10 @@ func _run() -> void:
 
 	var spawn: Dictionary = layout.data["spawn"]
 	spots.append({"name": "spawn", "at": spawn["pos"], "look": spawn["look_at"]})
+	if pacing:
+		await _pacing(spots[0])
+		quit()
+		return
 	for vp: Dictionary in layout.items("viewpoints").slice(1):
 		spots.append({"name": "%s %s" % [vp["id"], vp["name"]], "at": vp["pos"], "look": vp["look_at"]})
 	spots.append({"name": "tree grounds", "at": [-400, 60], "look": [-470, 20]})
@@ -300,6 +310,35 @@ func _ablate() -> void:
 		print("  %-26s %+7.2f ms  (%+6.2f .. %+6.2f)   draw calls %+5d   triangles %+6.2f M" % [String(r[0]).left(26),
 			r[1], r[2], r[3], int(st[0]) - base_draws, (int(st[1]) - base_prims) / 1e6])
 		results.append({"spot": "ablate " + String(r[0]), "saved_ms": -float(r[1])})
+
+
+## As played at `spot` (V-Sync, 60 cap, the clock running): 30 s in 10 s windows.
+func _pacing(spot: Dictionary) -> void:
+	DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED)
+	Engine.max_fps = 60
+	if clock != null:
+		clock.running = true
+	await _stand(spot, "(settling)")
+	print("\nas played at %s: V-Sync on, 60 cap" % spot["name"])
+	print("%6s %7s %7s %7s %8s" % ["t (s)", "frames", "mean", "p95", "worst", ">20 ms"])
+	for w in 3:
+		var dts := PackedFloat32Array()
+		var last := Time.get_ticks_usec()
+		var t0 := Time.get_ticks_msec()
+		while Time.get_ticks_msec() - t0 < 10000:
+			await process_frame
+			var now := Time.get_ticks_usec()
+			dts.append((now - last) / 1000.0)
+			last = now
+		var sorted := dts.duplicate()
+		sorted.sort()
+		var mean := 0.0
+		var missed := 0
+		for v in dts:
+			mean += v
+			missed += 1 if v > 20.0 else 0
+		print("%6d %7d %7.2f %7.2f %7.1f %8d" % [(w + 1) * 10, dts.size(), mean / dts.size(),
+			sorted[int(sorted.size() * 0.95)], sorted[-1], missed])
 
 
 ## The mean frame (ms) over BLOCK frames.

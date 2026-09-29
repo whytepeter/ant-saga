@@ -169,7 +169,7 @@ func _open_hole(at: Vector3, girth: float, toward: Vector3) -> void:
 	var body := StaticBody3D.new()
 	body.collision_layer = 1 | (1 << 2)
 	var cs := CollisionShape3D.new()
-	cs.shape = cast.mesh.create_convex_shape(true, true)
+	cs.shape = ShapeCache.convex(cast.mesh)
 	body.add_child(cs)
 	body.position = cast.position
 	holder.add_child(body)

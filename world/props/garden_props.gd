@@ -25,7 +25,7 @@ class Prop:
 	## every triangle (static only; lets you walk under caps and through arches).
 	func shape(kind: String) -> Shape3D:
 		if not _shapes.has(kind):
-			_shapes[kind] = mesh.create_trimesh_shape() if kind == "trimesh" else mesh.create_convex_shape(true, true)
+			_shapes[kind] = mesh.create_trimesh_shape() if kind == "trimesh" else ShapeCache.convex(mesh)
 		return _shapes[kind]
 
 static var _cache := {}

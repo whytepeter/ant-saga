@@ -625,7 +625,7 @@ static func _worm_casts(parent: Node3D, layout: LawnLayout, lm: Dictionary) -> v
 			mi.rotation.y = rng.randf() * TAU
 			parent.add_child(mi)
 			var body := _body(mi, true)
-			_add_shape(body, mi.mesh.create_convex_shape(true, true))
+			_add_shape(body, ShapeCache.convex(mi.mesh))
 			_gather(parent, WORM_CAST, at + Vector3.UP * girth, girth * 1.8, mi)
 
 
@@ -709,7 +709,7 @@ static func _lookout(parent: Node3D, layout: LawnLayout, g: Vector3) -> void:
 	deck.position = deck_at
 	parent.add_child(deck)
 	var body := _body(deck, true)
-	_add_shape(body, deck.mesh.create_convex_shape(true, true))
+	_add_shape(body, ShapeCache.convex(deck.mesh))
 	for y: float in [0.1, -0.9, -1.8]:
 		var loop := MeshInstance3D.new()
 		loop.mesh = _torus(0.95, 0.08, 16, 5)
