@@ -2,7 +2,7 @@
 
 The active design. The game is a survival game: Amodu alone in the back garden at 5 mm, surviving, crafting, building and fighting his way across it to find a way to be big again. Story mode (the trio adventure, `docs/GAMEPLAY.md` Levels 1–3) is paused; its code stays behind `survival_mode` off and may come back once everything is built. GAMEPLAY.md's system sections (strength, survival, crafting, combat, traversal) still apply.
 
-**Status:** the shape below is agreed with the user (2026-09-27). Built so far: hunger and thirst.
+**Status:** the shape below is agreed with the user (2026-09-27). What's built, place by place, is on the map: `docs/narrative/survival-map.html` (from `survival-map.json`).
 
 ## 1. The game in one paragraph
 You wake up 5 mm tall beside your own school bag, with a boy's full strength in an ant-sized body, a stone knife and a cracked potion vial lying next to you. Eat, drink, get through the nights, craft, build. The ants' kingdom under the lawn can make you big again, but first you have to earn your way in, then take three ingredients from the garden's **great beasts** (in any order, each one a puzzle, not a health bar), while the **termite front** creeps across the garden eating the wood you need. The war ends at the termites' woodpile Citadel, and then you can be big again.

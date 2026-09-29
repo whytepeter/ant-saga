@@ -1,0 +1,661 @@
+{
+ "about": "The survival plan on the map (docs/SURVIVAL.md): what's in the game now, what's part-built and what's still to build, act by act. Drawn over world/lawn/layout.json by tools/survival_map.py into docs/narrative/survival-map.html. Update the statuses here as things get built, then re-run it.",
+ "title": "Survival: the garden, built and to build",
+ "sub": "Survival mode's plan (docs/SURVIVAL.md) drawn over today's garden (world/lawn/layout.json). Solid pins are in the game, half pins are part-built, hollow pins are still to build. Hover a pin for what's there.",
+ "window": [
+  -720,
+  700,
+  -400,
+  660
+ ],
+ "scale": 0.62,
+ "zooms": [
+  {
+   "title": "The apple tree: its grounds, its caves, the climb and the Rootway",
+   "window": [
+    -720,
+    -300,
+    -230,
+    290
+   ],
+   "scale": 1.55
+  }
+ ],
+ "layers": [
+  {
+   "key": "act1",
+   "name": "Act 1: the lawn, the gate, the kingdom",
+   "colour": "#1b6fd1"
+  },
+  {
+   "key": "high",
+   "name": "Act 2 high: the apple tree",
+   "colour": "#2f8a4a"
+  },
+  {
+   "key": "deep",
+   "name": "Act 2 deep: the Rootway",
+   "colour": "#7b3fa0"
+  },
+  {
+   "key": "far",
+   "name": "Act 2 far: over the Rut to the patio edge",
+   "colour": "#b5651d"
+  },
+  {
+   "key": "rain",
+   "name": "When it rains: the Wormways",
+   "colour": "#1f7f8f"
+  },
+  {
+   "key": "front",
+   "name": "The termite front",
+   "colour": "#c23b22"
+  },
+  {
+   "key": "act3",
+   "name": "Act 3: the patio and the Citadel",
+   "colour": "#9a3fb0"
+  }
+ ],
+ "next": [
+  "Act 1's found story (SURVIVAL.md build step 5): the cracked vial and his first thought where he wakes, the ants' trail, the coin, the first raid at the Colony Gate, and the gate opening into the kingdom, where the Queen sets the goal. It's what gives the rest a reason.",
+  "The apple tree's missions, the way the Wormways have theirs: arrive at the tree, the torch from Sap Falls, up the Heartwood Stair, up the silk ladder.",
+  "The top of the silk ladder: it climbs 250 m to nothing. Give it a landing on the first great branch, with the orb weaver's web: the first great beast and the golden thread.",
+  "The blackbird on Leaf-Litter Moor: dry leaves crunch, noise brings it (the model is ready).",
+  "Then the Rootway behind the West Root Door (a Blender re-bake) and the Maw; the termite front; the wolf spider; Act 3."
+ ],
+ "regions": [
+  {
+   "layer": "high",
+   "status": "built",
+   "name": "the tree grounds",
+   "rect": [
+    -705,
+    -205,
+    -360,
+    265
+   ],
+   "note": "Built: its own ground, thin shade grass, drifts of last year's leaves, windfalls, roots, a fallen branch and puddles along the drip line"
+  },
+  {
+   "layer": "high",
+   "status": "todo",
+   "name": "the canopy (520 m up)",
+   "circle": [
+    -470,
+    0,
+    190
+   ],
+   "note": "Only a picture in the sky today. To build: the first great branch where the silk ladder ends, and the orb weaver's web across it"
+  },
+  {
+   "layer": "far",
+   "status": "built",
+   "name": "the patio (18 m up)",
+   "rect": [
+    -700,
+    345,
+    700,
+    640
+   ],
+   "note": "Built for the old get-home game: slabs, the trowel ramp, the brush, the step and the back door"
+  }
+ ],
+ "routes": [
+  {
+   "layer": "act1",
+   "status": "todo",
+   "name": "the ants' trail to the gate",
+   "style": "route",
+   "points": [
+    [
+     40,
+     -205
+    ],
+    [
+     -10,
+     -120
+    ],
+    [
+     10,
+     -10
+    ],
+    [
+     40,
+     112
+    ]
+   ]
+  },
+  {
+   "layer": "act1",
+   "status": "todo",
+   "name": "the first raid: along the kerb top",
+   "style": "raid",
+   "points": [
+    [
+     290,
+     300
+    ],
+    [
+     352,
+     250
+    ],
+    [
+     352,
+     150
+    ],
+    [
+     350,
+     120
+    ],
+    [
+     200,
+     116
+    ],
+    [
+     46,
+     112
+    ]
+   ]
+  },
+  {
+   "layer": "deep",
+   "status": "todo",
+   "name": "the Rootway (to dig)",
+   "style": "underground",
+   "points": [
+    [
+     -608,
+     64
+    ],
+    [
+     -520,
+     70
+    ],
+    [
+     -430,
+     40
+    ],
+    [
+     -330,
+     80
+    ],
+    [
+     -250,
+     125
+    ],
+    [
+     -120,
+     110
+    ],
+    [
+     20,
+     90
+    ]
+   ]
+  },
+  {
+   "layer": "deep",
+   "status": "todo",
+   "name": "the south fork",
+   "style": "underground",
+   "points": [
+    [
+     -250,
+     125
+    ],
+    [
+     -215,
+     175
+    ],
+    [
+     -200,
+     215
+    ]
+   ]
+  },
+  {
+   "layer": "high",
+   "status": "part",
+   "name": "silk ladder (250 m up)",
+   "style": "climb",
+   "points": [
+    [
+     -566,
+     42
+    ],
+    [
+     -535,
+     30
+    ]
+   ]
+  },
+  {
+   "layer": "front",
+   "status": "todo",
+   "name": "the front creeps",
+   "style": "raid",
+   "points": [
+    [
+     262,
+     305
+    ],
+    [
+     200,
+     280
+    ],
+    [
+     150,
+     262
+    ]
+   ]
+  },
+  {
+   "layer": "front",
+   "status": "todo",
+   "name": "",
+   "style": "raid",
+   "points": [
+    [
+     262,
+     305
+    ],
+    [
+     300,
+     230
+    ],
+    [
+     340,
+     150
+    ]
+   ]
+  },
+  {
+   "layer": "far",
+   "status": "built",
+   "name": "up the trowel",
+   "style": "climb",
+   "points": [
+    [
+     -265,
+     246
+    ],
+    [
+     -265,
+     349
+    ]
+   ]
+  },
+  {
+   "layer": "act3",
+   "status": "todo",
+   "name": "along the house wall",
+   "style": "route",
+   "points": [
+    [
+     -265,
+     349
+    ],
+    [
+     -200,
+     560
+    ],
+    [
+     100,
+     600
+    ],
+    [
+     300,
+     596
+    ]
+   ]
+  }
+ ],
+ "pins": [
+  {
+   "layer": "act1",
+   "status": "part",
+   "name": "He wakes",
+   "at": [
+    40,
+    -205
+   ],
+   "note": "Built: he wakes by his school bag with the stone knife. To add: the cracked vial with the ants' marks, and his first thought ('Did... ants do this?')"
+  },
+  {
+   "layer": "act1",
+   "status": "built",
+   "name": "Crisp packet",
+   "at": [
+    255,
+    -240
+   ],
+   "note": "A shelter to sleep in; the hammer lies in it; its foil is the wolf spider's mirror later"
+  },
+  {
+   "layer": "act1",
+   "status": "built",
+   "name": "Capstone",
+   "at": [
+    -140,
+    55
+   ],
+   "note": "A shelter to sleep in, and the lookout blade over the lawn"
+  },
+  {
+   "layer": "act1",
+   "status": "built",
+   "name": "Night beetles",
+   "at": [
+    -150,
+    -190
+   ],
+   "note": "Ground beetles come out at dusk from four homes, hunt him down, and go back at dawn"
+  },
+  {
+   "layer": "act1",
+   "status": "built",
+   "name": "Ladybirds",
+   "at": [
+    -240,
+    -40
+   ],
+   "note": "Win one over with bug meat; it follows, comes to Q, and with a leaf saddle he rides it"
+  },
+  {
+   "layer": "act1",
+   "status": "todo",
+   "name": "The coin",
+   "at": [
+    15,
+    104
+   ],
+   "note": "The ants' 'Brass Moon' in the plaza: he knows coins roll, and it breaks the raiders' line"
+  },
+  {
+   "layer": "act1",
+   "status": "part",
+   "name": "Colony Gate",
+   "at": [
+    40,
+    112
+   ],
+   "note": "Built: the gate. To add: guards who won't let him in, and the gate opening after the first raid"
+  },
+  {
+   "layer": "act1",
+   "status": "todo",
+   "name": "The kingdom",
+   "at": [
+    20,
+    60
+   ],
+   "note": "Under the Bare Patch: the hub. A safe bed, trade, the Queen (model ready) and her three ingredients; the ants teach the raft"
+  },
+  {
+   "layer": "act1",
+   "status": "todo",
+   "name": "Kerb stair",
+   "at": [
+    350,
+    120
+   ],
+   "note": "Where the raiders come down off the driveway kerb (a few stones)"
+  },
+  {
+   "layer": "high",
+   "status": "built",
+   "name": "Sap Falls",
+   "at": [
+    -528,
+    -48
+   ],
+   "note": "A bark wound: sap drops by hand, clumps with the hammer, for resin and the first torch"
+  },
+  {
+   "layer": "high",
+   "status": "built",
+   "name": "Windfall Orchard",
+   "at": [
+    -480,
+    192
+   ],
+   "note": "Apples to eat, rotting ones with fruit flies"
+  },
+  {
+   "layer": "high",
+   "status": "part",
+   "name": "Leaf-Litter Moor",
+   "at": [
+    -610,
+    140
+   ],
+   "note": "Built: the dry leaves. To add: they crunch, and noise brings a blackbird turning the litter (model ready)"
+  },
+  {
+   "layer": "high",
+   "status": "built",
+   "name": "Drip-line puddles",
+   "at": [
+    -632,
+    188
+   ],
+   "note": "Water to drink round the tree"
+  },
+  {
+   "layer": "high",
+   "status": "built",
+   "name": "Root Hall",
+   "at": [
+    -428,
+    4
+   ],
+   "note": "The caves inside the trunk base: the hall, the grub burrow and nest. A shelter to sleep in"
+  },
+  {
+   "layer": "high",
+   "status": "part",
+   "name": "Knot-hole ledge",
+   "at": [
+    -406,
+    -18
+   ],
+   "note": "Built: the Heartwood Stair climbs inside the trunk to a ledge 60 m up. To add: a reason to go (a view, a find, a camp spot)"
+  },
+  {
+   "layer": "high",
+   "status": "part",
+   "name": "Silk ladder",
+   "at": [
+    -566,
+    42
+   ],
+   "note": "Built: climbable, 250 m up the west face. To add: somewhere to arrive at the top"
+  },
+  {
+   "layer": "high",
+   "status": "todo",
+   "name": "The orb weaver",
+   "at": [
+    -470,
+    -60
+   ],
+   "note": "Great beast. On its web it can't be hurt and silk sticks: pluck the web to call it, cut the anchor threads so it drops, fight it on the ground. The golden thread. Model ready"
+  },
+  {
+   "layer": "deep",
+   "status": "part",
+   "name": "West Root Door",
+   "at": [
+    -608,
+    64
+   ],
+   "note": "Built: a dark gap under a root. To add: the Rootway behind it (today a wall)"
+  },
+  {
+   "layer": "deep",
+   "status": "todo",
+   "name": "The Maw",
+   "at": [
+    -250,
+    125
+   ],
+   "note": "Great beast, a giant centipede under the root crossing: herd it with torchlight, stamp over the pit, heave the boulder. Moonroot sap. Model ready"
+  },
+  {
+   "layer": "deep",
+   "status": "todo",
+   "name": "The Maw's hole",
+   "at": [
+    -200,
+    215
+   ],
+   "note": "Where the Rootway's south fork comes up in Windfall Roots"
+  },
+  {
+   "layer": "far",
+   "status": "built",
+   "name": "The Rut",
+   "at": [
+    180,
+    195
+   ],
+   "note": "Drink here, swim, fill the flask; the leaf raft crosses it"
+  },
+  {
+   "layer": "far",
+   "status": "built",
+   "name": "Windfall Roots",
+   "at": [
+    -170,
+    245
+   ],
+   "note": "Fallen apples and an apple core: food"
+  },
+  {
+   "layer": "far",
+   "status": "part",
+   "name": "The wolf spider",
+   "at": [
+    -295,
+    300
+   ],
+   "note": "Built: its burrow, its trip lines, the spider lurking. To add: the puzzle (pluck the line, heave a stone into the burrow, dazzle it with foil)"
+  },
+  {
+   "layer": "far",
+   "status": "todo",
+   "name": "Sky-Salt",
+   "at": [
+    -240,
+    360
+   ],
+   "note": "A sugar crystal from a spilt drink on the patio edge: the third ingredient (model ready)"
+  },
+  {
+   "layer": "far",
+   "status": "built",
+   "name": "Silent outpost",
+   "at": [
+    95,
+    245
+   ],
+   "note": "The old ant outpost on the south shore (scenery for now)"
+  },
+  {
+   "layer": "rain",
+   "status": "built",
+   "name": "Three burrows",
+   "at": [
+    -40,
+    -170
+   ],
+   "note": "Plugged with casts until the first rain washes them open; worms come up in the rain"
+  },
+  {
+   "layer": "rain",
+   "status": "built",
+   "name": "The Great Worm",
+   "at": [
+    70,
+    -10
+   ],
+   "note": "Its lair, the old shaft to heave open, daylight to lure it through; the Wormways' missions"
+  },
+  {
+   "layer": "front",
+   "status": "part",
+   "name": "Termite works",
+   "at": [
+    120,
+    280
+   ],
+   "note": "Built: the forward camp and the mud-tube tower (tubes smash with the hammer). To add: tubes that creep, wood eaten, raids at dusk, pushing them back"
+  },
+  {
+   "layer": "act3",
+   "status": "todo",
+   "name": "The Citadel",
+   "at": [
+    345,
+    596
+   ],
+   "note": "The termites' woodpile against the house: Akpuru and their queen (models ready). The end"
+  },
+  {
+   "layer": "act3",
+   "status": "built",
+   "name": "Back door",
+   "at": [
+    0,
+    632
+   ],
+   "note": "From the old get-home game; a look at home (he can't go yet)"
+  }
+ ],
+ "tree_missions": [
+  {
+   "title": "The Old Tree",
+   "steps": [
+    "Find the tree grounds west of the lawn",
+    "Drink at a puddle on the drip line",
+    "Eat a windfall apple",
+    "Break sap off Sap Falls and make a torch"
+   ]
+  },
+  {
+   "title": "The Heartwood Stair",
+   "steps": [
+    "Go into Root Hall",
+    "Light your torch in the dark",
+    "Climb the stair inside the trunk",
+    "Look out from the knot-hole ledge"
+   ]
+  },
+  {
+   "title": "The Weavers' Ladder",
+   "steps": [
+    "Find the silk ladder on the west face",
+    "Climb to the first great branch",
+    "Find the dew-strung web"
+   ]
+  },
+  {
+   "title": "The Orb Weaver",
+   "steps": [
+    "Pluck the web to call it",
+    "Cut the anchor threads so it drops",
+    "Beat it on the ground, where it's clumsy",
+    "Take the golden thread from the hub"
+   ]
+  },
+  {
+   "title": "Across the Moor",
+   "steps": [
+    "Cross Leaf-Litter Moor quietly (crouch)",
+    "Hide when the blackbird comes"
+   ]
+  }
+ ]
+}

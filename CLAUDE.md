@@ -11,6 +11,7 @@ Third-person 3D game in Godot 4.7 (Forward+, Jolt). **The trio adventure** (dire
 
 ## Read first
 - **`docs/SURVIVAL.md`: the active design** (survival first): the goal (be big again), the bosses across the areas, the systems and the build order.
+- `docs/narrative/survival-map.html`: the survival plan on the map, each place built, part-built or to build (data `survival-map.json`, drawn by `python3 tools/survival_map.py`; update a status there when something is built).
 - `docs/GAMEPLAY.md`: how the game plays (trio, survival, crafting and building, combat), **Levels 1–3 mission by mission**, and the build order (section 11, with what's done). The Levels 1–3 story plan is note 4 in `docs/design/gameplay_vision_chatgpt.md`; the user's own chapters are `docs/story/original_draft.md`.
 - `docs/PLAN.md`: phases and the deferred list (parts predate SMALL GIANT).
 - `docs/narrative/world-facts.md`: the current world (generated from the layout). The old world bible is archived in `docs/archive/WORLD.md` (compound setting superseded; the scale table and sound notes are still useful).
