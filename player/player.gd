@@ -64,6 +64,10 @@ const HANDS_BUSY := ["grab", "pull_fibre", "gather_crouch", "pick_up", "walk_pic
 ## The bones an upper-body clip moves (play_upper): the chest, arms and head.
 const UPPER_BONES := ["Spine", "LeftShoulder", "LeftArm", "LeftForeArm", "LeftHand", "RightShoulder", "RightArm",
 	"RightForeArm", "RightHand", "neck", "Head"]
+## A reach down on the move (a pick-up while he walks): the upper body and the
+## whole spine, so he bends at the waist while his legs keep going.
+const REACH_BONES := ["Spine02", "Spine01", "Spine", "LeftShoulder", "LeftArm", "LeftForeArm", "LeftHand",
+	"RightShoulder", "RightArm", "RightForeArm", "RightHand", "neck", "Head"]
 enum Jump { HOP, RUN, LEAP }
 
 const CHARACTER := "res://assets/characters/amodu2/"
@@ -189,6 +193,7 @@ var _climb_cooldown := 0.0
 var _climb_lean := 0.0
 ## The clip playing on his upper body (play_upper).
 var _upper_clip := ""
+var _reach_clip := ""
 var _mantling := false
 var _playback: AnimationNodeStateMachinePlayback
 ## The prop held overhead, if any.
@@ -1057,13 +1062,14 @@ func _takes_by_hand(t: Object) -> bool:
 
 
 ## What E would cut or smash `t` with: the weapon in his hand (Harvest.held_tool,
-## "weak" if it's too weak for it), or for silk his knife, which is always at his
-## hip whatever he's holding. {} if nothing will do: then it isn't shown at all.
+## "weak" if it's too weak for it), or for silk and sprigs his knife, which is
+## always at his hip whatever he's holding. {} if nothing will do: then it
+## isn't shown at all.
 func _tool_for(t: Object) -> Dictionary:
 	var inventory := get_node_or_null("Inventory") as Inventory
 	var need: Array = t.call("harvest_tool")
 	var held := Harvest.held_tool(inventory, String(need[0]), int(need[1]))
-	if (held.is_empty() or held.has("weak")) and t is Choppable and (t as Choppable).kind == "silk" \
+	if (held.is_empty() or held.has("weak")) and t is Choppable and (t as Choppable).hip_knife_will_do() \
 			and inventory != null and inventory.has_knife:
 		var knife: Array = Weapons.tool(Weapons.KNIFE)["chop"]
 		held = {"weapon": Weapons.KNIFE, "tier": int(knife[0]), "power": float(knife[1])}
@@ -1134,10 +1140,15 @@ func harvest_swing(t: Object) -> void:
 	var impact := -1.0
 	if w == Weapons.KNIFE:
 		if inventory.equipped != Weapons.KNIFE:
-			inventory.draw_knife(1.1)  # out of his belt for the silk
+			inventory.draw_knife(1.6)  # out of his belt for the silk, or a sprig
 		clip = "knife_slash"
 		speed = 2.2
 		impact = 0.88 / speed
+		if t is Gatherable and ANIMATIONS.has_animation("knife_cut"):
+			# a sprig at his feet: down on his heels, a cut at its foot
+			clip = "knife_cut"
+			speed = 1.7
+			impact = float(_times.get("knife_cut", 1.0)) / speed
 	elif tool == Harvest.BUST:
 		clip = "axe_heavy"
 		speed = 1.35
@@ -2004,10 +2015,26 @@ func is_upper_playing() -> bool:
 	return bool(anim_tree.get("parameters/upper/active"))
 
 
+## A reach down while he walks on (REACH_BONES): picking something up on the move.
+func play_reach(clip: String, speed := 1.0) -> void:
+	if not ANIMATIONS.has_animation(clip):
+		return
+	var root := anim_tree.tree_root as AnimationNodeBlendTree
+	_reach_clip = clip
+	(root.get_node("reach_clip") as AnimationNodeAnimation).animation = clip
+	anim_tree.set("parameters/reach_speed/scale", speed)
+	anim_tree.set("parameters/reach/request", AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
+
+
+func is_reach_playing() -> bool:
+	return bool(anim_tree.get("parameters/reach/active"))
+
+
 ## A clip that needs both his hands (picking up, pulling, drinking, eating,
 ## making something) is playing: his weapon goes to his back or hip first.
 func hands_busy() -> bool:
-	return current_action() in HANDS_BUSY or (is_upper_playing() and _upper_clip in HANDS_BUSY)
+	return current_action() in HANDS_BUSY or (is_upper_playing() and _upper_clip in HANDS_BUSY) \
+		or (is_reach_playing() and _reach_clip in HANDS_BUSY)
 
 
 ## Eating, drinking or using something from his pack (Inventory.use_slot).
@@ -2057,7 +2084,15 @@ func play_gather(kind: String) -> void:
 			action_lock = 1.5
 		_:
 			if moving:
-				play_upper("grab", 1.7)
+				# a scoop to the ground on the move, without stopping: the whole
+				# body at a jog or faster, the waist and arms at a walk (his legs
+				# keep walking)
+				var pace := Vector2(velocity.x, velocity.z).length()
+				var clip := _pick("run_pick_up", "grab")
+				if pace > 3.0:
+					play_action(clip, clampf(pace / 5.0, 0.9, 1.4), 0.1)
+				else:
+					play_reach(clip, 1.1)
 			else:
 				play_action("grab", 1.5, 0.12)
 				action_lock = 0.8
@@ -2249,7 +2284,20 @@ func _build_animation_tree() -> void:
 	root.add_node("upper", upper)
 	root.connect_node("upper", 0, "action")
 	root.connect_node("upper", 1, "upper_speed")
-	root.connect_node("output", 0, "upper")
+	# and a reach down while walking (a pick-up on the move): the spine too
+	root.add_node("reach_clip", _clip("idle"))
+	root.add_node("reach_speed", AnimationNodeTimeScale.new())
+	root.connect_node("reach_speed", 0, "reach_clip")
+	var reach := AnimationNodeOneShot.new()
+	reach.fadein_time = 0.1
+	reach.fadeout_time = 0.25
+	reach.filter_enabled = true
+	for bone: String in REACH_BONES:
+		reach.set_filter_path(NodePath("Armature/Skeleton3D:" + bone), true)
+	root.add_node("reach", reach)
+	root.connect_node("reach", 0, "upper")
+	root.connect_node("reach", 1, "reach_speed")
+	root.connect_node("output", 0, "reach")
 
 	anim_tree.tree_root = root
 	anim_tree.active = true

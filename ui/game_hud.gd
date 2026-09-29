@@ -25,7 +25,7 @@ const INK := Color(0.12, 0.1, 0.08)
 const CONTROLS := [
 	["WASD", "Move"], ["Shift", "Sprint"], ["Space", "Jump · hold to leap"], ["C", "Crawl"],
 	["E", "Lift · carry · flip"], ["G", "Eat · drink"], ["F", "Throw"], ["Click", "Attack · hold for heavy"],
-	["Right-click", "Block"], ["Alt", "Dodge"], ["Wheel", "Weapons"], ["X", "Next weapon"],
+	["Right-click", "Block"], ["Alt", "Dodge"], ["Wheel", "Weapons"], ["X", "Next weapon, or put the torch away"],
 	["Tab", "Inventory"], ["M", "Map"], ["Q", "Call ants"], ["V", "Camera: wide · close · eyes"],
 	["Esc", "Pause · settings"],
 ]

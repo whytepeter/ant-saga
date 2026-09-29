@@ -1,11 +1,12 @@
 class_name Harvest
 extends RefCounted
 ## How the garden comes apart, the way Grounded does it. Small loose things
-## (pebbles, sprigs, a tuft of fibre, the pieces other things drop) are picked
+## (pebbles, a tuft of fibre or moss, the pieces other things drop) are picked
 ## up by hand. Everything else needs a tool: chopped with an axe or the knife
-## (grass, leaves, weeds, mushrooms), hewn with an axe only (wood: a fallen
-## twig is a log to him, a bark chip a slab; the knife's little blade only
-## scratches it), or smashed with a hammer (stones, pot shards, amber). Each
+## (grass, leaves, weeds, mushrooms; a sprig, which the knife at his hip cuts
+## whatever he holds), hewn with an axe only (wood: a fallen twig is a log to
+## him, a bark chip a slab; the knife's little blade only scratches it), or
+## smashed with a hammer (stones, pot shards, amber, a clump of sap). Each
 ## tool has a tier, and a tough thing (a toadstool) needs a better one. Fists
 ## harvest nothing.
 ##
@@ -25,13 +26,15 @@ const BUST := "bust"
 ##   drops   what each piece spills (item id -> count); a hand pick gives it
 ##   gesture how he takes it by hand (Player.play_gather): "pick" or "pull"
 const SPECS := {
-	# picked up by hand: what Grounded leaves lying loose (plant fibre, sprigs,
-	# pebblets, grass seeds); a leaf or a blade of grass is never taken whole
-	"sprout": {"name": "Sprig", "tool": HAND, "drops": {"sprig": 1}, "gesture": "pull"},
+	# picked up by hand: what lies loose (plant fibre, pebblets, moss); a sprig
+	# is cut, and a leaf or a blade of grass is never taken whole
+
 	"plant_fibre": {"name": "Plant fibre", "tool": HAND, "drops": {"fibre": 1}},
 	"moss_clump": {"name": "Moss", "tool": HAND, "drops": {"fibre": 1}, "gesture": "pull"},
 	"pebblet": {"name": "Pebble", "tool": HAND, "drops": {"pebble": 1}},
 	# chopped
+	# a sprig is cut at its foot: any blade, the knife at his hip will do
+	"sprout": {"name": "Sprig", "tool": CHOP, "tier": 1, "hits": 1, "stages": 1, "drops": {"sprig": 1}, "hip_knife": true},
 	"grass": {"name": "Grass stalk", "tool": CHOP, "tier": 1, "hits": 3, "stages": 1, "drops": {"fibre": 1}},
 	"fallen_grass": {"name": "Fallen grass", "tool": CHOP, "tier": 1, "hits": 4, "stages": 4, "drops": {"grass_plank": 1}},
 	"fallen_leaf": {"name": "Fallen leaf", "tool": CHOP, "tier": 1, "hits": 4, "stages": 4, "drops": {"leaf": 1}},
@@ -52,7 +55,7 @@ const SPECS := {
 	"nettle": {"name": "Nettle", "tool": CHOP, "tier": 1, "hits": 3, "stages": 3, "drops": {"fibre": 1}},
 	"thistle": {"name": "Thistle", "tool": CHOP, "tier": 1, "hits": 3, "stages": 3, "drops": {"fibre": 1}},
 	"fern": {"name": "Fern", "tool": CHOP, "tier": 1, "hits": 3, "stages": 3, "drops": {"fibre": 1}},
-	"sap": {"name": "Sap", "tool": CHOP, "tier": 1, "hits": 2, "stages": 2, "drops": {"resin": 1}},
+	"sap": {"name": "Sap clump", "tool": BUST, "tier": 1, "hits": 3, "stages": 3, "drops": {"resin": 1}},  # (Grounded 2: the hammer's work)
 	# smashed
 	"pebbles": {"name": "Stone", "tool": BUST, "tier": 1, "hits": 4, "stages": 2, "drops": {"pebble": 2}},
 	"stone": {"name": "Stone", "tool": BUST, "tier": 1, "hits": 4, "stages": 2, "drops": {"pebble": 2}},
@@ -78,6 +81,8 @@ static func spec(id: String) -> Dictionary:
 ## pale, rubber dark, wood brown.
 static func chip_colour(s: Dictionary) -> Color:
 	var id := String(s.get("id", ""))
+	if id == "sap":
+		return Color(0.95, 0.65, 0.2)
 	if String(s.get("tool", "")) == BUST:
 		return Color(0.82, 0.62, 0.3) if id == "amber" else Color(0.56, 0.55, 0.52)
 	if id in ["cone_mushrooms", "inky_cap", "toadstools", "glow_mushroom"]:
@@ -86,8 +91,6 @@ static func chip_colour(s: Dictionary) -> Color:
 		return Color(0.75, 0.35, 0.4)
 	if id in ["twig", "bark_chips"]:
 		return Color(0.52, 0.38, 0.24)
-	if id == "sap":
-		return Color(0.95, 0.65, 0.2)
 	if id in ["grass", "fallen_grass", "fallen_leaf", "clover", "plantain_leaf", "plantain_seeds", "weed_rosette", "nettle", "thistle", "fern"]:
 		return Color(0.5, 0.64, 0.28) if id != "fallen_leaf" else Color(0.72, 0.58, 0.28)
 	return Color(0.62, 0.48, 0.3)
@@ -97,6 +100,8 @@ static func chip_colour(s: Dictionary) -> Color:
 ## (ImpactFx.harvest_*): wood, plant, leaf, fungus, stone, amber, sap, rubber.
 static func material(s: Dictionary) -> String:
 	var id := String(s.get("id", ""))
+	if id == "sap":
+		return "sap"
 	match String(s.get("tool", "")):
 		BUST:
 			return "amber" if id == "amber" else "stone"
@@ -106,8 +111,8 @@ static func material(s: Dictionary) -> String:
 		return "fungus"
 	if id == "fallen_leaf":
 		return "leaf"
-	if id in ["sap", "eraser"]:
-		return "sap" if id == "sap" else "rubber"
+	if id == "eraser":
+		return "rubber"
 	return "plant"
 
 

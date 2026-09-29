@@ -1,14 +1,14 @@
 class_name SapFinds
 extends Node3D
-## Sap, the way Grounded lays it out: amber droplets that have oozed out of
-## wood and run down onto the soil, picked up by hand ("Sap" -> resin), and
-## bigger clumps where more has pooled and set, chopped apart for several
-## (Harvest "sap"). Resin makes the torch and, later, glue.
+## Sap, the way Grounded 2 lays it out: amber droplets that have oozed out of
+## the apple tree's wood and run down onto the soil, picked up by hand ("Sap"
+## -> resin), and bigger clumps where more has pooled and set, smashed apart
+## with a hammer for several (Harvest "sap"). Resin makes the torch and, later,
+## glue. None of it is by where he wakes: the first resin is a trip out west to
+## the tree's roots, and the most of it is under the tree itself.
 ##
-##   the fallen twig   by the hollow, a short walk from where he wakes: the
-##                     first resin, for the first torch before the first night
 ##   the roots         along the foot of the Great Root, its branches and the
-##                     north buttress, both sides
+##                     north buttress (the nearest, ~300 m west), both sides
 ##   Sap Falls         at the foot of the bark wound under the apple tree,
 ##                     where the runs above drip down (TreeGrounds)
 ##
@@ -43,7 +43,6 @@ func _ready() -> void:
 		return
 	_rng.seed = SEED
 	_material = amber_material()
-	_twig()
 	_roots()
 	_sap_falls()
 	# they lie on the terrain's collision (its relief isn't in the layout's
@@ -90,28 +89,6 @@ static func amber_material() -> StandardMaterial3D:
 
 ## The fallen twig by the hollow (layout choppables): droplets run down both
 ## sides onto the soil, and one clump at its foot.
-func _twig() -> void:
-	for ch: Dictionary in layout.data.get("choppables", []):
-		if String(ch["kind"]) != "twig":
-			continue
-		var a := LawnLayout.xz(ch["from"])
-		var b := LawnLayout.xz(ch["to"])
-		var along := (b - a).normalized()
-		var side := Vector2(-along.y, along.x)
-		# clear of the model Choppable.twig draws (wider than its 3.2 m collision)
-		var half := 1.6
-		var prop := GardenProps.get_prop("twig")
-		if prop != null:
-			var unit := prop.fix * prop.mesh.get_aabb()
-			half = maxf(half, unit.size.z * a.distance_to(b) / maxf(unit.size.x, 0.01) * 0.5)
-		half += 0.35
-		for k in 5:
-			var t := (float(k) + 0.5) / 5.0 + _rng.randf_range(-0.05, 0.05)
-			var s := 1.0 if k % 2 == 0 else -1.0
-			_drop_spots.append(a.lerp(b, t) + side * s * (half + _rng.randf_range(0.0, 0.4)))
-		_spot_clump(a.lerp(b, 0.62) - side * (half + 0.9), 1.0)
-
-
 ## Along the foot of every root (layout paths of kind "root").
 func _roots() -> void:
 	for p: Dictionary in layout.items("paths"):

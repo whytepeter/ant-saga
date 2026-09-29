@@ -84,7 +84,7 @@ func _test_resin() -> void:
 			near = e
 	_check("sap droplets and clumps", drops.size() >= 20 and clumps.size() >= 5, "%d drops, %d clumps" % [drops.size(), clumps.size()])
 	var d := (near["at"] as Vector3).distance_to(spawn) if not near.is_empty() else INF
-	_check("a droplet near the start", d < 60.0, "%.0f m from spawn" % d)
+	_check("none by where he wakes: it's a trip out to the tree", d > 150.0 and d < 450.0, "nearest %.0f m from spawn" % d)
 	# stand by it: the field wakes it; E takes it
 	var at: Vector3 = near["at"]
 	player.global_position = at + Vector3(1.2, 1.0, 0.0)

@@ -5,7 +5,8 @@ extends Node3D
 ## right. Lit from the pack (a "light" item, Inventory.use_slot), it burns for
 ## `burn_time` and throws a warm, flickering light round him; the water puts
 ## it out. Put away while his hands are busy (climbing, carrying, hauling),
-## still burning; its light goes with it.
+## still burning; its light goes with it. X puts it away for good measure
+## (stowed: out, not burning, keeping what's left of it) and takes it out again.
 ## A child of the Player, placed from his left hand once the pose is final.
 
 ## How long one torch burns (s).
@@ -24,6 +25,8 @@ const LEAN_OUT := 12.0
 
 ## Seconds of burning left (0: not lit).
 var burn_left := 0.0
+## Put away with X: hidden, not burning, keeping `burn_left` for later.
+var stowed := false
 var player: Player
 var _skeleton: Skeleton3D
 var _hand := -1
@@ -55,13 +58,23 @@ func setup(p: Player) -> void:
 
 
 func is_lit() -> bool:
-	return burn_left > 0.0
+	return burn_left > 0.0 and not stowed
 
 
 ## Lights a fresh torch (the old one, if any, is done with).
 func light() -> void:
 	burn_left = burn_time
+	stowed = false
 	_t = 0.0
+
+
+## X: puts the lit torch away (it stops burning), or takes the stowed one out.
+## False if there's no torch with any burn left in it.
+func toggle_stowed() -> bool:
+	if burn_left <= 0.0:
+		return false
+	stowed = not stowed
+	return true
 
 
 func put_out() -> void:
@@ -71,13 +84,13 @@ func put_out() -> void:
 func _process(delta: float) -> void:
 	if player == null:
 		return
-	if burn_left > 0.0:
+	if burn_left > 0.0 and not stowed:
 		burn_left = maxf(burn_left - delta, 0.0)
 		if player.state == Player.State.SWIM:
 			burn_left = 0.0  # into the water: out it goes
 	var free_hand := player.state in [Player.State.GROUND, Player.State.AIR, Player.State.CRAWL] \
 		and player.carried == null and player.hauling == null and player.puff == null
-	_shown = burn_left > 0.0 and free_hand
+	_shown = burn_left > 0.0 and not stowed and free_hand
 	_torch.visible = _shown
 	_flame.emitting = _shown
 	_embers.emitting = _shown

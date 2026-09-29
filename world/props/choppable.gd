@@ -137,6 +137,11 @@ func harvest_tool() -> Array:
 	return [Harvest.CHOP, 1] if kind == "silk" else [Harvest.HEW, 1]
 
 
+## The knife at his hip cuts it, whatever he's holding (silk; a sprig).
+func hip_knife_will_do() -> bool:
+	return kind == "silk"
+
+
 ## What the prompt says for him ({"name", "verb", "ok", "need", "hand"}).
 func prompt(inventory: Inventory) -> Dictionary:
 	var need := harvest_tool()

@@ -32,7 +32,7 @@ const REBINDABLE := [
 	["move_right", "Move right"], ["sprint", "Sprint"], ["jump", "Jump"], ["crawl", "Crawl · dive"],
 	["interact", "Lift · carry · use"], ["consume", "Eat · drink · sleep"], ["throw", "Throw"],
 	["attack", "Attack"], ["block", "Block"], ["dodge", "Dodge"], ["weapon_next", "Next weapon"],
-	["holster", "Put weapon away"], ["inventory", "Pack and crafting"], ["map", "Map"],
+	["holster", "Next weapon / torch away"], ["inventory", "Pack and crafting"], ["map", "Map"],
 	["camera_view", "Camera view"], ["controls", "Controls card"],
 ]
 const WINDOW := ["Window", "Full screen"]

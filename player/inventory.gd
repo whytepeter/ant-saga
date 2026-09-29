@@ -197,12 +197,27 @@ func use_slot(i: int) -> bool:
 	return true
 
 
+## X: puts his lit torch away, or takes a stowed one out again. False if he
+## has no torch with any burn left (X switches weapons then).
+func _toggle_torch() -> bool:
+	var torch := player.get_node_or_null("HeldTorch") as HeldTorch if player != null else null
+	if torch == null or not torch.toggle_stowed():
+		return false
+	if torch.stowed:
+		player.flash_hint("Torch put away (X takes it out again)", 1.8)
+	return true
+
+
 ## Lights the torch in slot `i`: it goes to his left hand, burning (HeldTorch).
+## A torch he put away with some burn left comes out again instead.
 func _light(i: int) -> bool:
 	if player == null:
 		return false
 	var id := StringName(slots[i]["id"])
 	var torch := player.get_node_or_null("HeldTorch") as HeldTorch
+	if torch != null and torch.stowed and torch.burn_left > 0.0:
+		torch.toggle_stowed()
+		return true
 	if torch == null:
 		torch = HeldTorch.new()
 		torch.name = "HeldTorch"
@@ -320,7 +335,9 @@ func knife_out() -> bool:
 func _unhandled_input(event: InputEvent) -> void:
 	if player == null or not player.input_enabled:
 		return
-	if event.is_action_pressed("weapon_next") or event.is_action_pressed("holster", false, true):
+	if event.is_action_pressed("holster", false, true) and _toggle_torch():
+		pass  # X with a torch: away it goes (or out again)
+	elif event.is_action_pressed("weapon_next") or event.is_action_pressed("holster", false, true):
 		cycle(1)
 	elif event.is_action_pressed("weapon_prev"):
 		cycle(-1)

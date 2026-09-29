@@ -98,7 +98,16 @@ func is_hand() -> bool:
 func prompt(inventory: Inventory) -> Dictionary:
 	var p := Harvest.prompt_for(spec, inventory)
 	p["name"] = display_name
+	if hip_knife_will_do():
+		p["verb"] = "Cut"
+		if inventory != null and inventory.has_knife and not bool(p["ok"]):
+			p["ok"] = true  # the knife out of his belt
+			p["need"] = ""
 	return p
+
+
+func hip_knife_will_do() -> bool:
+	return bool(spec.get("hip_knife", false))
 
 
 func outline_parts() -> Array:
@@ -138,8 +147,27 @@ func take(by: Node3D) -> bool:
 	_gone = true
 	collision_layer = 0
 	chopped.emit(by)
-	_take_away()
+	_pick_away()
 	return true
+
+
+## Picked up: it's simply gone into his hand (no bits: nothing broke).
+func _pick_away() -> void:
+	if solid != null:
+		solid.set_deferred("disabled", true)
+	var t := create_tween()
+	if multimesh != null and instance >= 0:
+		var xf := multimesh.get_instance_transform(instance)
+		t.tween_method(func(k: float) -> void:
+			multimesh.set_instance_transform(instance, Transform3D(xf.basis.scaled(Vector3.ONE * maxf(1.0 - k, 0.0001)), xf.origin)),
+			0.0, 1.0, 0.12)
+		t.tween_callback(queue_free)
+	elif visual_node != null and is_instance_valid(visual_node):
+		t.tween_property(visual_node, "scale", Vector3.ONE * 0.001, 0.12)
+		t.tween_callback(visual_node.queue_free)
+		t.tween_callback(queue_free)
+	else:
+		queue_free()
 
 
 ## A blow: the right tool wears it down; every so much wear a piece comes away.
