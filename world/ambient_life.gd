@@ -19,7 +19,8 @@ extends Node3D
 ## leaves its parts on the ground (ItemPickup), and another turns up at its home
 ## a while later, out of his sight. Wings, tails and legs move
 ## in the creature shader (world/shaders/creature.gdshader): ladybirds and mites
-## step with alternating legs while they walk and stand still when they stop. Speeds are staged, not
+## step with alternating legs while they walk and stand still when they stop;
+## a flying ladybird lifts its wing cases and beats its wings (LadybirdWings). Speeds are staged, not
 ## scaled (a real butterfly at ×360 would cross the level in a second).
 
 ## kind: model, (unused), motion params, yaw offset so the head leads (radians)
@@ -156,6 +157,7 @@ func _spawn(kind: String, home: Dictionary, perch := -1) -> Dictionary:
 	var size := float(SIZES.get(kind, prop.size)) * _rng.randf_range(0.8, 1.15)
 	mi.transform = Transform3D(Basis().scaled(Vector3.ONE * size), Vector3.ZERO) * prop.fix
 	mi.visibility_range_end = 320.0 if kind in ["butterfly", "dragonfly", "bee"] else 180.0
+	var wings: LadybirdWings = LadybirdWings.fit(mi) if kind == "ladybug" else null
 	holder.global_position = _start_point(kind, home)
 	if perch >= 0:
 		_perch_on_stalk(holder, perch)
@@ -163,6 +165,8 @@ func _spawn(kind: String, home: Dictionary, perch := -1) -> Dictionary:
 		"wait": _rng.randf_range(0.0, 3.0), "seed": _rng.randf() * 10.0, "target": holder.global_position,
 		"hop_t": -1.0, "from": holder.global_position, "hop_time": 1.0, "arc": 0.0, "home": home, "skip": 0.0,
 		"perched": perch >= 0, "size": size}
+	if wings != null:
+		c["wings"] = wings
 	if PREY.has(kind):
 		c["hp"] = float(PREY[kind]["hp"])
 		_make_prey(c)
@@ -493,6 +497,9 @@ func _move_on_ground(c: Dictionary, delta: float, center: Vector3) -> void:
 	node.global_position = pos
 	if heading.length() > 0.01:
 		node.rotation.y = lerp_angle(node.rotation.y, atan2(heading.x, heading.z) + float(c["yaw_offset"]), clampf(6.0 * delta, 0.0, 1.0))
+	# a ladybird's wing cases open and its wings beat while it flies
+	if c.has("wings"):
+		(c["wings"] as LadybirdWings).set_flying(float(c["hop_t"]) >= 0.0)
 	# legs: stepping while it walks on the ground, still when it stops or flies
 	var walking := float(c["hop_t"]) < 0.0 and heading.length() > 0.01
 	var w := move_toward(float(c.get("walk", 0.0)), 1.0 if walking else 0.0, delta * 5.0)

@@ -53,6 +53,8 @@ var _mesh: GeometryInstance3D
 ## The top of its back (its shell's crown), in its own space: where he sits.
 var _back := Vector3(0.0, 1.2, 0.0)
 var _saddle: Node3D
+## Its wing cases and flying wings (a ladybird's), opened while it flies.
+var _wings: LadybirdWings
 var _walk := 0.0
 var _away_left := 0.0
 var _stuck := 0.0
@@ -105,8 +107,11 @@ func _ready() -> void:
 	_holder.transform = Transform3D(Basis(Vector3.UP, float(get_meta(&"yaw_offset", 0.0))), Vector3.ZERO)
 	_mesh = _holder.get_child(0) as GeometryInstance3D
 	var mi := _mesh as MeshInstance3D
+	if mi != null:
+		_wings = mi.get_node_or_null(^"Wings") as LadybirdWings
 	if mi != null and mi.mesh != null:
-		var box := (_holder.transform * mi.transform) * mi.mesh.get_aabb()
+		# (shell and all: a ladybird's shell is its wing cases, apart)
+		var box := (_holder.transform * mi.transform) * (LadybirdWings.whole_aabb() if _wings != null else mi.mesh.get_aabb())
 		_back = Vector3(box.get_center().x, box.end.y, box.get_center().z)
 	_last_dry = at
 
@@ -341,6 +346,8 @@ func _animate(delta: float) -> void:
 		_walk = w
 		_mesh.set_instance_shader_parameter("walk", w)
 		_mesh.set_instance_shader_parameter("step_rate", clampf(1.5 + speed * 0.45, 1.5, 6.0))
+	if _wings != null:
+		_wings.set_flying(_hop_t >= 0.0)
 	# hunkered in its shell: low and still
 	var squash := 0.82 if shelled else 1.0
 	_holder.scale = _holder.scale.lerp(Vector3(1.05 if shelled else 1.0, squash, 1.05 if shelled else 1.0), clampf(10.0 * delta, 0.0, 1.0))

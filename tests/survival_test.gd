@@ -577,12 +577,18 @@ func _test_bug_friend() -> void:
 	Input.action_release("jump")
 	var low := f.global_position.y
 	var peak := low
+	var wings := f.get("_wings") as LadybirdWings
+	var spread := 0.0
 	for i in _frames_for(1.5):
 		await physics_frame
 		peak = maxf(peak, f.global_position.y)
+		if wings != null:
+			spread = maxf(spread, wings.open)
 	Input.action_release("move_forward")
 	_check("Space flies a hop", peak - low > 4.0, "%.1f m up" % (peak - low))
+	_check("its wing cases open and its wings beat as it flies", spread > 0.95, "open %.2f" % spread)
 	await _frames(_frames_for(1.5))
+	_check("landed, it folds them away", wings != null and wings.open == 0.0, "open %.2f" % (wings.open if wings != null else -1.0))
 	combat.health = combat.max_health
 	player.take_hit(5.0, f.global_position + Vector3.FORWARD * 2.0, &"light", life)
 	await _frames(2)
