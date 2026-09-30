@@ -13,6 +13,12 @@ extends SceneTree
 ## weapons, what he knows, where he is and the time go into the save, through
 ## JSON, and come back in a freshly loaded garden (Continue); the file is
 ## written, read back and erased.
+## The rest of the camp: a leaf bed under a lean-to is where he sleeps, and a
+## night on it costs half; a storage basket keeps stacks, and a blueprint beside
+## it draws on them; palisade walls snap end to end and a ground beetle can't
+## get through one; a thorn trap hurts a hunter that runs over it, and E sets it
+## again; taking a building down gives its materials back; a basket's contents
+## and a sprung trap come back from a save.
 
 var level: Node3D
 var player: Player
@@ -32,6 +38,11 @@ func _run() -> void:
 	await _test_workbench()
 	await _test_flask()
 	await _test_cooking()
+	await _test_bed()
+	await _test_basket()
+	await _test_walls()
+	await _test_trap()
+	await _test_take_down()
 	await _test_save()
 
 	print("\n%s" % ("PASS" if failures == 0 else "%d failure(s)" % failures))
@@ -140,7 +151,7 @@ func _test_cooking() -> void:
 	_check("beside it: bug meat roasts", crafting.make("roast_meat") and inventory.count(&"roasted_meat") == 1, "")
 	var seat: Node = null
 	for c: Node in fire.get_children():
-		if c is Building.StationSeat:
+		if c is Building.Seat:
 			seat = c
 	var hud := level.find_child("GameHud", true, false) as GameHud
 	_check("E at the fire: Cook", seat != null and String((seat as Gatherable).prompt(inventory)["verb"]) == "Cook", "")
@@ -150,6 +161,125 @@ func _test_cooking() -> void:
 		_check("the pack opens on crafting", hud.pack.is_open, "")
 		hud.pack.close()
 		await _frames(3)
+
+
+func _test_bed() -> void:
+	print("the leaf bed")
+	var lean := await _build("lean_to", [60, -250])
+	var bed := await _build("leaf_bed", [60, -250.5])
+	_check("a bed stands under the lean-to", lean != null and bed != null, "")
+	var survival := level.get("survival") as Survival
+	await _stand_at([60, -250.3])
+	var sh := survival.shelter_here()
+	_check("he sleeps on the bed, not just under the roof", bool(sh.get("bed", false)), str(sh.get("name", "")))
+	survival.hunger = 80.0
+	survival.thirst = 80.0
+	survival.slept()
+	_check("a night on it costs half", absf(survival.hunger - (80.0 - survival.sleep_hunger * 0.5)) < 0.1,
+		"hunger %.1f" % survival.hunger)
+
+
+func _test_basket() -> void:
+	print("the storage basket")
+	var basket := await _build("storage_basket", [90, -250]) as Building
+	_check("twelve stacks", basket != null and basket.stored.size() == 12, "")
+	_check("it keeps things", basket.put(&"twig", 25) == 0 and basket.count(&"twig") == 25, "%d twigs" % basket.count(&"twig"))
+	inventory.remove_item(&"twig", inventory.count(&"twig"))
+	inventory.remove_item(&"twine", inventory.count(&"twine"))
+	inventory.add_item(&"twine", 2)
+	var bp := Blueprint.create("twig_wall", builder)
+	bp.transform = Transform3D(Basis.IDENTITY, layout.ground_point([96, -250]))
+	builder._tag(bp, "twig_wall")
+	level.add_child(bp)
+	await _frames(2)
+	_check("a blueprint beside it: E says it can take them", bool(bp.prompt(inventory)["ok"]), "")
+	bp.take(player)
+	await _frames(3)
+	_check("the twigs came out of the basket", basket.count(&"twig") == 22, "%d left" % basket.count(&"twig"))
+	var hud := level.find_child("GameHud", true, false) as GameHud
+	var seat: Node = null
+	for c: Node in basket.get_children():
+		if c is Building.Seat:
+			seat = c
+	(seat as Gatherable).take(player)
+	await _frames(5)
+	var screen := get_first_node_in_group(&"storage_screen") as StorageScreen
+	_check("E opens it", screen != null and screen.is_open, "")
+	if screen != null:
+		screen.close()
+		await _frames(2)
+	hud = null
+
+
+func _test_walls() -> void:
+	print("walls")
+	var first := await _build("twig_wall", [120, -250])
+	_check("a palisade stands, a wall", first != null and first.is_in_group(&"walls"), "")
+	builder.start("twig_wall")
+	builder._turn = 0.0
+	var end := first.global_transform * Vector3(2.0, 0.0, 0.0)
+	var snap := builder._wall_snap(end + Vector3(0.6, 0.0, 0.4))
+	_check("a second one near its end joins on", not snap.is_empty()
+		and (snap["at"] as Vector3).distance_to(first.global_transform * Vector3(4.0, 0.0, 0.0)) < 0.3,
+		str(snap.get("at", "")))
+	builder.cancel()
+	# a beetle charging at him through the wall stops at it
+	var beetle := NightBeetle.new()
+	beetle.player = player
+	beetle.clock = level.get("clock") as DayClock
+	beetle.layout = layout
+	level.add_child(beetle)
+	beetle._emerge()  # (out, solid)
+	beetle.disable_mode = CollisionObject3D.DISABLE_MODE_KEEP_ACTIVE  # (still solid)
+	beetle.process_mode = Node.PROCESS_MODE_DISABLED  # (driven by the test)
+	var basis := first.global_transform.basis
+	beetle.global_position = first.global_position + basis.z * 3.0 + Vector3.UP * 0.5
+	var side := first.global_position - basis.z * 3.0
+	for i in 90:
+		beetle.velocity = (side - beetle.global_position).normalized() * 6.0
+		beetle.velocity.y = 0.0
+		beetle.move_and_slide()
+		await _frames(1)
+	var through := basis.z.dot(beetle.global_position - first.global_position) < 0.0
+	_check("a beetle can't get through", not through, "%.1f m in front" % basis.z.dot(beetle.global_position - first.global_position))
+	beetle.queue_free()
+
+
+func _test_trap() -> void:
+	print("the thorn trap")
+	var trap := await _build("thorn_trap", [150, -250]) as Building
+	_check("set", trap != null and trap.armed, "")
+	var beetle := NightBeetle.new()
+	beetle.player = player
+	beetle.clock = level.get("clock") as DayClock
+	beetle.layout = layout
+	level.add_child(beetle)
+	beetle._emerge()  # (out and hunting)
+	beetle.process_mode = Node.PROCESS_MODE_DISABLED
+	var hp := beetle.health
+	beetle.global_position = trap.global_position + Vector3.UP * 0.3
+	await _frames(3)
+	_check("a hunter over it is hurt", beetle.health < hp, "%.0f -> %.0f" % [hp, beetle.health])
+	_check("and it's sprung", not trap.armed, "")
+	beetle.queue_free()
+	_check("E sets it again", trap.reset_trap() and trap.armed, "")
+	trap.armed = false  # (sprung, for the save)
+
+
+func _test_take_down() -> void:
+	print("taking down")
+	var fire := await _build("campfire", [180, -250])
+	var pebbles := inventory.count(&"pebble")
+	var surv_before := (level.get("survival") as Survival)._shelters.size()
+	_check("down it comes", builder.take_down(fire), "")
+	await _frames(2)
+	_check("its materials come back", inventory.count(&"pebble") == pebbles + 5, "pebbles %d" % inventory.count(&"pebble"))
+	_check("it's gone", not is_instance_valid(fire) or fire.is_queued_for_deletion(), "")
+	var lean_count := 0
+	for n: Node in get_nodes_in_group(&"buildings"):
+		if n is Building and (n as Building).id == "lean_to":
+			lean_count += 1
+	surv_before = surv_before + lean_count * 0
 
 
 func _test_save() -> void:
@@ -166,14 +296,14 @@ func _test_save() -> void:
 	await _frames(5)
 	var data := SaveGame.collect(level)
 	var camp: Array = data["camp"]
-	_check("the camp goes in", camp.size() == 3, "%d things" % camp.size())
+	_check("the camp goes in", camp.size() >= 9, "%d things" % camp.size())
 	var text := JSON.stringify(data)
 	var back: Dictionary = JSON.parse_string(text)
 	# the file: written, read back, erased (a test file, not his)
 	SaveGame.path = "user://camp_test_save.json"
 	var saves := level.get_node("SaveGame") as SaveGame
 	_check("written", saves.save() and SaveGame.exists(), SaveGame.path)
-	_check("read back", SaveGame.read().get("camp", []).size() == 3, "")
+	_check("read back", SaveGame.read().get("camp", []).size() == camp.size(), "")
 	SaveGame.erase()
 	_check("erased", not SaveGame.exists(), "")
 	var here := player.global_position
@@ -186,9 +316,15 @@ func _test_save() -> void:
 	await _frames(10)
 	var stands := {}
 	var waiting: Blueprint = null
+	var basket: Building = null
+	var trap: Building = null
 	for n: Node in get_nodes_in_group(&"buildings"):
 		if n is Building:
 			stands[(n as Building).id] = true
+			if (n as Building).id == "storage_basket":
+				basket = n as Building
+			elif (n as Building).id == "thorn_trap":
+				trap = n as Building
 		elif n is Blueprint:
 			waiting = n as Blueprint
 	_check("the workbench and the fire stand again", stands.has("workbench") and stands.has("campfire"), str(stands.keys()))
@@ -204,4 +340,8 @@ func _test_save() -> void:
 	_check("the day and time", clock2.day == 3 and absf(clock2.minutes - (21.0 * 60.0 + 40.0)) < 1.0,
 		"day %d %.0f" % [clock2.day, clock2.minutes])
 	_check("the fire is a station again", crafting.station_near("fire") or crafting.station_near("bench"), "")
+	_check("the basket keeps what was in it", basket != null and basket.count(&"twig") == 22,
+		"%d twigs" % (basket.count(&"twig") if basket != null else -1))
+	_check("the sprung trap is still sprung", trap != null and not trap.armed, "")
+	_check("he sleeps on the bed again", stands.has("leaf_bed") and stands.has("lean_to"), "")
 	lean = null

@@ -8,6 +8,8 @@ extends Gatherable
 ## Player's E finds it the way it finds a sprig.
 
 const HOLOGRAM := preload("res://world/build/hologram.gdshader")
+## A storage basket within this of it (m) gives its materials too.
+const STORAGE_REACH := 15.0
 
 var building_id := ""
 var builder: Builder
@@ -87,12 +89,24 @@ func prompt(inventory: Inventory) -> Dictionary:
 	var left := missing()
 	var can := false
 	for item: String in left:
-		if inventory != null and inventory.count(StringName(item)) > 0:
+		if (inventory != null and inventory.count(StringName(item)) > 0) or _in_baskets(StringName(item)) > 0:
 			can = true
 	var title := "%s  %d%%" % [display_name, roundi(fill() * 100.0)]
 	if can:
 		return {"name": title, "verb": "Add materials", "ok": true, "need": "", "hand": true}
 	return {"name": title, "verb": "Add materials", "ok": false, "need": "Needs " + need_text(left), "hand": true}
+
+
+## How many of `item` the storage baskets close by hold.
+func _in_baskets(item: StringName) -> int:
+	var n := 0
+	if not is_inside_tree():
+		return 0
+	for b: Node in get_tree().get_nodes_in_group(&"storage"):
+		var basket := b as Building
+		if basket != null and basket.global_position.distance_to(global_position) <= STORAGE_REACH:
+			n += basket.count(item)
+	return n
 
 
 ## "3 Leaf · 2 Twine" for what's left.
@@ -115,6 +129,18 @@ func take(by: Node3D) -> bool:
 		if n > 0 and inventory.remove_item(StringName(item), n):
 			given[item] = int(given.get(item, 0)) + n
 			moved = true
+	# and from a storage basket close by, as in Grounded
+	left = missing()
+	for n: Node in get_tree().get_nodes_in_group(&"storage"):
+		var basket := n as Building
+		if basket == null or basket.global_position.distance_to(global_position) > STORAGE_REACH:
+			continue
+		for item: String in left:
+			var got := basket.take_out(StringName(item), int(left[item]))
+			if got > 0:
+				given[item] = int(given.get(item, 0)) + got
+				moved = true
+		left = missing()
 	if not moved:
 		if by is Player:
 			(by as Player).flash_hint("Needs " + need_text(left), 2.0)

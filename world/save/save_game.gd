@@ -1,8 +1,8 @@
 class_name SaveGame
 extends Node
 ## Saving the survival game, the way Grounded keeps itself: his camp (every
-## building and blueprint, where it stands and what has gone into it, the raft
-## where he left it), his pack and its size, his weapons, the recipes and
+## building and blueprint, where it stands and what has gone into it, what's
+## in each basket, whether each trap is set, the raft where he left it), his pack and its size, his weapons, the recipes and
 ## buildings he's learned, his health, hunger and thirst, where he is and where
 ## he wakes, and the time of day. The garden itself (what he gathered) grows
 ## back, as Grounded's does.
@@ -126,7 +126,16 @@ static func collect(lvl: Node3D) -> Dictionary:
 			if not bp.is_gone():
 				camp.append({"id": bp.building_id, "xf": _xf(bp.global_transform), "given": bp.given.duplicate()})
 		elif b is Building:
-			camp.append({"id": (b as Building).id, "xf": _xf(b.global_transform)})
+			var built := b as Building
+			var entry := {"id": built.id, "xf": _xf(b.global_transform)}
+			if not built.stored.is_empty():  # a basket: what's in it
+				var kept := []
+				for st: Dictionary in built.stored:
+					kept.append({} if st.is_empty() else {"id": String(st["id"]), "count": int(st["count"])})
+				entry["stored"] = kept
+			if built.is_in_group(&"traps"):
+				entry["armed"] = built.armed
+			camp.append(entry)
 		elif b is LeafRaft:
 			camp.append({"id": (b as LeafRaft).id, "xf": _xf(b.global_transform)})
 	return {
@@ -225,7 +234,17 @@ static func apply(lvl: Node3D, data: Dictionary) -> void:
 			if e.get("given") is Dictionary:
 				builder.lay(id, xf, e["given"] as Dictionary)
 			else:
-				builder.stand(id, xf)
+				var built := builder.stand(id, xf) as Building
+				if built == null:
+					continue
+				var kept := _list(e.get("stored"))
+				for i in mini(kept.size(), built.stored.size()):
+					var st: Dictionary = kept[i] if kept[i] is Dictionary else {}
+					if not st.is_empty() and Items.exists(StringName(String(st.get("id", "")))):
+						built.stored[i] = {"id": StringName(String(st["id"])), "count": maxi(int(st.get("count", 1)), 1)}
+				if e.has("armed"):
+					built.armed = bool(e["armed"])
+					built._show_trap()
 
 
 static func _v(p: Vector3) -> Array:

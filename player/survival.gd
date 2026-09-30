@@ -248,15 +248,26 @@ func add_shelter(sh: Dictionary) -> void:
 	_shelters.append(sh)
 
 
-## The shelter he's in, or {}.
+## Forgets the shelter or bed with this "id" (taken down).
+func remove_shelter(id: String) -> void:
+	for i in range(_shelters.size() - 1, -1, -1):
+		if String(_shelters[i].get("id", "")) == id:
+			_shelters.remove_at(i)
+
+
+## The shelter he's in, or {} (a bed first: under a lean-to he sleeps on it).
 func shelter_here() -> Dictionary:
 	var p := player.global_position
+	var found := {}
 	for sh: Dictionary in _shelters:
 		var at: Array = sh["pos"]
 		if Vector2(p.x - float(at[0]), p.z - float(at[1])).length() < float(sh["radius"]) \
 				and p.y < float(sh.get("max_y", INF)):
-			return sh
-	return {}
+			if bool(sh.get("bed", false)):
+				return sh
+			if found.is_empty():
+				found = sh
+	return found
 
 
 ## Evening or night (from 18:00 until sunrise).
@@ -274,9 +285,11 @@ func danger_near() -> bool:
 
 
 ## A night's sleep: hungrier and thirstier, but healed.
+## On a bed (he's still lying where he slept) the night costs half.
 func slept() -> void:
-	hunger = maxf(hunger - sleep_hunger, 10.0)
-	thirst = maxf(thirst - sleep_thirst, 10.0)
+	var cost := 0.5 if bool(shelter_here().get("bed", false)) else 1.0
+	hunger = maxf(hunger - sleep_hunger * cost, 10.0)
+	thirst = maxf(thirst - sleep_thirst * cost, 10.0)
 	if combat != null and not combat.knocked:
 		combat.health = combat.max_health
 		combat.health_changed.emit(combat.health, combat.max_health)

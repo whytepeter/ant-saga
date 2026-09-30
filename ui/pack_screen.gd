@@ -24,6 +24,8 @@ const COLS := 4
 const HOLD := 0.7  # seconds to hold for a craft
 const LEFT_W := 470.0
 const RIGHT_W := 470.0
+## The Build tab's last line: not a building but the tool to take one down.
+const TAKE_DOWN := "_take_down"
 
 var inventory: Inventory
 var crafting: Crafting
@@ -533,6 +535,16 @@ func _fill_builds() -> void:
 		row.screen = self
 		row.custom_minimum_size = Vector2(LEFT_W - 14.0, 52.0)
 		_builds.add_child(row)
+	# the last line: the tool to take something down again
+	var gap := Sleek.title("Change your camp", 13, 3)
+	gap.custom_minimum_size = Vector2(0, 30)
+	gap.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
+	_builds.add_child(gap)
+	var down := _BuildRow.new()
+	down.build_id = TAKE_DOWN
+	down.screen = self
+	down.custom_minimum_size = Vector2(LEFT_W - 14.0, 52.0)
+	_builds.add_child(down)
 	var hidden := Buildings.all().size() - b.known.size()
 	if b.known.is_empty():
 		_builds.add_child(Sleek.label("Nothing to build yet.", 17, Sleek.DIM, 3))
@@ -551,6 +563,11 @@ func _show_build(id: String) -> void:
 	if id == "":
 		_build_detail.show_thing(null, "", "", "", "", [], "", "")
 		return
+	if id == TAKE_DOWN:
+		_build_detail.show_thing(null, "hammer", "Take something down", "Build · change your camp",
+			"Aim at something you've built, or a blueprint, and click: it comes down and every material in it comes back to your pack (a basket gives up what's in it too).",
+			[], "Enter · Take out the tool", _flash, [], 0.0, true)
+		return
 	var info := Buildings.info(id)
 	var needs: Array[String] = []
 	var n: Dictionary = info.get("needs", {})
@@ -568,7 +585,10 @@ func _choose_build(id: String) -> void:
 	if b == null:
 		return
 	close()
-	b.start(id)
+	if id == TAKE_DOWN:
+		b.start_taking_down()
+	else:
+		b.start(id)
 
 
 # ── pieces ────────────────────────────────────────────────────────────────────
@@ -723,6 +743,10 @@ class _BuildRow extends Control:
 		if _lit > 0.0:
 			HudGlyphs.band(self, Rect2(Vector2.ZERO, size), 0.5 * _lit)
 			HudGlyphs.diamond(self, Vector2(14.0, h * 0.5), 5.0 * _lit, Color(1.0, 0.85, 0.45, _lit))
+		if build_id == PackScreen.TAKE_DOWN:
+			HudGlyphs.draw(self, "hammer", Vector2(52.0, h * 0.5), h * 0.5, Sleek.CREAM)
+			Sleek.draw_text(self, Vector2(84.0, h * 0.5 + 7.0), "Take something down", 19, Color(Sleek.CREAM, lerpf(0.7, 1.0, _lit)))
+			return
 		var tex := Buildings.icon(build_id)
 		if tex != null:
 			draw_texture_rect(tex, Rect2(Vector2(52.0, h * 0.5) - Vector2.ONE * h * 0.42, Vector2.ONE * h * 0.84), false)

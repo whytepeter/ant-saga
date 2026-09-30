@@ -12,7 +12,10 @@ extends Node
 ##      in, and with the last one the building stands (Building, LeafRaft)
 ##
 ## A lean-to is a shelter (sleep there, wake there), a campfire a light; both
-## keep the night hunters out (their `shelters`). While a ghost is out the
+## keep the night hunters out (their `shelters`). A bed is a place to sleep
+## (Survival). Palisade walls snap end to end. The Build tab's last line takes
+## something down again (take_down): the ghost's red outline shows what, a
+## click does it, and every material comes back. While a ghost is out the
 ## mouse is the builder's, not the fists' (PlayerCombat checks `active`).
 
 signal learned(id: String)
@@ -26,6 +29,9 @@ const TURN_STEP := PI / 12.0
 const WORLD_MASK := 1 | 4
 const BLUE := Color(0.45, 0.78, 1.0)
 const RED := Color(1.0, 0.36, 0.3)
+## A wall ghost this close to a wall's end joins it (m).
+const SNAP := 2.4
+const CHOP_LAYER := 1 << 6
 
 var player: Player
 var layout: LawnLayout
@@ -41,6 +47,12 @@ var _valid := false
 var _why := ""
 var _hints: CanvasLayer
 var _count := 0
+## The wall the ghost has joined (skipped by the spacing check), or null.
+var _snapped_to: Node3D
+## Taking something down: what's aimed at (outlined red), or null.
+var taking_down := false
+var _doomed: Node3D
+var _doom_mat: StandardMaterial3D
 
 
 static func of(p: Node) -> Builder:
@@ -100,6 +112,7 @@ func has_all(id: String) -> bool:
 ## Takes out the ghost of `id` to place.
 func start(id: String) -> void:
 	cancel()
+	stop_taking_down()
 	placing = id
 	active = true
 	_turn = 0.0
@@ -122,6 +135,13 @@ func cancel() -> void:
 
 
 func _process(_delta: float) -> void:
+	if taking_down:
+		if player.downed or not player.input_enabled:
+			if player.downed:
+				stop_taking_down()
+			return
+		_aim_take_down()
+		return
 	if placing != "":
 		if player.downed or not player.input_enabled:
 			if player.downed:
@@ -133,6 +153,16 @@ func _process(_delta: float) -> void:
 
 
 func _input(event: InputEvent) -> void:
+	if taking_down and player.input_enabled:
+		var tb := event as InputEventMouseButton
+		if tb != null and tb.pressed and tb.button_index == MOUSE_BUTTON_LEFT:
+			if _doomed != null:
+				take_down(_doomed)
+			get_viewport().set_input_as_handled()
+		elif (tb != null and tb.pressed and tb.button_index == MOUSE_BUTTON_RIGHT) or event.is_action_pressed("ui_cancel"):
+			stop_taking_down()
+			get_viewport().set_input_as_handled()
+		return
 	if placing == "" or not player.input_enabled:
 		return
 	var mb := event as InputEventMouseButton
@@ -192,6 +222,19 @@ func _update_ghost() -> void:
 			point = g["position"]
 			normal = g["normal"]
 	var face := atan2(here.x - point.x, here.z - point.z) + _turn
+	_snapped_to = null
+	if Buildings.does(placing).has("wall"):
+		var snap := _wall_snap(point)
+		if not snap.is_empty():
+			_snapped_to = snap["wall"]
+			face = float(snap["yaw"])
+			point = snap["at"]
+			var down2 := PhysicsRayQueryParameters3D.create(point + Vector3.UP * 8.0, point + Vector3.DOWN * 12.0, WORLD_MASK,
+				[player.get_rid()])
+			var g2 := space.intersect_ray(down2)
+			if not g2.is_empty():
+				point = g2["position"]
+				normal = g2["normal"]
 	var xf := Transform3D(Basis(Vector3.UP, face), point)
 	_ghost.global_transform = xf
 	_why = _blocked(xf, normal)
@@ -226,9 +269,17 @@ func _blocked(xf: Transform3D, normal: Vector3) -> String:
 		if c != null and c.name != "Ground":
 			return "Something's in the way"
 	# nor on top of another building or blueprint
+	var mine := Buildings.does(placing)
 	for n: Node in get_tree().get_nodes_in_group(&"buildings"):
 		var other := n as Node3D
+		if other == _snapped_to:
+			continue
+		var theirs := Buildings.does(String(other.get_meta("building", "")))
+		if (mine.has("bed") and theirs.has("shelter")) or (mine.has("wall") and theirs.has("wall")):
+			continue  # a bed goes under a lean-to; walls meet (their solids are checked above)
 		var r := maxf(size.x, size.z) * 0.5 + float(other.get_meta("radius", 2.0))
+		if mine.has("trap") or theirs.has("trap"):
+			r *= 0.6
 		if Vector2(other.global_position.x - at.x, other.global_position.z - at.z).length() < r * 0.8:
 			return "Too close to the %s" % String(other.get_meta("title", "other")).to_lower()
 	return ""
@@ -245,6 +296,9 @@ func _place() -> void:
 func _tag(n: Node3D, id: String) -> void:
 	var size := Buildings.size(id)
 	n.add_to_group(&"buildings")
+	n.set_meta("building", id)
+	if Buildings.does(id).has("wall"):
+		n.add_to_group(&"walls")
 	n.set_meta("radius", maxf(size.x, size.z) * 0.5)
 	n.set_meta("title", String(Buildings.info(id).get("name", id)))
 
@@ -288,6 +342,9 @@ func lay(id: String, xf: Transform3D, given: Dictionary) -> Blueprint:
 ## A shelter he can sleep in (Survival, the map); a shelter or a fire the
 ## night hunters keep out of (their `shelters`).
 func _register(b: Building) -> void:
+	var bed := b.bed()
+	if not bed.is_empty() and survival != null:
+		survival.add_shelter(bed)  # (a place to sleep; it keeps nothing out)
 	var zone := b.keep_out()
 	if zone.is_empty():
 		return
@@ -305,9 +362,152 @@ func _register(b: Building) -> void:
 			(list as Array).append(zone)
 
 
+## Takes back what _register gave out (before it comes down).
+func _unregister(b: Building) -> void:
+	for zone: Dictionary in [b.keep_out(), b.bed()]:
+		if zone.is_empty():
+			continue
+		var zid := String(zone["id"])
+		if survival != null:
+			survival.remove_shelter(zid)
+		var lists: Array = [layout.data.get("survival", {}).get("shelters", [])]
+		for n: Node in get_tree().get_nodes_in_group(&"night_hunters"):
+			var list: Variant = n.get("shelters")
+			if list is Array:
+				lists.append(list)
+		for list: Array in lists:
+			for i in range(list.size() - 1, -1, -1):
+				var sh: Variant = list[i]
+				if sh is Dictionary and String((sh as Dictionary).get("id", "")) == zid:
+					list.remove_at(i)
+
+
+# ── walls ─────────────────────────────────────────────────────────────────────
+
+## Where a wall ghost near `point` joins a wall's end: {"at", "yaw", "wall"}
+## (it carries on from that end, turned by the wheel), or {} for none near.
+func _wall_snap(point: Vector3) -> Dictionary:
+	var best := {}
+	var best_d := SNAP
+	for n: Node in get_tree().get_nodes_in_group(&"walls"):
+		var w := n as Node3D
+		if w == null or not w.is_inside_tree():
+			continue
+		var half := Buildings.size(String(w.get_meta("building", "twig_wall"))).x * 0.5
+		for side: float in [-1.0, 1.0]:
+			var end := w.global_transform * Vector3(side * half, 0.0, 0.0)
+			var d := Vector2(end.x - point.x, end.z - point.z).length()
+			if d < best_d:
+				var yaw := w.global_rotation.y + _turn * side
+				var along := Basis(Vector3.UP, yaw) * Vector3(side, 0.0, 0.0)
+				best = {"at": end + along * Buildings.size(placing).x * 0.5, "yaw": yaw, "wall": w}
+				best_d = d
+	return best
+
+
+# ── taking down ───────────────────────────────────────────────────────────────
+
+## Takes out the take-down tool: what he aims at shows red; a click takes it
+## down; a right-click or Esc puts the tool away.
+func start_taking_down() -> void:
+	cancel()
+	taking_down = true
+	active = true
+	_show_hints(true, true)
+
+
+func stop_taking_down() -> void:
+	if not taking_down:
+		return
+	taking_down = false
+	_mark(null)
+	_show_hints(false)
+
+
+func _aim_take_down() -> void:
+	var cam := get_viewport().get_camera_3d()
+	if cam == null:
+		return
+	var from := cam.global_position
+	var q := PhysicsRayQueryParameters3D.create(from, from - cam.global_basis.z * 60.0, WORLD_MASK | CHOP_LAYER,
+		[player.get_rid()])
+	var hit := player.get_world_3d().direct_space_state.intersect_ray(q)
+	var best: Node3D = null
+	if not hit.is_empty():
+		var at: Vector3 = hit["position"]
+		var best_d := INF
+		for n: Node in get_tree().get_nodes_in_group(&"buildings"):
+			var b := n as Node3D
+			if b == null or b.is_queued_for_deletion():
+				continue
+			var r := float(b.get_meta("radius", 2.0))
+			var d := Vector2(b.global_position.x - at.x, b.global_position.z - at.z).length()
+			var near_him := Vector2(b.global_position.x - player.global_position.x,
+				b.global_position.z - player.global_position.z).length() < REACH + r
+			if d < r + 1.0 and d < best_d and near_him:
+				best = b
+				best_d = d
+	_mark(best)
+
+
+## Outlines `b` red (the one he'd take down), clearing the last.
+func _mark(b: Node3D) -> void:
+	if b == _doomed:
+		return
+	if _doomed != null and is_instance_valid(_doomed):
+		for mi: Node in _doomed.find_children("*", "MeshInstance3D", true, false):
+			(mi as MeshInstance3D).material_overlay = null
+	_doomed = b
+	if b == null:
+		return
+	if _doom_mat == null:
+		_doom_mat = StandardMaterial3D.new()
+		_doom_mat.albedo_color = Color(1.0, 0.25, 0.2, 0.35)
+		_doom_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+		_doom_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+		_doom_mat.no_depth_test = false
+	for mi: Node in b.find_children("*", "MeshInstance3D", true, false):
+		(mi as MeshInstance3D).material_overlay = _doom_mat
+
+
+## Takes `n` down (a building, a blueprint, the raft): everything that went
+## into it comes back (into the pack; what won't fit lies there to pick up),
+## and a basket gives up what was in it.
+func take_down(n: Node3D) -> bool:
+	if n == null or not is_instance_valid(n):
+		return false
+	if n is LeafRaft and (n as LeafRaft).is_paddling():
+		player.flash_hint("Step off the raft first", 1.6)
+		return false
+	var id := String(n.get_meta("building", ""))
+	var back := {}
+	if n is Blueprint:
+		back = (n as Blueprint).given.duplicate()
+	else:
+		back = Buildings.needs(id).duplicate()
+	if n is Building:
+		for s: Dictionary in (n as Building).stored:
+			if not s.is_empty():
+				back[String(s["id"])] = int(back.get(String(s["id"]), 0)) + int(s["count"])
+		_unregister(n as Building)
+	var inventory := player.get_node_or_null("Inventory") as Inventory
+	for item: String in back:
+		var left := int(back[item])
+		if inventory != null:
+			left = inventory.add_item(StringName(item), left)
+		if left > 0:
+			ItemPickup.drop(player.get_parent(), n.global_position + Vector3.UP * 0.5, StringName(item), left, true)
+	if n == _doomed:
+		_mark(null)
+	n.remove_from_group(&"buildings")
+	n.queue_free()
+	player.flash_hint("Taken down: " + String(Buildings.info(id).get("name", "")), 1.8)
+	return true
+
+
 # ── the hint row while placing ───────────────────────────────────────────────
 
-func _show_hints(on: bool) -> void:
+func _show_hints(on: bool, taking := false) -> void:
 	if not on:
 		if _hints != null:
 			_hints.queue_free()
@@ -317,7 +517,8 @@ func _show_hints(on: bool) -> void:
 		return
 	_hints = CanvasLayer.new()
 	_hints.layer = 5
-	var row := Sleek.hints([["Click", "Place"], ["Wheel", "Turn"], ["Right-click", "Put away"]])
+	var row := Sleek.hints([["Click", "Take it down"], ["Right-click", "Stop"]] if taking \
+		else [["Click", "Place"], ["Wheel", "Turn"], ["Right-click", "Put away"]])
 	row.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM)
 	row.offset_top = -120.0
 	row.offset_bottom = -86.0
