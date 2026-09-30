@@ -155,6 +155,7 @@ static func collect(lvl: Node3D) -> Dictionary:
 		"upgrades": crafting.upgrades.keys(),
 		"buildings_known": builder.known.duplicate() if builder != null else [],
 		"camp": camp,
+		"tree": _tree_state(lvl),
 	}
 
 
@@ -168,6 +169,7 @@ static func apply(lvl: Node3D, data: Dictionary) -> void:
 	var survival := lvl.get("survival") as Survival
 	var clock := lvl.get("clock") as DayClock
 	var builder := Builder.of(player)
+	_apply_tree(lvl, data.get("tree", {}))
 	# the time of day
 	var time: Dictionary = data.get("time", {})
 	if clock != null:
@@ -272,3 +274,26 @@ static func _to_xf(a: Variant) -> Transform3D:
 		return Transform3D.IDENTITY
 	return Transform3D(Basis(Vector3(float(l[0]), float(l[1]), float(l[2])), Vector3(float(l[3]), float(l[4]), float(l[5])),
 		Vector3(float(l[6]), float(l[7]), float(l[8]))), Vector3(float(l[9]), float(l[10]), float(l[11])))
+
+
+## The apple tree: the orb weaver beaten, its golden thread taken, how far
+## the tree's missions have got (OrbWeaverLair, TreeQuest).
+static func _tree_state(lvl: Node3D) -> Dictionary:
+	var out := {}
+	var lair := lvl.get_tree().get_first_node_in_group(&"orb_weaver_lair") as OrbWeaverLair
+	if lair != null:
+		out["weaver"] = lair.collect()
+	var quest := lvl.get_tree().get_first_node_in_group(&"tree_quest") as TreeQuest
+	if quest != null:
+		out["quest"] = quest.collect()
+	return out
+
+
+static func _apply_tree(lvl: Node3D, tree: Variant) -> void:
+	var d: Dictionary = tree if tree is Dictionary else {}
+	var lair := lvl.get_tree().get_first_node_in_group(&"orb_weaver_lair") as OrbWeaverLair
+	if lair != null and d.get("weaver") is Dictionary:
+		lair.apply(d["weaver"] as Dictionary)
+	var quest := lvl.get_tree().get_first_node_in_group(&"tree_quest") as TreeQuest
+	if quest != null and d.get("quest") is Dictionary:
+		quest.apply(d["quest"] as Dictionary)

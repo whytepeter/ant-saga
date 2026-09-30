@@ -415,6 +415,11 @@ func web_torn(p: Vector2) -> bool:
 	return false
 
 
+## Sets the whole sheet ringing (`amp` 0..1), as a blow or a catch does.
+func ring(amp: float) -> void:
+	_wobble(amp)
+
+
 func _wobble(amp: float) -> void:
 	_wobble_amp = maxf(amp, _wobble_amp * exp(-_wobble_age * 2.2))
 	_wobble_age = 0.0

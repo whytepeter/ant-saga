@@ -332,6 +332,24 @@ static func made(shape: String) -> Node3D:
 				drop.radius = 0.08
 				drop.height = 0.14
 				n.add_child(_mesh(drop, _mat(Color(0.55, 0.78, 0.95), 0.05, 0.85, 0.3), Transform3D(Basis.IDENTITY, Vector3(0.2, 0.6, 0.24))))
+		"golden_thread":
+			# a skein of golden silk: loops wound round and round, glinting
+			var gold := _mat(Color(0.95, 0.72, 0.22), 0.25, 1.0, 0.25)
+			gold.metallic = 0.6
+			gold.rim_enabled = true
+			gold.rim = 0.6
+			for i in 7:
+				var loop := TorusMesh.new()
+				loop.inner_radius = 0.3
+				loop.outer_radius = 0.36
+				var tilt := Basis(Vector3.UP, 0.45 * i) * Basis(Vector3.RIGHT, PI / 2.0 + 0.35 * sin(i * 1.7))
+				n.add_child(_mesh(loop, gold, Transform3D(tilt, Vector3(0, 0.02 * i, 0))))
+			var tail := CylinderMesh.new()
+			tail.top_radius = 0.025
+			tail.bottom_radius = 0.025
+			tail.height = 0.5
+			n.add_child(_mesh(tail, gold, Transform3D(Basis(Vector3.FORWARD, 1.2), Vector3(0.45, -0.2, 0.1))))
+			lift = Vector3(0, 0.36, 0)
 		"calcite":
 			# chalky pearls
 			var chalk := _mat(Color(0.93, 0.92, 0.86), 0.55)

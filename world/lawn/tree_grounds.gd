@@ -12,7 +12,9 @@ extends Node3D
 ##   the Moor       Leaf-Litter Moor: a carpet of dry curled apple leaves
 ##   the Orchard    Windfall Orchard: rotting apples (you can eat them), flies
 ##   Sap Falls      a wound in the bark, amber resin running down it
-##   the ladder     the weavers' silk ladder down the west face (climbable)
+##   the bough      the Old Bough, a pruned limb 110 m up the west side, the
+##                  weavers' landing on its back (OldBough)
+##   the ladder     the weavers' silk ladder, hung from the landing (climbable)
 ##   the Door       the West Root Door: a dark gap under a root flare
 ##   puddles        along the drip line: you can drink from them
 ##   dressing       roots, mossy stones, a pruned branch lying where it fell,
@@ -22,6 +24,8 @@ const WORLD_LAYER := 1
 const CLIMBABLE_LAYER := 1 << 2
 const CELL := 2.0
 const APPLE := "food_apple_01"
+## A rope ladder climbs this many times quicker than a wall (Player: rungs).
+const LADDER_CLIMB := 1.8
 
 var layout: LawnLayout
 var ground_material: Material
@@ -41,6 +45,8 @@ var _noise := FastNoiseLite.new()
 var _fine := FastNoiseLite.new()
 var _puddles: Array[Dictionary] = []  # {c: Vector2, r: float}
 var _rng := RandomNumberGenerator.new()
+## The Old Bough (layout tree_grounds "bough"), the ladder's landing up there.
+var bough: OldBough
 ## Where no grass may grow up through something solid: (x, z, radius).
 var _keep_out: Array[Vector3] = []
 
@@ -78,6 +84,7 @@ func _ready() -> void:
 	_build_grass()
 	_build_orchard()
 	_build_sap_falls()
+	_build_bough()
 	_build_ladder()
 	_build_door()
 	_build_dressing()
@@ -542,21 +549,30 @@ func _build_ladder() -> void:
 	var place := _place("silk_ladder")
 	if place.is_empty():
 		return
+	var top: Vector3
 	var foot2 := LawnLayout.xz(place["center"])
+	if bough != null and String(place.get("hangs_from", "")) == "old_bough":
+		# hung from the landing's edge, leaning a little out to its foot
+		top = bough.ladder_top() + Vector3.UP * 0.4
+		var out := Vector2(bough.ladder_out().x, bough.ladder_out().z)
+		foot2 = Vector2(top.x, top.z) + out * 6.0
 	var foot := Vector3(foot2.x, height(foot2.x, foot2.y) if not _baked.has_point(foot2) else TreeBase.ground_height(layout, foot2.x, foot2.y), foot2.y)
-	var top_y := float(place.get("top", 240.0))
-	var to_trunk := (Vector3(_trunk.x, 0, _trunk.y) - Vector3(foot.x, 0, foot.z)).normalized()
-	var rad := 60.0 - (60.0 - 43.0) * (top_y + 5.0) / 820.0
-	var top := Vector3(_trunk.x, top_y, _trunk.y) - to_trunk * (rad + 1.0)
+	if top == Vector3.ZERO:
+		var top_y := float(place.get("top", 240.0))
+		var to_trunk := (Vector3(_trunk.x, 0, _trunk.y) - Vector3(foot.x, 0, foot.z)).normalized()
+		var rad := 60.0 - (60.0 - 43.0) * (top_y + 5.0) / 820.0
+		top = Vector3(_trunk.x, top_y, _trunk.y) - to_trunk * (rad + 1.0)
 	var along := (top - foot).normalized()
 	var side := along.cross(Vector3.UP).normalized() * 1.1
 	var down := side.cross(along).normalized()
 	if down.y > 0.0:
 		down = -down
 	var length := foot.distance_to(top)
-	# each rope hangs in a shallow curve between its ends
+	# each rope sags in a shallow curve between its ends (hanging straight
+	# down, it barely sags at all)
+	var sag := length * 0.035 * sqrt(maxf(1.0 - along.y * along.y, 0.0))
 	var rope := func(t: float, s: float) -> Vector3:
-		return foot.lerp(top, t) + side * s + down * length * 0.035 * 4.0 * t * (1.0 - t)
+		return foot.lerp(top, t) + side * s + down * sag * 4.0 * t * (1.0 - t)
 	var threads: Array[PackedVector3Array] = []
 	var segs := 24
 	for s: float in [-1.0, 1.0]:
@@ -574,14 +590,26 @@ func _build_ladder() -> void:
 	body.name = "SilkLadderBody"
 	body.collision_layer = CLIMBABLE_LAYER
 	body.collision_mask = 0
+	body.set_meta(&"climb_speed", LADDER_CLIMB)  # rungs: quicker than bark
 	var cs := CollisionShape3D.new()
 	var box := BoxShape3D.new()
 	box.size = Vector3(2.4, 0.4, length)
 	cs.shape = box
 	var up := along.cross(side).normalized()
-	cs.transform = Transform3D(Basis(side.normalized(), up, along), (foot + top) * 0.5 + down * length * 0.035 * 0.7)
+	cs.transform = Transform3D(Basis(side.normalized(), up, along), (foot + top) * 0.5 + down * sag * 0.7)
 	body.add_child(cs)
 	add_child(body)
+
+
+## The Old Bough: a pruned limb low on the west side, the ladder's landing on
+## its back (OldBough).
+func _build_bough() -> void:
+	var b: Dictionary = _spec.get("bough", {})
+	if b.is_empty():
+		return
+	bough = OldBough.new()
+	bough.setup(layout, b, _trunk)
+	add_child(bough)
 
 
 ## The West Root Door: a dark gap under a root that arches out of the bank,

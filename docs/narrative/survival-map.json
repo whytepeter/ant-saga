@@ -59,11 +59,10 @@
   }
  ],
  "next": [
-  "Act 1's found story (SURVIVAL.md build step 5): the cracked vial and his first thought where he wakes, the ants' trail, the coin, the first raid at the Colony Gate, and the gate opening into the kingdom, where the Queen sets the goal. It's what gives the rest a reason.",
-  "The apple tree's missions, the way the Wormways have theirs: arrive at the tree, the torch from Sap Falls, up the Heartwood Stair, up the silk ladder.",
-  "The top of the silk ladder: it climbs 250 m to nothing. Give it a landing on the first great branch, with the orb weaver's web: the first great beast and the golden thread.",
+  "Act 1's found story (SURVIVAL.md build step 5): the cracked vial and his first thought where he wakes, the ants' trail, the coin, the first raid at the Colony Gate, and the gate opening into the kingdom, where the Queen sets the goal (and wants the golden thread).",
   "The blackbird on Leaf-Litter Moor: dry leaves crunch, noise brings it (the model is ready).",
-  "Then the Rootway behind the West Root Door (a Blender re-bake) and the Maw; the termite front; the wolf spider; Act 3."
+  "The Rootway behind the West Root Door (a Blender re-bake) and the Maw.",
+  "The termite front; the wolf spider and Sky-Salt; Act 3."
  ],
  "regions": [
   {
@@ -87,7 +86,7 @@
     0,
     190
    ],
-   "note": "Only a picture in the sky today. To build: the first great branch where the silk ladder ends, and the orb weaver's web across it"
+   "note": "Only a picture in the sky today (the Old Bough, 140 m up, is built). To build: the crown itself, the Musketeers' Old Camp"
   },
   {
    "layer": "far",
@@ -461,27 +460,37 @@
     -406,
     -18
    ],
-   "note": "Built: the Heartwood Stair climbs inside the trunk to a ledge 60 m up. To add: a reason to go (a view, a find, a camp spot)"
+   "note": "Built: the Heartwood Stair climbs inside the trunk to a ledge 60 m up (a mission step). To add: something to find there"
   },
   {
    "layer": "high",
-   "status": "part",
+   "status": "built",
+   "name": "The Old Bough",
+   "at": [
+    -535,
+    37
+   ],
+   "note": "A pruned limb 140 m up the west side: the weavers' landing, the silk ladder hung from it, a water shoot, the orb weaver's web above"
+  },
+  {
+   "layer": "high",
+   "status": "built",
    "name": "Silk ladder",
    "at": [
     -566,
     42
    ],
-   "note": "Built: climbable, 250 m up the west face. To add: somewhere to arrive at the top"
+   "note": "Hung from the weavers' landing on the Old Bough, 140 m up: about 30 s up at a sprint"
   },
   {
    "layer": "high",
-   "status": "todo",
+   "status": "built",
    "name": "The orb weaver",
    "at": [
-    -470,
-    -60
+    -565,
+    51
    ],
-   "note": "Great beast. On its web it can't be hurt and silk sticks: pluck the web to call it, cut the anchor threads so it drops, fight it on the ground. The golden thread. Model ready"
+   "note": "Great beast. It sits at the hub of its web, out of reach. Cut a guy line and it comes down to mend it; cut all three first and the web falls with it. On the bark it bites (it crouches first) and flings silk. Beaten, it leaves the golden thread"
   },
   {
    "layer": "deep",
@@ -618,10 +627,8 @@
   {
    "title": "The Old Tree",
    "steps": [
-    "Find the tree grounds west of the lawn",
-    "Drink at a puddle on the drip line",
-    "Eat a windfall apple",
-    "Break sap off Sap Falls and make a torch"
+    "Break sap off the tree's roots or at Sap Falls, for resin",
+    "Make a resin torch"
    ]
   },
   {
@@ -629,33 +636,26 @@
    "steps": [
     "Go into Root Hall",
     "Light your torch in the dark",
-    "Climb the stair inside the trunk",
-    "Look out from the knot-hole ledge"
+    "Find the way up inside the trunk"
    ]
   },
   {
    "title": "The Weavers' Ladder",
    "steps": [
-    "Find the silk ladder on the west face",
-    "Climb to the first great branch",
-    "Find the dew-strung web"
+    "Find the silk ladder on the west side",
+    "Climb it to the Old Bough",
+    "Look up: something lives over the bough"
    ]
   },
   {
    "title": "The Orb Weaver",
    "steps": [
-    "Pluck the web to call it",
-    "Cut the anchor threads so it drops",
-    "Beat it on the ground, where it's clumsy",
-    "Take the golden thread from the hub"
-   ]
-  },
-  {
-   "title": "Across the Moor",
-   "steps": [
-    "Cross Leaf-Litter Moor quietly (crouch)",
-    "Hide when the blackbird comes"
+    "Cut a guy line holding the web down",
+    "Cut all three before it mends them",
+    "Beat it on the bark, where it's clumsy",
+    "Take the golden thread"
    ]
   }
- ]
+ ],
+ "tree_missions_title": "In the game: the apple tree's missions (world/lawn/tree_missions.json)"
 }

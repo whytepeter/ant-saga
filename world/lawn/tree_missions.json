@@ -1,0 +1,53 @@
+{
+  "note": "The apple tree's missions (world/missions.gd, shown under the compass; TreeQuest runs them). They start the first time he comes into the tree grounds. A step is done when its event happens: gather:<item> (his pack), root_hall_in, torch_lit, knothole_ledge, ladder_found, bough_reached (where he is: TreeQuest), web_seen, line_cut, weaver_down, weaver_beaten (OrbWeaverLair). An event that finishes a later step skips ahead.",
+  "missions": [
+    {
+      "id": "old_tree",
+      "title": "The Old Tree",
+      "steps": [
+        {"text": "Break sap off the tree's roots or at Sap Falls, for resin", "done_on": "gather:resin",
+         "hint": ["Amodu", "Old trees bleed sap. Once it's hard, it'll burn."]},
+        {"text": "Make a resin torch (Tab: Crafting)", "done_on": "gather:torch",
+         "hint": ["Amodu", "Resin on a stick... that's a torch."]}
+      ]
+    },
+    {
+      "id": "heartwood_stair",
+      "title": "The Heartwood Stair",
+      "steps": [
+        {"text": "Go into Root Hall, between the roots on the tree's east side", "done_on": "root_hall_in",
+         "hint": ["Amodu", "There's a gap between those two big roots. It goes right inside the tree."]},
+        {"text": "Light your torch in the dark", "done_on": "torch_lit",
+         "hint": ["Amodu", "I can't see a thing in here. The torch."]},
+        {"text": "Find the way up inside the trunk", "done_on": "knothole_ledge",
+         "hint": ["Amodu", "Air's coming down from somewhere up there."]}
+      ]
+    },
+    {
+      "id": "weavers_ladder",
+      "title": "The Weavers' Ladder",
+      "steps": [
+        {"text": "Find the silk ladder hanging on the tree's west side", "done_on": "ladder_found",
+         "hint": ["Amodu", "From up on the ledge I saw something hanging off a branch, round the far side."]},
+        {"text": "Climb it to the Old Bough", "done_on": "bough_reached",
+         "hint": ["Amodu", "It's a long way up. Better not look down."]},
+        {"text": "Look up: something lives over the bough", "done_on": "web_seen",
+         "hint": ["Amodu", "Silk everywhere up here..."]}
+      ]
+    },
+    {
+      "id": "orb_weaver",
+      "title": "The Orb Weaver",
+      "steps": [
+        {"text": "Cut a guy line holding the web down", "done_on": "line_cut",
+         "hint": ["Amodu", "I can't reach it up there. But those lines hold the whole web down."]},
+        {"text": "Cut all three before it mends them", "done_on": "weaver_down",
+         "hint": ["Amodu", "It's quick on its web. I need to be quicker."]},
+        {"text": "Beat it on the bark, where it's clumsy", "done_on": "weaver_beaten",
+         "hint": ["Amodu", "Watch its back legs, and don't let it bite."]},
+        {"text": "Take the golden thread", "done_on": "gather:golden_thread",
+         "hint": ["Amodu", "Golden silk. That's worth something to someone."]}
+      ]
+    }
+  ]
+}

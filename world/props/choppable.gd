@@ -14,6 +14,8 @@ extends StaticBody3D
 ##   silk  a spider's trip line: walk through it, any blade cuts it in one
 
 signal chopped(by: Node3D)
+## A blow that didn't cut (the wrong tool): a spider feels its line twang.
+signal glanced(by: Node3D)
 
 const CHOP_LAYER := 1 << 6  # "choppable": blades look here; the player doesn't collide
 const WORLD_LAYER := 1
@@ -205,6 +207,7 @@ func _wear(power: float, from: Vector3, by: Node3D) -> bool:
 func _glance(by: Node3D) -> void:
 	_shake = 0.12
 	_sound(false)
+	glanced.emit(by)
 	if by is Player:
 		var need := harvest_tool()
 		(by as Player).flash_hint(Harvest.need_text(String(need[0]), int(need[1])), 1.6)

@@ -3300,8 +3300,8 @@
           6,
           6
         ],
-        "top": 250,
-        "note": "Two silk ropes with rungs from the bank up the west face of the trunk: the dry way up and down."
+        "note": "Two silk ropes with rungs hung from the weavers' landing on the Old Bough, 140 m up, down to the bank: the way up.",
+        "hangs_from": "old_bough"
       },
       {
         "id": "west_root_door",
@@ -3443,7 +3443,36 @@
         "collide": ""
       }
     ],
-    "fallen_leaves": 150
+    "fallen_leaves": 150,
+    "bough": {
+      "id": "old_bough",
+      "name": "The Old Bough",
+      "note": "A limb low on the west side, pruned off long ago (the piece lies below: the pruned branch in the dressing); the cut has healed over. The weavers' landing on its back with their silk ladder hung from it, and a water shoot springing up near the end. An orb weaver's web hangs above it (OrbWeaverLair).",
+      "azimuth": 150,
+      "landing_side": -1,
+      "root_y": 112,
+      "rise": 10,
+      "length": 200,
+      "radius": [
+        22,
+        14
+      ],
+      "landing": {
+        "at": 75,
+        "size": [
+          26,
+          13
+        ]
+      },
+      "shoot": {
+        "at": 160,
+        "height": 150,
+        "radius": [
+          7,
+          2.5
+        ]
+      }
+    }
   },
   "wormways": {
     "note": "The Wormways: earthworm burrows under the lawn (docs/SURVIVAL.md). Baked by tools/bake_wormways.py (Blender) into assets/world/wormways.glb, placed by world/wormways/wormways.gd. Points are [x, y, z], y absolute (the lawn is near 0). Entrances open in the lawn (holes in the ground's collision and mesh); they're plugged with old casts until the first rain washes them out. A 5 mm burrow is 1.8 m across here; the Great Worm's are 8 m.",

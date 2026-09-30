@@ -206,6 +206,8 @@ func _setup_adventure() -> void:
 		wormways.clock = clock
 		if story == null:
 			_wormways_missions(weather)
+	if story == null:
+		_tree_quest()
 	info.visible = false
 	$HUD/Help.visible = false
 	var saves: SaveGame = null
@@ -553,6 +555,19 @@ func top_surface(xz: Array) -> Vector3:
 	var q := PhysicsRayQueryParameters3D.create(Vector3(x, 500, z), Vector3(x, -50, z), 1 | 4)
 	var hit := get_world_3d().direct_space_state.intersect_ray(q)
 	return hit.position if not hit.is_empty() else layout.ground_point(xz)
+
+
+## The apple tree's missions and its orb weaver (TreeQuest): they start the
+## first time he comes into the tree grounds.
+func _tree_quest() -> void:
+	var grounds := find_child("TreeGrounds", true, false) as TreeGrounds
+	var spec: Dictionary = layout.data.get("tree_grounds", {})
+	if grounds == null or spec.is_empty():
+		return
+	var b: Array = spec["bounds"]
+	var quest := TreeQuest.new()
+	quest.setup(player, hud, grounds.bough, Rect2(float(b[0]), float(b[1]), float(b[2]) - float(b[0]), float(b[3]) - float(b[1])))
+	add_child(quest)
 
 
 ## The Wormways' missions (world/wormways/missions.json): they start with the

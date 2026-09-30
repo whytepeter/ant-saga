@@ -137,7 +137,8 @@ def status_list(plan):
         out.append("</ul>")
     tm = plan.get("tree_missions", [])
     if tm:
-        out.append('<h3><span class="key" style="background:#2f8a4a"></span>Proposed: the apple tree\'s missions</h3>'
+        head = escape(plan.get("tree_missions_title", "Proposed: the apple tree's missions"))
+        out.append(f'<h3><span class="key" style="background:#2f8a4a"></span>{head}</h3>'
                    '<p class="note" style="margin:0">Shown under the compass like the Wormways\' (world/missions.gd), one step at a time.</p>'
                    '<div class="missions">')
         for m in tm:

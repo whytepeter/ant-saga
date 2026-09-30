@@ -23,6 +23,7 @@
   "iron_pin": {"name": "Iron pin", "kind": "material", "stack": 5, "desc": "A pin from the big people's world. Strong metal.", "icon": "paperclip"},
   "beetle_shell": {"name": "Beetle shell", "kind": "material", "stack": 10, "desc": "A plate of hard shell. Armour and shields.", "icon": "made:shell"},
   "calcite": {"name": "Calcite", "kind": "material", "stack": 10, "desc": "Chalky pearls from a worm's gut. The ants use them in potions.", "icon": "made:calcite"},
+  "golden_thread": {"name": "Golden thread", "kind": "material", "stack": 5, "desc": "Golden silk from the hub of an orb weaver's web: strong as wire and bright as the sun. The ants would want this.", "icon": "made:golden_thread"},
   "mite_fuzz": {"name": "Mite fuzz", "kind": "material", "stack": 20, "desc": "Soft red fuzz from a velvet mite (it fights back). Bedding and padding.", "icon": "made:fuzz"},
   "bug_meat": {"name": "Raw bug meat", "kind": "food", "stack": 10, "desc": "From an aphid or a springtail. Filling raw, better roasted.", "icon": "made:meat", "food": 9},
   "honeydew": {"name": "Honeydew", "kind": "food", "stack": 10, "desc": "The sweet drop an aphid makes. Food and a good drink.", "icon": "made:honeydew", "food": 6, "water": 12},

@@ -898,6 +898,9 @@ func _process_climbing(delta: float) -> void:
 
 	var climb_input := Vector2(input.x, -input.y)  # +y = up the wall
 	var speed := climb_speed * (climb_sprint_factor if input_enabled and Input.is_action_pressed("sprint") else 1.0)
+	var holding := wall_ray.get_collider() as Object if wall_ray.is_colliding() else null
+	if holding != null:
+		speed *= float(holding.get_meta(&"climb_speed", 1.0))  # (a rope ladder's rungs go quicker)
 	velocity = (up * climb_input.y + right * climb_input.x * 0.7) * speed - _climb_normal * 0.5
 	move_and_slide()
 
